@@ -1,0 +1,16 @@
+{
+  "league_id": 228124044,
+  "year": 2024,
+  "current_week": 6,
+  "private_league": false,
+  "espn_s2": "",
+  "swid": "",
+  "output_directory": "output",
+  "features": {
+    "generate_matchups": true,
+    "generate_standings": true,
+    "generate_summary": true,
+    "generate_recap": false,
+    "calculate_optimal_lineups": false
+  }
+}
