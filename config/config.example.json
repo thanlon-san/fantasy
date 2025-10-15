@@ -1,10 +1,10 @@
 {
   "league_id": 228124044,
-  "year": 2024,
-  "current_week": 6,
-  "private_league": false,
-  "espn_s2": "",
-  "swid": "",
+  "year": 2025,
+  "current_week": 7,
+  "private_league": true,
+  "espn_s2": "YOUR_ESPN_S2_COOKIE_HERE",
+  "swid": "{YOUR-SWID-HERE}",
   "output_directory": "output",
   "features": {
     "generate_matchups": true,

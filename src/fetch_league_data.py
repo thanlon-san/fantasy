@@ -59,7 +59,7 @@ class FantasyDataFetcher:
         if not self.league:
             return ""
             
-        matchups = self.league.matchups(week)
+        matchups = self.league.box_scores(week)
         output = [f"# Fantasy Football Matchups - NFL Week {week}\n"]
         
         for i, matchup in enumerate(matchups, 1):
@@ -168,7 +168,7 @@ class FantasyDataFetcher:
         if not self.league:
             return {}
             
-        matchups = self.league.matchups(week)
+        matchups = self.league.box_scores(week)
         stats = {
             'biggest_blowout': None,
             'closest_game': None,

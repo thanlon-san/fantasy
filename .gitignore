@@ -54,6 +54,18 @@ output/
 config.json
 .env
 .env.local
+api.log
+nohup.out
+recap_history.json
+trend_history.json
+
+# Logs directory
+logs/
+*.log
+
+# Optional: Modular prompts (if you split COLUMNIST_PROMPT.md)
+# Uncomment if you want to track prompts/ in git
+# prompts/
 
 # Sensitive data
 espn_cookies.txt
