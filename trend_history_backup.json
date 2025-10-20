@@ -1,0 +1,3225 @@
+{
+  "teams": {
+    "New Vertical Threats": {
+      "7": {
+        "score": 167.6,
+        "position_aggregates": {
+          "QB": 6.6,
+          "RB": 65.9,
+          "WR": 65.4,
+          "TE": 6.7,
+          "K": 6.0,
+          "D/ST": 17.0,
+          "FLEX": 0
+        },
+        "optimal_score": 186.88,
+        "management_gap": 19.28,
+        "bench_points": 44.17999999999999
+      }
+    },
+    "Maia's Monstrous Team": {
+      "7": {
+        "score": 72.62,
+        "position_aggregates": {
+          "QB": 16.82,
+          "RB": 17.8,
+          "WR": 19.2,
+          "TE": 5.8,
+          "K": 4.0,
+          "D/ST": 9.0,
+          "FLEX": 0
+        },
+        "optimal_score": 102.22,
+        "management_gap": 29.6,
+        "bench_points": 47.199999999999996
+      }
+    },
+    "Scott's Tots": {
+      "7": {
+        "score": 109.74,
+        "position_aggregates": {
+          "QB": 19.64,
+          "RB": 17.9,
+          "WR": 36.5,
+          "TE": 17.7,
+          "K": 17.0,
+          "D/ST": 1.0,
+          "FLEX": 0
+        },
+        "optimal_score": 112.94,
+        "management_gap": 3.2,
+        "bench_points": 13.06
+      }
+    },
+    "Beacon": {
+      "7": {
+        "score": 87.64,
+        "position_aggregates": {
+          "QB": 27.24,
+          "RB": 7.3,
+          "WR": 19.1,
+          "TE": 16.0,
+          "K": 2.0,
+          "D/ST": 16.0,
+          "FLEX": 0
+        },
+        "optimal_score": 105.84,
+        "management_gap": 18.2,
+        "bench_points": 30.3
+      }
+    },
+    "Hot Chubb Time Machine": {
+      "7": {
+        "score": 79.34,
+        "position_aggregates": {
+          "QB": 22.34,
+          "RB": 32.0,
+          "WR": 15.4,
+          "TE": 6.6,
+          "K": 3.0,
+          "D/ST": 0.0,
+          "FLEX": 0
+        },
+        "optimal_score": 108.84,
+        "management_gap": 29.5,
+        "bench_points": 54.599999999999994
+      }
+    },
+    "Purdy Boys": {
+      "7": {
+        "score": 88.32,
+        "position_aggregates": {
+          "QB": 19.22,
+          "RB": 27.1,
+          "WR": 14.7,
+          "TE": 12.3,
+          "K": 9.0,
+          "D/ST": 6.0,
+          "FLEX": 0
+        },
+        "optimal_score": 95.3,
+        "management_gap": 6.98,
+        "bench_points": 36.6
+      }
+    },
+    "We're More Than Delivery": {
+      "7": {
+        "score": 80.38,
+        "position_aggregates": {
+          "QB": 11.18,
+          "RB": 7.6,
+          "WR": 35.6,
+          "TE": 26.0,
+          "K": 0,
+          "D/ST": 0.0,
+          "FLEX": 0
+        },
+        "optimal_score": 99.18,
+        "management_gap": 18.8,
+        "bench_points": 26.2
+      }
+    },
+    "Team Wise": {
+      "7": {
+        "score": 106.48,
+        "position_aggregates": {
+          "QB": 18.76,
+          "RB": 30.8,
+          "WR": 43.12,
+          "TE": 11.8,
+          "K": 3.0,
+          "D/ST": -1.0,
+          "FLEX": 0
+        },
+        "optimal_score": 126.38,
+        "management_gap": 19.9,
+        "bench_points": 51.04
+      }
+    },
+    "Team Tang": {
+      "7": {
+        "score": 77.06,
+        "position_aggregates": {
+          "QB": 18.46,
+          "RB": 35.7,
+          "WR": 12.7,
+          "TE": 9.2,
+          "K": 0,
+          "D/ST": 1.0,
+          "FLEX": 0
+        },
+        "optimal_score": 92.96,
+        "management_gap": 15.9,
+        "bench_points": 26.4
+      }
+    },
+    "High Qual Completion Deliv Rate": {
+      "7": {
+        "score": 80.36,
+        "position_aggregates": {
+          "QB": 13.36,
+          "RB": 25.2,
+          "WR": 24.1,
+          "TE": 4.7,
+          "K": 10.0,
+          "D/ST": 3.0,
+          "FLEX": 0
+        },
+        "optimal_score": 85.16,
+        "management_gap": 4.8,
+        "bench_points": 14.4
+      }
+    },
+    "Laser Focused": {
+      "7": {
+        "score": 52.9,
+        "position_aggregates": {
+          "QB": 0.0,
+          "RB": 8.7,
+          "WR": 11.0,
+          "TE": 21.2,
+          "K": 12.0,
+          "D/ST": 0,
+          "FLEX": 0
+        },
+        "optimal_score": 75.5,
+        "management_gap": 22.6,
+        "bench_points": 33.3
+      }
+    },
+    "Hut, Hut, Eich": {
+      "7": {
+        "score": 111.04,
+        "position_aggregates": {
+          "QB": 21.64,
+          "RB": 48.7,
+          "WR": 11.4,
+          "TE": 12.3,
+          "K": 6.0,
+          "D/ST": 11.0,
+          "FLEX": 0
+        },
+        "optimal_score": 119.84,
+        "management_gap": 8.8,
+        "bench_points": 25.0
+      }
+    },
+    "Greg's Great Team": {
+      "7": {
+        "score": 126.9,
+        "position_aggregates": {
+          "QB": 15.4,
+          "RB": 28.7,
+          "WR": 56.7,
+          "TE": 15.1,
+          "K": -1.0,
+          "D/ST": 12.0,
+          "FLEX": 0
+        },
+        "optimal_score": 134.58,
+        "management_gap": 7.68,
+        "bench_points": 49.88
+      }
+    },
+    "Monster of the Midway": {
+      "7": {
+        "score": 110.38,
+        "position_aggregates": {
+          "QB": 31.48,
+          "RB": 27.3,
+          "WR": 34.9,
+          "TE": 5.7,
+          "K": 10.0,
+          "D/ST": 1.0,
+          "FLEX": 0
+        },
+        "optimal_score": 117.58,
+        "management_gap": 7.2,
+        "bench_points": 13.3
+      }
+    },
+    "Show in wallet off": {
+      "7": {
+        "score": 124.76,
+        "position_aggregates": {
+          "QB": 14.96,
+          "RB": 44.5,
+          "WR": 41.0,
+          "TE": 18.3,
+          "K": 5.0,
+          "D/ST": 1.0,
+          "FLEX": 0
+        },
+        "optimal_score": 145.3,
+        "management_gap": 20.54,
+        "bench_points": 53.6
+      }
+    },
+    "Fly PCIO Fly": {
+      "7": {
+        "score": 115.82,
+        "position_aggregates": {
+          "QB": 20.62,
+          "RB": 46.8,
+          "WR": 15.6,
+          "TE": 13.8,
+          "K": 18.0,
+          "D/ST": 1.0,
+          "FLEX": 0
+        },
+        "optimal_score": 138.32,
+        "management_gap": 22.5,
+        "bench_points": 76.1
+      }
+    }
+  },
+  "players": {
+    "Josh Jacobs": {
+      "7": {
+        "position": "RB",
+        "actual_points": 32.0,
+        "projected_points": 20.85,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 93,
+          "rushing_tds": 2,
+          "rushing_attempts": 18,
+          "receiving_yards": 57,
+          "receiving_tds": 0,
+          "receiving_receptions": 5,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Drake London": {
+      "7": {
+        "position": "WR",
+        "actual_points": 31.8,
+        "projected_points": 15.56,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 158,
+          "receiving_tds": 1,
+          "receiving_receptions": 10,
+          "receiving_targets": 16
+        }
+      }
+    },
+    "Matthew Golden": {
+      "7": {
+        "position": "WR",
+        "actual_points": 13.2,
+        "projected_points": 11.12,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 16,
+          "rushing_tds": 0,
+          "rushing_attempts": 2,
+          "receiving_yards": 86,
+          "receiving_tds": 0,
+          "receiving_receptions": 3,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Wan'Dale Robinson": {
+      "7": {
+        "position": "WR",
+        "actual_points": 20.4,
+        "projected_points": 11.6,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 84,
+          "receiving_tds": 1,
+          "receiving_receptions": 6,
+          "receiving_targets": 7
+        }
+      }
+    },
+    "Harrison Butker": {
+      "7": {
+        "position": "K",
+        "actual_points": 6.0,
+        "projected_points": 8.1,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Noah Fant": {
+      "7": {
+        "position": "TE",
+        "actual_points": 6.7,
+        "projected_points": 4.58,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 27,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 4
+        }
+      }
+    },
+    "Rico Dowdle": {
+      "7": {
+        "position": "RB",
+        "actual_points": 33.9,
+        "projected_points": 17.81,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 183,
+          "rushing_tds": 0,
+          "rushing_attempts": 30,
+          "receiving_yards": 56,
+          "receiving_tds": 1,
+          "receiving_receptions": 4,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Tua Tagovailoa": {
+      "7": {
+        "position": "QB",
+        "actual_points": 6.6,
+        "projected_points": 16.83,
+        "stats": {
+          "passing_yards": 205,
+          "passing_tds": 1,
+          "passing_ints": 3,
+          "passing_attempts": 32,
+          "passing_completions": 21,
+          "rushing_yards": 4,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Broncos D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 17.0,
+        "projected_points": 7.03,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "A.J. Brown": {
+      "7": {
+        "position": "WR",
+        "actual_points": 14.0,
+        "projected_points": 14.08,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 80,
+          "receiving_tds": 0,
+          "receiving_receptions": 6,
+          "receiving_targets": 9
+        }
+      }
+    },
+    "Derrick Henry": {
+      "7": {
+        "position": "RB",
+        "actual_points": 14.0,
+        "projected_points": 13.97,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 122,
+          "rushing_tds": 0,
+          "rushing_attempts": 24,
+          "receiving_yards": 8,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Marvin Harrison Jr.": {
+      "7": {
+        "position": "WR",
+        "actual_points": 5.2,
+        "projected_points": 11.95,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 32,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "David Njoku": {
+      "7": {
+        "position": "TE",
+        "actual_points": 5.8,
+        "projected_points": 9.88,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 28,
+          "receiving_tds": 0,
+          "receiving_receptions": 3,
+          "receiving_targets": 6
+        }
+      }
+    },
+    "Jared Goff": {
+      "7": {
+        "position": "QB",
+        "actual_points": 16.82,
+        "projected_points": 15.84,
+        "stats": {
+          "passing_yards": 203,
+          "passing_tds": 2,
+          "passing_ints": 0,
+          "passing_attempts": 29,
+          "passing_completions": 23,
+          "rushing_yards": 7,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Brian Robinson Jr.": {
+      "7": {
+        "position": "RB",
+        "actual_points": 3.8,
+        "projected_points": 4.67,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 8,
+          "receiving_tds": 0,
+          "receiving_receptions": 3,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Quentin Johnston": {
+      "7": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Buccaneers D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 9.0,
+        "projected_points": 5.36,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Joshua Karty": {
+      "7": {
+        "position": "K",
+        "actual_points": 4.0,
+        "projected_points": 8.72,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Jaxon Smith-Njigba": {
+      "7": {
+        "position": "WR",
+        "actual_points": 30.2,
+        "projected_points": 17.93,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 162,
+          "receiving_tds": 1,
+          "receiving_receptions": 8,
+          "receiving_targets": 13
+        }
+      }
+    },
+    "Sam LaPorta": {
+      "7": {
+        "position": "TE",
+        "actual_points": 16.5,
+        "projected_points": 11.68,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 55,
+          "receiving_tds": 1,
+          "receiving_receptions": 5,
+          "receiving_targets": 6
+        }
+      }
+    },
+    "Baker Mayfield": {
+      "7": {
+        "position": "QB",
+        "actual_points": 19.64,
+        "projected_points": 19.27,
+        "stats": {
+          "passing_yards": 256,
+          "passing_tds": 2,
+          "passing_ints": 0,
+          "passing_attempts": 23,
+          "passing_completions": 17,
+          "rushing_yards": 14,
+          "rushing_tds": 0,
+          "rushing_attempts": 3,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Javonte Williams": {
+      "7": {
+        "position": "RB",
+        "actual_points": 8.4,
+        "projected_points": 16.46,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 29,
+          "rushing_tds": 0,
+          "rushing_attempts": 13,
+          "receiving_yards": 5,
+          "receiving_tds": 0,
+          "receiving_receptions": 5,
+          "receiving_targets": 8
+        }
+      }
+    },
+    "Travis Etienne Jr.": {
+      "7": {
+        "position": "RB",
+        "actual_points": 9.5,
+        "projected_points": 14.84,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 27,
+          "rushing_tds": 0,
+          "rushing_attempts": 12,
+          "receiving_yards": 28,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Cameron Dicker": {
+      "7": {
+        "position": "K",
+        "actual_points": 17.0,
+        "projected_points": 8.69,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Colts D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 1.0,
+        "projected_points": 7.04,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Mason Taylor": {
+      "7": {
+        "position": "TE",
+        "actual_points": 1.2,
+        "projected_points": 9.53,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 2,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "Ryan Flournoy": {
+      "7": {
+        "position": "WR",
+        "actual_points": 6.3,
+        "projected_points": 9.73,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 3,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 30,
+          "receiving_tds": 0,
+          "receiving_receptions": 3,
+          "receiving_targets": 6
+        }
+      }
+    },
+    "Calvin Ridley": {
+      "7": {
+        "position": "WR",
+        "actual_points": 2.8,
+        "projected_points": 11.75,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 18,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "J.K. Dobbins": {
+      "7": {
+        "position": "RB",
+        "actual_points": 4.0,
+        "projected_points": 16.01,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 40,
+          "rushing_tds": 0,
+          "rushing_attempts": 14,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "Drake Maye": {
+      "7": {
+        "position": "QB",
+        "actual_points": 27.24,
+        "projected_points": 17.9,
+        "stats": {
+          "passing_yards": 261,
+          "passing_tds": 3,
+          "passing_ints": 0,
+          "passing_attempts": 26,
+          "passing_completions": 18,
+          "rushing_yards": 28,
+          "rushing_tds": 0,
+          "rushing_attempts": 9,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Matt Prater": {
+      "7": {
+        "position": "K",
+        "actual_points": 2.0,
+        "projected_points": 8.38,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Rams D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 16.0,
+        "projected_points": 6.21,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Hassan Haskins": {
+      "7": {
+        "position": "RB",
+        "actual_points": 3.3,
+        "projected_points": 10.93,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 14,
+          "rushing_tds": 0,
+          "rushing_attempts": 6,
+          "receiving_yards": 9,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "Michael Mayer": {
+      "7": {
+        "position": "TE",
+        "actual_points": 16.0,
+        "projected_points": 8.45,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 50,
+          "receiving_tds": 1,
+          "receiving_receptions": 5,
+          "receiving_targets": 7
+        }
+      }
+    },
+    "Olamide Zaccheaus": {
+      "7": {
+        "position": "WR",
+        "actual_points": 4.8,
+        "projected_points": 8.09,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 4,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 24,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 6
+        }
+      }
+    },
+    "Tez Johnson": {
+      "7": {
+        "position": "WR",
+        "actual_points": 11.5,
+        "projected_points": 8.05,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 45,
+          "receiving_tds": 1,
+          "receiving_receptions": 1,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Puka Nacua": {
+      "7": {
+        "position": "WR",
+        "actual_points": 4.8,
+        "projected_points": 22.81,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 28,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Jonathan Taylor": {
+      "7": {
+        "position": "RB",
+        "actual_points": 23.7,
+        "projected_points": 23.5,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 123,
+          "rushing_tds": 1,
+          "rushing_attempts": 21,
+          "receiving_yards": 14,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 4
+        }
+      }
+    },
+    "Kenneth Walker III": {
+      "7": {
+        "position": "RB",
+        "actual_points": 4.7,
+        "projected_points": 13.9,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 34,
+          "rushing_tds": 0,
+          "rushing_attempts": 10,
+          "receiving_yards": 3,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "Xavier Worthy": {
+      "7": {
+        "position": "WR",
+        "actual_points": 10.6,
+        "projected_points": 15.38,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 6,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 20,
+          "receiving_tds": 1,
+          "receiving_receptions": 2,
+          "receiving_targets": 4
+        }
+      }
+    },
+    "Mark Andrews": {
+      "7": {
+        "position": "TE",
+        "actual_points": 6.6,
+        "projected_points": 9.36,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 2,
+          "rushing_tds": 0,
+          "rushing_attempts": 3,
+          "receiving_yards": 24,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 6
+        }
+      }
+    },
+    "Dak Prescott": {
+      "7": {
+        "position": "QB",
+        "actual_points": 22.34,
+        "projected_points": 18.8,
+        "stats": {
+          "passing_yards": 261,
+          "passing_tds": 3,
+          "passing_ints": 0,
+          "passing_attempts": 34,
+          "passing_completions": 25,
+          "rushing_yards": -1,
+          "rushing_tds": 0,
+          "rushing_attempts": 2,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Quinshon Judkins": {
+      "7": {
+        "position": "RB",
+        "actual_points": 3.6,
+        "projected_points": 13.8,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 36,
+          "rushing_tds": 0,
+          "rushing_attempts": 12,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "Evan McPherson": {
+      "7": {
+        "position": "K",
+        "actual_points": 3.0,
+        "projected_points": 7.4,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Browns D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 0.0,
+        "projected_points": 6.56,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Chase Brown": {
+      "7": {
+        "position": "RB",
+        "actual_points": 8.9,
+        "projected_points": 13.61,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 42,
+          "rushing_tds": 0,
+          "rushing_attempts": 9,
+          "receiving_yards": 7,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Courtland Sutton": {
+      "7": {
+        "position": "WR",
+        "actual_points": 2.7,
+        "projected_points": 13.3,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 17,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Jacory Croskey-Merritt": {
+      "7": {
+        "position": "RB",
+        "actual_points": 5.8,
+        "projected_points": 13.69,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 61,
+          "rushing_tds": 0,
+          "rushing_attempts": 17,
+          "receiving_yards": 7,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "Tucker Kraft": {
+      "7": {
+        "position": "TE",
+        "actual_points": 12.3,
+        "projected_points": 10.54,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 43,
+          "receiving_tds": 1,
+          "receiving_receptions": 2,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Wil Lutz": {
+      "7": {
+        "position": "K",
+        "actual_points": 9.0,
+        "projected_points": 8.7,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Tre Tucker": {
+      "7": {
+        "position": "WR",
+        "actual_points": 12.0,
+        "projected_points": 10.48,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 70,
+          "receiving_tds": 0,
+          "receiving_receptions": 5,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Patriots D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 6.0,
+        "projected_points": 5.89,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Trevor Lawrence": {
+      "7": {
+        "position": "QB",
+        "actual_points": 19.22,
+        "projected_points": 17.94,
+        "stats": {
+          "passing_yards": 258,
+          "passing_tds": 2,
+          "passing_ints": 0,
+          "passing_attempts": 42,
+          "passing_completions": 27,
+          "rushing_yards": 9,
+          "rushing_tds": 0,
+          "rushing_attempts": 3,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Bam Knight": {
+      "7": {
+        "position": "RB",
+        "actual_points": 12.4,
+        "projected_points": 7.66,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 34,
+          "rushing_tds": 1,
+          "rushing_attempts": 11,
+          "receiving_yards": 20,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Jahmyr Gibbs": {
+      "7": {
+        "position": "RB",
+        "actual_points": 7.5,
+        "projected_points": 18.69,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 65,
+          "rushing_tds": 0,
+          "rushing_attempts": 17,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Tee Higgins": {
+      "7": {
+        "position": "WR",
+        "actual_points": 11.2,
+        "projected_points": 11.52,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 62,
+          "receiving_tds": 0,
+          "receiving_receptions": 5,
+          "receiving_targets": 8
+        }
+      }
+    },
+    "Jameson Williams": {
+      "7": {
+        "position": "WR",
+        "actual_points": 18.6,
+        "projected_points": 10.7,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 66,
+          "receiving_tds": 1,
+          "receiving_receptions": 6,
+          "receiving_targets": 7
+        }
+      }
+    },
+    "Stefon Diggs": {
+      "7": {
+        "position": "WR",
+        "actual_points": 5.8,
+        "projected_points": 13.73,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 28,
+          "receiving_tds": 0,
+          "receiving_receptions": 3,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Dallas Goedert": {
+      "7": {
+        "position": "TE",
+        "actual_points": 26.0,
+        "projected_points": 9.58,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 110,
+          "receiving_tds": 1,
+          "receiving_receptions": 9,
+          "receiving_targets": 11
+        }
+      }
+    },
+    "Eagles D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 0.0,
+        "projected_points": 6.85,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Ka'imi Fairbairn": {
+      "7": {
+        "position": "K",
+        "actual_points": 0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Emari Demercado": {
+      "7": {
+        "position": "RB",
+        "actual_points": 0.1,
+        "projected_points": 3.23,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 1,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "Mac Jones": {
+      "7": {
+        "position": "QB",
+        "actual_points": 11.18,
+        "projected_points": 16.79,
+        "stats": {
+          "passing_yards": 347,
+          "passing_tds": 0,
+          "passing_ints": 2,
+          "passing_attempts": 39,
+          "passing_completions": 27,
+          "rushing_yards": 13,
+          "rushing_tds": 0,
+          "rushing_attempts": 5,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Christian McCaffrey": {
+      "7": {
+        "position": "RB",
+        "actual_points": 24.1,
+        "projected_points": 24.15,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 54,
+          "rushing_tds": 1,
+          "rushing_attempts": 17,
+          "receiving_yards": 57,
+          "receiving_tds": 0,
+          "receiving_receptions": 7,
+          "receiving_targets": 8
+        }
+      }
+    },
+    "Ladd McConkey": {
+      "7": {
+        "position": "WR",
+        "actual_points": 23.0,
+        "projected_points": 15.8,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 100,
+          "receiving_tds": 1,
+          "receiving_receptions": 7,
+          "receiving_targets": 9
+        }
+      }
+    },
+    "Garrett Wilson": {
+      "7": {
+        "position": "WR",
+        "actual_points": 4.3,
+        "projected_points": 14.91,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 13,
+          "receiving_tds": 0,
+          "receiving_receptions": 3,
+          "receiving_targets": 8
+        }
+      }
+    },
+    "Jaylen Waddle": {
+      "7": {
+        "position": "WR",
+        "actual_points": 15.82,
+        "projected_points": 15.87,
+        "stats": {
+          "passing_yards": 8,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 1,
+          "passing_completions": 1,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 95,
+          "receiving_tds": 0,
+          "receiving_receptions": 6,
+          "receiving_targets": 8
+        }
+      }
+    },
+    "Tony Pollard": {
+      "7": {
+        "position": "RB",
+        "actual_points": 6.7,
+        "projected_points": 12.66,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 34,
+          "rushing_tds": 0,
+          "rushing_attempts": 10,
+          "receiving_yards": 13,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Justin Herbert": {
+      "7": {
+        "position": "QB",
+        "actual_points": 18.76,
+        "projected_points": 20.11,
+        "stats": {
+          "passing_yards": 264,
+          "passing_tds": 2,
+          "passing_ints": 0,
+          "passing_attempts": 38,
+          "passing_completions": 29,
+          "rushing_yards": 2,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Tyler Loop": {
+      "7": {
+        "position": "K",
+        "actual_points": 3.0,
+        "projected_points": 7.52,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Jake Tonges": {
+      "7": {
+        "position": "TE",
+        "actual_points": 11.8,
+        "projected_points": 8.18,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 58,
+          "receiving_tds": 0,
+          "receiving_receptions": 6,
+          "receiving_targets": 7
+        }
+      }
+    },
+    "Dolphins D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": -1.0,
+        "projected_points": 4.09,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "De'Von Achane": {
+      "7": {
+        "position": "RB",
+        "actual_points": 31.0,
+        "projected_points": 20.43,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 128,
+          "rushing_tds": 2,
+          "rushing_attempts": 16,
+          "receiving_yards": 22,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 6
+        }
+      }
+    },
+    "Ricky Pearsall": {
+      "7": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Jakobi Meyers": {
+      "7": {
+        "position": "WR",
+        "actual_points": 7.9,
+        "projected_points": 13.19,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 39,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 4
+        }
+      }
+    },
+    "Zach Charbonnet": {
+      "7": {
+        "position": "RB",
+        "actual_points": 4.7,
+        "projected_points": 10.72,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 24,
+          "rushing_tds": 0,
+          "rushing_attempts": 12,
+          "receiving_yards": 13,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "Bills D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 1.0,
+        "projected_points": 4.89,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Darren Waller": {
+      "7": {
+        "position": "TE",
+        "actual_points": 9.2,
+        "projected_points": 9.8,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 12,
+          "receiving_tds": 1,
+          "receiving_receptions": 2,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Bryce Young": {
+      "7": {
+        "position": "QB",
+        "actual_points": 18.46,
+        "projected_points": 17.78,
+        "stats": {
+          "passing_yards": 199,
+          "passing_tds": 3,
+          "passing_ints": 1,
+          "passing_attempts": 25,
+          "passing_completions": 17,
+          "rushing_yards": 5,
+          "rushing_tds": 0,
+          "rushing_attempts": 3,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Will Reichard": {
+      "7": {
+        "position": "K",
+        "actual_points": 0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Marvin Mims Jr.": {
+      "7": {
+        "position": "WR",
+        "actual_points": 4.8,
+        "projected_points": 9.16,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": -2,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 30,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Amon-Ra St. Brown": {
+      "7": {
+        "position": "WR",
+        "actual_points": 13.7,
+        "projected_points": 18.89,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 2,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 45,
+          "receiving_tds": 0,
+          "receiving_receptions": 9,
+          "receiving_targets": 10
+        }
+      }
+    },
+    "Kyren Williams": {
+      "7": {
+        "position": "RB",
+        "actual_points": 16.7,
+        "projected_points": 19.69,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 50,
+          "rushing_tds": 1,
+          "rushing_attempts": 13,
+          "receiving_yards": 37,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Zay Flowers": {
+      "7": {
+        "position": "WR",
+        "actual_points": 8.6,
+        "projected_points": 13.88,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 46,
+          "receiving_tds": 0,
+          "receiving_receptions": 6,
+          "receiving_targets": 10
+        }
+      }
+    },
+    "Bo Nix": {
+      "7": {
+        "position": "QB",
+        "actual_points": 13.36,
+        "projected_points": 19.46,
+        "stats": {
+          "passing_yards": 174,
+          "passing_tds": 1,
+          "passing_ints": 0,
+          "passing_attempts": 30,
+          "passing_completions": 19,
+          "rushing_yards": 24,
+          "rushing_tds": 0,
+          "rushing_attempts": 5,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Rashod Bateman": {
+      "7": {
+        "position": "WR",
+        "actual_points": 1.8,
+        "projected_points": 7.85,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 8,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Jason Myers": {
+      "7": {
+        "position": "K",
+        "actual_points": 10.0,
+        "projected_points": 8.19,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Theo Johnson": {
+      "7": {
+        "position": "TE",
+        "actual_points": 4.7,
+        "projected_points": 9.16,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 27,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 4
+        }
+      }
+    },
+    "Sean Tucker": {
+      "7": {
+        "position": "RB",
+        "actual_points": 8.5,
+        "projected_points": 7.72,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 25,
+          "rushing_tds": 1,
+          "rushing_attempts": 6,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Packers D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 3.0,
+        "projected_points": 7.76,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Saquon Barkley": {
+      "7": {
+        "position": "RB",
+        "actual_points": 8.7,
+        "projected_points": 17.63,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 58,
+          "rushing_tds": 0,
+          "rushing_attempts": 12,
+          "receiving_yards": 9,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Trey McBride": {
+      "7": {
+        "position": "TE",
+        "actual_points": 21.2,
+        "projected_points": 14.23,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 72,
+          "receiving_tds": 1,
+          "receiving_receptions": 8,
+          "receiving_targets": 11
+        }
+      }
+    },
+    "Jerry Jeudy": {
+      "7": {
+        "position": "WR",
+        "actual_points": 9.3,
+        "projected_points": 9.68,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 43,
+          "receiving_tds": 0,
+          "receiving_receptions": 5,
+          "receiving_targets": 13
+        }
+      }
+    },
+    "Tank Bigsby": {
+      "7": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.04,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Vikings D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 0,
+        "projected_points": 0,
+        "stats": {}
+      }
+    },
+    "Nick Folk": {
+      "7": {
+        "position": "K",
+        "actual_points": 12.0,
+        "projected_points": 7.57,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Hunter Renfrow": {
+      "7": {
+        "position": "WR",
+        "actual_points": 1.7,
+        "projected_points": 4.92,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 7,
+          "receiving_tds": 0,
+          "receiving_receptions": 1,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "James Conner": {
+      "7": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Russell Wilson": {
+      "7": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 1,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Davante Adams": {
+      "7": {
+        "position": "WR",
+        "actual_points": 7.9,
+        "projected_points": 17.3,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 39,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 9
+        }
+      }
+    },
+    "Jayden Daniels": {
+      "7": {
+        "position": "QB",
+        "actual_points": 21.64,
+        "projected_points": 22.58,
+        "stats": {
+          "passing_yards": 211,
+          "passing_tds": 3,
+          "passing_ints": 1,
+          "passing_attempts": 26,
+          "passing_completions": 19,
+          "rushing_yards": 52,
+          "rushing_tds": 0,
+          "rushing_attempts": 10,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "David Montgomery": {
+      "7": {
+        "position": "RB",
+        "actual_points": 8.1,
+        "projected_points": 12.79,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 24,
+          "rushing_tds": 0,
+          "rushing_attempts": 4,
+          "receiving_yards": 37,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Cam Skattebo": {
+      "7": {
+        "position": "RB",
+        "actual_points": 31.0,
+        "projected_points": 13.85,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 98,
+          "rushing_tds": 3,
+          "rushing_attempts": 19,
+          "receiving_yards": 12,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Steelers D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 11.0,
+        "projected_points": 7.68,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Jake Ferguson": {
+      "7": {
+        "position": "TE",
+        "actual_points": 12.3,
+        "projected_points": 14.94,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 33,
+          "receiving_tds": 1,
+          "receiving_receptions": 3,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Chase McLaughlin": {
+      "7": {
+        "position": "K",
+        "actual_points": 6.0,
+        "projected_points": 8.77,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Kenneth Gainwell": {
+      "7": {
+        "position": "RB",
+        "actual_points": 9.6,
+        "projected_points": 11.92,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 22,
+          "rushing_tds": 0,
+          "rushing_attempts": 6,
+          "receiving_yards": 14,
+          "receiving_tds": 0,
+          "receiving_receptions": 6,
+          "receiving_targets": 6
+        }
+      }
+    },
+    "Dontayvion Wicks": {
+      "7": {
+        "position": "WR",
+        "actual_points": 3.5,
+        "projected_points": 8.46,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 15,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 2
+        }
+      }
+    },
+    "Brian Thomas Jr.": {
+      "7": {
+        "position": "WR",
+        "actual_points": 23.0,
+        "projected_points": 13.71,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 90,
+          "receiving_tds": 1,
+          "receiving_receptions": 8,
+          "receiving_targets": 10
+        }
+      }
+    },
+    "Josh Allen": {
+      "7": {
+        "position": "QB",
+        "actual_points": 15.4,
+        "projected_points": 20.3,
+        "stats": {
+          "passing_yards": 180,
+          "passing_tds": 2,
+          "passing_ints": 2,
+          "passing_attempts": 26,
+          "passing_completions": 15,
+          "rushing_yards": 42,
+          "rushing_tds": 0,
+          "rushing_attempts": 6,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Breece Hall": {
+      "7": {
+        "position": "RB",
+        "actual_points": 5.9,
+        "projected_points": 15.54,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 59,
+          "rushing_tds": 0,
+          "rushing_attempts": 22,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Tetairoa McMillan": {
+      "7": {
+        "position": "WR",
+        "actual_points": 17.9,
+        "projected_points": 14.57,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 29,
+          "receiving_tds": 2,
+          "receiving_receptions": 3,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Chris Olave": {
+      "7": {
+        "position": "WR",
+        "actual_points": 15.8,
+        "projected_points": 14.61,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 98,
+          "receiving_tds": 0,
+          "receiving_receptions": 6,
+          "receiving_targets": 10
+        }
+      }
+    },
+    "Cam Little": {
+      "7": {
+        "position": "K",
+        "actual_points": -1.0,
+        "projected_points": 8.27,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Harold Fannin Jr.": {
+      "7": {
+        "position": "TE",
+        "actual_points": 15.1,
+        "projected_points": 9.5,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 81,
+          "receiving_tds": 0,
+          "receiving_receptions": 7,
+          "receiving_targets": 10
+        }
+      }
+    },
+    "Seahawks D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 12.0,
+        "projected_points": 5.09,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Kimani Vidal": {
+      "7": {
+        "position": "RB",
+        "actual_points": 22.8,
+        "projected_points": 9.51,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 124,
+          "rushing_tds": 0,
+          "rushing_attempts": 18,
+          "receiving_yards": 14,
+          "receiving_tds": 1,
+          "receiving_receptions": 3,
+          "receiving_targets": 4
+        }
+      }
+    },
+    "Ja'Marr Chase": {
+      "7": {
+        "position": "WR",
+        "actual_points": 25.1,
+        "projected_points": 15.59,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": -3,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 94,
+          "receiving_tds": 1,
+          "receiving_receptions": 10,
+          "receiving_targets": 12
+        }
+      }
+    },
+    "Rhamondre Stevenson": {
+      "7": {
+        "position": "RB",
+        "actual_points": 1.8,
+        "projected_points": 13.07,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 18,
+          "rushing_tds": 0,
+          "rushing_attempts": 13,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 1
+        }
+      }
+    },
+    "D'Andre Swift": {
+      "7": {
+        "position": "RB",
+        "actual_points": 25.5,
+        "projected_points": 14.48,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 108,
+          "rushing_tds": 0,
+          "rushing_attempts": 14,
+          "receiving_yards": 67,
+          "receiving_tds": 1,
+          "receiving_receptions": 2,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Patrick Mahomes": {
+      "7": {
+        "position": "QB",
+        "actual_points": 31.48,
+        "projected_points": 20.05,
+        "stats": {
+          "passing_yards": 257,
+          "passing_tds": 3,
+          "passing_ints": 0,
+          "passing_attempts": 30,
+          "passing_completions": 22,
+          "rushing_yards": 32,
+          "rushing_tds": 1,
+          "rushing_attempts": 10,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Emeka Egbuka": {
+      "7": {
+        "position": "WR",
+        "actual_points": 4.4,
+        "projected_points": 16.68,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 24,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 4
+        }
+      }
+    },
+    "Deebo Samuel": {
+      "7": {
+        "position": "WR",
+        "actual_points": 5.4,
+        "projected_points": 16.86,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": -1,
+          "rushing_tds": 0,
+          "rushing_attempts": 1,
+          "receiving_yards": 15,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Hunter Henry": {
+      "7": {
+        "position": "TE",
+        "actual_points": 5.7,
+        "projected_points": 10.29,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 27,
+          "receiving_tds": 0,
+          "receiving_receptions": 3,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Daniel Carlson": {
+      "7": {
+        "position": "K",
+        "actual_points": 10.0,
+        "projected_points": 7.69,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Cardinals D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 1.0,
+        "projected_points": 4.51,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Bijan Robinson": {
+      "7": {
+        "position": "RB",
+        "actual_points": 35.8,
+        "projected_points": 20.65,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 170,
+          "rushing_tds": 1,
+          "rushing_attempts": 19,
+          "receiving_yards": 68,
+          "receiving_tds": 0,
+          "receiving_receptions": 6,
+          "receiving_targets": 8
+        }
+      }
+    },
+    "James Cook III": {
+      "7": {
+        "position": "RB",
+        "actual_points": 8.7,
+        "projected_points": 16.56,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 87,
+          "rushing_tds": 0,
+          "rushing_attempts": 17,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "George Pickens": {
+      "7": {
+        "position": "WR",
+        "actual_points": 31.8,
+        "projected_points": 16.31,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 168,
+          "receiving_tds": 1,
+          "receiving_receptions": 9,
+          "receiving_targets": 11
+        }
+      }
+    },
+    "Rome Odunze": {
+      "7": {
+        "position": "WR",
+        "actual_points": 5.2,
+        "projected_points": 16.09,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 32,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Michael Pittman Jr.": {
+      "7": {
+        "position": "WR",
+        "actual_points": 4.0,
+        "projected_points": 12.79,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 20,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Tyler Warren": {
+      "7": {
+        "position": "TE",
+        "actual_points": 18.3,
+        "projected_points": 10.59,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 63,
+          "receiving_tds": 1,
+          "receiving_receptions": 6,
+          "receiving_targets": 9
+        }
+      }
+    },
+    "Jordan Love": {
+      "7": {
+        "position": "QB",
+        "actual_points": 14.96,
+        "projected_points": 19.34,
+        "stats": {
+          "passing_yards": 259,
+          "passing_tds": 1,
+          "passing_ints": 1,
+          "passing_attempts": 26,
+          "passing_completions": 19,
+          "rushing_yards": 26,
+          "rushing_tds": 0,
+          "rushing_attempts": 7,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Lions D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 1.0,
+        "projected_points": 4.88,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Jake Bates": {
+      "7": {
+        "position": "K",
+        "actual_points": 5.0,
+        "projected_points": 8.69,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Ashton Jeanty": {
+      "7": {
+        "position": "RB",
+        "actual_points": 16.6,
+        "projected_points": 18.18,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 75,
+          "rushing_tds": 1,
+          "rushing_attempts": 23,
+          "receiving_yards": 11,
+          "receiving_tds": 0,
+          "receiving_receptions": 2,
+          "receiving_targets": 4
+        }
+      }
+    },
+    "Jalen Hurts": {
+      "7": {
+        "position": "QB",
+        "actual_points": 20.62,
+        "projected_points": 20.45,
+        "stats": {
+          "passing_yards": 283,
+          "passing_tds": 1,
+          "passing_ints": 1,
+          "passing_attempts": 33,
+          "passing_completions": 24,
+          "rushing_yards": 13,
+          "rushing_tds": 1,
+          "rushing_attempts": 7,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Alvin Kamara": {
+      "7": {
+        "position": "RB",
+        "actual_points": 12.6,
+        "projected_points": 13.67,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 31,
+          "rushing_tds": 0,
+          "rushing_attempts": 10,
+          "receiving_yards": 45,
+          "receiving_tds": 0,
+          "receiving_receptions": 5,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "DeVonta Smith": {
+      "7": {
+        "position": "WR",
+        "actual_points": 8.9,
+        "projected_points": 12.23,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 49,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 5
+        }
+      }
+    },
+    "Travis Kelce": {
+      "7": {
+        "position": "TE",
+        "actual_points": 13.8,
+        "projected_points": 11.17,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 78,
+          "receiving_tds": 0,
+          "receiving_receptions": 6,
+          "receiving_targets": 7
+        }
+      }
+    },
+    "Keenan Allen": {
+      "7": {
+        "position": "WR",
+        "actual_points": 6.7,
+        "projected_points": 16.28,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 27,
+          "receiving_tds": 0,
+          "receiving_receptions": 4,
+          "receiving_targets": 7
+        }
+      }
+    },
+    "Rachaad White": {
+      "7": {
+        "position": "RB",
+        "actual_points": 17.6,
+        "projected_points": 17.07,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 65,
+          "rushing_tds": 1,
+          "rushing_attempts": 17,
+          "receiving_yards": 21,
+          "receiving_tds": 0,
+          "receiving_receptions": 3,
+          "receiving_targets": 3
+        }
+      }
+    },
+    "Jaguars D/ST": {
+      "7": {
+        "position": "D/ST",
+        "actual_points": 1.0,
+        "projected_points": 4.91,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    },
+    "Eddy Pineiro": {
+      "7": {
+        "position": "K",
+        "actual_points": 18.0,
+        "projected_points": 8.28,
+        "stats": {
+          "passing_yards": 0,
+          "passing_tds": 0,
+          "passing_ints": 0,
+          "passing_attempts": 0,
+          "passing_completions": 0,
+          "rushing_yards": 0,
+          "rushing_tds": 0,
+          "rushing_attempts": 0,
+          "receiving_yards": 0,
+          "receiving_tds": 0,
+          "receiving_receptions": 0,
+          "receiving_targets": 0
+        }
+      }
+    }
+  },
+  "last_updated": "2025-10-14T22:13:27.818227"
+}

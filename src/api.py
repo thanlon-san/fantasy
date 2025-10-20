@@ -6,13 +6,19 @@ Provides REST endpoints for league data, matchups, and statistics
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from typing import Optional, Dict, List
+from pydantic import BaseModel
 import json
 import os
+from dotenv import load_dotenv
 from src.fetch_league_data import FantasyDataFetcher
 from src.logger import get_logger
 from src.api_improvements import setup_api_improvements
+
+# Load environment variables
+load_dotenv()
 
 logger = get_logger(__name__)
 
@@ -36,6 +42,16 @@ app = FastAPI(
     description="ESPN Fantasy Football data API - Get league stats, matchups, and standings",
     version="1.0.0",
 )
+
+# Mount static files
+# Get the project root directory (parent of src/)
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+static_dir = os.path.join(project_root, "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    logger.info(f"Static files mounted from {static_dir}")
+else:
+    logger.warning(f"Static directory not found at {static_dir}")
 
 # Enable CORS
 app.add_middleware(
@@ -83,7 +99,15 @@ def get_fetcher() -> FantasyDataFetcher:
 
 @app.get("/")
 def read_root():
-    """Root endpoint with API information"""
+    """Root endpoint - serves the web UI"""
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    static_dir = os.path.join(project_root, "static")
+    index_path = os.path.join(static_dir, "index.html")
+    
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    
+    # Fallback to API info if no UI
     return {
         "name": "Fantasy Football API",
         "version": "1.0.0",
@@ -94,6 +118,9 @@ def read_root():
             "week_stats": "/api/stats/week/{week}",
             "teams": "/api/teams",
             "team_detail": "/api/teams/{team_id}",
+            "recap_generate": "/api/recaps/generate",
+            "recap_history": "/api/recaps/history",
+            "recap_get": "/api/recaps/{week}",
         },
     }
 
@@ -572,6 +599,148 @@ def get_team_detail(team_id: int):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# Pydantic models for request/response
+class GenerateRecapRequest(BaseModel):
+    week: int
+
+
+# Recap Generation Endpoints
+@app.post("/api/recaps/generate")
+async def generate_recap(request: GenerateRecapRequest):
+    """Generate a new weekly recap using Claude"""
+    week = request.week
+    
+    if week < 1 or week > 18:
+        raise HTTPException(status_code=400, detail="Week must be between 1 and 18")
+    
+    try:
+        # Check if Anthropic API key is configured
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise HTTPException(
+                status_code=500,
+                detail="ANTHROPIC_API_KEY not configured. Please add it to your .env file."
+            )
+        
+        logger.info(f"Generating recap for week {week}...")
+        
+        # Import here to avoid loading if not needed
+        from anthropic import Anthropic
+        from src.recap_generator import RecapGenerator
+        
+        # Initialize generator and client
+        client = Anthropic(api_key=api_key)
+        generator = RecapGenerator()
+        
+        # Generate recap
+        recap_content = generator.generate_recap_with_anthropic(
+            week=week,
+            client=client
+        )
+        
+        if not recap_content:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to generate recap. Check server logs for details."
+            )
+        
+        logger.info(f"✅ Recap generated successfully for week {week}")
+        
+        return {
+            "success": True,
+            "week": week,
+            "recap": recap_content,
+            "message": f"Recap for week {week} generated successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating recap: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate recap: {str(e)}"
+        )
+
+
+@app.get("/api/recaps/history")
+async def get_recap_history():
+    """Get list of all generated recaps"""
+    try:
+        recap_history_file = "recap_history.json"
+        
+        if not os.path.exists(recap_history_file):
+            return {"recaps": []}
+        
+        with open(recap_history_file, "r") as f:
+            history = json.load(f)
+        
+        # Return just the metadata (week, date) not full content
+        recaps_metadata = [
+            {
+                "week": entry["week"],
+                "date": entry["date"],
+                "recap": entry["recap"]  # Include full content for now
+            }
+            for entry in history
+        ]
+        
+        return {"recaps": recaps_metadata}
+        
+    except Exception as e:
+        logger.error(f"Error loading recap history: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to load recap history: {str(e)}"
+        )
+
+
+@app.get("/api/recaps/{week}")
+async def get_recap(week: int):
+    """Get a specific recap by week"""
+    try:
+        # First check recap history
+        recap_history_file = "recap_history.json"
+        
+        if os.path.exists(recap_history_file):
+            with open(recap_history_file, "r") as f:
+                history = json.load(f)
+            
+            # Find the recap for this week
+            for entry in history:
+                if entry["week"] == week:
+                    return {
+                        "week": week,
+                        "date": entry["date"],
+                        "recap": entry["recap"]
+                    }
+        
+        # Fallback: Check if file exists in output directory
+        recap_file = f"output/week-{week}-recap.md"
+        if os.path.exists(recap_file):
+            with open(recap_file, "r") as f:
+                recap_content = f.read()
+            
+            return {
+                "week": week,
+                "recap": recap_content
+            }
+        
+        raise HTTPException(
+            status_code=404,
+            detail=f"Recap for week {week} not found. Generate it first."
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error loading recap: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to load recap: {str(e)}"
+        )
 
 
 # Setup API improvements after all endpoints are defined

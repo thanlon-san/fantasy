@@ -14,7 +14,7 @@ Usage:
 """
 
 from anthropic import Anthropic
-from recap_generator import RecapGenerator
+from src.recap_generator import RecapGenerator
 from dotenv import load_dotenv
 import os
 

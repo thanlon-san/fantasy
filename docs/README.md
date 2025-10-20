@@ -10,6 +10,10 @@
   - Remembers past failures for callbacks
   - 85% lowlights, 15% grudging highlights
   - Safe, PG-13, grounded in real stats
+- 📲 **Slack Integration** - Automatically post weekly recaps to Slack
+  - Scheduled automated posting (cron/launchd support)
+  - Beautiful formatting with Slack blocks
+  - Easy webhook or bot token setup
 - 📊 **Automatic Data Fetching** - Pull all league data with one command
 - 📝 **Markdown Reports** - Generate clean, formatted reports for:
   - Weekly matchups with full lineups
@@ -150,6 +154,49 @@ synergistic outcomes."
 
 📖 **Full guide:** [RECAP_USAGE.md](RECAP_USAGE.md)
 
+### Slack Integration (Auto-Post Recaps!)
+
+**Send recaps automatically to Slack:**
+
+```bash
+# Setup Slack (one-time)
+# Add SLACK_WEBHOOK_URL to your .env file
+
+# Test the connection
+python -m src.slack_notifier --test
+
+# Generate and send weekly recap
+python scripts/scheduled_recap.py
+
+# Schedule automatic weekly posting (cron)
+0 9 * * 2 cd /path/to/fantasy && python3 scripts/scheduled_recap.py
+```
+
+📖 **Full setup guide:** [docs/SLACK_INTEGRATION.md](docs/SLACK_INTEGRATION.md)
+
+### Web UI (Easy Mode!)
+
+**Generate recaps with a beautiful web interface:**
+
+```bash
+# Start the server
+python3 src/api.py
+
+# Open your browser
+# Visit: http://localhost:8000
+```
+
+**Features:**
+- 🎨 Beautiful, modern interface
+- ⚡ One-click recap generation
+- 💬 **Copy for Slack** - Auto-formatted with emojis! (🔥 🏆 📊 😬)
+- 📋 Copy as markdown too
+- 💾 Download as markdown
+- 📚 View all previous recaps
+- 📱 Works on mobile too!
+
+📖 **Full guide:** [docs/WEB_UI_GUIDE.md](docs/WEB_UI_GUIDE.md)
+
 ### Markdown Reports (Command Line)
 
 **Generate markdown reports:**
@@ -222,24 +269,32 @@ curl http://localhost:8000/health
 ```
 fantasy/
 ├── api.py                   # FastAPI REST server
-├── fetch_league_data.py     # Core data fetcher and markdown generator
-├── recap_generator.py       # AI-powered weekly recap generator
+├── src/
+│   ├── recap_generator.py   # AI-powered weekly recap generator
+│   ├── slack_notifier.py    # Slack integration for auto-posting
+│   └── ...                  # Other source modules
+├── scripts/
+│   ├── scheduled_recap.py   # Automated recap generation and posting
+│   └── ...                  # Other utility scripts
+├── docs/
+│   ├── SLACK_INTEGRATION.md # Complete Slack setup guide
+│   ├── RECAP_USAGE.md       # Guide for generating AI recaps
+│   └── ...                  # Other documentation
 ├── config.json              # Your configuration (create from example)
 ├── config.example.json      # Example configuration
 ├── requirements.txt         # Python dependencies
-├── README.md               # This file
-├── API_README.md           # Detailed API documentation
-├── COLUMNIST_PROMPT.md     # AI columnist persona and instructions
-├── RECAP_USAGE.md          # Guide for generating AI recaps
-└── QUICKSTART.md           # 5-minute setup guide
+└── README.md               # This file
 ```
 
 ## Documentation
 
-- **[QUICKSTART.md](QUICKSTART.md)** - 5-minute setup guide for new users
-- **[API_README.md](API_README.md)** - Complete API documentation with examples
-- **[RECAP_USAGE.md](RECAP_USAGE.md)** - Guide for generating AI-powered recaps
-- **[COLUMNIST_PROMPT.md](COLUMNIST_PROMPT.md)** - The brain of your roast columnist
+- **[docs/WEB_UI_GUIDE.md](docs/WEB_UI_GUIDE.md)** - Web interface guide (easiest way to use!)
+- **[docs/SLACK_FORMATTING.md](docs/SLACK_FORMATTING.md)** - How the Slack formatting works (with examples!)
+- **[docs/QUICKSTART.md](docs/QUICKSTART.md)** - 5-minute setup guide for new users
+- **[docs/API_README.md](docs/API_README.md)** - Complete API documentation with examples
+- **[docs/RECAP_USAGE.md](docs/RECAP_USAGE.md)** - Guide for generating AI-powered recaps
+- **[docs/SLACK_INTEGRATION.md](docs/SLACK_INTEGRATION.md)** - Complete Slack setup and automation guide
+- **[docs/COLUMNIST_PROMPT.md](docs/COLUMNIST_PROMPT.md)** - The brain of your roast columnist
 - **[Interactive API Docs](http://localhost:8000/docs)** - Available when server is running
 
 ## Contributing

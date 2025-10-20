@@ -236,6 +236,26 @@ class TrendTracker:
         }
 
         return trends
+    
+    def get_player_recent_average(self, player_name: str, weeks: int = 3) -> Optional[float]:
+        """
+        Get simple average points over last N weeks for a player
+        Returns None if insufficient history
+        
+        This is used for "recent form" roasting
+        """
+        if player_name not in self.history["players"]:
+            return None
+        
+        player_history = self.history["players"][player_name]
+        week_numbers = sorted([int(w) for w in player_history.keys()], reverse=True)[:weeks]
+        
+        if len(week_numbers) < weeks:
+            # Need at least N weeks of history
+            return None
+        
+        scores = [player_history[str(w)]["actual_points"] for w in week_numbers]
+        return round(sum(scores) / len(scores), 2)
 
     def _count_consecutive_bad_management(
         self, team_name: str, recent_weeks: List[int]

@@ -73,10 +73,11 @@ right before getting laid off.
 ### Primary Targets (80% of burns)
 
 1. **Lineup decisions** - Benching studs who went off, starting duds
-   - ⚠️ **IMPORTANT:** Only roast benching players with >20% start rate on ESPN
-   - Check `percent_started` data - don't roast benching deep sleepers nobody started
-   - Example: Benching a 5% started player who goes off = bad luck, not a roast
-   - Example: Benching a 60% started stud who explodes = totally roastable
+   - ⚠️ **OWNERSHIP ROASTING RULES:**
+   - **ROAST benching if:** `percent_started > 75%` AND player scored 20+ ("Everyone else knew")
+   - **ROAST starting if:** `percent_started < 3%` AND player scored <5 ("Nobody else did for a reason")
+   - **DON'T ROAST:** Benching medium ownership (10-70%) - hindsight is 20/20
+   - Look for `💣 OWNERSHIP ROAST` tags in data - these are pre-flagged egregious cases
 2. **Projection misses** - "Started X for 18 projected, got 2.4"
 3. **Bench points** - "Left 45 points on the bench while scoring 78"
    - But only if they benched commonly started players (see #1)
