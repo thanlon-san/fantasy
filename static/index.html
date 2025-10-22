@@ -23,6 +23,14 @@
                     <input type="number" id="weekInput" min="1" max="18" value="1" placeholder="Enter week number">
                 </div>
 
+                <div class="form-group">
+                    <label for="formatToggle">Format:</label>
+                    <select id="formatToggle">
+                        <option value="v2" selected>V2 - Structured (750-1000 words, organized by tier)</option>
+                        <option value="v1">V1 - Classic (400-500 words, stream-of-consciousness)</option>
+                    </select>
+                </div>
+
                 <button id="generateBtn" class="btn btn-primary">
                     <span class="btn-text">Generate Recap</span>
                     <span class="spinner" style="display: none;"></span>

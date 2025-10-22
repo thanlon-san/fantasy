@@ -224,16 +224,35 @@ header h1 {
 }
 
 .recap-content {
-    background-color: var(--bg-color);
-    border: 1px solid var(--border-color);
+    background-color: #1a1d21;
+    border: 1px solid #2d2f33;
     border-radius: 8px;
     padding: 1.5rem;
     max-height: 600px;
     overflow-y: auto;
     white-space: pre-wrap;
-    font-family: 'Georgia', serif;
-    line-height: 1.8;
-    font-size: 1rem;
+    font-family: 'Slack-Lato', 'Lato', 'appleLogo', sans-serif;
+    line-height: 1.46668;
+    font-size: 15px;
+    color: #d1d2d3;
+}
+
+.recap-content strong {
+    font-weight: 900;
+    color: #ffffff;
+}
+
+.recap-content em {
+    font-style: italic;
+}
+
+.recap-content a {
+    color: #1d9bd1;
+    text-decoration: none;
+}
+
+.recap-content a:hover {
+    text-decoration: underline;
 }
 
 .recap-content:empty::before {

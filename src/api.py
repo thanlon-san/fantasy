@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 from src.fetch_league_data import FantasyDataFetcher
 from src.logger import get_logger
 from src.api_improvements import setup_api_improvements
+from src.constants import TEAM_OWNERS
 
 # Load environment variables
 load_dotenv()
@@ -103,10 +104,10 @@ def read_root():
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     static_dir = os.path.join(project_root, "static")
     index_path = os.path.join(static_dir, "index.html")
-    
+
     if os.path.exists(index_path):
         return FileResponse(index_path)
-    
+
     # Fallback to API info if no UI
     return {
         "name": "Fantasy Football API",
@@ -116,6 +117,7 @@ def read_root():
             "standings": "/api/standings",
             "matchups": "/api/matchups/{week}",
             "week_stats": "/api/stats/week/{week}",
+            "power_rankings": "/api/power_rankings/{week}",
             "teams": "/api/teams",
             "team_detail": "/api/teams/{team_id}",
             "recap_generate": "/api/recaps/generate",
@@ -156,11 +158,8 @@ def get_standings():
 
         teams_data = []
         for i, team in enumerate(standings, 1):
-            owner = (
-                team.owner.split()[0]
-                if hasattr(team, "owner") and team.owner
-                else "Unknown"
-            )
+            # Look up owner from TEAM_OWNERS constant
+            owner = TEAM_OWNERS.get(team.team_name, "Unknown")
             pct = (
                 team.wins / (team.wins + team.losses)
                 if (team.wins + team.losses) > 0
@@ -348,6 +347,223 @@ def calculate_optimal_lineup(lineup) -> dict:
     }
 
 
+# ---------------------- Power Rankings (adjPF) Utilities ----------------------
+def _clamp(value: float, min_value: float, max_value: float) -> float:
+    return max(min_value, min(max_value, value))
+
+
+def _get_season_phase_weights(week: int) -> dict:
+    """Return season-phase weights for power ranking score."""
+    if week <= 3:
+        return {"record": 0.40, "adjpf": 0.40, "recent": 0.15, "coaching": 0.05}
+    if week <= 10:
+        return {"record": 0.35, "adjpf": 0.40, "recent": 0.20, "coaching": 0.05}
+    return {"record": 0.30, "adjpf": 0.45, "recent": 0.20, "coaching": 0.05}
+
+
+def _compute_adjpf_and_metrics(f, through_week: int):
+    """
+    Compute opponent-adjusted PF (adjPF), recent adjPF (last 3 weeks), coaching efficiency,
+    and records strictly through `through_week`.
+    This replays box scores up to `through_week` to avoid using current full-season standings.
+    """
+    # Basic team metadata
+    teams = getattr(f.league, "teams", [])
+    team_meta = {t.team_id: {"team_name": t.team_name, "owner": TEAM_OWNERS.get(t.team_name, "Unknown")} for t in teams}
+
+    # Accumulators (through-week)
+    team_wins = {tid: 0 for tid in team_meta}
+    team_losses = {tid: 0 for tid in team_meta}
+    team_ties = {tid: 0 for tid in team_meta}
+    team_pf = {tid: 0.0 for tid in team_meta}
+    team_pa = {tid: 0.0 for tid in team_meta}
+    team_gp = {tid: 0 for tid in team_meta}
+    per_game = {tid: [] for tid in team_meta}  # (raw_points, opponent_id)
+    team_gaps_by_week = {tid: {} for tid in team_meta}
+    team_results = {tid: [] for tid in team_meta}  # per-week results: 'W','L','T'
+
+    for w in range(1, through_week + 1):
+        box_scores = f.league.box_scores(w)
+        for bs in box_scores:
+            home_id = bs.home_team.team_id
+            away_id = bs.away_team.team_id
+            home_score = float(getattr(bs, "home_score", 0.0))
+            away_score = float(getattr(bs, "away_score", 0.0))
+
+            # Tally records
+            if home_score > away_score:
+                if home_id in team_wins: team_wins[home_id] += 1
+                if away_id in team_losses: team_losses[away_id] += 1
+                if home_id in team_results: team_results[home_id].append('W')
+                if away_id in team_results: team_results[away_id].append('L')
+            elif away_score > home_score:
+                if away_id in team_wins: team_wins[away_id] += 1
+                if home_id in team_losses: team_losses[home_id] += 1
+                if away_id in team_results: team_results[away_id].append('W')
+                if home_id in team_results: team_results[home_id].append('L')
+            else:
+                if home_id in team_ties: team_ties[home_id] += 1
+                if away_id in team_ties: team_ties[away_id] += 1
+                if home_id in team_results: team_results[home_id].append('T')
+                if away_id in team_results: team_results[away_id].append('T')
+
+            # PF/PA and games
+            if home_id in team_pf:
+                team_pf[home_id] += home_score
+                team_pa[home_id] += away_score
+                team_gp[home_id] += 1
+            if away_id in team_pf:
+                team_pf[away_id] += away_score
+                team_pa[away_id] += home_score
+                team_gp[away_id] += 1
+
+            # Save per-game raw for adjPF
+            if home_id in per_game:
+                per_game[home_id].append((home_score, away_id))
+            if away_id in per_game:
+                per_game[away_id].append((away_score, home_id))
+
+            # Coaching efficiency: weekly management gap
+            try:
+                home_opt = calculate_optimal_lineup(bs.home_lineup)
+                team_gaps_by_week[home_id][w] = round(home_opt["optimal_score"] - home_score, 2)
+            except Exception:
+                team_gaps_by_week[home_id][w] = 0.0
+            try:
+                away_opt = calculate_optimal_lineup(bs.away_lineup)
+                team_gaps_by_week[away_id][w] = round(away_opt["optimal_score"] - away_score, 2)
+            except Exception:
+                team_gaps_by_week[away_id][w] = 0.0
+
+    # Compute league average PA per game and opponent indices (through-week only)
+    total_pa = sum(team_pa.values())
+    total_gp = sum(max(1, gp) for gp in team_gp.values())
+    league_avg_pa_pg = (total_pa / total_gp) if total_gp else 0.0
+    pa_pg = {tid: (team_pa[tid] / max(1, team_gp[tid])) for tid in team_meta}
+
+    # Adjusted points per team
+    team_adj_points = {tid: [] for tid in team_meta}
+    for tid, entries in per_game.items():
+        for raw_pts, opp_id in entries:
+            opp_pa = pa_pg.get(opp_id, league_avg_pa_pg or 1.0)
+            def_index = league_avg_pa_pg / (opp_pa or 1.0)
+            def_index = _clamp(def_index, 0.75, 1.25)
+            if through_week <= 3:
+                ramp = through_week / 3.0
+                def_index = 1.0 + (def_index - 1.0) * ramp
+            team_adj_points[tid].append(raw_pts * def_index)
+
+    # Build result metrics
+    results = {}
+    for tid, meta in team_meta.items():
+        adj_list = team_adj_points.get(tid, [])
+        games = len(adj_list)
+        adjpf = (sum(adj_list) / games) if games else 0.0
+        recent_adj_list = adj_list[-3:] if games >= 3 else adj_list
+        recent_adjpf = (sum(recent_adj_list) / len(recent_adj_list)) if recent_adj_list else 0.0
+
+        gaps = team_gaps_by_week.get(tid, {})
+        recent_gap_vals = [gaps[w] for w in sorted(gaps.keys())[-3:]] if gaps else []
+        avg_recent_gap = (sum(recent_gap_vals) / len(recent_gap_vals)) if recent_gap_vals else 0.0
+
+        wins = team_wins.get(tid, 0)
+        losses = team_losses.get(tid, 0)
+        ties = team_ties.get(tid, 0)
+        gp_rec = wins + losses
+        win_pct = (wins / max(1, gp_rec)) if gp_rec > 0 else 0.0
+
+        # Compute current streak from results
+        res_list = team_results.get(tid, [])
+        streak_type = 'NONE'
+        streak_len = 0
+        for r in reversed(res_list):
+            if streak_len == 0 and r in ('W','L'):
+                streak_type = r
+                streak_len = 1
+            elif r == streak_type:
+                streak_len += 1
+            elif r == 'T':
+                # ties break win/loss streaks
+                break
+            else:
+                break
+
+        results[tid] = {
+            "team_id": tid,
+            "team_name": meta["team_name"],
+            "owner": meta["owner"],
+            "wins": wins,
+            "losses": losses,
+            "ties": ties,
+            "win_pct": round(win_pct, 3),
+            "pf": round(team_pf.get(tid, 0.0), 2),
+            "adjpf": round(adjpf, 2),
+            "recent_adjpf": round(recent_adjpf, 2),
+            "coaching_eff": round(-avg_recent_gap, 2),
+            "streak_type": streak_type,
+            "streak_len": streak_len,
+        }
+
+    return results
+
+
+def _rank_teams(power_metrics: dict, week: int) -> List[dict]:
+    weights = _get_season_phase_weights(week)
+    scored = []
+    vals = {
+        k: [v[k] for v in power_metrics.values()]
+        for k in ["win_pct", "adjpf", "recent_adjpf", "coaching_eff"]
+    }
+
+    def norm(x, arr):
+        mn, mx = (min(arr), max(arr))
+        return 0.5 if mx == mn else (x - mn) / (mx - mn)
+
+    for tid, m in power_metrics.items():
+        score = (
+            weights["record"] * norm(m["win_pct"], vals["win_pct"])
+            + weights["adjpf"] * norm(m["adjpf"], vals["adjpf"])
+            + weights["recent"] * norm(m["recent_adjpf"], vals["recent_adjpf"])
+            + weights["coaching"] * norm(m["coaching_eff"], vals["coaching_eff"])
+        )
+        scored.append({**m, "score": round(float(score), 4)})
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    for idx, item in enumerate(scored, 1):
+        item["rank"] = idx
+    return scored
+
+
+@app.get("/api/power_rankings/{week}")
+def get_power_rankings(week: int):
+    """Compute power rankings with opponent-adjusted PF and season-phase weights."""
+    try:
+        f = get_fetcher()
+        week = max(1, int(week))
+        metrics_now = _compute_adjpf_and_metrics(f, through_week=week)
+        rankings_now = _rank_teams(metrics_now, week)
+
+        prev_rank_map = {}
+        if week > 1:
+            metrics_prev = _compute_adjpf_and_metrics(f, through_week=week - 1)
+            rankings_prev = _rank_teams(metrics_prev, week - 1)
+            prev_rank_map = {r["team_id"]: r["rank"] for r in rankings_prev}
+
+        for r in rankings_now:
+            prev = prev_rank_map.get(r["team_id"]) if prev_rank_map else None
+            r["previous_rank"] = prev
+            if prev is None:
+                r["movement"] = "—"
+            else:
+                delta = prev - r["rank"]
+                r["movement"] = (
+                    f"+{delta}" if delta > 0 else (f"{delta}" if delta < 0 else "—")
+                )
+
+        return {"week": week, "rankings": rankings_now}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/api/matchups/{week}")
 def get_matchups(week: int):
     """Get all matchups for a specific week"""
@@ -370,6 +586,7 @@ def get_matchups(week: int):
                     ),
                     "actual_points": round(getattr(player, "points", 0), 2),
                     "pro_team": getattr(player, "proTeam", "FA"),
+                    # Note: ESPN API may return -1 for percent_started when data unavailable
                     "percent_started": getattr(player, "percent_started", 0),
                     "stats": extract_player_stats(player),
                 }
@@ -392,6 +609,7 @@ def get_matchups(week: int):
                     ),
                     "actual_points": round(getattr(player, "points", 0), 2),
                     "pro_team": getattr(player, "proTeam", "FA"),
+                    # Note: ESPN API may return -1 for percent_started when data unavailable
                     "percent_started": getattr(player, "percent_started", 0),
                     "stats": extract_player_stats(player),
                 }
@@ -418,12 +636,17 @@ def get_matchups(week: int):
                 away_optimal["optimal_score"] - matchup.away_score, 2
             )
 
+            # Look up owner names from TEAM_OWNERS constant using team name
+            home_owner = TEAM_OWNERS.get(matchup.home_team.team_name, "Unknown")
+            away_owner = TEAM_OWNERS.get(matchup.away_team.team_name, "Unknown")
+
             matchups_data.append(
                 {
                     "matchup_id": i,
                     "home_team": {
                         "team_id": matchup.home_team.team_id,
                         "team_name": matchup.home_team.team_name,
+                        "owner": home_owner,
                         "score": round(matchup.home_score, 2),
                         "record": f"{matchup.home_team.wins}-{matchup.home_team.losses}-{matchup.home_team.ties}",
                         "starters": home_starters,
@@ -435,6 +658,7 @@ def get_matchups(week: int):
                     "away_team": {
                         "team_id": matchup.away_team.team_id,
                         "team_name": matchup.away_team.team_name,
+                        "owner": away_owner,
                         "score": round(matchup.away_score, 2),
                         "record": f"{matchup.away_team.wins}-{matchup.away_team.losses}-{matchup.away_team.ties}",
                         "starters": away_starters,
@@ -515,11 +739,8 @@ def get_teams():
 
         teams_data = []
         for team in teams:
-            owner = (
-                team.owner.split()[0]
-                if hasattr(team, "owner") and team.owner
-                else "Unknown"
-            )
+            # Look up owner from TEAM_OWNERS constant
+            owner = TEAM_OWNERS.get(team.team_name, "Unknown")
 
             teams_data.append(
                 {
@@ -557,11 +778,8 @@ def get_team_detail(team_id: int):
         if not team:
             raise HTTPException(status_code=404, detail="Team not found")
 
-        owner = (
-            team.owner.split()[0]
-            if hasattr(team, "owner") and team.owner
-            else "Unknown"
-        )
+        # Look up owner from TEAM_OWNERS constant
+        owner = TEAM_OWNERS.get(team.team_name, "Unknown")
 
         # Get current roster
         roster = []
@@ -604,64 +822,110 @@ def get_team_detail(team_id: int):
 # Pydantic models for request/response
 class GenerateRecapRequest(BaseModel):
     week: int
+    use_v2_format: bool = True  # Default to V2 format
 
 
 # Recap Generation Endpoints
 @app.post("/api/recaps/generate")
 async def generate_recap(request: GenerateRecapRequest):
-    """Generate a new weekly recap using Claude"""
+    """Generate a new weekly recap using ChatGPT"""
+    import asyncio
+
     week = request.week
-    
+
     if week < 1 or week > 18:
         raise HTTPException(status_code=400, detail="Week must be between 1 and 18")
-    
+
     try:
-        # Check if Anthropic API key is configured
-        api_key = os.getenv("ANTHROPIC_API_KEY")
-        if not api_key:
+        # Check for Portkey or direct OpenAI configuration
+        portkey_api_key = os.getenv("PORTKEY_API_KEY")
+        portkey_base_url = os.getenv("PORTKEY_BASE_URL")
+        portkey_virtual_key = os.getenv("PORTKEY_OPENAI_VIRTUAL_KEY")
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+
+        format_type = "V2 (structured)" if request.use_v2_format else "V1 (classic)"
+
+        if portkey_api_key and portkey_base_url:
+            # Using Portkey gateway
+            api_key = portkey_api_key
+            logger.info(
+                f"Generating recap for week {week} using Portkey gateway ({format_type})..."
+            )
+        elif openai_api_key:
+            # Direct OpenAI
+            api_key = openai_api_key
+            logger.info(
+                f"Generating recap for week {week} using direct OpenAI ({format_type})..."
+            )
+        else:
             raise HTTPException(
                 status_code=500,
-                detail="ANTHROPIC_API_KEY not configured. Please add it to your .env file."
+                detail="Either PORTKEY_API_KEY or OPENAI_API_KEY must be configured in your .env file.",
             )
-        
-        logger.info(f"Generating recap for week {week}...")
-        
+
         # Import here to avoid loading if not needed
-        from anthropic import Anthropic
+        from openai import OpenAI
         from src.recap_generator import RecapGenerator
-        
-        # Initialize generator and client
-        client = Anthropic(api_key=api_key)
+
+        # Configure client for Portkey or direct OpenAI
+        if portkey_api_key and portkey_base_url:
+            # Using Portkey gateway
+            logger.info("Configuring OpenAI client for Portkey")
+            client = OpenAI(
+                api_key=api_key,
+                base_url=portkey_base_url,
+                default_headers={"x-portkey-virtual-key": portkey_virtual_key}
+                if portkey_virtual_key
+                else {},
+            )
+        else:
+            # Direct OpenAI connection
+            logger.info("Configuring OpenAI client for direct connection")
+            client = OpenAI(api_key=api_key)
+
         generator = RecapGenerator()
-        
-        # Generate recap
-        recap_content = generator.generate_recap_with_anthropic(
+
+        # Run the blocking recap generation in a thread pool to avoid blocking the server
+        loop = asyncio.get_event_loop()
+
+        # Use partial to pass all arguments including use_v2_format
+        from functools import partial
+
+        generate_func = partial(
+            generator.generate_recap_with_openai,
             week=week,
-            client=client
+            client=client,
+            model="gpt-4o",  # Using GPT-4o (latest model)
+            use_v2_format=request.use_v2_format,
         )
-        
+
+        recap_content = await loop.run_in_executor(None, generate_func)
+
         if not recap_content:
             raise HTTPException(
                 status_code=500,
-                detail="Failed to generate recap. Check server logs for details."
+                detail="Failed to generate recap. Check server logs for details.",
             )
-        
-        logger.info(f"✅ Recap generated successfully for week {week}")
-        
+
+        format_label = "V2 (structured)" if request.use_v2_format else "V1 (classic)"
+        logger.info(
+            f"✅ Recap generated successfully for week {week} using GPT-4o ({format_label})"
+        )
+
         return {
             "success": True,
             "week": week,
             "recap": recap_content,
-            "message": f"Recap for week {week} generated successfully"
+            "format": format_label,
+            "message": f"Recap for week {week} generated successfully using GPT-4o ({format_label})",
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error generating recap: {e}", exc_info=True)
         raise HTTPException(
-            status_code=500,
-            detail=f"Failed to generate recap: {str(e)}"
+            status_code=500, detail=f"Failed to generate recap: {str(e)}"
         )
 
 
@@ -670,30 +934,29 @@ async def get_recap_history():
     """Get list of all generated recaps"""
     try:
         recap_history_file = "recap_history.json"
-        
+
         if not os.path.exists(recap_history_file):
             return {"recaps": []}
-        
+
         with open(recap_history_file, "r") as f:
             history = json.load(f)
-        
+
         # Return just the metadata (week, date) not full content
         recaps_metadata = [
             {
                 "week": entry["week"],
                 "date": entry["date"],
-                "recap": entry["recap"]  # Include full content for now
+                "recap": entry["recap"],  # Include full content for now
             }
             for entry in history
         ]
-        
+
         return {"recaps": recaps_metadata}
-        
+
     except Exception as e:
         logger.error(f"Error loading recap history: {e}", exc_info=True)
         raise HTTPException(
-            status_code=500,
-            detail=f"Failed to load recap history: {str(e)}"
+            status_code=500, detail=f"Failed to load recap history: {str(e)}"
         )
 
 
@@ -703,44 +966,38 @@ async def get_recap(week: int):
     try:
         # First check recap history
         recap_history_file = "recap_history.json"
-        
+
         if os.path.exists(recap_history_file):
             with open(recap_history_file, "r") as f:
                 history = json.load(f)
-            
+
             # Find the recap for this week
             for entry in history:
                 if entry["week"] == week:
                     return {
                         "week": week,
                         "date": entry["date"],
-                        "recap": entry["recap"]
+                        "recap": entry["recap"],
                     }
-        
+
         # Fallback: Check if file exists in output directory
         recap_file = f"output/week-{week}-recap.md"
         if os.path.exists(recap_file):
             with open(recap_file, "r") as f:
                 recap_content = f.read()
-            
-            return {
-                "week": week,
-                "recap": recap_content
-            }
-        
+
+            return {"week": week, "recap": recap_content}
+
         raise HTTPException(
             status_code=404,
-            detail=f"Recap for week {week} not found. Generate it first."
+            detail=f"Recap for week {week} not found. Generate it first.",
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error loading recap: {e}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to load recap: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to load recap: {str(e)}")
 
 
 # Setup API improvements after all endpoints are defined

@@ -7,5 +7,5 @@ python-dotenv>=1.0.0
 slowapi>=0.1.9  # Rate limiting for FastAPI
 
 # Optional: For AI recap generation
-anthropic>=0.69.0  # For Claude Sonnet 4.5 recaps
-# openai>=1.0.0   # Alternative: For GPT-4 recaps
+openai>=1.0.0      # For GPT-4o recaps (default)
+# anthropic>=0.69.0  # Alternative: For Claude Sonnet 4.5 recaps

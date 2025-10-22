@@ -6,6 +6,29 @@ Centralized constants to avoid magic numbers throughout the codebase
 from datetime import datetime
 
 # ============================================================================
+# Team Owner Mapping
+# ============================================================================
+TEAM_OWNERS = {
+    "Scott's Tots": "Marissa Tomko",
+    "Beacon": "Han Jang",
+    "Show in wallet off": "Achilleas Zilakos",
+    "Fly PCIO Fly": "Kristin Mendez",
+    "Hut, Hut, Eich": "Adam Eichorn",
+    "Laser Focused": "Tiffany Wong",
+    "New Vertical Threats": "Morgan Nelson",
+    "Monstrous Team": "maia.craver",
+    "Purdy Boys": "tyler.hanlon",
+    "Hot Chubb Time Machine": "kevin.agresto",
+    "High Qual Completion Deliv Rate": "pete.vanoot",
+    "Team Tang": "tim.tang",
+    "Team Wise": "Christopher Wise",
+    "We're More Than Delivery": "Joe Barry",
+    "Greg's Great Team": "greg.davis.cw",
+    "Monster of the Midway": "Elisa Keny (Ambrose)",
+    "Maia's Monstrous Team": "maia.craver",  # Alternate name
+}
+
+# ============================================================================
 # API Configuration
 # ============================================================================
 DEFAULT_API_PORT = 8000

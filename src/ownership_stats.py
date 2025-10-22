@@ -109,6 +109,10 @@ class OwnershipStats:
         Returns:
             Roast string or None
         """
+        # Skip if invalid data (ESPN API returns -1 for some players)
+        if percent_started < 0:
+            return None
+            
         roasts = []
         
         # Scenario 1: STARTED a player almost nobody starts

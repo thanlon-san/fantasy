@@ -98,9 +98,9 @@ class RecapGenerator:
             print(f"❌ Error fetching data: {e}")
             return {}
 
-    def build_context(self, week_data: Dict) -> str:
+    def build_context(self, week_data: Dict, week: int = None) -> str:
         """Build context for LLM - delegates to ContextBuilder"""
-        return self.context_builder.build_context(week_data)
+        return self.context_builder.build_context(week_data, week)
 
     def get_previous_recaps_context(self, limit: int = 3) -> str:
         """Get context from previous recaps to avoid repetition"""
@@ -147,45 +147,63 @@ class RecapGenerator:
         return None
 
     def generate_recap_with_openai(
-        self, week: int, client, model: str = "gpt-4"
+        self, week: int, client, model: str = "gpt-4", use_v2_format: bool = True
     ) -> Optional[str]:
-        """Generate recap using OpenAI API"""
+        """
+        Generate recap using OpenAI API
+        
+        Args:
+            week: Week number
+            client: OpenAI client instance
+            model: OpenAI model to use
+            use_v2_format: If True, use new V2 structured format
+        """
         week_data = self.fetch_week_data(week)
         if not week_data:
             return None
 
-        data_context = self.build_context(week_data)
+        data_context = self.context_builder.build_context(week_data, week, use_v2_format=use_v2_format)
         history_context = self.get_previous_recaps_context()
 
         recap = self.llm_client.generate_with_openai(
-            week, data_context, history_context, client, model
+            week, data_context, history_context, client, model, use_v2=use_v2_format
         )
 
         if recap:
             # Save to history and output
-            self._save_history(week, recap, {"model": model, "data": week_data})
+            format_type = "V2" if use_v2_format else "V1"
+            self._save_history(week, recap, {"model": model, "format": format_type, "data": week_data})
             self._save_recap_to_file(week, recap)
 
         return recap
 
     def generate_recap_with_anthropic(
-        self, week: int, client, model: str = "claude-sonnet-4-5-20250929"
+        self, week: int, client, model: str = "claude-sonnet-4-5-20250929", use_v2_format: bool = True
     ) -> Optional[str]:
-        """Generate recap using Anthropic API"""
+        """
+        Generate recap using Anthropic API
+        
+        Args:
+            week: Week number
+            client: Anthropic client instance
+            model: Anthropic model to use
+            use_v2_format: If True, use new V2 structured format
+        """
         week_data = self.fetch_week_data(week)
         if not week_data:
             return None
 
-        data_context = self.build_context(week_data)
+        data_context = self.context_builder.build_context(week_data, week, use_v2_format=use_v2_format)
         history_context = self.get_previous_recaps_context()
 
         recap = self.llm_client.generate_with_anthropic(
-            week, data_context, history_context, client, model
+            week, data_context, history_context, client, model, use_v2=use_v2_format
         )
 
         if recap:
             # Save to history and output
-            self._save_history(week, recap, {"model": model, "data": week_data})
+            format_type = "V2" if use_v2_format else "V1"
+            self._save_history(week, recap, {"model": model, "format": format_type, "data": week_data})
             self._save_recap_to_file(week, recap)
 
         return recap
@@ -223,7 +241,7 @@ def main():
         # Just generate and print context for manual use
         week_data = generator.fetch_week_data(args.week)
         if week_data:
-            context = generator.build_context(week_data)
+            context = generator.build_context(week_data, args.week)
             print("\n" + "=" * 80)
             print("CONTEXT FOR LLM")
             print("=" * 80)

@@ -1,0 +1,19 @@
+{
+  "name": "fantasy-football-recap",
+  "version": "1.0.0",
+  "description": "Fantasy Football Recap Generator with AI",
+  "scripts": {
+    "dev": "python3 scripts/server.py start",
+    "stop": "python3 scripts/server.py stop",
+    "restart": "python3 scripts/server.py restart",
+    "logs": "tail -f logs/$(date +%Y%m%d).log",
+    "logs:api": "tail -f /tmp/api_fantasy.log",
+    "status": "python3 scripts/server.py status",
+    "test": "python3 -m pytest tests/ -v",
+    "test:integration": "python3 test_v2_integration.py"
+  },
+  "keywords": ["fantasy-football", "ai", "recap"],
+  "author": "",
+  "license": "MIT"
+}
+
