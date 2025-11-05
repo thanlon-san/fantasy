@@ -10,10 +10,10 @@ Generate viciously funny fantasy football recaps using your API data and an LLM.
 
 ```bash
 # Make sure API is running
-python3 api.py &
+npm run dev
 
-# Generate context file
-python3 recap_generator.py 7 --context-only
+# Generate context file (if using the old script method)
+# Or use the web UI at http://localhost:8000
 ```
 
 This creates `output/week-7-context.txt` with:
@@ -167,12 +167,13 @@ Uses the comprehensive `COLUMNIST_PROMPT.md` to generate:
 # Week 7 just finished!
 
 # Step 1: Make sure API is running
-python3 api.py &
+npm run dev
 
-# Step 2: Generate context
-python3 recap_generator.py 7 --context-only
+# Step 2: Use the Web UI
+# Visit http://localhost:8000
+# Generate recap for week 7
+# Copy to Slack or download
 
-# Step 3: Use the output/week-7-context.txt in your LLM
 # Or use Python integration:
 
 python3 << EOF
@@ -281,10 +282,12 @@ If your league has inside jokes (tech workers, finance bros, etc.):
 
 ```bash
 # Check if API is running
+npm status
+# or
 curl http://localhost:8000/health
 
 # If not, start it
-python3 api.py &
+npm run dev
 ```
 
 ### "No module named 'openai'"

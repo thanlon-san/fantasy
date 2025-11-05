@@ -49,7 +49,7 @@ def start_server():
     
     if pid and is_running(pid):
         print(f"❌ Server already running (PID: {pid})")
-        print(f"   Use 'pnpm stop' or 'pnpm restart' instead")
+        print(f"   Use 'npm run stop' or 'npm run restart' instead")
         return 1
     
     # Clean up stale PID file
@@ -76,12 +76,12 @@ def start_server():
         print(f"✅ Server started successfully (PID: {process.pid})")
         print(f"   📖 API: http://localhost:8000")
         print(f"   📝 Logs: {LOG_FILE}")
-        print(f"   🔍 Status: pnpm status")
-        print(f"   🛑 Stop: pnpm stop")
+        print(f"   🔍 Status: npm run status")
+        print(f"   🛑 Stop: npm run stop")
         return 0
     else:
         print(f"❌ Server failed to start")
-        print(f"   Check logs: pnpm logs:api")
+        print(f"   Check logs: npm run logs:api")
         PID_FILE.unlink()
         return 1
 
@@ -144,7 +144,7 @@ def status_server():
     if is_running(pid):
         print(f"✅ Server is running (PID: {pid})")
         print(f"   📖 API: http://localhost:8000")
-        print(f"   📝 Logs: pnpm logs:api")
+        print(f"   📝 Logs: npm run logs:api")
         
         # Try to hit health endpoint
         try:

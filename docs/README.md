@@ -29,22 +29,24 @@
 
 ## Quick Start
 
-**New to this project?** → **[See QUICKSTART.md](QUICKSTART.md)** for a step-by-step guide with screenshots!
+**📚 Complete Documentation** → **[See docs/INDEX.md](docs/INDEX.md)** for the full documentation index!
+
+**New to this project?** → **[See docs/QUICKSTART.md](docs/QUICKSTART.md)** for a step-by-step guide with screenshots!
 
 ```bash
 # Clone the repository
 git clone https://github.com/thanlon-san/fantasy.git
 cd fantasy
 
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies (required!)
+pip3 install --break-system-packages -r requirements.txt
 
 # Copy and configure settings
-cp config.example.json config.json
+cp config/config.example.json config.json
 # Edit config.json with your league ID and ESPN cookies (see below)
 
 # Start the API server
-python3 api.py
+npm run dev
 ```
 
 **API now running at:** http://localhost:8000  
@@ -93,10 +95,20 @@ If your league is private, you'll need ESPN authentication cookies:
 **Start the API server:**
 
 ```bash
-python3 api.py
+npm run dev
 ```
 
 The API will be available at http://localhost:8000
+
+**Server management commands:**
+
+```bash
+npm run dev      # Start the server in the background
+npm run stop     # Stop the server
+npm run restart  # Restart the server
+npm status       # Check server status
+npm run logs     # View server logs
+```
 
 **Available Endpoints:**
 
@@ -180,7 +192,7 @@ python scripts/scheduled_recap.py
 
 ```bash
 # Start the server
-python3 src/api.py
+npm run dev
 
 # Open your browser
 # Visit: http://localhost:8000
@@ -249,53 +261,78 @@ standings_md = fetcher.generate_standings_markdown()
 ### Start the API
 
 ```bash
-python3 api.py
+npm run dev
 ```
+
+The server runs in the background with automatic PID tracking.
 
 ### Stop the API
 
 ```bash
-lsof -ti:8000 | xargs kill -9
+npm run stop
+```
+
+### Restart the API
+
+```bash
+npm run restart
 ```
 
 ### Check API Status
 
 ```bash
+npm status
+# or
 curl http://localhost:8000/health
+```
+
+### View Logs
+
+```bash
+npm run logs        # Follow server logs
+npm run logs:api    # Alternative log file
 ```
 
 ## Project Structure
 
 ```
 fantasy/
-├── api.py                   # FastAPI REST server
 ├── src/
+│   ├── api.py               # FastAPI REST server
 │   ├── recap_generator.py   # AI-powered weekly recap generator
 │   ├── slack_notifier.py    # Slack integration for auto-posting
 │   └── ...                  # Other source modules
 ├── scripts/
+│   ├── server.py            # Server management (start/stop/restart)
 │   ├── scheduled_recap.py   # Automated recap generation and posting
 │   └── ...                  # Other utility scripts
-├── docs/
+├── static/                  # Web UI files (HTML/CSS/JS)
+├── docs/                    # All documentation
 │   ├── SLACK_INTEGRATION.md # Complete Slack setup guide
 │   ├── RECAP_USAGE.md       # Guide for generating AI recaps
 │   └── ...                  # Other documentation
+├── config/
+│   ├── config.example.json  # Example configuration
+│   └── env.example          # Example environment variables
 ├── config.json              # Your configuration (create from example)
-├── config.example.json      # Example configuration
+├── package.json             # NPM scripts for server management
 ├── requirements.txt         # Python dependencies
-└── README.md               # This file
+└── README.md                # This file
 ```
 
 ## Documentation
 
-- **[docs/WEB_UI_GUIDE.md](docs/WEB_UI_GUIDE.md)** - Web interface guide (easiest way to use!)
-- **[docs/SLACK_FORMATTING.md](docs/SLACK_FORMATTING.md)** - How the Slack formatting works (with examples!)
+**📚 [Complete Documentation Index](docs/INDEX.md)** - Find all documentation organized by topic
+
+**Essential Guides:**
 - **[docs/QUICKSTART.md](docs/QUICKSTART.md)** - 5-minute setup guide for new users
+- **[docs/WEB_UI_QUICKSTART.md](docs/WEB_UI_QUICKSTART.md)** - Web interface quick start (easiest!)
 - **[docs/API_README.md](docs/API_README.md)** - Complete API documentation with examples
 - **[docs/RECAP_USAGE.md](docs/RECAP_USAGE.md)** - Guide for generating AI-powered recaps
 - **[docs/SLACK_INTEGRATION.md](docs/SLACK_INTEGRATION.md)** - Complete Slack setup and automation guide
-- **[docs/COLUMNIST_PROMPT.md](docs/COLUMNIST_PROMPT.md)** - The brain of your roast columnist
 - **[Interactive API Docs](http://localhost:8000/docs)** - Available when server is running
+
+**See [docs/INDEX.md](docs/INDEX.md) for all documentation organized by topic**
 
 ## Contributing
 

@@ -6,13 +6,14 @@ Get your fantasy football recap generator up and running in 2 minutes!
 
 ```bash
 cd /Users/tyler.hanlon/Documents/GitHub/fantasy
-python3 -m src.api
+npm run dev
 ```
 
 You should see:
 ```
-🏈 Fantasy Football API Starting...
-📖 API Documentation: http://localhost:8000/docs
+🚀 Starting Fantasy Football API server...
+✅ Server started successfully (PID: XXXXX)
+   📖 API: http://localhost:8000
 ```
 
 ## 🌐 Open the Web UI
@@ -54,14 +55,10 @@ Scroll down to the "Previous Recaps" section to see all your past roasts!
 When you're done:
 
 ```bash
-# Find the server process
-lsof -i :8000
-
-# Kill it
-kill <PID>
+npm run stop
 ```
 
-Or just press **Ctrl+C** in the terminal where the server is running.
+Simple! The server management script handles everything.
 
 ## 💡 Pro Tips
 
@@ -82,21 +79,24 @@ Add http://localhost:8000 to your bookmarks for quick access!
 ### Port Already in Use
 
 ```bash
-# Kill any process on port 8000
-lsof -ti :8000 | xargs kill -9
+# Stop any existing server
+npm run stop
 
 # Then start again
-python3 -m src.api
+npm run dev
 ```
 
 ### "Connection Refused"
 
 Make sure the server is running:
 ```bash
-lsof -i :8000
+npm status
 ```
 
-If nothing shows up, start the server again.
+If not running, start the server:
+```bash
+npm run dev
+```
 
 ### "ANTHROPIC_API_KEY not configured"
 

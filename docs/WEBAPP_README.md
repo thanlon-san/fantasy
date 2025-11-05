@@ -26,7 +26,7 @@ Your fantasy football recap generator now has a beautiful web interface!
 ### Start the Server
 ```bash
 cd /Users/tyler.hanlon/Documents/GitHub/fantasy
-python3 -m src.api
+npm run dev
 ```
 
 ### Open Your Browser
@@ -87,11 +87,13 @@ Previous recaps: **5** (all available in history)
 
 ```bash
 # Start server
-python3 -m src.api
+npm run dev
 
 # Stop server
-# Press Ctrl+C or:
-lsof -ti :8000 | xargs kill -9
+npm run stop
+
+# Check server status
+npm status
 
 # Test endpoints
 curl http://localhost:8000/api/league
@@ -118,7 +120,7 @@ curl http://localhost:8000/api/recaps/history
 
 1. **Try it now!**
    ```bash
-   python3 -m src.api
+   npm run dev
    # Then visit http://localhost:8000
    ```
 

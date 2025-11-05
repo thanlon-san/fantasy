@@ -67,12 +67,12 @@ Churn rate: 100% of their championship hopes.
 ### Generate a Recap
 
 ```bash
-# Option 1: Automated (Claude Sonnet 4.5)
-python3 example_generate_recap.py
+# Recommended: Use the Web UI (easiest!)
+npm run dev
+# Then visit http://localhost:8000
 
-# Option 2: Get context for manual LLM use
-python3 recap_generator.py 7 --context-only
-# Then paste output/week-7-context.txt into Claude.ai or ChatGPT
+# Alternative: Automated script (Claude Sonnet 4.5)
+python3 scripts/example_generate_recap.py
 ```
 
 ### Check API Data
@@ -189,8 +189,8 @@ Currently 3-5 easter eggs per recap. Adjust in line 288.
 ### API won't start
 
 ```bash
-lsof -ti:8000 | xargs kill -9
-python3 api.py
+npm run stop
+npm run dev
 ```
 
 ### Can't generate recap

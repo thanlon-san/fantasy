@@ -8,7 +8,7 @@ A simple, beautiful web interface for generating and managing your weekly fantas
 
 ```bash
 cd /Users/tyler.hanlon/Documents/GitHub/fantasy
-python3 src/api.py
+npm run dev
 ```
 
 ### 2. Open Web UI

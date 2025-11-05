@@ -143,11 +143,16 @@
 
 ### Start the API
 ```bash
-python3 -m src.api
+npm run dev
 ```
 
 ### Generate a Recap
 ```bash
+# Use the Web UI (recommended)
+npm run dev
+# Visit http://localhost:8000
+
+# Or use the Python script
 python3 scripts/example_generate_recap.py
 ```
 

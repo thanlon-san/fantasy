@@ -10,15 +10,20 @@ Get your Fantasy Football API running in 5 minutes!
 
 ## Step 1: Install Dependencies
 
+**⚠️ Important: You must install Python dependencies first, or the server won't start!**
+
 ```bash
 cd /path/to/fantasy
-pip install -r requirements.txt
+pip3 install --break-system-packages -r requirements.txt
 ```
 
-Or use pip3 if pip isn't available:
+**Note:** If you get an "externally-managed-environment" error, use the `--break-system-packages` flag as shown above. This is safe for development environments.
 
+Alternative if you have a virtual environment:
 ```bash
-python3 -m pip install -r requirements.txt
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
 ## Step 2: Create Configuration
@@ -84,16 +89,18 @@ Edit `config.json`:
 ## Step 5: Start the API
 
 ```bash
-python3 api.py
+npm run dev
 ```
 
 You should see:
 
 ```
-🏈 Starting Fantasy Football API on port 8000...
-📖 API Documentation: http://localhost:8000/docs
-🔍 Interactive API: http://localhost:8000/redoc
-✅ Connected to league: [Your League Name]
+🚀 Starting Fantasy Football API server...
+✅ Server started successfully (PID: XXXXX)
+   📖 API: http://localhost:8000
+   📝 Logs: /tmp/api_fantasy.log
+   🔍 Status: npm status
+   🛑 Stop: npm run stop
 ```
 
 ## Step 6 (Optional): Set Up AI Recap Generation
@@ -149,11 +156,11 @@ curl http://localhost:8000/api/league
 ✅ **Solution:**
 
 ```bash
-# Kill existing process
-lsof -ti:8000 | xargs kill -9
+# Stop the existing server
+npm run stop
 
 # Start again
-python3 api.py
+npm run dev
 ```
 
 ### "Module not found"
@@ -168,12 +175,16 @@ python3 -m pip install -r requirements.txt
 
 ### Can't start the server
 
-❌ **Problem:** Server won't run in foreground
+❌ **Problem:** Server won't start
 
-✅ **Solution:** Run in background:
+✅ **Solution:** Check server status and logs:
 
 ```bash
-nohup python3 api.py > api.log 2>&1 &
+# Check if it's already running
+npm status
+
+# View logs to see what went wrong
+npm run logs:api
 ```
 
 ## Next Steps

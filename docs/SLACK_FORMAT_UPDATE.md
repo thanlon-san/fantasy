@@ -31,7 +31,7 @@ Your markdown recap is automatically transformed with:
 ### Step 1: Generate or Load a Recap
 ```bash
 # Start server
-python3 -m src.api
+npm run dev
 
 # Visit: http://localhost:8000
 # Generate recap for any week
@@ -116,7 +116,7 @@ Want to know more? Check out:
 
 ```bash
 cd /Users/tyler.hanlon/Documents/GitHub/fantasy
-python3 -m src.api
+npm run dev
 # Visit: http://localhost:8000
 # Load any previous recap (you have 5!)
 # Click "💬 Copy for Slack"

@@ -87,10 +87,13 @@ fantasy/
 
 ### Start the API Server
 ```bash
-# From project root
+# Recommended: Use npm scripts for easy management
+npm run dev
+
+# Alternative: Direct Python module execution (runs in foreground)
 python3 -m src.api
 
-# Or using uvicorn directly
+# Alternative: Using uvicorn directly (advanced)
 uvicorn src.api:app --host 0.0.0.0 --port 8000
 ```
 
