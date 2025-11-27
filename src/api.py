@@ -355,21 +355,48 @@ def _clamp(value: float, min_value: float, max_value: float) -> float:
 def _get_season_phase_weights(week: int) -> dict:
     """Return season-phase weights for power ranking score."""
     if week <= 3:
-        return {"record": 0.40, "adjpf": 0.40, "recent": 0.15, "coaching": 0.05}
+        return {
+            "record": 0.35,
+            "adjpf": 0.40,
+            "recent": 0.15,
+            "streak": 0.05,
+            "coaching": 0.05,
+        }
     if week <= 10:
-        return {"record": 0.35, "adjpf": 0.40, "recent": 0.20, "coaching": 0.05}
-    return {"record": 0.30, "adjpf": 0.45, "recent": 0.20, "coaching": 0.05}
+        return {
+            "record": 0.30,
+            "adjpf": 0.40,
+            "recent": 0.20,
+            "streak": 0.05,
+            "coaching": 0.05,
+        }
+    return {
+        "record": 0.25,
+        "adjpf": 0.40,
+        "recent": 0.20,
+        "streak": 0.10,
+        "coaching": 0.05,
+    }
 
 
 def _compute_adjpf_and_metrics(f, through_week: int):
     """
     Compute opponent-adjusted PF (adjPF), recent adjPF (last 3 weeks), coaching efficiency,
-    and records strictly through `through_week`.
+    win/loss streak momentum, and records strictly through `through_week`.
     This replays box scores up to `through_week` to avoid using current full-season standings.
+
+    Streak scoring: +1.0 per consecutive win (max +5.0), -1.0 per consecutive loss (max -5.0).
+    Ties break streaks and reset to 0.
     """
     # Basic team metadata
     teams = getattr(f.league, "teams", [])
-    team_meta = {t.team_id: {"team_name": t.team_name, "owner": TEAM_OWNERS.get(t.team_name, "Unknown")} for t in teams}
+    team_meta = {
+        t.team_id: {
+            "team_name": t.team_name,
+            "owner": TEAM_OWNERS.get(t.team_name, "Unknown"),
+        }
+        for t in teams
+    }
 
     # Accumulators (through-week)
     team_wins = {tid: 0 for tid in team_meta}
@@ -392,20 +419,32 @@ def _compute_adjpf_and_metrics(f, through_week: int):
 
             # Tally records
             if home_score > away_score:
-                if home_id in team_wins: team_wins[home_id] += 1
-                if away_id in team_losses: team_losses[away_id] += 1
-                if home_id in team_results: team_results[home_id].append('W')
-                if away_id in team_results: team_results[away_id].append('L')
+                if home_id in team_wins:
+                    team_wins[home_id] += 1
+                if away_id in team_losses:
+                    team_losses[away_id] += 1
+                if home_id in team_results:
+                    team_results[home_id].append("W")
+                if away_id in team_results:
+                    team_results[away_id].append("L")
             elif away_score > home_score:
-                if away_id in team_wins: team_wins[away_id] += 1
-                if home_id in team_losses: team_losses[home_id] += 1
-                if away_id in team_results: team_results[away_id].append('W')
-                if home_id in team_results: team_results[home_id].append('L')
+                if away_id in team_wins:
+                    team_wins[away_id] += 1
+                if home_id in team_losses:
+                    team_losses[home_id] += 1
+                if away_id in team_results:
+                    team_results[away_id].append("W")
+                if home_id in team_results:
+                    team_results[home_id].append("L")
             else:
-                if home_id in team_ties: team_ties[home_id] += 1
-                if away_id in team_ties: team_ties[away_id] += 1
-                if home_id in team_results: team_results[home_id].append('T')
-                if away_id in team_results: team_results[away_id].append('T')
+                if home_id in team_ties:
+                    team_ties[home_id] += 1
+                if away_id in team_ties:
+                    team_ties[away_id] += 1
+                if home_id in team_results:
+                    team_results[home_id].append("T")
+                if away_id in team_results:
+                    team_results[away_id].append("T")
 
             # PF/PA and games
             if home_id in team_pf:
@@ -426,12 +465,16 @@ def _compute_adjpf_and_metrics(f, through_week: int):
             # Coaching efficiency: weekly management gap
             try:
                 home_opt = calculate_optimal_lineup(bs.home_lineup)
-                team_gaps_by_week[home_id][w] = round(home_opt["optimal_score"] - home_score, 2)
+                team_gaps_by_week[home_id][w] = round(
+                    home_opt["optimal_score"] - home_score, 2
+                )
             except Exception:
                 team_gaps_by_week[home_id][w] = 0.0
             try:
                 away_opt = calculate_optimal_lineup(bs.away_lineup)
-                team_gaps_by_week[away_id][w] = round(away_opt["optimal_score"] - away_score, 2)
+                team_gaps_by_week[away_id][w] = round(
+                    away_opt["optimal_score"] - away_score, 2
+                )
             except Exception:
                 team_gaps_by_week[away_id][w] = 0.0
 
@@ -460,11 +503,15 @@ def _compute_adjpf_and_metrics(f, through_week: int):
         games = len(adj_list)
         adjpf = (sum(adj_list) / games) if games else 0.0
         recent_adj_list = adj_list[-3:] if games >= 3 else adj_list
-        recent_adjpf = (sum(recent_adj_list) / len(recent_adj_list)) if recent_adj_list else 0.0
+        recent_adjpf = (
+            (sum(recent_adj_list) / len(recent_adj_list)) if recent_adj_list else 0.0
+        )
 
         gaps = team_gaps_by_week.get(tid, {})
         recent_gap_vals = [gaps[w] for w in sorted(gaps.keys())[-3:]] if gaps else []
-        avg_recent_gap = (sum(recent_gap_vals) / len(recent_gap_vals)) if recent_gap_vals else 0.0
+        avg_recent_gap = (
+            (sum(recent_gap_vals) / len(recent_gap_vals)) if recent_gap_vals else 0.0
+        )
 
         wins = team_wins.get(tid, 0)
         losses = team_losses.get(tid, 0)
@@ -474,19 +521,27 @@ def _compute_adjpf_and_metrics(f, through_week: int):
 
         # Compute current streak from results
         res_list = team_results.get(tid, [])
-        streak_type = 'NONE'
+        streak_type = "NONE"
         streak_len = 0
         for r in reversed(res_list):
-            if streak_len == 0 and r in ('W','L'):
+            if streak_len == 0 and r in ("W", "L"):
                 streak_type = r
                 streak_len = 1
             elif r == streak_type:
                 streak_len += 1
-            elif r == 'T':
+            elif r == "T":
                 # ties break win/loss streaks
                 break
             else:
                 break
+
+        # Calculate streak score: positive for wins, negative for losses
+        # Scale: +/- 1.0 per game in streak (capped at +/- 5.0)
+        streak_score = 0.0
+        if streak_type == "W":
+            streak_score = min(5.0, float(streak_len))
+        elif streak_type == "L":
+            streak_score = max(-5.0, -float(streak_len))
 
         results[tid] = {
             "team_id": tid,
@@ -500,6 +555,7 @@ def _compute_adjpf_and_metrics(f, through_week: int):
             "adjpf": round(adjpf, 2),
             "recent_adjpf": round(recent_adjpf, 2),
             "coaching_eff": round(-avg_recent_gap, 2),
+            "streak_score": streak_score,
             "streak_type": streak_type,
             "streak_len": streak_len,
         }
@@ -512,7 +568,7 @@ def _rank_teams(power_metrics: dict, week: int) -> List[dict]:
     scored = []
     vals = {
         k: [v[k] for v in power_metrics.values()]
-        for k in ["win_pct", "adjpf", "recent_adjpf", "coaching_eff"]
+        for k in ["win_pct", "adjpf", "recent_adjpf", "coaching_eff", "streak_score"]
     }
 
     def norm(x, arr):
@@ -524,6 +580,7 @@ def _rank_teams(power_metrics: dict, week: int) -> List[dict]:
             weights["record"] * norm(m["win_pct"], vals["win_pct"])
             + weights["adjpf"] * norm(m["adjpf"], vals["adjpf"])
             + weights["recent"] * norm(m["recent_adjpf"], vals["recent_adjpf"])
+            + weights["streak"] * norm(m["streak_score"], vals["streak_score"])
             + weights["coaching"] * norm(m["coaching_eff"], vals["coaching_eff"])
         )
         scored.append({**m, "score": round(float(score), 4)})
@@ -822,14 +879,19 @@ def get_team_detail(team_id: int):
 # Pydantic models for request/response
 class GenerateRecapRequest(BaseModel):
     week: int
-    use_v2_format: bool = True  # Default to V2 format
+    use_v2_format: bool = True  # Legacy V2 format (if use_v3_format is False)
+    use_v3_format: bool = True  # V3 lean comedy-focused format (recommended, default)
+    persona: Optional[str] = None  # Optional persona to use (overrides auto-rotation)
+    model_provider: str = "claude-opus-4.5"  # Default to Opus 4.5 for best comedy (
+    # "auto" for auto-selection, "claude-sonnet-4.5", "claude-sonnet-4", "gpt-4o")
 
 
 # Recap Generation Endpoints
 @app.post("/api/recaps/generate")
 async def generate_recap(request: GenerateRecapRequest):
-    """Generate a new weekly recap using ChatGPT"""
+    """Generate a new weekly recap using AI (Claude recommended for comedy, OpenAI as fallback)"""
     import asyncio
+    from functools import partial
 
     week = request.week
 
@@ -837,69 +899,126 @@ async def generate_recap(request: GenerateRecapRequest):
         raise HTTPException(status_code=400, detail="Week must be between 1 and 18")
 
     try:
-        # Check for Portkey or direct OpenAI configuration
+        # Check available API keys
+        anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+        openai_api_key = os.getenv("OPENAI_API_KEY")
         portkey_api_key = os.getenv("PORTKEY_API_KEY")
         portkey_base_url = os.getenv("PORTKEY_BASE_URL")
         portkey_virtual_key = os.getenv("PORTKEY_OPENAI_VIRTUAL_KEY")
-        openai_api_key = os.getenv("OPENAI_API_KEY")
 
-        format_type = "V2 (structured)" if request.use_v2_format else "V1 (classic)"
-
-        if portkey_api_key and portkey_base_url:
-            # Using Portkey gateway
-            api_key = portkey_api_key
-            logger.info(
-                f"Generating recap for week {week} using Portkey gateway ({format_type})..."
-            )
-        elif openai_api_key:
-            # Direct OpenAI
-            api_key = openai_api_key
-            logger.info(
-                f"Generating recap for week {week} using direct OpenAI ({format_type})..."
-            )
+        # Determine format type for logging
+        if request.use_v3_format:
+            format_type = "V3 (lean)"
+        elif request.use_v2_format:
+            format_type = "V2 (structured)"
         else:
-            raise HTTPException(
-                status_code=500,
-                detail="Either PORTKEY_API_KEY or OPENAI_API_KEY must be configured in your .env file.",
-            )
+            format_type = "V1 (classic)"
 
-        # Import here to avoid loading if not needed
-        from openai import OpenAI
+        # Determine which provider/model to use
+        model_choice = request.model_provider.lower()
+
+        # Map model choices to actual model names
+        CLAUDE_MODELS = {
+            "claude-opus-4.5": "claude-opus-4-5",
+            "claude-sonnet-4.5": "claude-sonnet-4-5-20250929",
+            "claude-sonnet-4": "claude-sonnet-4-20250514",
+            "anthropic": "claude-opus-4-5",  # Default Claude to Opus 4.5 for best comedy
+        }
+
+        # "auto" mode: prefer Claude Opus 4.5 for comedy, fall back to OpenAI
+        if model_choice == "auto":
+            if anthropic_api_key:
+                model_choice = "claude-opus-4.5"
+            elif openai_api_key or portkey_api_key:
+                model_choice = "gpt-4o"
+            else:
+                raise HTTPException(
+                    status_code=500,
+                    detail="No API keys configured. Set ANTHROPIC_API_KEY (recommended) or OPENAI_API_KEY in your .env file.",
+                )
+
         from src.recap_generator import RecapGenerator
 
-        # Configure client for Portkey or direct OpenAI
-        if portkey_api_key and portkey_base_url:
-            # Using Portkey gateway
-            logger.info("Configuring OpenAI client for Portkey")
-            client = OpenAI(
-                api_key=api_key,
-                base_url=portkey_base_url,
-                default_headers={"x-portkey-virtual-key": portkey_virtual_key}
-                if portkey_virtual_key
-                else {},
-            )
-        else:
-            # Direct OpenAI connection
-            logger.info("Configuring OpenAI client for direct connection")
-            client = OpenAI(api_key=api_key)
-
         generator = RecapGenerator()
-
-        # Run the blocking recap generation in a thread pool to avoid blocking the server
         loop = asyncio.get_event_loop()
 
-        # Use partial to pass all arguments including use_v2_format
-        from functools import partial
+        # Generate with Claude models
+        if model_choice in CLAUDE_MODELS or model_choice.startswith("claude"):
+            if not anthropic_api_key:
+                raise HTTPException(
+                    status_code=500,
+                    detail="ANTHROPIC_API_KEY not configured. Set it in your .env file or use model_provider='gpt-4o'.",
+                )
 
-        generate_func = partial(
-            generator.generate_recap_with_openai,
-            week=week,
-            client=client,
-            model="gpt-4o",  # Using GPT-4o (latest model)
-            use_v2_format=request.use_v2_format,
-        )
+            from anthropic import Anthropic
 
-        recap_content = await loop.run_in_executor(None, generate_func)
+            client = Anthropic(api_key=anthropic_api_key)
+            model_name = CLAUDE_MODELS.get(model_choice, model_choice)
+
+            logger.info(
+                f"Generating recap for week {week} using Claude ({model_name}, {format_type})..."
+            )
+
+            generate_func = partial(
+                generator.generate_recap_with_anthropic,
+                week=week,
+                client=client,
+                model=model_name,
+                use_v2_format=request.use_v2_format,
+                use_v3_format=request.use_v3_format,
+                persona=request.persona,
+            )
+
+            recap_content = await loop.run_in_executor(None, generate_func)
+
+            # Friendly model name for response
+            if "opus-4-5" in model_name or "opus-4.5" in model_name:
+                model_used = "Claude Opus 4.5"
+            elif "sonnet-4-5" in model_name or "sonnet-4.5" in model_name:
+                model_used = "Claude Sonnet 4.5"
+            else:
+                model_used = "Claude Sonnet 4"
+
+        else:  # openai / gpt-4o
+            if not openai_api_key and not portkey_api_key:
+                raise HTTPException(
+                    status_code=500,
+                    detail="OPENAI_API_KEY not configured. Set it in your .env file or use model_provider='anthropic'.",
+                )
+
+            from openai import OpenAI
+
+            # Configure client for Portkey or direct OpenAI
+            if portkey_api_key and portkey_base_url:
+                logger.info("Configuring OpenAI client for Portkey gateway")
+                client = OpenAI(
+                    api_key=portkey_api_key,
+                    base_url=portkey_base_url,
+                    default_headers={"x-portkey-virtual-key": portkey_virtual_key}
+                    if portkey_virtual_key
+                    else {},
+                )
+            else:
+                logger.info("Configuring OpenAI client for direct connection")
+                client = OpenAI(api_key=openai_api_key)
+
+            model_name = "gpt-4o"
+            logger.info(
+                f"Generating recap for week {week} using OpenAI ({model_name}, {format_type})..."
+            )
+
+            generate_func = partial(
+                generator.generate_recap_with_openai,
+                week=week,
+                client=client,
+                model=model_name,
+                use_v2_format=request.use_v2_format,
+                use_v3_format=request.use_v3_format,
+                persona=request.persona,
+            )
+
+            recap_content = await loop.run_in_executor(None, generate_func)
+            model_used = f"OpenAI ({model_name})"
 
         if not recap_content:
             raise HTTPException(
@@ -907,17 +1026,17 @@ async def generate_recap(request: GenerateRecapRequest):
                 detail="Failed to generate recap. Check server logs for details.",
             )
 
-        format_label = "V2 (structured)" if request.use_v2_format else "V1 (classic)"
         logger.info(
-            f"✅ Recap generated successfully for week {week} using GPT-4o ({format_label})"
+            f"✅ Recap generated successfully for week {week} using {model_used} ({format_type})"
         )
 
         return {
             "success": True,
             "week": week,
             "recap": recap_content,
-            "format": format_label,
-            "message": f"Recap for week {week} generated successfully using GPT-4o ({format_label})",
+            "format": format_type,
+            "model": model_used,
+            "message": f"Recap for week {week} generated successfully using {model_used} ({format_type})",
         }
 
     except HTTPException:

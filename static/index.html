@@ -23,12 +23,72 @@
                     <input type="number" id="weekInput" min="1" max="18" value="1" placeholder="Enter week number">
                 </div>
 
-                <div class="form-group">
-                    <label for="formatToggle">Format:</label>
-                    <select id="formatToggle">
-                        <option value="v2" selected>V2 - Structured (750-1000 words, organized by tier)</option>
-                        <option value="v1">V1 - Classic (400-500 words, stream-of-consciousness)</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="personaSelect">Persona:</label>
+                        <select id="personaSelect">
+                            <option value="" selected>🎲 Random (Auto-rotate)</option>
+                            <option value="seasonal">🗓️ Seasonal Auto-detect</option>
+                            <optgroup label="🦃 Seasonal - Thanksgiving">
+                                <option value="Thanksgiving Host Ghost">🦃 Thanksgiving Host</option>
+                                <option value="Drunk Uncle at Thanksgiving">🍺 Drunk Uncle at Thanksgiving</option>
+                                <option value="Black Friday Shopper Ghost">🛒 Black Friday Shopper</option>
+                            </optgroup>
+                            <optgroup label="🎄 Seasonal - Holidays">
+                                <option value="Holiday Mall Santa Ghost">🎅 Holiday Mall Santa</option>
+                                <option value="New Year's Eve Host Ghost">🎆 New Year's Eve Host</option>
+                            </optgroup>
+                            <optgroup label="🏈 Seasonal - Fantasy">
+                                <option value="Playoff Elimination Ghost">☠️ Playoff Elimination</option>
+                                <option value="Fantasy Draft Auctioneer">🔨 Draft Auctioneer</option>
+                                <option value="March Madness Bracket Ghost">🏀 March Madness Bracket</option>
+                            </optgroup>
+                            <optgroup label="📺 Pop Culture">
+                                <option value="True-Crime Narrator Ghost">True-Crime Narrator</option>
+                                <option value="Reality TV Host Ghost">Reality TV Host</option>
+                                <option value="Nature Documentary Ghost">Nature Documentary</option>
+                                <option value="Film Noir Detective Ghost">Film Noir Detective</option>
+                                <option value="Infomercial Pitchman Ghost">Infomercial Pitchman</option>
+                                <option value="Local News Anchor Ghost">Local News Anchor</option>
+                            </optgroup>
+                            <optgroup label="🏟️ Sports">
+                                <option value="Vegas Bookie Ghost">Vegas Bookie</option>
+                                <option value="Beat Reporter Ghost">Beat Reporter</option>
+                                <option value="NFL Films Narrator Ghost">NFL Films Narrator</option>
+                            </optgroup>
+                            <optgroup label="👥 Everyday Characters">
+                                <option value="Therapist Ghost">Therapist</option>
+                                <option value="Disappointed Dad Ghost">Disappointed Dad</option>
+                                <option value="Yelp Reviewer Ghost">Yelp Reviewer</option>
+                                <option value="Passive-Aggressive Coworker">Passive-Aggressive Coworker</option>
+                                <option value="Food Critic Ghost">Food Critic</option>
+                                <option value="Frustrated Dasher Ghost">Frustrated Dasher</option>
+                            </optgroup>
+                            <optgroup label="📅 Other Seasonal">
+                                <option value="Valentine's Cupid Ghost">💘 Valentine's Cupid</option>
+                                <option value="Tax Season Auditor Ghost">📋 Tax Season Auditor</option>
+                                <option value="Summer Intern Ghost">☀️ Summer Intern</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formatSelect">Format:</label>
+                        <select id="formatSelect">
+                            <option value="v3" selected>V3 Lean (Recommended)</option>
+                            <option value="v2">V2 Structured (Legacy)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modelSelect">AI Model:</label>
+                        <select id="modelSelect">
+                            <option value="claude-opus-4.5" selected>Claude Opus 4.5 (Best for comedy)</option>
+                            <option value="claude-sonnet-4.5">Claude Sonnet 4.5</option>
+                            <option value="claude-sonnet-4">Claude Sonnet 4</option>
+                            <option value="gpt-4o">GPT-4o (OpenAI)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <button id="generateBtn" class="btn btn-primary">

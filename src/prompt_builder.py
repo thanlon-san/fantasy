@@ -1,164 +1,121 @@
 """
-Modular prompt system for the fantasy football columnist
-Builds prompts dynamically based on what data is available
+Prompt builder for the Fantasy Football columnist.
+
+Instead of keeping one huge markdown file, we split the system prompt into
+smaller concern-specific docs (persona, structure, comedy rules, league
+context) and stitch them together here for the LLM.
 """
 
-import os
-from typing import Dict, List, Optional
+from __future__ import annotations
+
+from pathlib import Path
+from typing import List
 
 
-class PromptBuilder:
-    """Builds prompts from modular components"""
-
-    def __init__(self, prompts_dir: str = "prompts"):
-        self.prompts_dir = prompts_dir
-        self._ensure_prompts_directory()
-
-    def _ensure_prompts_directory(self):
-        """Create prompts directory if it doesn't exist"""
-        if not os.path.exists(self.prompts_dir):
-            os.makedirs(self.prompts_dir)
-
-    def _load_section(self, filename: str) -> str:
-        """Load a prompt section from file"""
-        filepath = os.path.join(self.prompts_dir, filename)
-        if os.path.exists(filepath):
-            with open(filepath, "r") as f:
-                return f.read()
-        return ""
-
-    def build_columnist_prompt(
-        self,
-        include_examples: bool = True,
-        include_advanced_stats: bool = True,
-        include_trends: bool = True,
-        include_memory: bool = True,
-    ) -> str:
-        """
-        Build the columnist prompt from modular components
-
-        Args:
-            include_examples: Include example roasts and structures
-            include_advanced_stats: Include advanced stats guidance
-            include_trends: Include multi-week trend guidance
-            include_memory: Include memory system instructions
-        """
-
-        sections = []
-
-        # Core persona (ALWAYS included)
-        sections.append(self._load_section("00_core_persona.md"))
-
-        # Content structure (ALWAYS included)
-        sections.append(self._load_section("01_structure.md"))
-
-        # Safety rails (ALWAYS included)
-        sections.append(self._load_section("02_safety_rails.md"))
-
-        # Data grounding (ALWAYS included)
-        sections.append(self._load_section("03_data_grounding.md"))
-
-        # Optional: Examples
-        if include_examples:
-            sections.append(self._load_section("04_examples.md"))
-
-        # Optional: Advanced stats guidance
-        if include_advanced_stats:
-            sections.append(self._load_section("05_advanced_stats.md"))
-
-        # Optional: Trend analysis
-        if include_trends:
-            sections.append(self._load_section("06_trends.md"))
-
-        # Optional: Memory system
-        if include_memory:
-            sections.append(self._load_section("07_memory.md"))
-
-        # League-specific context (ALWAYS included)
-        sections.append(self._load_section("08_league_context.md"))
-
-        # Final reminder (ALWAYS included)
-        sections.append(self._load_section("09_final_reminder.md"))
-
-        # Join all sections with double newlines
-        full_prompt = "\n\n".join(filter(None, sections))
-
-        return full_prompt
-
-    def get_prompt_stats(self, prompt: str) -> Dict:
-        """Get statistics about a prompt"""
-        return {
-            "characters": len(prompt),
-            "lines": len(prompt.splitlines()),
-            "estimated_tokens": len(prompt) // 4,
-            "sections": prompt.count("##"),
-            "examples": prompt.count("**Example"),
-        }
-
-    def create_fallback_prompt(self) -> str:
-        """
-        Create a fallback prompt if modular files don't exist
-        Uses the original COLUMNIST_PROMPT.md as fallback
-        """
-        fallback_path = "COLUMNIST_PROMPT.md"
-        if os.path.exists(fallback_path):
-            with open(fallback_path, "r") as f:
-                return f.read()
-
-        # If no fallback exists, return a minimal prompt
-        return """You are a mean but funny fantasy football columnist.
-Write a weekly recap that roasts bad decisions and celebrates great plays.
-Be cutting but safe. Keep it short and punchy. Use CRM jargon as easter eggs."""
+def _read_if_exists(paths: List[Path]) -> str:
+    """Return the contents of the first existing path, or an empty string."""
+    for p in paths:
+        if p.exists():
+            return p.read_text(encoding="utf-8")
+    return ""
 
 
-# Convenience function for backward compatibility
-def get_columnist_prompt(use_modular: bool = True, **kwargs) -> str:
+def build_columnist_prompt(use_v2: bool = True, use_v3: bool = False) -> str:
     """
-    Get the columnist prompt (backward compatible)
+    Build the full system prompt for the columnist by composing smaller files.
 
     Args:
-        use_modular: If True, use modular prompt system. If False, use monolithic file.
-        **kwargs: Additional arguments passed to PromptBuilder.build_columnist_prompt()
+        use_v2: If True and use_v3 is False, load V2 format.
+        use_v3: If True, load the lean V3 format (overrides use_v2).
+
+    V3 (recommended): Single COLUMNIST_PROMPT_V3.md file - lean and focused.
+    
+    V2/V1 (legacy): Composes from multiple files:
+      1) COLUMNIST_PERSONA.md
+      2) COLUMNIST_STRUCTURE_V2.md (for V2) or COLUMNIST_STRUCTURE_V1.md (for V1)
+      3) COLUMNIST_COMEDY_RULES.md
+      4) COLUMNIST_LEAGUE_CONTEXT.md
+
+    If none of these files are found, this function raises FileNotFoundError so
+    callers can fall back to the legacy single-file prompt.
     """
-    if use_modular:
-        try:
-            builder = PromptBuilder()
-            return builder.build_columnist_prompt(**kwargs)
-        except Exception:
-            # Fallback to monolithic if modular fails
-            builder = PromptBuilder()
-            return builder.create_fallback_prompt()
-    else:
-        # Use original monolithic file
-        with open("COLUMNIST_PROMPT.md", "r") as f:
-            return f.read()
+    root = Path(__file__).resolve().parent.parent  # project root
+    docs = root / "docs"
 
+    # V3: Single lean prompt file (recommended)
+    if use_v3:
+        v3_text = _read_if_exists(
+            [
+                docs / "COLUMNIST_PROMPT_V3.md",
+                root / "COLUMNIST_PROMPT_V3.md",
+            ]
+        )
+        if v3_text.strip():
+            # Also append league lore if it exists
+            lore_text = _read_if_exists(
+                [
+                    docs / "LEAGUE_LORE.md",
+                    root / "LEAGUE_LORE.md",
+                ]
+            )
+            if lore_text.strip():
+                return v3_text.strip() + "\n\n---\n\n" + lore_text.strip() + "\n"
+            return v3_text.strip() + "\n"
+        # Fall through to V2 if V3 not found
+        use_v2 = True
 
-if __name__ == "__main__":
-    # Test the builder
-    builder = PromptBuilder()
-
-    print("Testing Prompt Builder\n" + "=" * 50)
-
-    # Build minimal prompt (no examples, no trends)
-    minimal = builder.build_columnist_prompt(
-        include_examples=False, include_trends=False
+    # V2/V1: Compose from multiple files (legacy)
+    persona_text = _read_if_exists(
+        [
+            docs / "COLUMNIST_PERSONA.md",
+            root / "COLUMNIST_PERSONA.md",
+        ]
     )
-    minimal_stats = builder.get_prompt_stats(minimal)
-    print(f"\n📊 Minimal Prompt:")
-    print(f"  Characters: {minimal_stats['characters']:,}")
-    print(f"  Estimated tokens: {minimal_stats['estimated_tokens']:,}")
 
-    # Build full prompt
-    full = builder.build_columnist_prompt()
-    full_stats = builder.get_prompt_stats(full)
-    print(f"\n📊 Full Prompt:")
-    print(f"  Characters: {full_stats['characters']:,}")
-    print(f"  Estimated tokens: {full_stats['estimated_tokens']:,}")
-    print(f"  Sections: {full_stats['sections']}")
+    if use_v2:
+        structure_text = _read_if_exists(
+            [
+                docs / "COLUMNIST_STRUCTURE_V2.md",
+                root / "COLUMNIST_STRUCTURE_V2.md",
+            ]
+        )
+    else:
+        structure_text = _read_if_exists(
+            [
+                docs / "COLUMNIST_STRUCTURE_V1.md",
+                root / "COLUMNIST_STRUCTURE_V1.md",
+            ]
+        )
 
-    # Show savings
-    savings = (
-        1 - minimal_stats["estimated_tokens"] / full_stats["estimated_tokens"]
-    ) * 100
-    print(f"\n💰 Token Savings (minimal vs full): {savings:.1f}%")
+    comedy_text = _read_if_exists(
+        [
+            docs / "COLUMNIST_COMEDY_RULES.md",
+            root / "COLUMNIST_COMEDY_RULES.md",
+        ]
+    )
+
+    league_text = _read_if_exists(
+        [
+            docs / "COLUMNIST_LEAGUE_CONTEXT.md",
+            root / "COLUMNIST_LEAGUE_CONTEXT.md",
+        ]
+    )
+
+    parts = [
+        t.strip()
+        for t in [persona_text, structure_text, comedy_text, league_text]
+        if t.strip()
+    ]
+
+    if not parts:
+        raise FileNotFoundError(
+            "No section files found for columnist prompt "
+            "(expected COLUMNIST_PERSONA.md / COLUMNIST_STRUCTURE_*.md / "
+            "COLUMNIST_COMEDY_RULES.md / COLUMNIST_LEAGUE_CONTEXT.md)."
+        )
+
+    # Use a simple delimiter so the sections stay visually distinct.
+    return "\n\n---\n\n".join(parts) + "\n"
+
+
+# No CLI entrypoint here; this module is used via LLMClient.load_columnist_prompt.

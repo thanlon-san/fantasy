@@ -48,6 +48,9 @@ class ContextBuilder:
             context_parts.append("- 🏆 Power Rankings (all teams, with movement) → 🏈 Preview → 🧘 Closing")
             context_parts.append("")
 
+        # Week highlights (for Stat of the Week section)
+        self._add_week_highlights(context_parts, week_data)
+
         # Matchups - organize by tier for V2
         all_matchups = week_data["matchups"]["matchups"]
         
@@ -113,7 +116,65 @@ class ContextBuilder:
         # Multi-week trends
         self._add_trends(context_parts, week_data, week_num)
 
+        # Next week matchups (for Preview section)
+        self._add_next_week_preview(context_parts, week_data, week_num)
+
         return "\n".join(context_parts)
+
+    def _add_week_highlights(self, context_parts: List[str], week_data: Dict):
+        """Add week highlights from stats endpoint - great for Stat of the Week"""
+        week_stats = week_data.get("week_stats", {})
+        if not week_stats:
+            return
+
+        context_parts.append("\n## 🔥 Week Highlights (for Stat of the Week)")
+        context_parts.append("Use ONE of these as your Stat of the Week - pick the most roastable:\n")
+
+        # Highest score (API returns dict with "team" and "points" keys)
+        if week_stats.get("highest_score"):
+            high = week_stats["highest_score"]
+            team = high.get("team", "Unknown")
+            score = high.get("points", 0)
+            owner = TEAM_OWNERS.get(team, "Unknown")
+            context_parts.append(f"**Week Winner:** @{owner}'s {team} scored {score} points")
+
+        # Lowest score (roastable)
+        if week_stats.get("lowest_score"):
+            low = week_stats["lowest_score"]
+            team = low.get("team", "Unknown")
+            score = low.get("points", 0)
+            owner = TEAM_OWNERS.get(team, "Unknown")
+            context_parts.append(f"**Dumpster Fire:** @{owner}'s {team} only managed {score} points 🗑️")
+
+        # Biggest blowout
+        if week_stats.get("biggest_blowout"):
+            blowout = week_stats["biggest_blowout"]
+            winner_owner = TEAM_OWNERS.get(blowout.get("winner", ""), "Unknown")
+            loser_owner = TEAM_OWNERS.get(blowout.get("loser", ""), "Unknown")
+            context_parts.append(
+                f"**Biggest Blowout:** @{winner_owner}'s {blowout.get('winner')} destroyed "
+                f"@{loser_owner}'s {blowout.get('loser')} by {blowout.get('margin', 0)} points 💀"
+            )
+
+        # Closest game (nail-biter)
+        if week_stats.get("closest_game"):
+            close = week_stats["closest_game"]
+            owner1 = TEAM_OWNERS.get(close.get("team1", ""), "Unknown")
+            owner2 = TEAM_OWNERS.get(close.get("team2", ""), "Unknown")
+            context_parts.append(
+                f"**Nail Biter:** @{owner1}'s {close.get('team1')} vs @{owner2}'s {close.get('team2')} "
+                f"decided by just {close.get('margin', 0)} points 😰"
+            )
+
+        # Most bench points (lineup mismanagement)
+        if week_stats.get("most_bench_points"):
+            bench = week_stats["most_bench_points"]
+            owner = TEAM_OWNERS.get(bench.get("team", ""), "Unknown")
+            context_parts.append(
+                f"**Bench MVP:** @{owner}'s {bench.get('team')} left {bench.get('points', 0)} points on the bench 🪑"
+            )
+
+        context_parts.append("")
     
     def _add_matchup_details(self, context_parts: List[str], matchup: Dict):
         """Add detailed matchup information for both teams"""
@@ -440,6 +501,44 @@ class ContextBuilder:
                         )
         except Exception as e:
             context_parts.append(f"  (Trend tracking: {e})")
+
+    def _add_next_week_preview(self, context_parts: List[str], week_data: Dict, current_week: int):
+        """Fetch and add next week's matchups for the Preview section"""
+        next_week = current_week + 1
+        context_parts.append(f"\n## 🏈 Week {next_week} Preview (ACTUAL MATCHUPS - USE THESE)")
+        context_parts.append("**CRITICAL: Use these exact matchups for the Preview section. Do NOT make up matchups.**\n")
+        
+        try:
+            import requests
+            api_url = week_data.get('api_url', 'http://localhost:8000')
+            resp = requests.get(f"{api_url}/api/matchups/{next_week}")
+            resp.raise_for_status()
+            next_matchups = resp.json().get("matchups", [])
+            
+            if not next_matchups:
+                context_parts.append(f"(No Week {next_week} matchups available yet)")
+                return
+            
+            for matchup in next_matchups:
+                home = matchup.get("home_team", {})
+                away = matchup.get("away_team", {})
+                home_name = home.get("team_name", "Unknown")
+                away_name = away.get("team_name", "Unknown")
+                home_owner = TEAM_OWNERS.get(home_name, "Unknown")
+                away_owner = TEAM_OWNERS.get(away_name, "Unknown")
+                
+                # Get records from API response
+                home_record = home.get("record", "?-?")
+                away_record = away.get("record", "?-?")
+                
+                context_parts.append(
+                    f"- @{home_owner}'s {home_name} ({home_record}) vs @{away_owner}'s {away_name} ({away_record})"
+                )
+            
+            context_parts.append("")
+            
+        except Exception as e:
+            context_parts.append(f"(Could not fetch Week {next_week} matchups: {e})")
 
     @staticmethod
     def _format_player_stats(player: Dict) -> str:

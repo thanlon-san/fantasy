@@ -7,7 +7,9 @@ let currentWeek = null;
 
 // DOM Elements
 const weekInput = document.getElementById("weekInput");
-const formatToggle = document.getElementById("formatToggle");
+const personaSelect = document.getElementById("personaSelect");
+const formatSelect = document.getElementById("formatSelect");
+const modelSelect = document.getElementById("modelSelect");
 const generateBtn = document.getElementById("generateBtn");
 const generateStatus = document.getElementById("generateStatus");
 const recapDisplay = document.getElementById("recapDisplay");
@@ -134,7 +136,9 @@ async function loadRecap(week) {
 // Generate new recap
 async function generateRecap() {
     const week = parseInt(weekInput.value);
-  const useV2Format = formatToggle.value === "v2";
+  const persona = personaSelect.value;
+  const format = formatSelect ? formatSelect.value : "v3";
+  const model = modelSelect ? modelSelect.value : "auto";
     
     if (!week || week < 1 || week > 18) {
     showStatus("Please enter a valid week number (1-18)", "error");
@@ -143,22 +147,31 @@ async function generateRecap() {
 
     // Disable button and show loading
     setGenerating(true);
-  const formatLabel = useV2Format ? "V2 (structured)" : "V1 (classic)";
+  const personaLabel = persona ? persona.replace(" Ghost", "") : "Random persona";
+  const formatLabel = format === "v3" ? "V3 Lean" : "V2 Structured";
+  const modelLabel = model === "anthropic" ? "Claude" : model === "openai" ? "GPT-4o" : "Auto";
   showStatus(
-    `Generating ${formatLabel} recap... This may take 30-60 seconds ⏳`,
+    `Generating recap with ${personaLabel} (${formatLabel}, ${modelLabel})... This may take 30-60 seconds ⏳`,
     "loading"
   );
 
     try {
+        const requestBody = { 
+            week: week,
+            use_v3_format: format === "v3",
+            use_v2_format: format === "v2",
+            model_provider: model,
+        };
+        if (persona) {
+            requestBody.persona = persona;
+        }
+        
         const response = await fetch(`${API_BASE}/api/recaps/generate`, {
       method: "POST",
             headers: {
         "Content-Type": "application/json",
             },
-            body: JSON.stringify({ 
-                week: week,
-        use_v2_format: useV2Format,
-      }),
+            body: JSON.stringify(requestBody),
         });
 
         if (!response.ok) {
@@ -170,7 +183,10 @@ async function generateRecap() {
         
         // Display the recap
         displayRecap(week, data.recap);
-    showStatus("✅ Recap generated successfully!", "success");
+    const successPersona = persona ? persona.replace(" Ghost", "") : "random persona";
+    const successFormat = format === "v3" ? "V3 Lean" : "V2";
+    const successModel = data.model || modelLabel;
+    showStatus(`✅ Recap generated successfully with ${successPersona} (${successFormat}, ${successModel})!`, "success");
     showToast("Recap generated successfully!", "success");
         
         // Reload history
@@ -211,8 +227,18 @@ function convertToSlackFormat(markdown) {
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
 
-    // Skip empty lines - we'll add spacing intentionally
-    if (!line.trim()) continue;
+    // Preserve empty lines for Slack spacing
+    if (!line.trim()) {
+      output.push("");
+      continue;
+    }
+
+    // Section headers with bold emoji (e.g., **:football: Week 11**)
+    // Keep the line as-is for Slack markdown
+    if (line.startsWith("**:") && line.includes("**")) {
+      output.push(line);
+      continue;
+    }
 
     // Main heading (H1)
     if (line.startsWith("# ")) {
@@ -222,7 +248,14 @@ function convertToSlackFormat(markdown) {
       continue;
     }
 
-    // Matchup headers (H3 with @Owner) - these need special handling
+    // Matchup headlines with bold (e.g., **@Owner's Team Wins**)
+    // Keep the line as-is for Slack markdown
+    if (line.startsWith("**") && line.includes("@") && line.endsWith("**")) {
+      output.push(line);
+      continue;
+    }
+
+    // Legacy: Matchup headers (H3 with @Owner) - for backwards compatibility
     if (line.startsWith("### ") && line.includes("@")) {
       output.push("");
       // Strip ### and convert **bold** to *bold* - do NOT use regex on individual chars
@@ -276,21 +309,15 @@ function convertToSlackFormat(markdown) {
       continue;
     }
 
-    // Convert markdown bold to Slack bold - simple replace
-    while (line.includes("**")) {
-      line = line.replace("**", "*");
-    }
-    // Handle underscores
-    line = line.replace(/__/g, "*");
-
+    // Keep markdown bold as-is (**text**) - Slack supports this
+    // No conversion needed
+    
     // Regular line
     output.push(line);
   }
 
-  // Join with newlines - use zero-width space for blank lines so Slack preserves them
-  let result = output.map(line => line === "" ? "\u200B" : line).join("\n");
-  // Limit to max 1 blank line between content
-  result = result.replace(/\n{3,}/g, "\n\n");
+  // Join with newlines - preserve blank lines as-is
+  let result = output.join("\n");
   return result.trim();
 }
 
