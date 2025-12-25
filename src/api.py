@@ -412,6 +412,13 @@ def _compute_adjpf_and_metrics(f, through_week: int):
     for w in range(1, through_week + 1):
         box_scores = f.league.box_scores(w)
         for bs in box_scores:
+            # Skip bye week matchups where teams aren't proper team objects
+            # This happens in playoff weeks when top seeds have byes
+            if not hasattr(bs.away_team, "team_id") or not hasattr(
+                bs.home_team, "team_id"
+            ):
+                continue
+
             home_id = bs.home_team.team_id
             away_id = bs.away_team.team_id
             home_score = float(getattr(bs, "home_score", 0.0))
@@ -630,6 +637,13 @@ def get_matchups(week: int):
 
         matchups_data = []
         for i, matchup in enumerate(matchups, 1):
+            # Skip bye week matchups where away_team is not a team object
+            # This happens in playoff weeks when top seeds have byes
+            if not hasattr(matchup.away_team, "team_name") or not hasattr(
+                matchup.home_team, "team_name"
+            ):
+                continue
+
             # Process home team lineup
             home_starters = []
             home_bench = []
