@@ -178,10 +178,10 @@ export default function Home() {
     })
   }
 
-  const filteredMustStart = useMemo(() => filterPlayers(dailyLineup.must_start), [dailyLineup.must_start, searchTerm, positionFilter, confidenceThreshold, filterPlayers])
-  const filteredStart = useMemo(() => filterPlayers(dailyLineup.start), [dailyLineup.start, searchTerm, positionFilter, confidenceThreshold, filterPlayers])
-  const filteredFlex = useMemo(() => filterPlayers(dailyLineup.flex), [dailyLineup.flex, searchTerm, positionFilter, confidenceThreshold, filterPlayers])
-  const filteredBench = useMemo(() => filterPlayers(dailyLineup.bench), [dailyLineup.bench, searchTerm, positionFilter, confidenceThreshold, filterPlayers])
+  const filteredMustStart = useMemo(() => filterPlayers(dailyLineup.must_start), [dailyLineup.must_start, filterPlayers])
+  const filteredStart = useMemo(() => filterPlayers(dailyLineup.start), [dailyLineup.start, filterPlayers])
+  const filteredFlex = useMemo(() => filterPlayers(dailyLineup.flex), [dailyLineup.flex, filterPlayers])
+  const filteredBench = useMemo(() => filterPlayers(dailyLineup.bench), [dailyLineup.bench, filterPlayers])
 
   const totalPlayingCount = dailyLineup.must_start.length + dailyLineup.start.length + dailyLineup.flex.length
   const filteredCount = filteredMustStart.length + filteredStart.length + filteredFlex.length + filteredBench.length
@@ -212,7 +212,7 @@ export default function Home() {
         <CommandPalette 
           players={allPlayers} 
           onSelectPlayer={(player) => {
-            setSelectedPlayer(player)
+            setSelectedPlayer(player as any)
             setDetailsOpen(true)
           }}
         />
