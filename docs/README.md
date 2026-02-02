@@ -1,352 +1,135 @@
-# Fantasy Football Data Fetcher & API 🏈
+# Fantasy Sports Applications
 
-**Automated ESPN Fantasy Football data fetcher with REST API and markdown report generator.** Pull league stats, matchups, and standings directly from ESPN's API via a beautiful REST API or generate markdown reports.
+A monorepo of AI-powered fantasy sports applications and tools.
 
-## Features
+## Applications
 
-- 🚀 **REST API** - FastAPI server with full league data access
-- 😈 **AI Recap Generator** - Viciously funny weekly recaps powered by LLM
-  - Roasts bad decisions with surgical precision
-  - Remembers past failures for callbacks
-  - 85% lowlights, 15% grudging highlights
-  - Safe, PG-13, grounded in real stats
-- 📲 **Slack Integration** - Automatically post weekly recaps to Slack
-  - Scheduled automated posting (cron/launchd support)
-  - Beautiful formatting with Slack blocks
-  - Easy webhook or bot token setup
-- 📊 **Automatic Data Fetching** - Pull all league data with one command
-- 📝 **Markdown Reports** - Generate clean, formatted reports for:
-  - Weekly matchups with full lineups
-  - League standings and stats
-  - Week summaries with awards
-- 🏆 **Statistical Analysis** - Automatically calculate:
-  - Highest/lowest scores
-  - Biggest blowouts
-  - Closest games
-  - Bench points leaders
-- 🔄 **Auto-Updates** - Automatically tracks current week
-- 🔐 **Private League Support** - Works with private ESPN leagues
+### 🏈 [ESPN Fantasy Recap](./apps/espn-fantasy-recap/)
+AI-generated weekly recaps for ESPN Fantasy Football leagues with a hilarious roast columnist persona.
+
+**Status**: ✅ Production Ready
+
+**Features**:
+- Weekly AI-generated recaps (Claude Opus 4.5 / GPT-4o)
+- Advanced power rankings with opponent-adjusted scoring
+- Slack integration
+- Web UI dashboard
+- REST API
+
+[View Documentation →](./apps/espn-fantasy-recap/README.md)
+
+### ⚾ [Baseball Keeper Advisor](./apps/keeper-advisor/)
+AI-powered decision support for baseball keeper league management.
+
+**Status**: 🚧 In Development
+
+**Features** (Planned):
+- Yahoo Fantasy API integration
+- Keeper cost calculator
+- AI-powered keeper recommendations
+- Trade value analysis
+- Draft strategy advisor
+
+[View Documentation →](./apps/keeper-advisor/README.md)
+
+## Shared Packages
+
+### 📦 [Shared Utilities](./packages/shared/)
+Common utilities used across all fantasy applications:
+- LLM clients (OpenAI, Anthropic)
+- Slack notifications
+- Logging configuration
 
 ## Quick Start
 
-**📚 Complete Documentation** → **[See docs/INDEX.md](docs/INDEX.md)** for the full documentation index!
-
-**New to this project?** → **[See docs/QUICKSTART.md](docs/QUICKSTART.md)** for a step-by-step guide with screenshots!
+### ESPN Fantasy Recap
 
 ```bash
-# Clone the repository
-git clone https://github.com/thanlon-san/fantasy.git
-cd fantasy
+# Install dependencies
+cd apps/espn-fantasy-recap
+pip install -r requirements.txt
 
-# Install dependencies (required!)
-pip3 install --break-system-packages -r requirements.txt
+# Configure your league
+cp config/env.example .env
+# Edit .env with your credentials
 
-# Copy and configure settings
-cp config/config.example.json config.json
-# Edit config.json with your league ID and ESPN cookies (see below)
-
-# Start the API server
-npm run dev
-```
-
-**API now running at:** http://localhost:8000  
-**Interactive docs:** http://localhost:8000/docs
-
-## Configuration
-
-### 1. Create `config.json`
-
-Copy the example configuration:
-
-```bash
-cp config.example.json config.json
-```
-
-### 2. Edit `config.json`
-
-```json
-{
-  "league_id": 228124044, // Your ESPN league ID
-  "year": 2025, // Current season
-  "current_week": 7, // Auto-detected from ESPN (fallback only)
-  "private_league": true, // Set to true if your league is private
-  "espn_s2": "YOUR_ESPN_S2_HERE", // Required for private leagues
-  "swid": "{YOUR-SWID-HERE}" // Required for private leagues
-}
-```
-
-### 3. Get ESPN Cookies (Required for Private Leagues)
-
-If your league is private, you'll need ESPN authentication cookies:
-
-1. Log into ESPN Fantasy Football in your browser
-2. Open Developer Tools (Press **F12**)
-3. Go to **Application** tab (Chrome) or **Storage** tab (Firefox)
-4. Navigate to **Cookies** → `https://fantasy.espn.com`
-5. Find and copy:
-   - `espn_s2` - Long string (copy the entire value)
-   - `SWID` - Format: `{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}` (include braces)
-6. Paste these values into your `config.json`
-
-## Usage
-
-### REST API (Recommended)
-
-**Start the API server:**
-
-```bash
-npm run dev
-```
-
-The API will be available at http://localhost:8000
-
-**Server management commands:**
-
-```bash
-npm run dev      # Start the server in the background
-npm run stop     # Stop the server
-npm run restart  # Restart the server
-npm status       # Check server status
-npm run logs     # View server logs
-```
-
-**Available Endpoints:**
-
-- `GET /api/league` - League information
-- `GET /api/standings` - Current standings
-- `GET /api/teams` - All teams
-- `GET /api/teams/{id}` - Specific team details
-- `GET /api/matchups/{week}` - Week matchups with lineups
-- `GET /api/stats/week/{week}` - Week statistics and highlights
-
-**Interactive Documentation:**
-
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-**Example API Calls:**
-
-```bash
-# Get league info
-curl http://localhost:8000/api/league
-
-# Get current standings
-curl http://localhost:8000/api/standings
-
-# Get week 7 matchups
-curl http://localhost:8000/api/matchups/7
-
-# Get week 7 stats
-curl http://localhost:8000/api/stats/week/7
-```
-
-### AI Weekly Recaps (The Fun Part!)
-
-**Generate viciously funny weekly roasts:**
-
-```bash
-# Option 1: Generate context for your LLM (ChatGPT, Claude, etc.)
-python3 recap_generator.py 7 --context-only
-
-# Option 2: Automated with OpenAI/Anthropic (see RECAP_USAGE.md)
-```
-
-**Example output:**
-
-```markdown
-# Week 7: When Projections Go to Die
-
-Started Russell Wilson (8.2) because apparently we're time-traveling to 2019.
-Meanwhile, benched Malik Nabers who dropped 23.4. That's not strategy—that's
-performance art...
-
-What they'll tell themselves: "We're optimizing our learnings for Week 8's
-synergistic outcomes."
-```
-
-📖 **Full guide:** [RECAP_USAGE.md](RECAP_USAGE.md)
-
-### Slack Integration (Auto-Post Recaps!)
-
-**Send recaps automatically to Slack:**
-
-```bash
-# Setup Slack (one-time)
-# Add SLACK_WEBHOOK_URL to your .env file
-
-# Test the connection
-python -m src.slack_notifier --test
-
-# Generate and send weekly recap
-python scripts/scheduled_recap.py
-
-# Schedule automatic weekly posting (cron)
-0 9 * * 2 cd /path/to/fantasy && python3 scripts/scheduled_recap.py
-```
-
-📖 **Full setup guide:** [docs/SLACK_INTEGRATION.md](docs/SLACK_INTEGRATION.md)
-
-### Web UI (Easy Mode!)
-
-**Generate recaps with a beautiful web interface:**
-
-```bash
 # Start the server
 npm run dev
-
-# Open your browser
-# Visit: http://localhost:8000
 ```
 
-**Features:**
-- 🎨 Beautiful, modern interface
-- ⚡ One-click recap generation
-- 💬 **Copy for Slack** - Auto-formatted with emojis! (🔥 🏆 📊 😬)
-- 📋 Copy as markdown too
-- 💾 Download as markdown
-- 📚 View all previous recaps
-- 📱 Works on mobile too!
+Visit http://localhost:8000 to access the web UI.
 
-📖 **Full guide:** [docs/WEB_UI_GUIDE.md](docs/WEB_UI_GUIDE.md)
-
-### Markdown Reports (Command Line)
-
-**Generate markdown reports:**
+### Keeper Advisor
 
 ```bash
-python3 fetch_league_data.py
-```
+# Install dependencies
+cd apps/keeper-advisor
+pip install -r requirements.txt
 
-This generates three files in the `output/` directory:
-
-- `week-{N}-matchups.md` - All matchups with lineups
-- `standings.md` - Current standings and season stats
-- `week-{N}-summary.md` - Weekly awards and highlights
-
-### Python Module Usage
-
-```python
-from fetch_league_data import FantasyDataFetcher
-
-# Initialize fetcher
-fetcher = FantasyDataFetcher(league_id=228124044, year=2025)
-fetcher.connect()
-
-# Get specific week data
-week_stats = fetcher.calculate_week_stats(week=7)
-
-# Generate custom reports
-matchups_md = fetcher.generate_matchups_markdown(week=7)
-standings_md = fetcher.generate_standings_markdown()
-```
-
-## Output Examples
-
-### Weekly Summary
-
-```markdown
-## Week 6 Summary
-
-### 🏆 Awards & Lowlights
-
-**👑 Week Winner:** New Vertical Threats (167.6 points)
-**🗑️ Dumpster Fire:** Laser Focused (52.9 points)
-**💥 Biggest Blowout:** New Vertical Threats destroyed Maia's Monstrous Team by 94.98 points
-**😰 Nail Biter:** High Qual Completion vs Team Tang decided by 3.3 points
-**🪑 Bench Points Champion:** Fly PCIO Fly left 76.1 points on the bench
-```
-
-## API Management
-
-### Start the API
-
-```bash
-npm run dev
-```
-
-The server runs in the background with automatic PID tracking.
-
-### Stop the API
-
-```bash
-npm run stop
-```
-
-### Restart the API
-
-```bash
-npm run restart
-```
-
-### Check API Status
-
-```bash
-npm status
-# or
-curl http://localhost:8000/health
-```
-
-### View Logs
-
-```bash
-npm run logs        # Follow server logs
-npm run logs:api    # Alternative log file
+# Run analysis
+npm run analyze
 ```
 
 ## Project Structure
 
 ```
 fantasy/
-├── src/
-│   ├── api.py               # FastAPI REST server
-│   ├── recap_generator.py   # AI-powered weekly recap generator
-│   ├── slack_notifier.py    # Slack integration for auto-posting
-│   └── ...                  # Other source modules
-├── scripts/
-│   ├── server.py            # Server management (start/stop/restart)
-│   ├── scheduled_recap.py   # Automated recap generation and posting
-│   └── ...                  # Other utility scripts
-├── static/                  # Web UI files (HTML/CSS/JS)
-├── docs/                    # All documentation
-│   ├── SLACK_INTEGRATION.md # Complete Slack setup guide
-│   ├── RECAP_USAGE.md       # Guide for generating AI recaps
-│   └── ...                  # Other documentation
-├── config/
-│   ├── config.example.json  # Example configuration
-│   └── env.example          # Example environment variables
-├── config.json              # Your configuration (create from example)
-├── package.json             # NPM scripts for server management
-├── requirements.txt         # Python dependencies
-└── README.md                # This file
+├── apps/                      # Applications
+│   ├── espn-fantasy-recap/   # ESPN weekly recap generator
+│   └── keeper-advisor/        # Baseball keeper advisor
+│
+├── packages/                  # Shared utilities
+│   └── shared/               # Common LLM, Slack, logging utils
+│
+├── docs/                      # Workspace documentation
+├── package.json              # Workspace root
+└── pnpm-workspace.yaml       # pnpm workspace config
 ```
 
-## Documentation
+## Development
 
-**📚 [Complete Documentation Index](docs/INDEX.md)** - Find all documentation organized by topic
+### Workspace Commands
 
-**Essential Guides:**
-- **[docs/QUICKSTART.md](docs/QUICKSTART.md)** - 5-minute setup guide for new users
-- **[docs/WEB_UI_QUICKSTART.md](docs/WEB_UI_QUICKSTART.md)** - Web interface quick start (easiest!)
-- **[docs/API_README.md](docs/API_README.md)** - Complete API documentation with examples
-- **[docs/RECAP_USAGE.md](docs/RECAP_USAGE.md)** - Guide for generating AI-powered recaps
-- **[docs/SLACK_INTEGRATION.md](docs/SLACK_INTEGRATION.md)** - Complete Slack setup and automation guide
-- **[Interactive API Docs](http://localhost:8000/docs)** - Available when server is running
+```bash
+# ESPN Recap
+npm run espn:dev       # Start ESPN recap server
+npm run espn:status    # Check server status
+npm run espn:stop      # Stop server
 
-**See [docs/INDEX.md](docs/INDEX.md) for all documentation organized by topic**
+# Keeper Advisor
+npm run keeper:analyze # Run keeper analysis
+```
 
-## Contributing
+### Adding a New Application
 
-Feel free to submit issues and enhancement requests!
+1. Create new directory in `apps/`
+2. Add `package.json` with name `@fantasy/your-app`
+3. Create `requirements.txt` with dependencies
+4. Import shared utilities: `from shared.llm_client import LLMClient`
+
+### Using Shared Utilities
+
+```python
+# In any app, import from shared package
+from shared.llm_client import LLMClient
+from shared.slack_notifier import SlackNotifier
+from shared.logger import get_logger
+
+# Use shared utilities
+logger = get_logger(__name__)
+client = LLMClient()
+```
+
+## Requirements
+
+- Python 3.8+
+- Node.js 18+ (for npm scripts)
+- pnpm (recommended) or npm
 
 ## License
 
-MIT License - See LICENSE file for details
-
-## Acknowledgments
-
-- Built using [espn-api](https://github.com/cwendt94/espn-api) by cwendt94
-- Inspired by the need to automate fantasy football suffering documentation
+MIT
 
 ---
 
-_May your waivers clear and your projections lie._ 🎲
+**Questions?** Check the individual app READMEs or open an issue.

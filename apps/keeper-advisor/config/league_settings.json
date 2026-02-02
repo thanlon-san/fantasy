@@ -1,0 +1,73 @@
+{
+  "$schema": "./league_settings.schema.json",
+  "league_name": "California Palm League",
+  "team_name": "2balls",
+  "season": 2026,
+  "platform": "yahoo",
+  
+  "roster": {
+    "total_spots": 24,
+    "positions": {
+      "C": 1,
+      "1B": 1,
+      "2B": 1,
+      "3B": 1,
+      "SS": 1,
+      "OF": 3,
+      "Util": 2,
+      "SP": 6,
+      "RP": 3,
+      "P": 1,
+      "Bench": 4
+    }
+  },
+  
+  "keeper_rules": {
+    "max_keepers": 3,
+    "default_late_round": 12,
+    "undrafted_fa_rule": "Round 12 in year 1, then moves up one round per year kept",
+    "drafted_late_round_rule": "Rounds 13+ become Round 12 keepers, then move up",
+    "cost_calculation": "draft_round - years_kept - 1",
+    "min_round": 1,
+    "notes": [
+      "Undrafted FAs start as 12th round keepers",
+      "Players drafted in rounds 13+ are eligible as 12th round keepers",
+      "Each year kept moves keeper cost up one round",
+      "Cannot keep a player if cost would be < Round 1"
+    ]
+  },
+  
+  "scoring": {
+    "type": "points",
+    "categories": {
+      "hitting": [
+        "R", "H", "HR", "RBI", "SB", "AVG", "OBP"
+      ],
+      "pitching": [
+        "W", "K", "ERA", "WHIP", "SV", "QS"
+      ]
+    }
+  },
+  
+  "waiver_wire": {
+    "type": "continuous",
+    "waiver_period_days": 1,
+    "weekly_moves_limit": null,
+    "season_moves_limit": null
+  },
+  
+  "draft": {
+    "type": "snake",
+    "total_rounds": 24,
+    "draft_date": "2026-03-15"
+  },
+  
+  "preferences": {
+    "adp_source": "fantasypros",
+    "adp_max_threshold": 400,
+    "min_value_gain_strong": 100,
+    "min_value_gain_good": 50,
+    "min_value_gain_consider": 20,
+    "auto_refresh_tokens": true
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "League Settings",
+  "description": "Fantasy baseball league configuration",
+  "type": "object",
+  "required": ["league_name", "team_name", "season", "platform", "roster", "keeper_rules"],
+  "properties": {
+    "league_name": {
+      "type": "string",
+      "description": "Name of your fantasy league"
+    },
+    "team_name": {
+      "type": "string",
+      "description": "Your team name"
+    },
+    "season": {
+      "type": "integer",
+      "minimum": 2020,
+      "description": "Current season year"
+    },
+    "platform": {
+      "type": "string",
+      "enum": ["yahoo", "espn", "cbs", "fantrax"],
+      "description": "Fantasy platform"
+    },
+    "roster": {
+      "type": "object",
+      "required": ["total_spots", "positions"],
+      "properties": {
+        "total_spots": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "positions": {
+          "type": "object",
+          "description": "Position slots in your roster"
+        }
+      }
+    },
+    "keeper_rules": {
+      "type": "object",
+      "required": ["max_keepers", "default_late_round"],
+      "properties": {
+        "max_keepers": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum number of keepers allowed"
+        },
+        "default_late_round": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Default round for late-round picks (usually 12)"
+        },
+        "undrafted_fa_rule": {
+          "type": "string"
+        },
+        "drafted_late_round_rule": {
+          "type": "string"
+        },
+        "cost_calculation": {
+          "type": "string"
+        },
+        "min_round": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["points", "categories", "roto"]
+        },
+        "categories": {
+          "type": "object"
+        }
+      }
+    },
+    "waiver_wire": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["continuous", "waiver_priority", "faab"]
+        },
+        "waiver_period_days": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "weekly_moves_limit": {
+          "type": ["integer", "null"]
+        },
+        "season_moves_limit": {
+          "type": ["integer", "null"]
+        }
+      }
+    },
+    "draft": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["snake", "auction", "linear"]
+        },
+        "total_rounds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "draft_date": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "properties": {
+        "adp_source": {
+          "type": "string",
+          "enum": ["fantasypros", "nfbc", "yahoo", "espn"]
+        },
+        "adp_max_threshold": {
+          "type": "integer",
+          "description": "Maximum ADP to consider for waiver pickups"
+        },
+        "min_value_gain_strong": {
+          "type": "number",
+          "description": "Minimum ADP gain for STRONG recommendation"
+        },
+        "min_value_gain_good": {
+          "type": "number",
+          "description": "Minimum ADP gain for GOOD recommendation"
+        },
+        "min_value_gain_consider": {
+          "type": "number",
+          "description": "Minimum ADP gain for CONSIDER recommendation"
+        },
+        "auto_refresh_tokens": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

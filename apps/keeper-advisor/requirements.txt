@@ -1,0 +1,16 @@
+# Keeper Advisor Dependencies
+
+# Shared dependencies
+-r ../../packages/shared/requirements.txt
+
+# Yahoo Fantasy API
+yahoo-fantasy-api>=2.12.0
+yahoo-oauth>=2.0
+cryptography>=41.0.0  # For HTTPS OAuth callback
+
+# Data analysis
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Optional: Web scraping for ADP data
+beautifulsoup4>=4.12.0

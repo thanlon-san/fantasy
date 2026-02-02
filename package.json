@@ -1,19 +1,19 @@
 {
-  "name": "fantasy-football-recap",
+  "name": "fantasy-workspace",
   "version": "1.0.0",
-  "description": "Fantasy Football Recap Generator with AI",
+  "description": "Fantasy sports applications monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "python3 scripts/server.py start",
-    "stop": "python3 scripts/server.py stop",
-    "restart": "python3 scripts/server.py restart",
-    "logs": "tail -f logs/$(date +%Y%m%d).log",
-    "logs:api": "tail -f /tmp/api_fantasy.log",
-    "status": "python3 scripts/server.py status",
-    "test": "python3 -m pytest tests/ -v",
-    "test:integration": "python3 test_v2_integration.py"
+    "espn:dev": "cd apps/espn-fantasy-recap && npm run dev",
+    "espn:stop": "cd apps/espn-fantasy-recap && npm run stop",
+    "espn:status": "cd apps/espn-fantasy-recap && npm run status",
+    "keeper:analyze": "cd apps/keeper-advisor && npm run analyze"
   },
-  "keywords": ["fantasy-football", "ai", "recap"],
+  "keywords": ["fantasy", "sports", "monorepo"],
   "author": "",
   "license": "MIT"
 }
-

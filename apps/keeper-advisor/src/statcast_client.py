@@ -1,0 +1,356 @@
+#!/usr/bin/env python3
+"""
+Statcast Data Client
+Fetch advanced metrics from MLB's Statcast system via Baseball Savant
+"""
+
+import logging
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple
+import pandas as pd
+from pybaseball import statcast_batter, statcast_pitcher, playerid_lookup
+from pybaseball.cache import enable as enable_cache
+
+logger = logging.getLogger(__name__)
+
+# Enable caching to avoid hitting API repeatedly
+enable_cache()
+
+
+class StatcastClient:
+    """Client for fetching Statcast data from Baseball Savant"""
+    
+    # Key metrics for breakout detection
+    HITTER_METRICS = [
+        'exit_velocity_avg',
+        'hard_hit_percent',
+        'barrel_percent',
+        'sweet_spot_percent',
+        'launch_angle_avg',
+        'chase_rate',
+        'whiff_percent',
+        'k_percent',
+        'bb_percent',
+    ]
+    
+    PITCHER_METRICS = [
+        'exit_velocity_avg',
+        'hard_hit_percent',
+        'barrel_percent',
+        'whiff_percent',
+        'k_percent',
+        'bb_percent',
+        'avg_fastball_velocity',
+        'avg_spin_rate',
+    ]
+    
+    def __init__(self):
+        self._player_cache = {}
+    
+    def get_player_id(self, first_name: str, last_name: str) -> Optional[int]:
+        """
+        Look up MLB player ID
+        
+        Args:
+            first_name: Player's first name
+            last_name: Player's last name
+            
+        Returns:
+            MLB player ID (key_mlbam) or None
+        """
+        cache_key = f"{first_name} {last_name}".lower()
+        
+        if cache_key in self._player_cache:
+            return self._player_cache[cache_key]
+        
+        try:
+            results = playerid_lookup(last_name, first_name)
+            
+            if results.empty:
+                logger.warning(f"No player found: {first_name} {last_name}")
+                return None
+            
+            # Get most recent player (highest mlb_played_last)
+            results = results.sort_values('mlb_played_last', ascending=False)
+            player_id = int(results.iloc[0]['key_mlbam'])
+            
+            self._player_cache[cache_key] = player_id
+            logger.debug(f"Found player ID for {first_name} {last_name}: {player_id}")
+            
+            return player_id
+            
+        except Exception as e:
+            logger.error(f"Error looking up player {first_name} {last_name}: {e}")
+            return None
+    
+    def get_hitter_stats(
+        self,
+        player_id: int,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None
+    ) -> Optional[pd.DataFrame]:
+        """
+        Get Statcast hitting data for a player
+        
+        Args:
+            player_id: MLB player ID
+            start_date: Start date (YYYY-MM-DD), defaults to 30 days ago
+            end_date: End date (YYYY-MM-DD), defaults to today
+            
+        Returns:
+            DataFrame with Statcast data or None
+        """
+        if not start_date:
+            start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        if not end_date:
+            end_date = datetime.now().strftime('%Y-%m-%d')
+        
+        try:
+            logger.info(f"Fetching hitter stats for player {player_id} ({start_date} to {end_date})")
+            data = statcast_batter(start_date, end_date, player_id)
+            
+            if data.empty:
+                logger.warning(f"No hitting data found for player {player_id}")
+                return None
+            
+            logger.info(f"Retrieved {len(data)} at-bats for player {player_id}")
+            return data
+            
+        except Exception as e:
+            logger.error(f"Error fetching hitter stats: {e}")
+            return None
+    
+    def get_pitcher_stats(
+        self,
+        player_id: int,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None
+    ) -> Optional[pd.DataFrame]:
+        """
+        Get Statcast pitching data for a player
+        
+        Args:
+            player_id: MLB player ID
+            start_date: Start date (YYYY-MM-DD), defaults to 30 days ago
+            end_date: End date (YYYY-MM-DD), defaults to today
+            
+        Returns:
+            DataFrame with Statcast data or None
+        """
+        if not start_date:
+            start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        if not end_date:
+            end_date = datetime.now().strftime('%Y-%m-%d')
+        
+        try:
+            logger.info(f"Fetching pitcher stats for player {player_id} ({start_date} to {end_date})")
+            data = statcast_pitcher(start_date, end_date, player_id)
+            
+            if data.empty:
+                logger.warning(f"No pitching data found for player {player_id}")
+                return None
+            
+            logger.info(f"Retrieved {len(data)} pitches for player {player_id}")
+            return data
+            
+        except Exception as e:
+            logger.error(f"Error fetching pitcher stats: {e}")
+            return None
+    
+    def calculate_hitter_metrics(self, data: pd.DataFrame) -> Dict[str, float]:
+        """
+        Calculate aggregate metrics for a hitter
+        
+        Args:
+            data: Raw Statcast data
+            
+        Returns:
+            Dictionary of calculated metrics
+        """
+        if data.empty:
+            return {}
+        
+        metrics = {}
+        
+        # Exit velocity
+        if 'launch_speed' in data.columns:
+            metrics['exit_velocity_avg'] = data['launch_speed'].mean()
+            metrics['exit_velocity_95th'] = data['launch_speed'].quantile(0.95)
+        
+        # Hard hit rate (95+ mph)
+        if 'launch_speed' in data.columns:
+            hard_hits = (data['launch_speed'] >= 95).sum()
+            total_hits = data['launch_speed'].notna().sum()
+            metrics['hard_hit_percent'] = (hard_hits / total_hits * 100) if total_hits > 0 else 0
+        
+        # Barrel rate
+        if 'barrel' in data.columns:
+            barrels = data['barrel'].sum()
+            batted_balls = data['barrel'].notna().sum()
+            metrics['barrel_percent'] = (barrels / batted_balls * 100) if batted_balls > 0 else 0
+        
+        # Launch angle
+        if 'launch_angle' in data.columns:
+            metrics['launch_angle_avg'] = data['launch_angle'].mean()
+            
+            # Sweet spot (8-32 degrees)
+            sweet_spot = ((data['launch_angle'] >= 8) & (data['launch_angle'] <= 32)).sum()
+            total_la = data['launch_angle'].notna().sum()
+            metrics['sweet_spot_percent'] = (sweet_spot / total_la * 100) if total_la > 0 else 0
+        
+        # Chase rate (swings outside zone)
+        if 'zone' in data.columns and 'description' in data.columns:
+            outside_zone = data['zone'].isin(['11', '12', '13', '14'])
+            swings = data['description'].str.contains('swing|foul', case=False, na=False)
+            chases = (outside_zone & swings).sum()
+            outside_pitches = outside_zone.sum()
+            metrics['chase_rate'] = (chases / outside_pitches * 100) if outside_pitches > 0 else 0
+        
+        # Whiff rate
+        if 'description' in data.columns:
+            swings = data['description'].str.contains('swing|foul', case=False, na=False).sum()
+            whiffs = data['description'].str.contains('swing.*miss', case=False, na=False).sum()
+            metrics['whiff_percent'] = (whiffs / swings * 100) if swings > 0 else 0
+        
+        # K% and BB%
+        if 'events' in data.columns:
+            pas = data['events'].notna().sum()
+            if pas > 0:
+                strikeouts = (data['events'] == 'strikeout').sum()
+                walks = (data['events'] == 'walk').sum()
+                metrics['k_percent'] = (strikeouts / pas * 100)
+                metrics['bb_percent'] = (walks / pas * 100)
+        
+        return metrics
+    
+    def calculate_pitcher_metrics(self, data: pd.DataFrame) -> Dict[str, float]:
+        """
+        Calculate aggregate metrics for a pitcher
+        
+        Args:
+            data: Raw Statcast data
+            
+        Returns:
+            Dictionary of calculated metrics
+        """
+        if data.empty:
+            return {}
+        
+        metrics = {}
+        
+        # Exit velocity (for contact)
+        if 'launch_speed' in data.columns:
+            metrics['exit_velocity_avg'] = data['launch_speed'].mean()
+        
+        # Hard hit rate
+        if 'launch_speed' in data.columns:
+            hard_hits = (data['launch_speed'] >= 95).sum()
+            total_contact = data['launch_speed'].notna().sum()
+            metrics['hard_hit_percent'] = (hard_hits / total_contact * 100) if total_contact > 0 else 0
+        
+        # Barrel rate
+        if 'barrel' in data.columns:
+            barrels = data['barrel'].sum()
+            batted_balls = data['barrel'].notna().sum()
+            metrics['barrel_percent'] = (barrels / batted_balls * 100) if batted_balls > 0 else 0
+        
+        # Whiff rate
+        if 'description' in data.columns:
+            swings = data['description'].str.contains('swing|foul', case=False, na=False).sum()
+            whiffs = data['description'].str.contains('swing.*miss', case=False, na=False).sum()
+            metrics['whiff_percent'] = (whiffs / swings * 100) if swings > 0 else 0
+        
+        # K% and BB%
+        if 'events' in data.columns:
+            batters_faced = data['events'].notna().sum()
+            if batters_faced > 0:
+                strikeouts = (data['events'] == 'strikeout').sum()
+                walks = (data['events'] == 'walk').sum()
+                metrics['k_percent'] = (strikeouts / batters_faced * 100)
+                metrics['bb_percent'] = (walks / batters_faced * 100)
+        
+        # Velocity by pitch type
+        if 'pitch_type' in data.columns and 'release_speed' in data.columns:
+            fastballs = data[data['pitch_type'].isin(['FF', 'FT', 'SI'])]['release_speed']
+            if not fastballs.empty:
+                metrics['avg_fastball_velocity'] = fastballs.mean()
+        
+        # Spin rate
+        if 'release_spin_rate' in data.columns:
+            metrics['avg_spin_rate'] = data['release_spin_rate'].mean()
+        
+        return metrics
+    
+    def compare_time_periods(
+        self,
+        player_id: int,
+        player_type: str = 'hitter',
+        recent_days: int = 14,
+        baseline_days: int = 30
+    ) -> Tuple[Dict[str, float], Dict[str, float], Dict[str, float]]:
+        """
+        Compare recent performance to baseline
+        
+        Args:
+            player_id: MLB player ID
+            player_type: 'hitter' or 'pitcher'
+            recent_days: Days for recent sample
+            baseline_days: Days for baseline comparison (before recent)
+            
+        Returns:
+            Tuple of (recent_metrics, baseline_metrics, changes)
+        """
+        end_date = datetime.now()
+        recent_start = end_date - timedelta(days=recent_days)
+        baseline_start = recent_start - timedelta(days=baseline_days)
+        baseline_end = recent_start
+        
+        recent_start_str = recent_start.strftime('%Y-%m-%d')
+        baseline_start_str = baseline_start.strftime('%Y-%m-%d')
+        baseline_end_str = baseline_end.strftime('%Y-%m-%d')
+        end_date_str = end_date.strftime('%Y-%m-%d')
+        
+        if player_type == 'hitter':
+            recent_data = self.get_hitter_stats(player_id, recent_start_str, end_date_str)
+            baseline_data = self.get_hitter_stats(player_id, baseline_start_str, baseline_end_str)
+            
+            recent_metrics = self.calculate_hitter_metrics(recent_data) if recent_data is not None else {}
+            baseline_metrics = self.calculate_hitter_metrics(baseline_data) if baseline_data is not None else {}
+        else:
+            recent_data = self.get_pitcher_stats(player_id, recent_start_str, end_date_str)
+            baseline_data = self.get_pitcher_stats(player_id, baseline_start_str, baseline_end_str)
+            
+            recent_metrics = self.calculate_pitcher_metrics(recent_data) if recent_data is not None else {}
+            baseline_metrics = self.calculate_pitcher_metrics(baseline_data) if baseline_data is not None else {}
+        
+        # Calculate changes
+        changes = {}
+        for key in recent_metrics:
+            if key in baseline_metrics:
+                change = recent_metrics[key] - baseline_metrics[key]
+                changes[key] = change
+        
+        return recent_metrics, baseline_metrics, changes
+
+
+if __name__ == "__main__":
+    # Test the client
+    logging.basicConfig(level=logging.INFO)
+    
+    client = StatcastClient()
+    
+    # Test with Gunnar Henderson (example)
+    print("\n🔬 Testing Statcast Client")
+    print("="*70)
+    
+    player_id = client.get_player_id("Gunnar", "Henderson")
+    if player_id:
+        print(f"✅ Found Gunnar Henderson (ID: {player_id})")
+        
+        # This would work during the season
+        # recent, baseline, changes = client.compare_time_periods(player_id, 'hitter')
+        # print(f"\n📊 Recent Stats:")
+        # for key, val in recent.items():
+        #     print(f"  {key}: {val:.2f}")
+    else:
+        print("❌ Could not find player")

@@ -1,0 +1,17 @@
+{
+  "name": "@fantasy/espn-recap",
+  "version": "1.0.0",
+  "description": "ESPN Fantasy Football Weekly Recap Generator with AI",
+  "private": true,
+  "scripts": {
+    "dev": "python3 scripts/server.py start",
+    "stop": "python3 scripts/server.py stop",
+    "restart": "python3 scripts/server.py restart",
+    "status": "python3 scripts/server.py status",
+    "logs": "tail -f logs/$(date +%Y%m%d).log",
+    "logs:api": "tail -f /tmp/api_fantasy.log"
+  },
+  "keywords": ["fantasy-football", "ai", "recap", "espn"],
+  "author": "",
+  "license": "MIT"
+}

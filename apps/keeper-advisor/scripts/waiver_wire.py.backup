@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""
+Waiver Wire Assistant
+Fetch free agents and generate pickup recommendations
+"""
+
+import sys
+import json
+import argparse
+from pathlib import Path
+
+app_root = Path(__file__).parent.parent
+workspace_root = app_root.parent.parent
+sys.path.insert(0, str(app_root))
+sys.path.insert(0, str(workspace_root / 'packages'))
+
+from src.yahoo_client import YahooFantasyClient
+from src.yahoo_oauth_manual import YahooOAuth2
+from src.importers import CSVImporter
+from src.waiver_analyzer import WaiverAnalyzer, print_waiver_report
+
+
+def main():
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Waiver Wire Assistant')
+    parser.add_argument('--position', type=str, help='Filter by position (e.g., 2B, SP, OF)')
+    parser.add_argument('--top', type=int, default=10, help='Number of recommendations to show')
+    args = parser.parse_args()
+    
+    print("\n🔍 WAIVER WIRE ASSISTANT")
+    print("="*70)
+    if args.position:
+        print(f"Filtering for position: {args.position}\n")
+    print("Scanning free agents for upgrade opportunities...\n")
+    
+    # Initialize Yahoo OAuth and client
+    try:
+        config_file = app_root / "config" / "oauth2.json"
+        
+        # Load config
+        with open(config_file) as f:
+            config = json.load(f)
+        
+        client_id = config.get('consumer_key')
+        client_secret = config.get('consumer_secret')
+        
+        if not client_id or not client_secret:
+            print("❌ Missing Yahoo API credentials in config/oauth2.json")
+            return
+        
+        oauth = YahooOAuth2(client_id, client_secret)
+        
+        # Load existing tokens from config
+        if 'access_token' in config:
+            oauth.access_token = config['access_token']
+            oauth.refresh_token = config.get('refresh_token')
+            oauth.token_type = config.get('token_type', 'Bearer')
+        
+        # Check if we have valid tokens
+        if not oauth.access_token:
+            print("❌ No valid access token. Please run: npm run setup:yahoo")
+            return
+        
+        client = YahooFantasyClient(oauth)
+    except FileNotFoundError:
+        print("❌ Config file not found: config/oauth2.json")
+        print("\n💡 Run 'npm run setup:yahoo' to authenticate first")
+        return
+    except Exception as e:
+        print(f"❌ Error connecting to Yahoo: {e}")
+        print("\n💡 Run 'npm run setup:yahoo' to authenticate first")
+        return
+    
+    # Get user's leagues
+    print("📊 Fetching your leagues...")
+    try:
+        leagues = client.get_user_leagues(year=2025, sport="mlb")
+        
+        if not leagues:
+            print("⚠️  No leagues found - using demo mode with sample data")
+            use_demo_mode = True
+        else:
+            use_demo_mode = False
+    except Exception as e:
+        print(f"⚠️  League fetch failed - using demo mode with sample data")
+        use_demo_mode = True
+    
+    if not use_demo_mode:
+        # Find the league (you can make this interactive later)
+        league_key = None
+        team_key = None
+        for league in leagues:
+            if 'California Palm League' in league.get('name', ''):
+                league_key = league['league_key']
+                # Get user's team in this league
+                teams = client.get_league_teams(league_key)
+                for team in teams:
+                    if team.get('manager') == 'Tyler':
+                        team_key = team['team_key']
+                        break
+                break
+        
+        if not league_key or not team_key:
+            print("❌ Could not find your league/team - using demo mode")
+            use_demo_mode = True
+        else:
+            print(f"✅ Found league: California Palm League")
+            print(f"✅ Team: 2balls\n")
+    else:
+        print(f"📝 Demo mode - using sample data\n")
+    
+    # Load current roster
+    print("📋 Loading your current roster...")
+    roster = CSVImporter.import_roster(
+        app_root / "data" / "my_roster_from_yahoo.csv",
+        team_name="2balls"
+    )
+    print(f"✅ Loaded {len(roster.players)} players\n")
+    
+    # Fetch free agents (top 50 by default)
+    print("🔎 Fetching top free agents...")
+    
+    if use_demo_mode:
+        # Use sample data in demo mode
+        free_agents = [
+            {'name': 'Pete Alonso', 'eligible_positions': ['1B'], 'editorial_team_abbr': 'BAL'},
+            {'name': 'Jazz Chisholm Jr.', 'eligible_positions': ['2B', '3B'], 'editorial_team_abbr': 'NYY'},
+            {'name': 'Brice Turang', 'eligible_positions': ['2B'], 'editorial_team_abbr': 'MIL'},
+            {'name': 'Wyatt Langford', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'TEX'},
+            {'name': 'Luis Robert Jr.', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'NYM'},
+            {'name': 'Corbin Carroll', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'ARI'},
+            {'name': 'Joe Ryan', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'MIN'},
+            {'name': 'Hunter Greene', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'CIN'},
+            {'name': 'Ketel Marte', 'eligible_positions': ['2B'], 'editorial_team_abbr': 'ARI'},
+        ]
+        print(f"✅ Using {len(free_agents)} sample free agents for demo\n")
+    else:
+        try:
+            # Yahoo API endpoint for players
+            # Status filter: A = all, FA = free agents, W = waivers
+            free_agents = client.get_free_agents(league_key, count=50)
+            print(f"✅ Found {len(free_agents)} free agents")
+            
+            if len(free_agents) == 0:
+                print("⚠️  No free agents returned from API - using sample data...\n")
+                free_agents = [
+                {'name': 'Pete Alonso', 'eligible_positions': ['1B'], 'editorial_team_abbr': 'BAL'},
+                {'name': 'Jazz Chisholm Jr.', 'eligible_positions': ['2B', '3B'], 'editorial_team_abbr': 'NYY'},
+                {'name': 'Brice Turang', 'eligible_positions': ['2B'], 'editorial_team_abbr': 'MIL'},
+                {'name': 'Wyatt Langford', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'TEX'},
+                {'name': 'Luis Robert Jr.', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'NYM'},
+                {'name': 'Corbin Carroll', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'ARI'},
+                {'name': 'Joe Ryan', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'MIN'},
+                {'name': 'Hunter Greene', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'CIN'},
+                {'name': 'Ketel Marte', 'eligible_positions': ['2B'], 'editorial_team_abbr': 'ARI'},
+                ]
+            else:
+                print(f"📝 Sample free agents: {', '.join([fa['name'] for fa in free_agents[:5]])}\n")
+                
+        except Exception as e:
+        print(f"❌ Error fetching free agents: {e}")
+        import traceback
+        traceback.print_exc()
+        # Use sample data for now
+        print("\n📝 Using sample data for demonstration...\n")
+        free_agents = [
+            {'name': 'Pete Alonso', 'eligible_positions': ['1B'], 'editorial_team_abbr': 'BAL'},
+            {'name': 'Jazz Chisholm Jr.', 'eligible_positions': ['2B', '3B'], 'editorial_team_abbr': 'NYY'},
+            {'name': 'Wyatt Langford', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'TEX'},
+            {'name': 'Luis Robert Jr.', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'NYM'},
+            {'name': 'Brice Turang', 'eligible_positions': ['2B'], 'editorial_team_abbr': 'MIL'},
+        ]
+    
+    # Analyze waiver wire
+    print("🤖 Analyzing pickup opportunities...")
+    analyzer = WaiverAnalyzer(roster)
+    recommendations = analyzer.analyze_free_agents(
+        free_agents, 
+        max_recommendations=args.top,
+        position_filter=args.position
+    )
+    
+    # Print report
+    print_waiver_report(recommendations)
+    
+    print("\n💾 TIP: To fetch your live free agents, we need to add the")
+    print("   get_free_agents() method to YahooFantasyClient")
+
+
+if __name__ == "__main__":
+    main()
