@@ -189,41 +189,130 @@ except Exception as e:
     with open(output_dir / "daily_lineup.json", "w") as f:
         json.dump(lineup_data, f, indent=2)
 
-# 2. Waiver Wire (demo - would fetch free agents in production)
+# 2. Waiver Wire Analysis
 print("\n🎯 Generating waiver wire data...")
-waiver_data = {
-    "generated_at": datetime.now().isoformat(),
-    "note": "Run waiver_wire.py with Yahoo API for live data",
-    "targets": [
-        {
-            "player": "Example Player",
-            "position": "OF",
-            "adp": 150,
-            "reason": "Run: python scripts/waiver_wire.py"
-        }
+try:
+    # Initialize waiver analyzer with breakout detection
+    waiver_analyzer = WaiverAnalyzer(roster, use_breakout_signals=True)
+    
+    # Sample free agents (in production, would fetch from Yahoo API)
+    # Format matches what Yahoo API returns
+    sample_free_agents = [
+        {'name': 'Yoshinobu Yamamoto', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'LAD'},
+        {'name': 'Royce Lewis', 'eligible_positions': ['3B', 'OF'], 'editorial_team_abbr': 'MIN'},
+        {'name': 'Wyatt Langford', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'TEX'},
+        {'name': 'Luis Robert Jr.', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'CWS'},
+        {'name': 'Hunter Greene', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'CIN'},
+        {'name': 'Bobby Miller', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'LAD'},
+        {'name': 'Ezequiel Tovar', 'eligible_positions': ['SS'], 'editorial_team_abbr': 'COL'},
+        {'name': 'Colton Cowser', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'BAL'},
+        {'name': 'Michael Busch', 'eligible_positions': ['1B', '2B'], 'editorial_team_abbr': 'CHC'},
+        {'name': 'Spencer Steer', 'eligible_positions': ['2B', '3B', 'OF'], 'editorial_team_abbr': 'CIN'},
     ]
-}
-with open(output_dir / "waiver_wire.json", "w") as f:
-    json.dump(waiver_data, f, indent=2)
-print("✅ Exported waiver wire data (placeholder)")
+    
+    # Analyze free agents against roster
+    recommendations = waiver_analyzer.analyze_free_agents(sample_free_agents, top_n=5)
+    
+    waiver_data = {
+        "generated_at": datetime.now().isoformat(),
+        "targets": [
+            {
+                "player": rec.add_player.name,
+                "position": rec.add_player.position,
+                "team": rec.add_player.team,
+                "adp": int(rec.add_player.adp) if rec.add_player.adp else 0,
+                "value_gain": f"+{int(rec.value_gain)}",
+                "drop_player": rec.drop_player.name,
+                "confidence": rec.confidence,
+                "reason": rec.reason
+            }
+            for rec in recommendations
+        ],
+        "summary": {
+            "scanned": len(sample_free_agents),
+            "recommended": len(recommendations)
+        }
+    }
+    
+    with open(output_dir / "waiver_wire.json", "w") as f:
+        json.dump(waiver_data, f, indent=2)
+    
+    print(f"✅ Exported waiver wire: {len(recommendations)} recommendations from {len(sample_free_agents)} players")
+    
+except Exception as e:
+    print(f"⚠️  Error generating waiver wire: {e}")
+    import traceback
+    traceback.print_exc()
+    # Fallback to placeholder
+    waiver_data = {
+        "generated_at": datetime.now().isoformat(),
+        "error": str(e),
+        "targets": []
+    }
+    with open(output_dir / "waiver_wire.json", "w") as f:
+        json.dump(waiver_data, f, indent=2)
 
-# 3. Breakouts (demo - would scan free agents in production)
+# 3. Breakout Detection
 print("\n🔬 Generating breakout data...")
-breakout_data = {
-    "generated_at": datetime.now().isoformat(),
-    "note": "Run breakout_scanner.py for live Statcast data",
-    "alerts": [
-        {
-            "player": "Example Player",
-            "signal": "STRONG",
-            "stat": "Exit velo up 2.5 mph",
-            "category": "Power"
+try:
+    # Use the breakout detector already initialized in lineup optimizer
+    if optimizer.breakout_detector:
+        detector = optimizer.breakout_detector
+        
+        # Scan roster players for breakout signals
+        breakout_alerts = []
+        for player in roster.players:
+            signals = detector.detect_breakout(player.name)
+            if signals and signals.overall_signal != "NONE":
+                breakout_alerts.append({
+                    "player": player.name,
+                    "position": player.position,
+                    "team": player.team,
+                    "signal": signals.overall_signal,
+                    "stats": [
+                        f"{metric}: {value}" 
+                        for metric, value in [
+                            ("Exit velo", signals.exit_velocity_trend),
+                            ("Hard hit %", signals.hard_hit_rate_trend),
+                            ("Barrel %", signals.barrel_rate_trend)
+                        ]
+                        if value and value != "stable"
+                    ],
+                    "category": signals.breakout_type or "General",
+                    "confidence": signals.confidence
+                })
+        
+        # Sort by signal strength
+        signal_order = {"STRONG": 0, "MODERATE": 1, "WEAK": 2}
+        breakout_alerts.sort(key=lambda x: signal_order.get(x["signal"], 3))
+        
+        breakout_data = {
+            "generated_at": datetime.now().isoformat(),
+            "alerts": breakout_alerts[:10],  # Top 10 signals
+            "summary": {
+                "total_scanned": len(roster.players),
+                "signals_found": len(breakout_alerts),
+                "strong_signals": len([a for a in breakout_alerts if a["signal"] == "STRONG"])
+            }
         }
-    ]
-}
-with open(output_dir / "breakouts.json", "w") as f:
-    json.dump(breakout_data, f, indent=2)
-print("✅ Exported breakout data (placeholder)")
+        
+        with open(output_dir / "breakouts.json", "w") as f:
+            json.dump(breakout_data, f, indent=2)
+        
+        print(f"✅ Exported breakout data: {len(breakout_alerts)} signals found")
+    else:
+        raise Exception("Breakout detector not available")
+    
+except Exception as e:
+    print(f"⚠️  Error generating breakout data: {e}")
+    # Fallback to placeholder
+    breakout_data = {
+        "generated_at": datetime.now().isoformat(),
+        "error": str(e),
+        "alerts": []
+    }
+    with open(output_dir / "breakouts.json", "w") as f:
+        json.dump(breakout_data, f, indent=2)
 
 # 4. Keepers
 print("\n⭐ Generating keeper analysis...")
