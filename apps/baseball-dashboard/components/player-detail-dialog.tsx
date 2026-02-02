@@ -122,7 +122,7 @@ export function PlayerDetailDialog({ player, open, onOpenChange }: PlayerDetailD
                     <Shield className="h-4 w-4 text-blue-500" /> Matchup Quality
                   </div>
                   <div className="col-span-6">
-                    <Progress value={player.matchup} className="h-2" indicatorClassName={getScoreColor(player.matchup)} />
+                    <Progress value={player.matchup} className="h-2" />
                   </div>
                   <div className="col-span-2 text-right font-bold">{player.matchup}</div>
                 </div>
@@ -132,7 +132,7 @@ export function PlayerDetailDialog({ player, open, onOpenChange }: PlayerDetailD
                     <TrendingUp className="h-4 w-4 text-orange-500" /> Recent Form
                   </div>
                   <div className="col-span-6">
-                    <Progress value={player.form} className="h-2" indicatorClassName={getScoreColor(player.form)} />
+                    <Progress value={player.form} className="h-2" />
                   </div>
                   <div className="col-span-2 text-right font-bold">{player.form}</div>
                 </div>
@@ -142,7 +142,7 @@ export function PlayerDetailDialog({ player, open, onOpenChange }: PlayerDetailD
                     <User className="h-4 w-4 text-purple-500" /> Platoon Adv.
                   </div>
                   <div className="col-span-6">
-                    <Progress value={player.platoon} className="h-2" indicatorClassName={getScoreColor(player.platoon)} />
+                    <Progress value={player.platoon} className="h-2" />
                   </div>
                   <div className="col-span-2 text-right font-bold">{player.platoon}</div>
                 </div>
