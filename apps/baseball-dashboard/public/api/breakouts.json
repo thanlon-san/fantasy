@@ -1,4 +1,12 @@
 {
-  "generated_at": "2026-02-01T21:29:51.493312",
-  "alerts": []
+  "generated_at": "2026-02-01T21:39:01.700023",
+  "note": "Run breakout_scanner.py for live Statcast data",
+  "alerts": [
+    {
+      "player": "Example Player",
+      "signal": "STRONG",
+      "stat": "Exit velo up 2.5 mph",
+      "category": "Power"
+    }
+  ]
 }

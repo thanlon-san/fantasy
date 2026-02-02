@@ -48,11 +48,13 @@ class LineupRecommendation:
     park_score: float     # Park factor bonus
     form_score: float     # Recent hot/cold streak
     platoon_score: float  # L/R advantage
-    breakout_boost: float = 0  # Breakout signal bonus
     
-    # Supporting data
+    # Supporting data (non-defaults must come before defaults)
     recent_stats: Optional[Dict]
     career_vs_pitcher: Optional[Dict]
+    
+    # Default fields (must come last)
+    breakout_boost: float = 0  # Breakout signal bonus
     reasons: List[str] = None
     
     def __post_init__(self):
