@@ -43,12 +43,6 @@ export function PlayerDetailDialog({ player, open, onOpenChange }: PlayerDetailD
     return "text-red-600"
   }
 
-  const getScoreColor = (val: number) => {
-    if (val >= 80) return "bg-green-500"
-    if (val >= 60) return "bg-yellow-500"
-    return "bg-red-500"
-  }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">

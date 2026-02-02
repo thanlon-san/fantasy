@@ -80,3 +80,6 @@ AttributeError: 'list' object has no attribute 'get'
 2026-02-01 18:44:35 | ERROR    | src.yahoo_client | Error fetching games: {"error":{"lang":"en-US","description":"Please provide valid credentials. OAuth oauth_problem=\"token_expired\", realm=\"yahooapis.com\""}}
 2026-02-01 18:45:53 | ERROR    | src.yahoo_client | Error fetching games: {"error":{"lang":"en-US","description":"Please provide valid credentials. OAuth oauth_problem=\"token_expired\", realm=\"yahooapis.com\""}}
 2026-02-01 18:46:13 | ERROR    | src.yahoo_client | Error fetching games: {"error":{"lang":"en-US","description":"Please provide valid credentials. OAuth oauth_problem=\"token_expired\", realm=\"yahooapis.com\""}}
+2026-02-01 21:28:18 | ERROR    | src.yahoo_client | Error fetching games: {"error":{"lang":"en-US","description":"Please provide valid credentials. OAuth oauth_problem=\"token_expired\", realm=\"yahooapis.com\""}}
+2026-02-01 21:29:50 | ERROR    | src.yahoo_client | Error fetching games: {"error":{"lang":"en-US","description":"Please provide valid credentials. OAuth oauth_problem=\"token_expired\", realm=\"yahooapis.com\""}}
+2026-02-01 21:39:01 | INFO     | src.analyzer | Analyzing 24 players...
