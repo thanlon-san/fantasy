@@ -1,51 +1,96 @@
 {
   "generated_at": "2026-02-01T20:52:09.469944",
-  "starters": [
+  "date": "2026-02-01",
+  "must_start": [
     {
       "player": "Gunnar Henderson",
       "position": "SS",
+      "team": "BAL",
       "opponent": "@ BAL",
+      "opponent_pitcher": "TBD",
+      "game_time": "TBD",
       "confidence": 85,
-      "matchup": "Good",
-      "parkFactor": "+5%",
-      "platoon": "Favorable"
-    },
-    {
-      "player": "Zach Neto",
-      "position": "SS",
-      "opponent": "@ LAA",
-      "confidence": 85,
-      "matchup": "Good",
-      "parkFactor": "+5%",
-      "platoon": "Favorable"
+      "matchup": 80,
+      "parkFactor": 85,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "reasons": ["Good matchup", "Favorable park"]
     },
     {
       "player": "Mookie Betts",
       "position": "2B",
+      "team": "LAD",
       "opponent": "@ LAD",
+      "opponent_pitcher": "TBD",
+      "game_time": "TBD",
       "confidence": 85,
-      "matchup": "Good",
-      "parkFactor": "+5%",
-      "platoon": "Favorable"
-    },
+      "matchup": 82,
+      "parkFactor": 88,
+      "platoon": 85,
+      "form": 80,
+      "breakout": 0,
+      "reasons": ["Star player", "Good park"]
+    }
+  ],
+  "start": [
     {
       "player": "Randy Arozarena",
       "position": "OF",
+      "team": "SEA",
       "opponent": "@ SEA",
-      "confidence": 85,
-      "matchup": "Good",
-      "parkFactor": "+5%",
-      "platoon": "Favorable"
+      "opponent_pitcher": "TBD",
+      "game_time": "TBD",
+      "confidence": 75,
+      "matchup": 75,
+      "parkFactor": 80,
+      "platoon": 75,
+      "form": 70,
+      "breakout": 0,
+      "reasons": ["Solid matchup"]
     },
+    {
+      "player": "Zach Neto",
+      "position": "SS",
+      "team": "LAA",
+      "opponent": "@ LAA",
+      "opponent_pitcher": "TBD",
+      "game_time": "TBD",
+      "confidence": 72,
+      "matchup": 70,
+      "parkFactor": 75,
+      "platoon": 80,
+      "form": 65,
+      "breakout": 0,
+      "reasons": ["Decent form"]
+    }
+  ],
+  "flex": [
     {
       "player": "Taylor Ward",
       "position": "OF",
+      "team": "LAA",
       "opponent": "@ BAL",
-      "confidence": 70,
-      "matchup": "Fair",
-      "parkFactor": "+5%",
-      "platoon": "Favorable"
+      "opponent_pitcher": "TBD",
+      "game_time": "TBD",
+      "confidence": 68,
+      "matchup": 65,
+      "parkFactor": 70,
+      "platoon": 75,
+      "form": 60,
+      "breakout": 0,
+      "reasons": ["Use if needed"]
     }
   ],
-  "bench": []
+  "bench": [],
+  "not_playing": [],
+  "summary": {
+    "total_roster": 5,
+    "playing_today": 5,
+    "not_playing": 0,
+    "must_start_count": 2,
+    "start_count": 2,
+    "flex_count": 1,
+    "bench_count": 0
+  }
 }
