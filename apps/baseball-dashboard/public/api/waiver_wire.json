@@ -1,12 +1,5 @@
 {
-  "generated_at": "2026-02-02T12:32:56.499496",
-  "note": "Run waiver_wire.py with Yahoo API for live data",
-  "targets": [
-    {
-      "player": "Example Player",
-      "position": "OF",
-      "adp": 150,
-      "reason": "Run: python scripts/waiver_wire.py"
-    }
-  ]
+  "generated_at": "2026-02-02T18:17:12.059105",
+  "error": "WaiverAnalyzer.analyze_free_agents() got an unexpected keyword argument 'top_n'",
+  "targets": []
 }

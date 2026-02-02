@@ -1,12 +1,5 @@
 {
-  "generated_at": "2026-02-02T12:32:56.499631",
-  "note": "Run breakout_scanner.py for live Statcast data",
-  "alerts": [
-    {
-      "player": "Example Player",
-      "signal": "STRONG",
-      "stat": "Exit velo up 2.5 mph",
-      "category": "Power"
-    }
-  ]
+  "generated_at": "2026-02-02T18:17:12.059272",
+  "error": "'BreakoutDetector' object has no attribute 'detect_breakout'",
+  "alerts": []
 }
