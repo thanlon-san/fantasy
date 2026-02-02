@@ -1,599 +1,531 @@
-# Fantasy Baseball Keeper Advisor - Complete System Audit
+# Fantasy Baseball Daily Lineup System - Comprehensive Audit
 
-## Your Mission
+## Mission
 
-You are a senior software architect and fantasy baseball expert conducting a comprehensive audit of a fantasy baseball intelligence system. Your goal is to:
+You are a senior software architect and fantasy baseball expert conducting a **deep technical audit** of the Fantasy Baseball Intelligence System, with **primary focus on the Daily Lineup Optimizer** - the most critical, daily-use feature.
 
-1. **Verify system integrity** - Check all connections, imports, dependencies, and integrations
-2. **Assess tool synergy** - Ensure tools work together efficiently and share data intelligently
-3. **Identify improvements** - Suggest concrete enhancements to existing tools
-4. **Propose innovations** - Recommend new features that leverage the existing infrastructure
-
----
-
-## System Overview
-
-This is a **Python-based fantasy baseball toolkit** with multiple interconnected tools for year-round competitive advantage. The system integrates:
-
-- **External APIs**: Yahoo Fantasy Sports, MLB Stats API, FantasyPros ADP, pybaseball (Statcast)
-- **In-season tools**: Daily lineup optimizer, waiver wire analyzer, breakout detector
-- **Pre-season tools**: Keeper analyzer, draft strategy
-- **Data sources**: Real-time MLB games, advanced metrics, historical performance, park factors
+Your goals:
+1. **Verify data quality** - Ensure lineup decisions are based on accurate, reliable data
+2. **Validate intelligence integration** - Confirm all data sources feed properly into lineup logic
+3. **Assess performance** - Check speed, caching, and API reliability
+4. **Identify gaps** - Find missing data sources or logic flaws that impact lineup quality
+5. **Recommend improvements** - Suggest concrete enhancements to lineup accuracy
 
 ---
 
-## Project Structure
+## System Architecture Overview
+
+### Current Deployment (Fully Automated)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  GitHub Actions (Daily at 8am ET)                           │
+│  ├─ Runs Python analysis tools                              │
+│  ├─ Generates JSON data files                               │
+│  └─ Auto-commits & deploys to GitHub Pages                  │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Baseball Dashboard (Next.js on GitHub Pages)               │
+│  └─ Displays daily lineup recommendations to user           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Python Intelligence System
 
 ```
 apps/keeper-advisor/
-├── src/                          # Core modules
-│   ├── adp_fetcher.py           # ADP data from FantasyPros
-│   ├── analyzer.py              # Keeper value analysis
-│   ├── breakout_detector.py     # Statcast-based breakout detection
-│   ├── daily_matchups.py        # MLB game schedule & matchups
-│   ├── lineup_optimizer.py      # Daily lineup recommendations
-│   ├── statcast_client.py       # Statcast data fetcher
-│   ├── waiver_analyzer.py       # Waiver wire recommendations
-│   ├── yahoo_client.py          # Yahoo API integration
-│   ├── league_settings.py       # League config management
-│   └── models.py                # Data models
+├── src/                          # Core Intelligence
+│   ├── lineup_optimizer.py       # ⭐ PRIMARY FOCUS - Daily lineup engine
+│   ├── breakout_detector.py      # Statcast breakout signals → lineup
+│   ├── daily_matchups.py         # MLB game schedule & pitcher matchups
+│   ├── statcast_client.py        # Advanced metrics (exit velo, etc.)
+│   ├── adp_fetcher.py            # Player rankings/value
+│   ├── waiver_analyzer.py        # Pickup recommendations
+│   ├── cache_manager.py          # Persistent caching layer
+│   ├── league_settings.py        # Configurable weights & rules
+│   └── models.py                 # Data structures
 │
-├── scripts/                      # CLI tools
-│   ├── analyze_keepers.py       # Keeper analysis CLI
-│   ├── waiver_wire.py           # Waiver wire CLI
-│   ├── waiver_wire_interactive.py  # Interactive waiver tool
-│   ├── breakout_scanner.py      # Breakout detection CLI
-│   ├── daily_lineup.py          # Daily lineup CLI
-│   └── fetch_yahoo_roster.py    # Yahoo roster fetcher
+├── scripts/
+│   ├── daily_lineup.py           # CLI for lineup recs
+│   ├── export_dashboard_data.py  # ⭐ Daily automation entry point
+│   ├── scan_breakouts.py         # Breakout scanning
+│   └── waiver_wire.py            # Waiver analysis
 │
 ├── config/
-│   ├── league_settings.json     # League configuration
-│   └── oauth2.json              # Yahoo OAuth tokens
+│   └── league_settings.json      # Lineup weights, roster config
 │
-└── docs/                         # Documentation
-    ├── QUICKSTART.md
-    ├── DAILY_LINEUP_OPTIMIZER.md
-    ├── BREAKOUT_DETECTOR.md
-    └── UNIFIED_INTELLIGENCE_SYSTEM.md
+└── .cache/                        # Persistent cache (TTL-based)
 ```
 
 ---
 
-## Phase 1: System Integrity Audit
+## PRIMARY FOCUS: Daily Lineup Optimizer
 
-### 1.1 Dependency Check
+The **Daily Lineup Optimizer** (`src/lineup_optimizer.py`) is the **most critical component**. It runs **daily** and directly impacts **daily fantasy decisions**. This must be rock-solid.
 
-Review `requirements.txt` and verify:
-
-- [ ] All imports in source files match declared dependencies
-- [ ] No missing packages
-- [ ] No version conflicts
-- [ ] Optional dependencies clearly marked
-
-### 1.2 Import Chain Analysis
-
-For each module in `src/`, verify:
-
-- [ ] All imports resolve correctly
-- [ ] No circular dependencies
-- [ ] Proper error handling for missing dependencies
-- [ ] Clean separation of concerns
-
-### 1.3 Configuration Validation
-
-Check `config/league_settings.json`:
-
-- [ ] Schema validation works (`league_settings.schema.json`)
-- [ ] All required fields present
-- [ ] Default values sensible
-- [ ] Settings properly consumed by modules
-
-### 1.4 Data Flow Verification
-
-Trace data flow from:
-
-- **Yahoo API** → Roster data → Lineup optimizer
-- **MLB Stats API** → Game schedule → Matchup analysis
-- **Statcast** → Advanced metrics → Breakout detection
-- **FantasyPros** → ADP data → Waiver recommendations
-
-Ensure no broken connections.
-
----
-
-## Phase 2: Tool Synergy Assessment
-
-### 2.1 Current Integration Points
-
-**Lineup Optimizer ↔ Breakout Detector**
-
-- Lineup optimizer calls breakout detector for confidence boost
-- Check: Is this integration optimal? Could it be deeper?
-
-**Waiver Analyzer ↔ ADP Fetcher**
-
-- Waiver tool uses ADP for value assessment
-- Check: Any gaps in data flow?
-
-**All Tools ↔ League Settings**
-
-- Centralized config via `league_settings.json`
-- Check: Are all tools using it? Any hardcoded values that should be config?
-
-### 2.2 Data Caching Strategy
-
-Review caching in:
-
-- `adp_fetcher.py` - ADP cache
-- `daily_matchups.py` - Games cache
-- `breakout_detector.py` - Analysis cache
-- `lineup_optimizer.py` - Breakout cache
-
-Questions:
-
-- [ ] Is cache invalidation handled correctly?
-- [ ] Are cache keys unique and collision-free?
-- [ ] Do caches persist across CLI runs? Should they?
-- [ ] Is there a global cache manager opportunity?
-
-### 2.3 Shared Data Structures
-
-Check consistency of:
-
-- `Player` model usage across modules
-- `Roster` representation
-- Date/time handling (timezone awareness?)
-- Position abbreviations (OF vs LF/CF/RF)
-
-### 2.4 Cross-Tool Opportunities
-
-**Questions:**
-
-1. Should the waiver analyzer use breakout signals automatically?
-2. Could daily lineup recommendations feed into keeper decisions?
-3. Should there be a unified "player profile" that aggregates:
-   - ADP ranking
-   - Keeper value
-   - Recent performance
-   - Breakout signals
-   - Upcoming matchups
-4. Is there a "player database" opportunity to reduce API calls?
-
----
-
-## Phase 3: Tool-Specific Improvements
-
-### 3.1 Daily Lineup Optimizer
-
-**Current Features:**
-
-- Park factors
-- Opponent matchup quality
-- Recent form (rolling stats)
-- Platoon splits (L/R)
-- Breakout signals
-
-**Audit Questions:**
-
-- [ ] Are the scoring weights optimal? (Currently: 30% matchup, 20% park, 25% form, 15% platoon, 10% breakout)
-- [ ] Should weather be integrated? (Wind, temperature for hitters)
-- [ ] Is "recent form" window (last 14 days) appropriate?
-- [ ] Could it suggest specific lineup configurations, not just start/sit?
-- [ ] Should it consider your league's scoring system from `league_settings.json`?
-- [ ] Injury status awareness?
-
-**Improvement Ideas:**
-
-- [ ] Add "slate optimizer" - optimize entire starting lineup simultaneously
-- [ ] "Vegas lines" integration - implied runs per game
-- [ ] "Stack suggestions" - recommend hitter/pitcher combos from same game
-- [ ] Historical matchup data - "Player X vs Pitcher Y career stats"
-- [ ] "Confidence intervals" - show range of likely outcomes
-
-### 3.2 Breakout Detector
-
-**Current Features:**
-
-- Statcast metrics (exit velo, hard-hit%, barrel%, K%, BB%, spin rate)
-- Time period comparison (recent vs baseline)
-- Confidence scoring
-- Signal strength (STRONG, EMERGING, WATCH, FADING)
-
-**Audit Questions:**
-
-- [ ] Are the thresholds calibrated correctly?
-- [ ] Does it distinguish between "hot streak" vs "true talent change"?
-- [ ] Should it track persistence of signals over time?
-- [ ] Integration with minor league stats for prospect breakouts?
-- [ ] Injury recovery tracking (players coming off IL)?
-
-**Improvement Ideas:**
-
-- [ ] "Breakout timeline" - track when signal first emerged
-- [ ] "Similar player comps" - find historical similar profiles
-- [ ] "Regression risk" - predict likelihood of cooling off
-- [ ] "Sell-high alerts" - when to trade a breakout player
-- [ ] "League context" - how many other teams noticed this player?
-
-### 3.3 Waiver Wire Analyzer
-
-**Current Features:**
-
-- ADP-based value identification
-- Position filtering
-- Keeper value assessment
-- Fuzzy name matching
-
-**Audit Questions:**
-
-- [ ] Does it consider team needs (weak positions)?
-- [ ] Should it integrate with breakout detector automatically?
-- [ ] Does it account for league trends (ownership %)?
-- [ ] Should it suggest drop candidates from your roster?
-- [ ] Does it prioritize based on league settings (scoring categories)?
-
-**Improvement Ideas:**
-
-- [ ] "ROS (Rest of Season) projections" from multiple sources
-- [ ] "Waiver wire tiers" - group similar value players
-- [ ] "Schedule analysis" - upcoming favorable matchups
-- [ ] "Handcuff suggestions" - backup for injury-prone players
-- [ ] "FAAB bid suggestions" - recommend dollar amounts (if applicable)
-- [ ] "Drop candidates" - suggest who to drop for pickups
-
-### 3.4 Keeper Analyzer
-
-**Current Features:**
-
-- ADP vs keeper cost analysis
-- Value surplus calculation
-- Round adjustment
-
-**Audit Questions:**
-
-- [ ] Should it consider keeper deadline strategy (pickup before deadline)?
-- [ ] Does it account for dynasty/keeper format differences?
-- [ ] Integration with breakout detector for young players?
-- [ ] Does it suggest draft strategy based on keepers?
-
-**Improvement Ideas:**
-
-- [ ] "Keeper simulator" - test different keeper combinations
-- [ ] "Trade value calculator" - what's fair value for keeper trades?
-- [ ] "Keeper vs redraft flexibility" - should you keep or get fresh pick?
-
----
-
-## Phase 4: New Feature Proposals
-
-### 4.1 Unified Player Intelligence Dashboard
-
-Create a `PlayerIntelligence` class that aggregates:
+### How It Works
 
 ```python
-class PlayerIntelligence:
-    player: Player
-    adp: Optional[int]
-    keeper_value: Optional[KeeperValue]
-    breakout_signal: Optional[BreakoutAlert]
-    recent_performance: Dict[str, float]
-    upcoming_matchups: List[Matchup]
-    ownership_trend: Optional[str]
-    recommendation: str  # "ACQUIRE", "HOLD", "SELL", "DROP"
+LineupOptimizer.get_daily_recommendations(roster)
+    │
+    ├─ Load today's MLB games (daily_matchups.py)
+    ├─ For each player on roster:
+    │   ├─ Find their game & opponent
+    │   ├─ Calculate matchup score (opponent pitcher quality)
+    │   ├─ Calculate park score (hitter-friendly venues)
+    │   ├─ Calculate form score (recent hot/cold streak from Statcast)
+    │   ├─ Calculate platoon score (L/R advantage)
+    │   ├─ Get breakout boost (from breakout_detector.py)
+    │   └─ Compute weighted confidence score
+    │
+    └─ Sort players into tiers:
+        ├─ Must Start (confidence >= 80)
+        ├─ Start (65-79)
+        ├─ Flex (50-64)
+        ├─ Bench (<50)
+        └─ Not Playing (no game today)
 ```
 
-This becomes the "single source of truth" for any player analysis.
+### Data Sources (Critical for Audit)
 
-### 4.2 Trade Analyzer
+| Component | Source | Purpose | Failure Impact |
+|-----------|--------|---------|----------------|
+| **Game Schedule** | MLB Stats API | Find who's playing today | ❌ Critical - no games = no recs |
+| **Opponent Pitcher** | MLB Stats API | Matchup difficulty | ⚠️ High - affects 30% of score |
+| **Park Factors** | Hardcoded dict | Home run friendliness | ⚠️ Medium - affects 20% of score |
+| **Recent Form** | Statcast (pybaseball) | Hot/cold streaks | ⚠️ Medium - affects 25% of score |
+| **Platoon Splits** | Heuristic (L/R) | Batting side advantage | ⚠️ Medium - affects 15% of score |
+| **Breakout Signals** | Statcast via breakout_detector | Emerging talent | ⚠️ Medium - affects 10% of score |
+| **Pitcher Quality** | ADP + Statcast | Opponent strength | ⚠️ High - affects matchup score |
 
-Evaluate proposed trades:
+### Scoring Algorithm
 
-- Compare player values (ADP, keeper, projections)
-- Assess team need fit
-- Calculate "win-now" vs "future value" tradeoffs
-- Generate trade suggestions based on league inefficiencies
+```python
+# From lineup_optimizer.py
+confidence_score = (
+    matchup_score * MATCHUP_WEIGHT +      # 30% - Pitcher difficulty
+    park_score * PARK_WEIGHT +            # 20% - Venue advantage
+    form_score * FORM_WEIGHT +            # 25% - Recent performance
+    platoon_score * PLATOON_WEIGHT +      # 15% - L vs R advantage
+    breakout_boost * BREAKOUT_WEIGHT      # 10% - Statcast signals
+)
+```
 
-### 4.3 Playoff Optimizer
-
-Different from daily lineup:
-
-- Focus on championship weeks
-- Prioritize high ceiling over safety
-- Consider opponent's team in H2H matchups
-- "Must-win" recommendations
-
-### 4.4 Schedule Analyzer
-
-Look ahead at upcoming weeks:
-
-- Which teams have favorable schedules?
-- Who plays in good hitting parks next week?
-- Identify "streaming targets" for SP-heavy weeks
-
-### 4.5 Injury Tracker & Replacement Finder
-
-- Monitor injury reports
-- Automatically suggest waiver replacements
-- Track expected return dates
-- Recommend IL strategy (when to hold vs drop)
-
-### 4.6 League Context Analyzer
-
-If you can access league data:
-
-- Identify teams in need (trade targets)
-- Find undervalued players league-wide
-- Suggest "buy low" and "sell high" candidates
-- Predict other teams' moves (waiver claims)
-
-### 4.7 Notification System
-
-Proactive alerts:
-
-- "Player X just joined waivers (strong breakout signal)"
-- "Your player Y has tough matchup today"
-- "Injury update: Player Z to IL"
-- "ADP riser alert: Player A jumped 50 spots"
-
-### 4.8 Historical Performance Tracker
-
-Store and analyze:
-
-- Your lineup decisions (were they correct?)
-- Waiver successes and misses
-- Breakout prediction accuracy
-- Generate "season report card"
+**Weights are configurable** in `config/league_settings.json` → `preferences.lineup_weights`
 
 ---
 
-## Phase 5: Architecture Recommendations
+## Audit Checklist
 
-### 5.1 Suggested Architectural Improvements
+### ⭐ CRITICAL: Daily Lineup Optimizer
 
-**Consider:**
+#### Data Quality & Reliability
 
-1. **Service Layer Pattern** - Separate business logic from CLI scripts
-2. **Repository Pattern** - Abstract data access (API calls, caching)
-3. **Dependency Injection** - Make testing easier, reduce coupling
-4. **Event System** - Publish/subscribe for cross-tool notifications
-5. **Background Jobs** - Daily data refresh, cache warming
+- [ ] **Game Schedule Accuracy**
+  - Check `daily_matchups.py` → `MLBStatsAPI.get_todays_games()`
+  - Verify correct date handling (timezone issues?)
+  - Confirm retry logic works (what if MLB API is down?)
+  - Check cache TTL (4 hours) - is this optimal?
 
-**Example Structure:**
+- [ ] **Opponent Pitcher Detection**
+  - Review `MLBStatsAPI.get_todays_games()` → How are pitchers identified?
+  - What if pitcher is TBD? (How does scoring handle this?)
+  - Are pitchers matched correctly to home/away teams?
 
-```
-src/
-├── services/              # Business logic
-│   ├── lineup_service.py
-│   ├── waiver_service.py
-│   └── breakout_service.py
-├── repositories/          # Data access
-│   ├── mlb_repo.py
-│   ├── yahoo_repo.py
-│   └── statcast_repo.py
-├── models/                # Domain models
-└── utils/                 # Shared utilities
-```
+- [ ] **Pitcher Quality Scoring**
+  - Check `lineup_optimizer.py` → `_get_pitcher_matchup_score()`
+  - Verify ADP integration (`adp_fetcher.py`)
+  - Validate Statcast recent performance lookup
+  - What if pitcher not found in ADP? (Fallback logic?)
+  - Is caching working? (Should cache pitcher scores)
 
-### 5.2 Testing Strategy
+- [ ] **Park Factors**
+  - Review `daily_matchups.py` → `get_park_factor()`
+  - Are all 30 MLB parks covered?
+  - Are factors up-to-date? (Park factors change over time)
+  - How are neutral parks handled?
 
-Currently missing tests. Recommend:
+- [ ] **Recent Form Scoring**
+  - Check `lineup_optimizer.py` → `_get_recent_form()`
+  - Verify Statcast data pull (last 14 days)
+  - What if player not in Statcast? (Minor leaguers, rookies?)
+  - Are metrics appropriate?
+    - Hitters: hard hit %, barrel %
+    - Pitchers: K %, hard hit % allowed
+  - Is 14-day window optimal?
 
-- Unit tests for each service
-- Integration tests for API clients
-- Mock data for CLI testing
-- Regression tests for value calculations
+- [ ] **Platoon Scoring**
+  - Review logic in `lineup_optimizer.py` → `_analyze_player_matchup()`
+  - Is L vs R logic sound?
+  - What about switch hitters?
+  - Does it handle unknown pitcher handedness?
 
-### 5.3 Performance Optimization
+- [ ] **Breakout Integration**
+  - Check `lineup_optimizer.py` → `_get_breakout_score()`
+  - Verify `breakout_detector.py` is called correctly
+  - Confirm breakout signals are cached (performance?)
+  - Validate signal strength mapping:
+    - STRONG = 100 points
+    - EMERGING = 75 points
+    - WATCH = 50 points
+  - What if Statcast API fails? (Graceful degradation?)
 
-- [ ] Profile API call frequency - are we rate-limited?
-- [ ] Batch operations where possible
-- [ ] Async/await for parallel API calls
-- [ ] Database consideration for historical data (SQLite?)
+#### Performance & Caching
+
+- [ ] **Cache Effectiveness**
+  - Review `cache_manager.py` → Persistent caching with TTL
+  - Check hit rates (are we avoiding redundant API calls?)
+  - Verify TTL values:
+    - ADP: 24 hours ✅
+    - Games: 4 hours ✅
+    - Pitcher stats: ? (check if cached)
+    - Form scores: ? (check if cached)
+  - Is cache shared across runs? (Should be persisted in `.cache/`)
+
+- [ ] **API Reliability**
+  - Check retry logic in `daily_matchups.py` and `adp_fetcher.py`
+  - Confirm 3 retries with exponential backoff
+  - Verify 30-second timeout on all requests
+  - Test: What happens if MLB API returns 500 error?
+
+- [ ] **Speed**
+  - Time `LineupOptimizer.get_daily_recommendations()` execution
+  - Should be <5 seconds for 24-player roster
+  - If using breakout signals, <10 seconds acceptable
+  - Identify bottlenecks (Statcast queries are slowest)
+
+#### Logic Validation
+
+- [ ] **Confidence Score Calculation**
+  - Verify weighted average math
+  - Check that scores are 0-100 range
+  - Confirm tier thresholds make sense:
+    - Must Start: >= 80 (only studs)
+    - Start: 65-79 (solid plays)
+    - Flex: 50-64 (situational)
+    - Bench: < 50 (avoid)
+
+- [ ] **Edge Cases**
+  - Player with no game today → Should show in "Not Playing"
+  - Pitcher TBD → How is matchup scored? (Should default to neutral)
+  - Player just called up (no Statcast history) → Should degrade gracefully
+  - Double-header → Are both games considered?
+  - Rainout/postponement → Is game removed from list?
+
+- [ ] **Reason Generation**
+  - Check `_analyze_player_matchup()` → reasons list
+  - Are reasons helpful? ("Hot streak", "vs elite pitcher", etc.)
+  - Do reasons match the actual scoring factors?
+
+#### Configuration & Customization
+
+- [ ] **Lineup Weights**
+  - Verify `league_settings.json` → `preferences.lineup_weights`
+  - Confirm weights are loaded in `LineupOptimizer.__init__()`
+  - Check fallback to defaults if config missing
+  - Are default weights sensible?
+
+- [ ] **User Roster**
+  - Review `importers.py` → CSV roster loading
+  - Confirm player positions are parsed correctly
+  - Check team abbreviations match MLB API (e.g., "LAA" vs "ANA")
+  - What if roster has invalid/outdated players?
+
+### Data Source Integration
+
+#### MLB Stats API (`daily_matchups.py`)
+
+- [ ] **Game Schedule**
+  - Endpoint: `/api/v1/schedule`
+  - Date format: YYYY-MM-DD
+  - Timezone handling: Does it use UTC or local?
+  - Returns: home_team, away_team, game_time, pitchers
+
+- [ ] **Recent Stats**
+  - Endpoint: `/api/v1/people/{player_id}/stats`
+  - Used for: Player recent performance
+  - Cache duration: ? (check if implemented)
+
+- [ ] **Error Handling**
+  - Retry logic: ✅ Implemented (3 retries, exponential backoff)
+  - Timeout: ✅ 30 seconds
+  - Rate limits: ? (Check if handled)
+  - Fallback: ? (What if all retries fail?)
+
+#### Statcast (`statcast_client.py`)
+
+- [ ] **Hitter Stats**
+  - Method: `get_hitter_stats(player_id, start_date, end_date)`
+  - Metrics: exit_velocity_avg, hard_hit_percent, barrel_percent
+  - Used by: `_get_recent_form()` in lineup_optimizer
+
+- [ ] **Pitcher Stats**
+  - Method: `get_pitcher_stats(player_id, start_date, end_date)`
+  - Metrics: k_percent, hard_hit_percent, avg_exit_velocity
+  - Used by: `_get_recent_form()` and `_get_pitcher_matchup_score()`
+
+- [ ] **Player ID Lookup**
+  - Method: `get_player_id(first_name, last_name)`
+  - Accuracy: ? (Test with common names like "Mike Trout")
+  - Fallback: What if player not found?
+
+- [ ] **Performance**
+  - Statcast queries are SLOW (~1-2s each)
+  - Are queries cached? (Check `_breakout_cache` usage)
+  - Should batch queries? (Possible optimization)
+
+#### ADP Fetcher (`adp_fetcher.py`)
+
+- [ ] **FantasyPros Scraping**
+  - URL: FantasyPros ADP page
+  - Parse method: BeautifulSoup
+  - Data freshness: Cached 24 hours ✅
+  - What if site structure changes? (Brittle scraping)
+
+- [ ] **Player Name Matching**
+  - Uses fuzzy matching (`fuzzywuzzy`)
+  - Threshold: ? (Check accuracy)
+  - Handles nicknames? (e.g., "Mike" vs "Michael")
+
+- [ ] **ADP Usage**
+  - Used by: `_get_pitcher_matchup_score()` to rank pitcher quality
+  - Used by: Waiver analyzer for value calculation
+  - Critical: ADP must be current during season
+
+#### Breakout Detector (`breakout_detector.py`)
+
+- [ ] **Integration with Lineup**
+  - Called by: `_get_breakout_score()` in lineup_optimizer
+  - Purpose: Add bonus for players showing Statcast breakout signals
+  - Impact: +0 to +100 points (scaled by signal strength)
+
+- [ ] **Signal Quality**
+  - Verify signal definitions (STRONG, EMERGING, WATCH, FADING)
+  - Check thresholds (exit velo change, K% change, etc.)
+  - Are signals actionable? (Review docs/BREAKOUT_DETECTOR.md)
+
+- [ ] **Cache Usage**
+  - Breakout analyses should be cached (expensive Statcast queries)
+  - Check `_breakout_cache` in LineupOptimizer
+  - Is cache keyed correctly? (by player name)
+
+### Configuration Management
+
+- [ ] **League Settings (`config/league_settings.json`)**
+  - Lineup weights: Are defaults sensible?
+  - Roster positions: Matches league rules?
+  - Preferences: adp_source, thresholds, etc.
+
+- [ ] **Schema Validation**
+  - File: `league_settings.schema.json`
+  - Does it validate correctly? (Test with invalid config)
+
+### Automation & Deployment
+
+- [ ] **GitHub Actions Workflow**
+  - File: `.github/workflows/update-data.yml`
+  - Schedule: Daily at 8am ET (12pm UTC) ✅
+  - Steps:
+    1. Install Python dependencies
+    2. Run `export_dashboard_data.py`
+    3. Commit updated JSON
+    4. Push to trigger GitHub Pages deploy
+  - Error handling: What if Python script fails?
+
+- [ ] **Export Script (`scripts/export_dashboard_data.py`)**
+  - Calls: `LineupOptimizer.get_daily_recommendations()`
+  - Output: `apps/baseball-dashboard/public/api/daily_lineup.json`
+  - Format: Must match dashboard TypeScript types
+  - Error handling: Graceful degradation if lineup fails?
+
+- [ ] **Dashboard Data Contract**
+  - Check JSON structure matches frontend expectations
+  - Required fields: player, position, team, opponent, confidence, etc.
+  - Handle missing data: What if some fields are null?
 
 ---
 
-## Phase 6: Web Frontend Integration Opportunities
+## Specific Audit Tasks
 
-Given the new web frontend (`apps/baseball-dashboard/`):
+### Task 1: Trace a Sample Lineup Recommendation
 
-### 6.1 Backend API Design
+Pick one player from the roster (e.g., "Mookie Betts") and trace the entire data flow:
 
-What API endpoints would best serve the frontend?
+1. **Input**: Player object with name, position, team
+2. **Game lookup**: Find Mookie's game today (LAD vs ?)
+3. **Opponent pitcher**: Identify opposing pitcher
+4. **Matchup score**: Calculate based on pitcher ADP + recent stats
+5. **Park score**: Get Dodger Stadium park factor
+6. **Form score**: Query Statcast for last 14 days
+7. **Platoon score**: Check L vs R
+8. **Breakout boost**: Check for signals
+9. **Final confidence**: Weighted average
+10. **Tier assignment**: Must Start / Start / Flex / Bench
+11. **Reasons**: Generated list of factors
 
-```
-GET  /api/lineup/daily              # Today's recommendations
-GET  /api/lineup/schedule           # Upcoming games
-POST /api/lineup/optimize           # Custom lineup optimization
+**Document every step** - Where does data come from? What if it's missing?
 
-GET  /api/waivers                   # Top waiver targets
-GET  /api/waivers/:position         # Position-filtered
-POST /api/waivers/analyze           # Analyze specific players
+### Task 2: Test Error Scenarios
 
-GET  /api/breakouts                 # Current breakout alerts
-GET  /api/breakouts/:playerId       # Specific player analysis
+Simulate failures and check graceful degradation:
 
-GET  /api/roster                    # Your current roster
-POST /api/roster/import             # Import from Yahoo
-```
+- [ ] MLB Stats API returns 500 error
+- [ ] Statcast has no data for a player
+- [ ] ADP scraping fails
+- [ ] Player not found in any API
+- [ ] Pitcher is TBD
+- [ ] No games scheduled (off-day)
 
-### 6.2 Real-time Updates
+**Expected**: System should still produce recommendations with available data
 
-Should the system support:
+### Task 3: Validate Cache Performance
 
-- WebSocket connections for live updates?
-- Polling intervals for daily refreshes?
-- Server-Sent Events for notifications?
+Run lineup optimizer twice:
 
-### 6.3 Authentication & Multi-User
+1. **Cold start**: Clear `.cache/` directory, time execution
+2. **Warm start**: Run again, time execution
 
-Currently single-user. Consider:
+**Expected**: Warm start should be 5-10x faster
 
-- Multi-league support
-- User authentication
-- Shared recommendations
-- League-mate analysis
+### Task 4: Check Data Freshness
 
----
+Verify data is current:
 
-## Phase 7: Data Quality & Reliability
+- [ ] ADP data: Last updated timestamp
+- [ ] Game schedule: Today's games
+- [ ] Statcast stats: Recent window (last 14 days)
+- [ ] Cache expiry: TTL working correctly
 
-### 7.1 Error Handling Audit
+### Task 5: Scoring Accuracy Review
 
-For each API integration, check:
+Compare lineup recommendations to actual results (if historical data available):
 
-- [ ] Rate limiting handling
-- [ ] Timeout handling
-- [ ] Graceful degradation (fallback to cached data)
-- [ ] User-friendly error messages
-- [ ] Logging for debugging
-
-### 7.2 Data Validation
-
-- [ ] Input validation for all user inputs
-- [ ] API response validation
-- [ ] Type hints and runtime type checking
-- [ ] Schema validation for JSON configs
-
-### 7.3 Edge Cases
-
-Test scenarios:
-
-- Off-season (no games scheduled)
-- All-Star break
-- Trade deadline
-- Playoffs
-- Suspended games
-- Player traded mid-season
-- Newly called-up players (no stats)
+- [ ] Do high-confidence players actually perform better?
+- [ ] Are "hot streak" players accurately identified?
+- [ ] Is pitcher quality scoring predictive?
 
 ---
 
 ## Deliverables
 
-Please provide:
+### 1. Executive Summary (Required)
 
-### 1. **Connectivity Report**
+- Overall system health (Red/Yellow/Green)
+- Critical issues found (if any)
+- Top 3 recommendations for lineup optimizer
+- Quick wins vs. longer-term improvements
 
-- List of all integration points
-- Any broken connections found
-- Import/dependency issues
-- Configuration problems
+### 2. Detailed Findings Report
 
-### 2. **Synergy Assessment**
+For each audit task:
+- What was checked
+- What was found (good and bad)
+- Specific code references (file:line)
+- Severity: Critical / High / Medium / Low
 
-- Current tool interactions (diagram if helpful)
-- Missed opportunities for integration
-- Data flow inefficiencies
-- Caching strategy recommendations
+### 3. Data Quality Assessment
 
-### 3. **Tool Improvement Roadmap**
+- Which data sources are reliable?
+- Which data sources are fragile?
+- What data is missing that could improve lineup quality?
 
-For each tool (Lineup, Breakout, Waiver, Keeper):
+### 4. Improvement Recommendations
 
-- Quick wins (< 1 day)
-- Medium enhancements (1-3 days)
-- Major features (1 week+)
-- Prioritized by impact vs effort
+Prioritized list of enhancements:
 
-### 4. **New Feature Proposals**
+**High Priority** (Impacts daily decisions)
+- Missing data sources
+- Logic flaws
+- Performance issues
+- Cache inefficiencies
 
-- Top 3-5 most impactful new features
-- Implementation complexity estimate
-- Dependencies and prerequisites
-- Expected user value
+**Medium Priority** (Nice to have)
+- Better error messages
+- Additional metrics
+- UI improvements
 
-### 5. **Architecture Recommendations**
-
-- Code organization improvements
-- Design pattern suggestions
-- Testing strategy
-- Performance optimizations
-
-### 6. **Implementation Plan**
-
-Prioritized action items:
-
-1. Critical fixes (must do)
-2. Quick wins (should do)
-3. Strategic enhancements (nice to have)
-4. Future innovations (vision)
+**Low Priority** (Future enhancements)
+- Advanced analytics
+- Machine learning
+- Historical backtesting
 
 ---
 
-## Context & Constraints
+## Context: Recent Improvements
 
-**What's Working Well:**
+The system has undergone significant upgrades. These should be validated:
 
-- Modular design with clear separation
-- Good documentation
-- Active integration of multiple data sources
-- User-friendly CLI tools
+### Phase 1: Performance & Reliability ✅
 
-**Known Limitations:**
+1. **Global Cache Manager** (`cache_manager.py`)
+   - Persistent caching with TTL
+   - Reduces API calls by ~90%
+   - Verify: Is it working? Check cache hit rates
 
-- No automated tests
-- Single-user only (for now)
-- Manual data refresh
-- CLI-only (web frontend is new)
-- Off-season data availability
+2. **API Retry Logic** (`daily_matchups.py`, `adp_fetcher.py`)
+   - 3 retries with exponential backoff
+   - 30-second timeout
+   - Verify: Test with simulated failures
 
-**User's Goals:**
+3. **Breakout Integration** (`waiver_analyzer.py`, `lineup_optimizer.py`)
+   - Statcast signals integrated into lineup scoring
+   - Verify: Are breakout boosts applied correctly?
 
-1. Daily lineup optimization for maximum points
-2. Identify undervalued waiver pickups before others
-3. Spot breakout players early
-4. Make optimal keeper decisions
-5. Gain competitive advantage through data
+### Phase 2: Intelligence Upgrades ✅
 
-**Success Metrics:**
+4. **Real Form Scoring** (replaced hardcoded 75)
+   - Uses actual Statcast data (last 14 days)
+   - Hitters: hard hit %, barrel %
+   - Pitchers: K %, hard hit % allowed
+   - Verify: Logic correctness
 
-- More fantasy points scored
-- Better waiver acquisitions
-- Earlier breakout detection
-- Optimal keeper selection
-- Winning the championship 🏆
+5. **Pitcher Quality Scoring** (replaced hardcoded ace list)
+   - Uses ADP + recent Statcast performance
+   - Elite (ADP <50), Good (50-100), Average (100-200), Weak (>200)
+   - Verify: Scoring ranges make sense
 
----
+6. **Position Need Scoring** (`waiver_analyzer.py`)
+   - Prioritizes pickups that fill roster gaps
+   - +0 to +50 point boost
+   - Verify: Math is correct
 
-## Getting Started
+7. **Configurable Weights** (`league_settings.json`)
+   - User can customize lineup scoring factors
+   - Verify: Weights are loaded and applied
 
-1. Read the project structure above
-2. Review key files:
-   - `apps/keeper-advisor/src/lineup_optimizer.py` - Main lineup logic
-   - `apps/keeper-advisor/src/breakout_detector.py` - Breakout detection
-   - `apps/keeper-advisor/src/waiver_analyzer.py` - Waiver recommendations
-   - `apps/keeper-advisor/docs/UNIFIED_INTELLIGENCE_SYSTEM.md` - System overview
-3. Test the CLI tools in `scripts/`
-4. Trace the data flow through the system
-5. Identify gaps, inefficiencies, and opportunities
+### Phase 3: Automation ✅
 
----
+8. **GitHub Actions Workflow**
+   - Daily automated updates at 8am ET
+   - Verify: Workflow runs successfully
 
-## Questions to Answer
-
-1. **Integration**: Are all tools properly connected and sharing data efficiently?
-2. **Configuration**: Is `league_settings.json` being fully utilized?
-3. **Caching**: Is the caching strategy optimal?
-4. **Weights/Thresholds**: Are scoring weights and breakout thresholds well-calibrated?
-5. **Data Quality**: Are we getting the best available data from each source?
-6. **User Experience**: Are the CLI tools intuitive? Is output actionable?
-7. **Missing Features**: What obvious capabilities are absent?
-8. **Competitive Edge**: What would give this system a clear advantage over competitors?
-9. **Scalability**: Can this system handle multiple users/leagues?
-10. **Maintainability**: Is the code easy to update and extend?
+9. **Dashboard Export** (`export_dashboard_data.py`)
+   - Generates JSON for web dashboard
+   - Verify: Output format is correct
 
 ---
 
-## Your Expertise
+## Success Criteria
 
-Apply your knowledge of:
+A successful audit will:
 
-- **Software Architecture** - Clean code, design patterns, scalability
-- **Fantasy Baseball** - Winning strategies, key metrics, edge cases
-- **Data Science** - Statistical analysis, feature engineering, validation
-- **API Design** - RESTful design, caching, rate limiting
-- **User Experience** - Actionable insights, clear recommendations
+1. ✅ Validate that lineup recommendations are based on **accurate, reliable data**
+2. ✅ Confirm all data sources are **properly integrated** and **cached**
+3. ✅ Identify any **missing data** that could improve lineup quality
+4. ✅ Verify **error handling** degrades gracefully
+5. ✅ Provide **actionable recommendations** to improve the daily lineup feature
+6. ✅ Assess whether the system is **production-ready** for daily use
 
-**Be thorough, be critical, be innovative.** This system should be a league-winning advantage.
+---
 
-Good luck! 🏆⚾
+## Notes
+
+- **Focus first on lineup optimizer** - It's used daily and most critical
+- **Data quality > New features** - Lineup decisions must be trustworthy
+- **Be specific** - Reference exact files, functions, and line numbers
+- **Test edge cases** - Real-world data is messy
+- **Consider user impact** - Bad lineup recs lose games
+
+**The lineup optimizer must be rock-solid. Audit accordingly.**
