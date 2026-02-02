@@ -1,0 +1,83 @@
+name: Deploy Fantasy Sports Hub
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/fantasy-hub/**'
+      - 'apps/baseball-dashboard/**'
+      - 'apps/espn-recap-web/**'
+      - '.github/workflows/deploy-dashboard.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies for hub
+        working-directory: apps/fantasy-hub
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build hub (landing page)
+        working-directory: apps/fantasy-hub
+        run: pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: Install dependencies for baseball dashboard
+        working-directory: apps/baseball-dashboard
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build baseball dashboard
+        working-directory: apps/baseball-dashboard
+        run: pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: Combine outputs
+        run: |
+          mkdir -p _site
+          cp -r apps/fantasy-hub/out/* _site/
+          mkdir -p _site/baseball
+          cp -r apps/baseball-dashboard/out/* _site/baseball/
+          mkdir -p _site/recap
+          cp -r apps/espn-recap-web/* _site/recap/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
