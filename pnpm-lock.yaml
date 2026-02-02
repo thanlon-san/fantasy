@@ -59,6 +59,37 @@ importers:
 
   apps/espn-fantasy-recap: {}
 
+  apps/fantasy-hub:
+    dependencies:
+      next:
+        specifier: ^15.1.6
+        version: 15.5.11(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.3
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.3(react@19.2.3)
+    devDependencies:
+      '@types/node':
+        specifier: ^22
+        version: 22.19.7
+      '@types/react':
+        specifier: ^19
+        version: 19.2.10
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.10)
+      postcss:
+        specifier: ^8
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.19
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
   apps/keeper-advisor: {}
 
 packages:

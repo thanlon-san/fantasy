@@ -1,19 +1,19 @@
 {
-  "name": "fantasy-workspace",
+  "name": "fantasy-sports-monorepo",
   "version": "1.0.0",
-  "description": "Fantasy sports applications monorepo",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
-    "espn:dev": "cd apps/espn-fantasy-recap && npm run dev",
-    "espn:stop": "cd apps/espn-fantasy-recap && npm run stop",
-    "espn:status": "cd apps/espn-fantasy-recap && npm run status",
-    "keeper:analyze": "cd apps/keeper-advisor && npm run analyze"
+    "build": "pnpm --filter './apps/**' build",
+    "build:hub": "pnpm --filter @fantasy/hub build",
+    "build:baseball": "pnpm --filter @fantasy/baseball-dashboard build",
+    "build:local": "pnpm build:hub && pnpm build:baseball",
+    "dev:hub": "pnpm --filter @fantasy/hub dev",
+    "dev:baseball": "pnpm --filter @fantasy/baseball-dashboard dev",
+    "lint": "pnpm --filter './apps/**' lint",
+    "lint:fix": "pnpm --filter './apps/**' lint -- --fix",
+    "clean": "rm -rf apps/*/out apps/*/.next apps/*/node_modules node_modules",
+    "test:build": "pnpm clean && pnpm install && pnpm build:local",
+    "typecheck": "pnpm --filter './apps/**' exec tsc --noEmit"
   },
-  "keywords": ["fantasy", "sports", "monorepo"],
-  "author": "",
-  "license": "MIT"
+  "devDependencies": {}
 }
