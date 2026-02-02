@@ -8,13 +8,14 @@ import logging
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .daily_matchups import MLBStatsAPI, Game, PlayerMatchup, get_park_factor
 from .models import Player, Roster
 from .breakout_detector import BreakoutDetector, BreakoutSignal
 from .cache_manager import get_cache
 from .league_settings import load_league_settings
+from .adp_fetcher import ADPFetcher
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +100,7 @@ class LineupOptimizer:
     def __init__(self, use_breakout_signals: bool = True):
         self.api = MLBStatsAPI()
         self.cache = get_cache()
+        self.adp_fetcher = ADPFetcher()
         self._games_cache = None
         self._games_cache_date = None
         
@@ -125,7 +127,7 @@ class LineupOptimizer:
         self.use_breakout_signals = use_breakout_signals
         if use_breakout_signals:
             self.breakout_detector = BreakoutDetector()
-            self._breakout_cache = {}  # Cache breakout analyses
+            self._breakout_cache = {}  # Cache analyses
         else:
             self.breakout_detector = None
             self._breakout_cache = {}
@@ -133,7 +135,8 @@ class LineupOptimizer:
     def get_daily_recommendations(
         self,
         roster: Roster,
-        date: Optional[str] = None
+        date: Optional[str] = None,
+        show_all_players: bool = True
     ) -> List[LineupRecommendation]:
         """
         Get daily lineup recommendations for entire roster
@@ -141,6 +144,7 @@ class LineupOptimizer:
         Args:
             roster: User's roster
             date: Date in YYYY-MM-DD (defaults to today)
+            show_all_players: If True, include players not playing today
             
         Returns:
             List of LineupRecommendation objects
@@ -151,22 +155,40 @@ class LineupOptimizer:
         # Get today's games
         games = self._get_games(date)
         
-        if not games:
-            logger.warning(f"No games found for {date}")
-            return []
-        
         # Build game lookup
         game_by_team = {}
-        for game in games:
-            game_by_team[game.away_team] = ('away', game)
-            game_by_team[game.home_team] = ('home', game)
+        if games:
+            for game in games:
+                game_by_team[game.away_team] = ('away', game)
+                game_by_team[game.home_team] = ('home', game)
         
         recommendations = []
         
         for player in roster.players:
-            # Find player's game
+            # Check if player has a game
             if player.team not in game_by_team:
-                logger.debug(f"{player.name} ({player.team}) not playing today")
+                if show_all_players:
+                    # Create a "not playing" recommendation
+                    rec = LineupRecommendation(
+                        player=player,
+                        recommendation=RecommendationType.BENCH,
+                        confidence_score=0,
+                        opponent="No game",
+                        opponent_pitcher=None,
+                        home_away="",
+                        game_time=None,
+                        matchup_score=0,
+                        park_score=0,
+                        form_score=0,
+                        platoon_score=0,
+                        breakout_boost=0,
+                        recent_stats=None,
+                        career_vs_pitcher=None,
+                        reasons=["Not playing today"]
+                    )
+                    recommendations.append(rec)
+                else:
+                    logger.debug(f"{player.name} ({player.team}) not playing today")
                 continue
             
             home_away, game = game_by_team[player.team]
@@ -191,7 +213,7 @@ class LineupOptimizer:
             if rec:
                 recommendations.append(rec)
         
-        # Sort by confidence score
+        # Sort by confidence score (players not playing go to bottom)
         recommendations.sort(key=lambda x: x.confidence_score, reverse=True)
         
         return recommendations
@@ -260,34 +282,20 @@ class LineupOptimizer:
                 park_score = 70
         
         # 2. Matchup score (opponent pitcher quality)
-        # For now, use simple heuristic - would integrate with actual pitcher stats
-        matchup_score = 75  # Neutral by default
-        
-        if opponent_pitcher:
-            # Check if pitcher is known ace (would query stats in production)
-            ace_pitchers = ['Gerrit Cole', 'Spencer Strider', 'Zack Wheeler', 'Corbin Burnes']
-            if any(ace in opponent_pitcher for ace in ace_pitchers):
-                matchup_score = 30
-                reasons.append(f"vs elite pitcher ({opponent_pitcher})")
-            else:
-                matchup_score = 70
-        else:
+        matchup_score = self._get_pitcher_matchup_score(opponent_pitcher, opponent)
+        if matchup_score < 50 and opponent_pitcher:
+            reasons.append(f"vs tough pitcher ({opponent_pitcher})")
+        elif matchup_score > 80 and opponent_pitcher:
+            reasons.append(f"vs weak pitcher ({opponent_pitcher})")
+        elif not opponent_pitcher:
             reasons.append("Pitcher TBD")
         
-        # 3. Form score (recent performance)
-        # Would integrate with actual recent stats in production
-        form_score = 75  # Neutral
-        
-        # Check if we have recent stats
-        if hasattr(player, 'recent_avg') and player.recent_avg:
-            if player.recent_avg > 0.300:
-                form_score = 90
-                reasons.append(f"Hot ({player.recent_avg:.3f} avg)")
-            elif player.recent_avg > 0.250:
-                form_score = 75
-            else:
-                form_score = 50
-                reasons.append(f"Cold ({player.recent_avg:.3f} avg)")
+        # 3. Form score (recent performance from Statcast/MLB API)
+        form_score = self._get_recent_form(player)
+        if form_score > 80:
+            reasons.append("Hot streak")
+        elif form_score < 60:
+            reasons.append("Cold streak")
         
         # 4. Platoon score (L/R matchup)
         platoon_score = self._calculate_platoon_score(player, opponent_pitcher)
@@ -418,6 +426,173 @@ class LineupOptimizer:
         else:
             return 'R'  # Default to righty (70% of MLB)
     
+    def _get_pitcher_matchup_score(self, pitcher_name: Optional[str], team: str) -> float:
+        """
+        Score the matchup difficulty based on pitcher quality
+        
+        Args:
+            pitcher_name: Opposing pitcher name
+            team: Opposing team
+            
+        Returns:
+            Matchup score (0-100, lower = tougher matchup)
+        """
+        if not pitcher_name:
+            return 75  # Neutral for TBD
+        
+        # Check cache
+        cache_key = f"pitcher_{pitcher_name}"
+        if cache_key in self._breakout_cache:
+            return self._breakout_cache[cache_key]
+        
+        score = 75  # Default neutral
+        
+        # Try to get pitcher ADP (lower ADP = better pitcher = tougher matchup)
+        pitcher_adp = self.adp_fetcher.get_player_adp(pitcher_name)
+        if pitcher_adp:
+            if pitcher_adp < 50:  # Elite pitcher
+                score = 35
+            elif pitcher_adp < 100:  # Good pitcher
+                score = 50
+            elif pitcher_adp < 200:  # Average pitcher
+                score = 70
+            else:  # Below average pitcher
+                score = 85
+        
+        # Try to get recent form from Statcast (during season)
+        if self.breakout_detector:
+            try:
+                parts = pitcher_name.split()
+                if len(parts) >= 2:
+                    first_name = parts[0]
+                    last_name = ' '.join(parts[1:])
+                    
+                    player_id = self.breakout_detector.statcast.get_player_id(first_name, last_name)
+                    if player_id:
+                        # Check recent performance
+                        data = self.breakout_detector.statcast.get_pitcher_stats(
+                            player_id,
+                            start_date=(datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d'),
+                            end_date=datetime.now().strftime('%Y-%m-%d')
+                        )
+                        if data is not None and not data.empty:
+                            metrics = self.breakout_detector.statcast.calculate_pitcher_metrics(data)
+                            
+                            # Adjust score based on recent performance
+                            k_pct = metrics.get('k_percent', 20)
+                            hard_hit = metrics.get('hard_hit_percent', 40)
+                            
+                            # Good K%, low hard hit% = tougher matchup
+                            if k_pct > 30:
+                                score -= 10
+                            if hard_hit < 35:
+                                score -= 10
+                            
+                            # Poor K%, high hard hit% = easier matchup
+                            if k_pct < 15:
+                                score += 10
+                            if hard_hit > 45:
+                                score += 10
+            except Exception as e:
+                logger.debug(f"Could not get pitcher stats for {pitcher_name}: {e}")
+        
+        # Clamp to 0-100
+        score = max(0, min(100, score))
+        
+        # Cache the result
+        self._breakout_cache[cache_key] = score
+        return score
+    
+    def _get_recent_form(self, player: Player) -> float:
+        """
+        Get player's recent form score (last 14 days)
+        
+        Returns:
+            Form score (0-100, 75 = neutral)
+        """
+        # Check cache first
+        cache_key = f"form_{player.name}"
+        if cache_key in self._breakout_cache:
+            return self._breakout_cache[cache_key]
+        
+        # Try to get recent stats from breakout detector's statcast client
+        if not self.breakout_detector:
+            return 75  # Neutral if no detector
+        
+        # Parse player name
+        parts = player.name.split()
+        if len(parts) < 2:
+            return 75
+        
+        first_name = parts[0]
+        last_name = ' '.join(parts[1:])
+        
+        # Determine if pitcher or hitter
+        is_pitcher = any(p in player.position for p in ['SP', 'RP', 'P'])
+        
+        try:
+            # Get player ID
+            player_id = self.breakout_detector.statcast.get_player_id(first_name, last_name)
+            if not player_id:
+                return 75
+            
+            if is_pitcher:
+                # For pitchers: check recent ERA, K rate
+                data = self.breakout_detector.statcast.get_pitcher_stats(
+                    player_id, 
+                    start_date=(datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d'),
+                    end_date=datetime.now().strftime('%Y-%m-%d')
+                )
+                if data is None or data.empty:
+                    return 75
+                
+                metrics = self.breakout_detector.statcast.calculate_pitcher_metrics(data)
+                
+                # Score based on K% and hard hit %
+                score = 75
+                k_pct = metrics.get('k_percent', 20)
+                hard_hit = metrics.get('hard_hit_percent', 40)
+                
+                if k_pct > 25:
+                    score += 10
+                if k_pct > 30:
+                    score += 5
+                if hard_hit < 35:
+                    score += 10
+                    
+                self._breakout_cache[cache_key] = min(100, score)
+                return min(100, score)
+            else:
+                # For hitters: check recent exit velo, hard hit%
+                data = self.breakout_detector.statcast.get_hitter_stats(
+                    player_id,
+                    start_date=(datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d'),
+                    end_date=datetime.now().strftime('%Y-%m-%d')
+                )
+                if data is None or data.empty:
+                    return 75
+                
+                metrics = self.breakout_detector.statcast.calculate_hitter_metrics(data)
+                
+                # Score based on hard hit% and barrel%
+                score = 75
+                hard_hit = metrics.get('hard_hit_percent', 35)
+                barrel = metrics.get('barrel_percent', 8)
+                
+                if hard_hit > 40:
+                    score += 10
+                if hard_hit > 50:
+                    score += 5
+                if barrel > 10:
+                    score += 10
+                    
+                self._breakout_cache[cache_key] = min(100, score)
+                return min(100, score)
+                
+        except Exception as e:
+            logger.debug(f"Could not get recent form for {player.name}: {e}")
+            return 75
+    
     def _get_breakout_score(self, player: Player) -> float:
         """
         Get breakout signal boost for a player
@@ -432,7 +607,7 @@ class LineupOptimizer:
             return 0
         
         # Check cache first
-        cache_key = player.name
+        cache_key = f"breakout_{player.name}"
         if cache_key in self._breakout_cache:
             return self._breakout_cache[cache_key]
         
@@ -482,12 +657,16 @@ class LineupOptimizer:
 def print_lineup_recommendations(recommendations: List[LineupRecommendation]):
     """Print formatted lineup recommendations"""
     
-    # Group by recommendation type
-    must_start = [r for r in recommendations if r.recommendation == RecommendationType.MUST_START]
-    start = [r for r in recommendations if r.recommendation == RecommendationType.START]
-    flex = [r for r in recommendations if r.recommendation == RecommendationType.FLEX]
-    bench = [r for r in recommendations if r.recommendation == RecommendationType.BENCH]
-    avoid = [r for r in recommendations if r.recommendation == RecommendationType.AVOID]
+    # Separate playing vs not playing
+    playing = [r for r in recommendations if r.opponent != "No game"]
+    not_playing = [r for r in recommendations if r.opponent == "No game"]
+    
+    # Group playing by recommendation type
+    must_start = [r for r in playing if r.recommendation == RecommendationType.MUST_START]
+    start = [r for r in playing if r.recommendation == RecommendationType.START]
+    flex = [r for r in playing if r.recommendation == RecommendationType.FLEX]
+    bench = [r for r in playing if r.recommendation == RecommendationType.BENCH]
+    avoid = [r for r in playing if r.recommendation == RecommendationType.AVOID]
     
     print("\n" + "="*70)
     print("📊 DAILY LINEUP RECOMMENDATIONS")
@@ -523,16 +702,25 @@ def print_lineup_recommendations(recommendations: List[LineupRecommendation]):
         for rec in avoid:
             print(rec)
     
+    # Players not playing today
+    if not_playing:
+        print("\n💤 NOT PLAYING TODAY")
+        print("-"*70)
+        for rec in not_playing:
+            print(f"   {rec.player.name} ({rec.player.position}) - {rec.player.team}")
+    
     # Summary
     print("\n" + "="*70)
     print("📈 SUMMARY")
     print("="*70)
-    print(f"Must Start: {len(must_start)}")
-    print(f"Start: {len(start)}")
-    print(f"Flex: {len(flex)}")
-    print(f"Bench: {len(bench)}")
-    print(f"Avoid: {len(avoid)}")
-    print(f"Total Players Analyzed: {len(recommendations)}")
+    print(f"Playing Today: {len(playing)}")
+    print(f"  • Must Start: {len(must_start)}")
+    print(f"  • Start: {len(start)}")
+    print(f"  • Flex: {len(flex)}")
+    print(f"  • Bench: {len(bench)}")
+    print(f"  • Avoid: {len(avoid)}")
+    print(f"Not Playing: {len(not_playing)}")
+    print(f"Total Roster: {len(recommendations)}")
     print("="*70)
 
 

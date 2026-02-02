@@ -12,6 +12,7 @@ from .models import Player, Roster
 from .keeper_rules import KeeperRules
 from .adp_fetcher import ADPFetcher
 from .breakout_detector import BreakoutDetector, BreakoutSignal
+from .league_settings import load_league_settings
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,9 @@ class WaiverAnalyzer:
                 settings = None
         
         self.settings = settings
+        
+        # Calculate position needs
+        self.position_needs = self._calculate_position_needs()
     
     def analyze_free_agents(
         self,
@@ -204,6 +208,12 @@ class WaiverAnalyzer:
                 logger.debug(f"{add_player.name}: Breakout boost = {breakout_boost:+.0f}")
                 value_gain += breakout_boost
         
+        # NEW: Apply position need boost
+        position_boost = self._get_position_need_boost(add_player)
+        if position_boost > 0:
+            logger.debug(f"{add_player.name}: Position need boost = {position_boost:+.0f}")
+            value_gain += position_boost
+        
         # Only recommend if positive value
         if value_gain <= 0:
             return None
@@ -264,6 +274,13 @@ class WaiverAnalyzer:
             elif alert and alert.signal == BreakoutSignal.EMERGING:
                 reasons.append("⚡ Emerging breakout")
         
+        # Check for position needs
+        position_boost = self._get_position_need_boost(add_player)
+        if position_boost >= 40:
+            reasons.append("🎯 Critical position need")
+        elif position_boost >= 20:
+            reasons.append("Position need")
+        
         # Position-specific notes
         if "SP" in add_player.position or "RP" in add_player.position:
             reasons.append("pitcher upgrade")
@@ -287,6 +304,81 @@ class WaiverAnalyzer:
             boost = self.BREAKOUT_BOOST.get(alert.signal, 0)
             return boost
         return 0
+    
+    def _calculate_position_needs(self) -> Dict[str, float]:
+        """
+        Calculate how badly each position is needed
+        
+        Returns:
+            Dict of position -> need score (0-100, higher = more needed)
+        """
+        if not self.settings:
+            return {}
+        
+        # Get roster requirements from settings
+        roster_positions = self.settings.roster_config.get('positions', {})
+        
+        # Count players by position
+        position_counts = {}
+        for position in roster_positions.keys():
+            if position == 'Bench':
+                continue
+            position_counts[position] = 0
+        
+        # Count current roster
+        for player in self.roster.players:
+            player_positions = player.position.split(',')
+            for pos in player_positions:
+                pos = pos.strip()
+                if pos in position_counts:
+                    position_counts[pos] += 1
+        
+        # Calculate need scores
+        needs = {}
+        for position, required in roster_positions.items():
+            if position == 'Bench':
+                continue
+            
+            current = position_counts.get(position, 0)
+            
+            # Score based on shortage
+            if current < required:
+                # Critical shortage
+                needs[position] = 100
+            elif current == required:
+                # At minimum, but no depth
+                needs[position] = 60
+            elif current < required * 1.5:
+                # Some depth, but could use more
+                needs[position] = 30
+            else:
+                # Good depth
+                needs[position] = 0
+        
+        return needs
+    
+    def _get_position_need_boost(self, player: Player) -> float:
+        """
+        Calculate boost based on position need
+        
+        Returns:
+            Boost value (0-50 points)
+        """
+        if not self.position_needs:
+            return 0
+        
+        max_boost = 0
+        player_positions = player.position.split(',')
+        
+        for pos in player_positions:
+            pos = pos.strip()
+            need = self.position_needs.get(pos, 0)
+            
+            # Convert need score (0-100) to boost (0-50)
+            boost = need * 0.5
+            max_boost = max(max_boost, boost)
+        
+        return max_boost
     
     def _check_breakout(self, player: Player):
         """Check for breakout signal (with caching to avoid redundant API calls)"""
