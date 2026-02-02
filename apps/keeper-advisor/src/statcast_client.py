@@ -221,6 +221,24 @@ class StatcastClient:
                 metrics['k_percent'] = (strikeouts / pas * 100)
                 metrics['bb_percent'] = (walks / pas * 100)
         
+        # Expected stats (xBA, xSLG, xwOBA) if available
+        if 'estimated_ba_using_speedangle' in data.columns:
+            metrics['xBA'] = data['estimated_ba_using_speedangle'].mean()
+        
+        if 'estimated_slg_using_speedangle' in data.columns:
+            metrics['xSLG'] = data['estimated_slg_using_speedangle'].mean()
+        
+        if 'estimated_woba_using_speedangle' in data.columns:
+            metrics['xwOBA'] = data['estimated_woba_using_speedangle'].mean()
+        
+        # Batted ball type distribution
+        if 'bb_type' in data.columns:
+            total_bb = data['bb_type'].notna().sum()
+            if total_bb > 0:
+                metrics['ground_ball_percent'] = ((data['bb_type'] == 'ground_ball').sum() / total_bb * 100)
+                metrics['line_drive_percent'] = ((data['bb_type'] == 'line_drive').sum() / total_bb * 100)
+                metrics['fly_ball_percent'] = ((data['bb_type'] == 'fly_ball').sum() / total_bb * 100)
+        
         return metrics
     
     def calculate_pitcher_metrics(self, data: pd.DataFrame) -> Dict[str, float]:

@@ -99,6 +99,14 @@ class LineupOptimizer:
         'SWITCH': 10,      # Switch hitters always have slight edge
     }
     
+    # Pitcher ADP thresholds (pitchers have different ADP ranges than hitters)
+    PITCHER_ADP_THRESHOLDS = {
+        'elite': 50,      # Top-50 pitcher (aces, high-K guys)
+        'good': 150,      # Solid starter (consistent, reliable)
+        'average': 250,   # Back-end rotation (matchup dependent)
+        'streamer': 400   # Waiver wire / spot start
+    }
+    
     def __init__(self, use_breakout_signals: bool = True):
         self.api = MLBStatsAPI()
         self.cache = get_cache()
@@ -157,12 +165,17 @@ class LineupOptimizer:
         # Get today's games
         games = self._get_games(date)
         
-        # Build game lookup
-        game_by_team = {}
+        # Build game lookup - support multiple games per team (double-headers)
+        game_by_team = {}  # team -> list of (home_away, game) tuples
         if games:
             for game in games:
-                game_by_team[game.away_team] = ('away', game)
-                game_by_team[game.home_team] = ('home', game)
+                if game.away_team not in game_by_team:
+                    game_by_team[game.away_team] = []
+                game_by_team[game.away_team].append(('away', game))
+                
+                if game.home_team not in game_by_team:
+                    game_by_team[game.home_team] = []
+                game_by_team[game.home_team].append(('home', game))
         
         recommendations = []
         
@@ -193,27 +206,33 @@ class LineupOptimizer:
                     logger.debug(f"{player.name} ({player.team}) not playing today")
                 continue
             
-            home_away, game = game_by_team[player.team]
+            # Get all games for this team (handles double-headers)
+            team_games = game_by_team[player.team]
             
-            # Get opponent and pitcher
-            if home_away == 'away':
-                opponent = game.home_team
-                opponent_pitcher = game.home_pitcher
-            else:
-                opponent = game.away_team
-                opponent_pitcher = game.away_pitcher
-            
-            # Analyze matchup
-            rec = self._analyze_player_matchup(
-                player=player,
-                opponent=opponent,
-                opponent_pitcher=opponent_pitcher,
-                home_away=home_away,
-                game=game
-            )
-            
-            if rec:
-                recommendations.append(rec)
+            # Analyze each game (for double-headers)
+            for game_num, (home_away, game) in enumerate(team_games, 1):
+                # Get opponent and pitcher
+                if home_away == 'away':
+                    opponent = game.home_team
+                    opponent_pitcher = game.home_pitcher
+                else:
+                    opponent = game.away_team
+                    opponent_pitcher = game.away_pitcher
+                
+                # Analyze matchup
+                rec = self._analyze_player_matchup(
+                    player=player,
+                    opponent=opponent,
+                    opponent_pitcher=opponent_pitcher,
+                    home_away=home_away,
+                    game=game
+                )
+                
+                if rec:
+                    # Add game number label for double-headers
+                    if len(team_games) > 1:
+                        rec.reasons.insert(0, f"Game {game_num} of {len(team_games)}")
+                    recommendations.append(rec)
         
         # Sort by confidence score (players not playing go to bottom)
         recommendations.sort(key=lambda x: x.confidence_score, reverse=True)
@@ -260,8 +279,9 @@ class LineupOptimizer:
         """
         reasons = []
         
-        # 1. Park factor score
-        park_factor = get_park_factor(game.venue) if game.venue else 1.0
+        # 1. Park factor score (with weather adjustment)
+        base_park_factor = get_park_factor(game.venue) if game.venue else 1.0
+        park_factor = self._adjust_park_for_weather(base_park_factor, game.weather)
         
         if home_away == 'home':
             # Playing at home stadium
@@ -283,6 +303,11 @@ class LineupOptimizer:
             else:
                 park_score = 70
         
+        # Add weather-specific reasons
+        if game.weather:
+            weather_reasons = self._get_weather_reasons(game.weather)
+            reasons.extend(weather_reasons)
+        
         # 2. Matchup score (opponent pitcher quality)
         matchup_score = self._get_pitcher_matchup_score(opponent_pitcher, opponent)
         if matchup_score < 50 and opponent_pitcher:
@@ -293,8 +318,10 @@ class LineupOptimizer:
             reasons.append("Pitcher TBD")
         
         # 3. Form score (recent performance from Statcast/MLB API)
-        form_score = self._get_recent_form(player)
-        if form_score > 80:
+        form_score, has_recent_data = self._get_recent_form(player)
+        if not has_recent_data:
+            reasons.append("Limited recent data")
+        elif form_score > 80:
             reasons.append("Hot streak")
         elif form_score < 60:
             reasons.append("Cold streak")
@@ -307,6 +334,13 @@ class LineupOptimizer:
         if self.use_breakout_signals:
             breakout_score = self._get_breakout_score(player)
         
+        # 6. Historical matchup boost/penalty (batter vs pitcher history)
+        history_adjustment = self._get_matchup_history_adjustment(player, opponent_pitcher)
+        if history_adjustment > 5:
+            reasons.append(f"Career success vs this pitcher")
+        elif history_adjustment < -5:
+            reasons.append(f"Career struggles vs this pitcher")
+        
         # Calculate total confidence score
         base_score = (
             self.MATCHUP_WEIGHT * matchup_score +
@@ -317,6 +351,13 @@ class LineupOptimizer:
         
         # Apply breakout boost
         confidence_score = base_score + (self.BREAKOUT_WEIGHT * breakout_score)
+        
+        # Apply historical matchup adjustment (±5-10 points for significant history)
+        confidence_score += history_adjustment
+        
+        # Slightly reduce confidence when no recent data available
+        if not has_recent_data:
+            confidence_score *= 0.95
         
         # Determine recommendation type
         if confidence_score >= 80:
@@ -386,47 +427,263 @@ class LineupOptimizer:
     
     def _get_player_handedness(self, player_name: str) -> str:
         """
-        Get player batting handedness
+        Get player batting handedness from MLB API (with 30-day cache)
         
         Returns: 'R', 'L', or 'S' (switch)
         """
-        # Known switch hitters
-        switch_hitters = [
-            'Mookie Betts', 'Jose Ramirez', 'Jorge Polanco', 'Tommy Edman',
-            'Bobby Witt Jr.', 'Jazz Chisholm', 'Nico Hoerner'
-        ]
+        # Check persistent cache (30-day TTL since handedness never changes)
+        cache_key = f"handedness_bat_{player_name}"
+        cached = self.cache.get(cache_key, max_age_hours=720)  # 30 days
+        if cached:
+            return cached
         
-        # Known lefties (more common)
-        lefties = [
-            'Freddie Freeman', 'Kyle Tucker', 'Juan Soto', 'Rafael Devers',
-            'Cody Bellinger', 'Christian Yelich', 'Randy Arozarena',
-            'Corey Seager', 'Anthony Rizzo', 'Matt Olson'
-        ]
+        # Try to get from MLB API
+        try:
+            parts = player_name.split()
+            if len(parts) >= 2:
+                first_name = parts[0]
+                last_name = ' '.join(parts[1:])
+                
+                # Get player ID from Statcast
+                if self.breakout_detector:
+                    player_id = self.breakout_detector.statcast.get_player_id(first_name, last_name)
+                    if player_id:
+                        bat_side, _ = self.api.get_player_handedness(player_id)
+                        if bat_side:
+                            # Cache for 30 days
+                            self.cache.set(cache_key, bat_side)
+                            return bat_side
+        except Exception as e:
+            logger.debug(f"Could not get handedness for {player_name}: {e}")
         
-        if any(name in player_name for name in switch_hitters):
-            return 'S'
-        elif any(name in player_name for name in lefties):
-            return 'L'
-        else:
-            return 'R'  # Default to righty (70% of MLB)
+        # Default to righty (70% of MLB)
+        default = 'R'
+        self.cache.set(cache_key, default)
+        return default
     
     def _get_pitcher_handedness(self, pitcher_name: str) -> str:
         """
-        Get pitcher throwing handedness
+        Get pitcher throwing handedness from MLB API (with 30-day cache)
         
         Returns: 'R' or 'L'
         """
-        # Known lefties
-        lefty_pitchers = [
-            'Blake Snell', 'Jordan Montgomery', 'Framber Valdez', 'Jesus Luzardo',
-            'Tyler Anderson', 'Martin Perez', 'Yusei Kikuchi', 'Sean Manaea',
-            'Patrick Sandoval', 'Jose Quintana', 'Kyle Freeland'
-        ]
+        # Check persistent cache (30-day TTL since handedness never changes)
+        cache_key = f"handedness_pitch_{pitcher_name}"
+        cached = self.cache.get(cache_key, max_age_hours=720)  # 30 days
+        if cached:
+            return cached
         
-        if any(name in pitcher_name for name in lefty_pitchers):
-            return 'L'
-        else:
-            return 'R'  # Default to righty (70% of MLB)
+        # Try to get from MLB API
+        try:
+            parts = pitcher_name.split()
+            if len(parts) >= 2:
+                first_name = parts[0]
+                last_name = ' '.join(parts[1:])
+                
+                # Get player ID from Statcast
+                if self.breakout_detector:
+                    player_id = self.breakout_detector.statcast.get_player_id(first_name, last_name)
+                    if player_id:
+                        _, pitch_hand = self.api.get_player_handedness(player_id)
+                        if pitch_hand:
+                            # Cache for 30 days
+                            self.cache.set(cache_key, pitch_hand)
+                            return pitch_hand
+        except Exception as e:
+            logger.debug(f"Could not get handedness for {pitcher_name}: {e}")
+        
+        # Default to righty (70% of MLB)
+        default = 'R'
+        self.cache.set(cache_key, default)
+        return default
+    
+    def _adjust_park_for_weather(self, base_factor: float, weather: Optional[Dict]) -> float:
+        """
+        Adjust park factor based on weather conditions
+        
+        Args:
+            base_factor: Base park factor
+            weather: Weather dict from MLB API
+            
+        Returns:
+            Adjusted park factor
+        """
+        if not weather:
+            return base_factor
+        
+        adjusted_factor = base_factor
+        
+        # Wind direction and speed
+        wind = weather.get('wind', '')
+        if wind:
+            wind_lower = wind.lower()
+            # Wind blowing out (to outfield) helps hitters
+            if 'out' in wind_lower and ('mph' in wind_lower or 'kt' in wind_lower):
+                # Extract wind speed if possible
+                try:
+                    import re
+                    speed_match = re.search(r'(\d+)', wind_lower)
+                    if speed_match:
+                        speed = int(speed_match.group(1))
+                        if speed >= 15:  # Strong wind
+                            adjusted_factor *= 1.10  # +10% for strong wind out
+                        elif speed >= 10:  # Moderate wind
+                            adjusted_factor *= 1.05  # +5% for moderate wind out
+                except:
+                    adjusted_factor *= 1.05  # Default boost for wind out
+            
+            # Wind blowing in (from outfield) helps pitchers
+            elif 'in' in wind_lower and ('mph' in wind_lower or 'kt' in wind_lower):
+                try:
+                    import re
+                    speed_match = re.search(r'(\d+)', wind_lower)
+                    if speed_match:
+                        speed = int(speed_match.group(1))
+                        if speed >= 15:  # Strong wind
+                            adjusted_factor *= 0.90  # -10% for strong wind in
+                        elif speed >= 10:  # Moderate wind
+                            adjusted_factor *= 0.95  # -5% for moderate wind in
+                except:
+                    adjusted_factor *= 0.95  # Default reduction for wind in
+        
+        # Temperature (cold weather suppresses power)
+        temp = weather.get('temp', '')
+        if temp:
+            try:
+                # Extract temperature number
+                import re
+                temp_match = re.search(r'(\d+)', temp)
+                if temp_match:
+                    temp_num = int(temp_match.group(1))
+                    if temp_num < 50:  # Cold weather
+                        adjusted_factor *= 0.95  # -5% for cold weather
+                    elif temp_num > 85:  # Hot weather (ball travels better)
+                        adjusted_factor *= 1.03  # +3% for hot weather
+            except:
+                pass
+        
+        return adjusted_factor
+    
+    def _get_weather_reasons(self, weather: Optional[Dict]) -> List[str]:
+        """Generate weather-based reasons for lineup decisions"""
+        reasons = []
+        
+        if not weather:
+            return reasons
+        
+        # Wind
+        wind = weather.get('wind', '')
+        if wind:
+            wind_lower = wind.lower()
+            if 'out' in wind_lower:
+                try:
+                    import re
+                    speed_match = re.search(r'(\d+)', wind_lower)
+                    if speed_match and int(speed_match.group(1)) >= 10:
+                        reasons.append("Wind helping hitters")
+                except:
+                    pass
+            elif 'in' in wind_lower:
+                try:
+                    import re
+                    speed_match = re.search(r'(\d+)', wind_lower)
+                    if speed_match and int(speed_match.group(1)) >= 10:
+                        reasons.append("Wind suppressing power")
+                except:
+                    pass
+        
+        # Temperature
+        temp = weather.get('temp', '')
+        if temp:
+            try:
+                import re
+                temp_match = re.search(r'(\d+)', temp)
+                if temp_match:
+                    temp_num = int(temp_match.group(1))
+                    if temp_num < 50:
+                        reasons.append("Cold weather suppressing power")
+            except:
+                pass
+        
+        return reasons
+    
+    def _get_matchup_history_adjustment(self, player: Player, opponent_pitcher: Optional[str]) -> float:
+        """
+        Adjust confidence based on historical batter vs pitcher performance
+        
+        Args:
+            player: Batter player object
+            opponent_pitcher: Opposing pitcher name
+            
+        Returns:
+            Adjustment value (-10 to +10 points)
+        """
+        if not opponent_pitcher or not self.breakout_detector:
+            return 0
+        
+        # Check cache
+        cache_key = f"history_{player.name}_{opponent_pitcher}"
+        cached = self.cache.get(cache_key, max_age_hours=168)  # Cache for 1 week
+        if cached:
+            return cached
+        
+        try:
+            # Get player IDs
+            batter_parts = player.name.split()
+            pitcher_parts = opponent_pitcher.split()
+            
+            if len(batter_parts) < 2 or len(pitcher_parts) < 2:
+                return 0
+            
+            batter_id = self.breakout_detector.statcast.get_player_id(
+                batter_parts[0], ' '.join(batter_parts[1:])
+            )
+            pitcher_id = self.breakout_detector.statcast.get_player_id(
+                pitcher_parts[0], ' '.join(pitcher_parts[1:])
+            )
+            
+            if not batter_id or not pitcher_id:
+                self.cache.set(cache_key, 0)
+                return 0
+            
+            # Get historical matchup stats
+            history = self.api.get_batter_vs_pitcher_stats(batter_id, pitcher_id)
+            
+            if not history or history['abs'] < 10:  # Need minimum 10 AB for significance
+                self.cache.set(cache_key, 0)
+                return 0
+            
+            # Calculate adjustment based on historical performance
+            ops = history['ops']
+            abs_count = history['abs']
+            
+            # Strong historical success (OPS > 1.000 with 15+ AB)
+            if ops >= 1.000 and abs_count >= 15:
+                adjustment = 10
+                logger.debug(f"{player.name} owns {opponent_pitcher}: {ops:.3f} OPS in {abs_count} AB")
+            # Good historical success (OPS > 0.850 with 12+ AB)
+            elif ops >= 0.850 and abs_count >= 12:
+                adjustment = 7
+            # Moderate success (OPS > 0.750 with 10+ AB)
+            elif ops >= 0.750 and abs_count >= 10:
+                adjustment = 3
+            # Historical struggles (OPS < 0.550 with 12+ AB)
+            elif ops < 0.550 and abs_count >= 12:
+                adjustment = -10
+                logger.debug(f"{player.name} struggles vs {opponent_pitcher}: {ops:.3f} OPS in {abs_count} AB")
+            # Poor performance (OPS < 0.650 with 10+ AB)
+            elif ops < 0.650 and abs_count >= 10:
+                adjustment = -5
+            else:
+                adjustment = 0
+            
+            self.cache.set(cache_key, adjustment)
+            return adjustment
+            
+        except Exception as e:
+            logger.debug(f"Could not get matchup history for {player.name} vs {opponent_pitcher}: {e}")
+            self.cache.set(cache_key, 0)
+            return 0
     
     def _get_pitcher_matchup_score(self, pitcher_name: Optional[str], team: str) -> float:
         """
@@ -442,24 +699,29 @@ class LineupOptimizer:
         if not pitcher_name:
             return 75  # Neutral for TBD
         
-        # Check cache
-        cache_key = f"pitcher_{pitcher_name}"
-        if cache_key in self._breakout_cache:
-            return self._breakout_cache[cache_key]
+        # Check persistent cache (12-hour TTL - refreshes daily)
+        date_key = datetime.now().strftime('%Y-%m-%d')
+        cache_key = f"pitcher_{pitcher_name}_{date_key}"
+        cached = self.cache.get(cache_key, max_age_hours=12)
+        if cached:
+            return cached
         
         score = 75  # Default neutral
         
         # Try to get pitcher ADP (lower ADP = better pitcher = tougher matchup)
+        # Pitchers have different ADP ranges than hitters
         pitcher_adp = self.adp_fetcher.get_player_adp(pitcher_name)
         if pitcher_adp:
-            if pitcher_adp < 50:  # Elite pitcher
-                score = 35
-            elif pitcher_adp < 100:  # Good pitcher
-                score = 50
-            elif pitcher_adp < 200:  # Average pitcher
-                score = 70
-            else:  # Below average pitcher
-                score = 85
+            if pitcher_adp < self.PITCHER_ADP_THRESHOLDS['elite']:  # Top-50 pitcher (ace)
+                score = 25  # Very tough matchup
+            elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['good']:  # Solid starter
+                score = 45  # Tough matchup
+            elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['average']:  # Back-end rotation
+                score = 65  # Moderate matchup
+            elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['streamer']:  # Replacement level
+                score = 80  # Favorable matchup
+            else:  # Waiver wire / spot start
+                score = 90  # Very favorable matchup
         
         # Try to get recent form from Statcast (during season)
         if self.breakout_detector:
@@ -501,30 +763,39 @@ class LineupOptimizer:
         # Clamp to 0-100
         score = max(0, min(100, score))
         
-        # Cache the result
-        self._breakout_cache[cache_key] = score
+        # Cache the result (persistent cache for 12 hours)
+        self.cache.set(cache_key, score)
         return score
     
-    def _get_recent_form(self, player: Player) -> float:
+    def _get_recent_form(self, player: Player) -> Tuple[float, bool]:
         """
         Get player's recent form score (last 14 days)
         
         Returns:
-            Form score (0-100, 75 = neutral)
+            Tuple of (form_score, has_recent_data)
+            - form_score: 0-100, 75 = neutral
+            - has_recent_data: True if we have real data, False if defaulting
         """
-        # Check cache first
-        cache_key = f"form_{player.name}"
-        if cache_key in self._breakout_cache:
-            return self._breakout_cache[cache_key]
+        # Check persistent cache (12-hour TTL - refreshes daily)
+        date_key = datetime.now().strftime('%Y-%m-%d')
+        cache_key = f"form_{player.name}_{date_key}"
+        cached = self.cache.get(cache_key, max_age_hours=12)
+        if cached:
+            # Cached value includes both score and has_data flag
+            return cached
         
         # Try to get recent stats from breakout detector's statcast client
         if not self.breakout_detector:
-            return 75  # Neutral if no detector
+            result = (75, False)  # Neutral if no detector
+            self.cache.set(cache_key, result)
+            return result
         
         # Parse player name
         parts = player.name.split()
         if len(parts) < 2:
-            return 75
+            result = (75, False)
+            self.cache.set(cache_key, result)
+            return result
         
         first_name = parts[0]
         last_name = ' '.join(parts[1:])
@@ -536,7 +807,9 @@ class LineupOptimizer:
             # Get player ID
             player_id = self.breakout_detector.statcast.get_player_id(first_name, last_name)
             if not player_id:
-                return 75
+                result = (75, False)
+                self.cache.set(cache_key, result)
+                return result
             
             if is_pitcher:
                 # For pitchers: check recent ERA, K rate
@@ -546,7 +819,9 @@ class LineupOptimizer:
                     end_date=datetime.now().strftime('%Y-%m-%d')
                 )
                 if data is None or data.empty:
-                    return 75
+                    result = (75, False)
+                    self.cache.set(cache_key, result)
+                    return result
                 
                 metrics = self.breakout_detector.statcast.calculate_pitcher_metrics(data)
                 
@@ -561,9 +836,11 @@ class LineupOptimizer:
                     score += 5
                 if hard_hit < 35:
                     score += 10
-                    
-                self._breakout_cache[cache_key] = min(100, score)
-                return min(100, score)
+                
+                final_score = min(100, score)
+                result = (final_score, True)  # Has real data
+                self.cache.set(cache_key, result)
+                return result
             else:
                 # For hitters: check recent exit velo, hard hit%
                 data = self.breakout_detector.statcast.get_hitter_stats(
@@ -572,7 +849,9 @@ class LineupOptimizer:
                     end_date=datetime.now().strftime('%Y-%m-%d')
                 )
                 if data is None or data.empty:
-                    return 75
+                    result = (75, False)
+                    self.cache.set(cache_key, result)
+                    return result
                 
                 metrics = self.breakout_detector.statcast.calculate_hitter_metrics(data)
                 
@@ -587,13 +866,17 @@ class LineupOptimizer:
                     score += 5
                 if barrel > 10:
                     score += 10
-                    
-                self._breakout_cache[cache_key] = min(100, score)
-                return min(100, score)
+                
+                final_score = min(100, score)
+                result = (final_score, True)  # Has real data
+                self.cache.set(cache_key, result)
+                return result
                 
         except Exception as e:
             logger.debug(f"Could not get recent form for {player.name}: {e}")
-            return 75
+            result = (75, False)
+            self.cache.set(cache_key, result)
+            return result
     
     def _get_breakout_score(self, player: Player) -> float:
         """

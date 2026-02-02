@@ -86,3 +86,6 @@ config.json
 recap_history.json
 trend_history.json
 .cache/
+
+# Accuracy tracking data (runtime generated)
+apps/keeper-advisor/data/accuracy/

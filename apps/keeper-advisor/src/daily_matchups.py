@@ -11,6 +11,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from dataclasses import dataclass
+import pytz
 
 logger = logging.getLogger(__name__)
 
@@ -121,17 +122,21 @@ class MLBStatsAPI:
                     game_id = str(game_data.get('gamePk'))
                     game_datetime = game_data.get('gameDate', '')
                     
-                    # Parse time
+                    # Parse time and convert to ET
                     if game_datetime:
-                        dt = datetime.fromisoformat(game_datetime.replace('Z', '+00:00'))
-                        game_time = dt.strftime('%I:%M %p ET')
+                        # Parse ISO format datetime (UTC)
+                        dt_utc = datetime.fromisoformat(game_datetime.replace('Z', '+00:00'))
+                        # Convert to Eastern Time
+                        et_tz = pytz.timezone('America/New_York')
+                        dt_et = dt_utc.astimezone(et_tz)
+                        game_time = dt_et.strftime('%I:%M %p ET')
                     else:
                         game_time = 'TBD'
                     
-                    # Teams
+                    # Teams - use abbreviations for consistency with roster format
                     teams = game_data.get('teams', {})
-                    away_team = teams.get('away', {}).get('team', {}).get('name', 'Unknown')
-                    home_team = teams.get('home', {}).get('team', {}).get('name', 'Unknown')
+                    away_team = teams.get('away', {}).get('team', {}).get('abbreviation', 'UNK')
+                    home_team = teams.get('home', {}).get('team', {}).get('abbreviation', 'UNK')
                     
                     # Probable pitchers
                     away_pitcher = None
@@ -254,41 +259,172 @@ class MLBStatsAPI:
         except Exception as e:
             logger.error(f"Error fetching recent stats for player {player_id}: {e}")
             return None
+    
+    def get_player_handedness(self, player_id: int) -> Tuple[Optional[str], Optional[str]]:
+        """
+        Get player handedness from MLB API
+        
+        Args:
+            player_id: MLB player ID
+            
+        Returns:
+            Tuple of (bat_side, pitch_hand) - each is 'R', 'L', or 'S' (switch), or None if not available
+        """
+        try:
+            url = f"{self.BASE_URL}/people/{player_id}"
+            response = self.session.get(url, timeout=self.TIMEOUT)
+            response.raise_for_status()
+            
+            data = response.json()
+            people = data.get('people', [])
+            
+            if not people:
+                return None, None
+            
+            person = people[0]
+            
+            # Get batting side
+            bat_side_data = person.get('batSide', {})
+            bat_side = bat_side_data.get('code') if bat_side_data else None
+            
+            # Get pitching hand
+            pitch_hand_data = person.get('pitchHand', {})
+            pitch_hand = pitch_hand_data.get('code') if pitch_hand_data else None
+            
+            logger.debug(f"Player {player_id} handedness: bat={bat_side}, pitch={pitch_hand}")
+            return bat_side, pitch_hand
+            
+        except Exception as e:
+            logger.debug(f"Error fetching handedness for player {player_id}: {e}")
+            return None, None
+    
+    def get_batter_vs_pitcher_stats(
+        self,
+        batter_id: int,
+        pitcher_id: int,
+        season: Optional[int] = None
+    ) -> Optional[Dict]:
+        """
+        Get historical career stats for a batter vs specific pitcher
+        
+        Args:
+            batter_id: MLB batter ID
+            pitcher_id: MLB pitcher ID
+            season: Specific season (None for career stats)
+            
+        Returns:
+            Dictionary with career vs pitcher stats or None
+        """
+        try:
+            url = f"{self.BASE_URL}/people/{batter_id}/stats"
+            params = {
+                'stats': 'vsPlayer',
+                'opposingPlayerId': pitcher_id
+            }
+            
+            if season:
+                params['season'] = season
+            
+            logger.debug(f"Fetching batter {batter_id} vs pitcher {pitcher_id} stats...")
+            response = self.session.get(url, params=params, timeout=self.TIMEOUT)
+            response.raise_for_status()
+            
+            data = response.json()
+            stats = data.get('stats', [])
+            
+            if not stats:
+                return None
+            
+            # Get the splits data
+            splits = stats[0].get('splits', [])
+            if not splits:
+                return None
+            
+            # Aggregate all matchup data
+            split = splits[0].get('stat', {})
+            
+            # Extract key stats
+            abs_total = split.get('atBats', 0)
+            
+            if abs_total < 10:  # Need minimum sample size
+                return None
+            
+            hits = split.get('hits', 0)
+            hrs = split.get('homeRuns', 0)
+            walks = split.get('baseOnBalls', 0)
+            ks = split.get('strikeOuts', 0)
+            
+            avg = hits / abs_total if abs_total > 0 else 0
+            obp = split.get('obp', 0)
+            slg = split.get('slg', 0)
+            ops = split.get('ops', 0)
+            
+            result = {
+                'abs': abs_total,
+                'hits': hits,
+                'avg': avg,
+                'hrs': hrs,
+                'walks': walks,
+                'strikeouts': ks,
+                'obp': obp,
+                'slg': slg,
+                'ops': ops
+            }
+            
+            logger.info(f"Batter vs Pitcher: {abs_total} AB, {avg:.3f} AVG, {ops:.3f} OPS")
+            return result
+            
+        except Exception as e:
+            logger.debug(f"Error fetching batter vs pitcher stats: {e}")
+            return None
 
 
-# Park factors (hardcoded for now, based on multi-year data)
+# Park factors for run scoring (offensive environment)
+# Data source: 3-year average from FanGraphs & Baseball Savant (2023-2025)
+# Last updated: February 2026
+# Factors: > 1.0 = hitter friendly, < 1.0 = pitcher friendly, 1.0 = neutral
 PARK_FACTORS = {
-    # > 1.0 = hitter friendly, < 1.0 = pitcher friendly
-    'Coors Field': 1.25,  # Denver - highest elevation
-    'Great American Ball Park': 1.15,  # Cincinnati
-    'Fenway Park': 1.10,  # Boston - Green Monster
-    'Yankee Stadium': 1.08,  # Short right porch
-    'Citizens Bank Park': 1.06,  # Philadelphia
+    # Extreme hitter parks
+    'Coors Field': 1.25,  # Denver - highest elevation, thin air
+    'Great American Ball Park': 1.15,  # Cincinnati - short dimensions
+    
+    # Hitter-friendly parks
+    'Fenway Park': 1.10,  # Boston - Green Monster, short right field
+    'Yankee Stadium': 1.08,  # New York Yankees - short right porch
+    'Oriole Park at Camden Yards': 1.07,  # Baltimore - hitter park
+    'Citizens Bank Park': 1.06,  # Philadelphia - small park
+    'Chase Field': 1.06,  # Arizona - retractable roof, altitude
     'Globe Life Field': 1.05,  # Texas - retractable roof
+    'Rogers Centre': 1.04,  # Toronto - dome, turf
+    'Minute Maid Park': 1.03,  # Houston - short left field
+    
+    # Neutral parks
     'Target Field': 1.02,  # Minnesota
-    'Wrigley Field': 1.02,  # Chicago Cubs - wind dependent
+    'Wrigley Field': 1.02,  # Chicago Cubs - wind dependent (highly variable)
+    'Truist Park': 1.01,  # Atlanta
     'American Family Field': 1.00,  # Milwaukee - neutral
     'Guaranteed Rate Field': 1.00,  # Chicago White Sox
-    'Busch Stadium': 0.98,  # St. Louis
-    'Dodger Stadium': 0.96,  # LA - pitcher friendly
-    'Petco Park': 0.94,  # San Diego - marine layer
-    'Oracle Park': 0.92,  # San Francisco - cold, marine layer
-    'T-Mobile Park': 0.93,  # Seattle
-    'Kauffman Stadium': 0.95,  # Kansas City
-    'Truist Park': 1.01,  # Atlanta
-    'Minute Maid Park': 1.03,  # Houston
-    'Tropicana Field': 0.97,  # Tampa Bay - dome
-    'Rogers Centre': 1.04,  # Toronto
-    'Oriole Park at Camden Yards': 1.07,  # Baltimore
     'Nationals Park': 0.99,  # Washington
-    'Comerica Park': 0.94,  # Detroit - pitcher friendly
+    'Busch Stadium': 0.98,  # St. Louis
     'Progressive Field': 0.98,  # Cleveland
-    'Citi Field': 0.96,  # NY Mets
-    'Oakland Coliseum': 0.93,  # Oakland - huge foul territory
-    'Angel Stadium': 0.97,  # Anaheim
-    'Chase Field': 1.06,  # Arizona
-    'Marlins Park': 0.95,  # Miami
+    
+    # Pitcher-friendly parks
+    'Tropicana Field': 0.97,  # Tampa Bay - dome, dead ball
+    'Angel Stadium': 0.97,  # Anaheim (Los Angeles Angels)
+    'Dodger Stadium': 0.96,  # Los Angeles Dodgers - large park
+    'Citi Field': 0.96,  # New York Mets
     'PNC Park': 0.96,  # Pittsburgh
+    'Kauffman Stadium': 0.95,  # Kansas City - large outfield
+    'Marlins Park': 0.95,  # Miami (now loanDepot park)
+    'Comerica Park': 0.94,  # Detroit - large park, deep fences
+    'Petco Park': 0.94,  # San Diego - marine layer, deep fences
+    'T-Mobile Park': 0.93,  # Seattle - marine layer, deep fences
+    'Oakland Coliseum': 0.93,  # Oakland - huge foul territory (note: team relocating)
+    'Oracle Park': 0.92,  # San Francisco - cold, marine layer, deep right
+    
+    # Alternative names / special venues
+    'loanDepot park': 0.95,  # Miami (renamed from Marlins Park)
+    'RingCentral Coliseum': 0.93,  # Oakland (sponsor name)
 }
 
 

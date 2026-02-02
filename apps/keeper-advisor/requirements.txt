@@ -12,6 +12,9 @@ cryptography>=41.0.0  # For HTTPS OAuth callback
 pandas>=2.0.0
 numpy>=1.24.0
 
+# Timezone handling
+pytz>=2024.1
+
 # Web scraping for ADP data
 beautifulsoup4>=4.12.0
 fuzzywuzzy>=0.18.0

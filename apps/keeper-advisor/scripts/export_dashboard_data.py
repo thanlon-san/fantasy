@@ -19,6 +19,7 @@ from src.lineup_optimizer import LineupOptimizer
 from src.waiver_analyzer import WaiverAnalyzer
 from src.analyzer import KeeperAnalyzer
 from src.breakout_detector import BreakoutDetector
+from src.accuracy_tracker import AccuracyTracker
 
 # Output directory
 dashboard_root = workspace_root / "apps" / "baseball-dashboard"
@@ -42,6 +43,27 @@ try:
     optimizer = LineupOptimizer(use_breakout_signals=True)
     recommendations = optimizer.get_daily_recommendations(roster, show_all_players=True)
     
+    # Log predictions for accuracy tracking
+    tracker = AccuracyTracker()
+    today = datetime.now().strftime("%Y-%m-%d")
+    for rec in recommendations:
+        if rec.opponent != "No game":  # Only log games being played
+            tracker.log_prediction(
+                date=today,
+                player_name=rec.player.name,
+                player_position=rec.player.position,
+                team=rec.player.team,
+                opponent=rec.opponent,
+                confidence_score=rec.confidence_score,
+                recommendation=rec.recommendation.value,
+                matchup_score=rec.matchup_score,
+                park_score=rec.park_score,
+                form_score=rec.form_score,
+                platoon_score=rec.platoon_score,
+                breakout_boost=rec.breakout_boost
+            )
+    print(f"✅ Logged {len([r for r in recommendations if r.opponent != 'No game'])} predictions for tracking")
+    
     # Group into categories
     playing = [r for r in recommendations if r.opponent != "No game"]
     not_playing = [r for r in recommendations if r.opponent == "No game"]
@@ -60,7 +82,7 @@ try:
                 "player": r.player.name,
                 "position": r.player.position,
                 "team": r.player.team,
-                "opponent": f"{r.home_away.upper()[0]} {r.opponent}",
+                "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
                 "opponent_pitcher": r.opponent_pitcher or "TBD",
                 "game_time": r.game_time or "TBD",
                 "confidence": int(r.confidence_score),
@@ -78,7 +100,7 @@ try:
                 "player": r.player.name,
                 "position": r.player.position,
                 "team": r.player.team,
-                "opponent": f"{r.home_away.upper()[0]} {r.opponent}",
+                "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
                 "opponent_pitcher": r.opponent_pitcher or "TBD",
                 "game_time": r.game_time or "TBD",
                 "confidence": int(r.confidence_score),
@@ -96,7 +118,7 @@ try:
                 "player": r.player.name,
                 "position": r.player.position,
                 "team": r.player.team,
-                "opponent": f"{r.home_away.upper()[0]} {r.opponent}",
+                "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
                 "opponent_pitcher": r.opponent_pitcher or "TBD",
                 "game_time": r.game_time or "TBD",
                 "confidence": int(r.confidence_score),
@@ -114,7 +136,7 @@ try:
                 "player": r.player.name,
                 "position": r.player.position,
                 "team": r.player.team,
-                "opponent": f"{r.home_away.upper()[0]} {r.opponent}",
+                "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
                 "opponent_pitcher": r.opponent_pitcher or "TBD",
                 "game_time": r.game_time or "TBD",
                 "confidence": int(r.confidence_score),
