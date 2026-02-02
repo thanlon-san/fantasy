@@ -92,6 +92,40 @@
     - Feeds live data to dashboard
     - Easy workflow: run script → commit → deploy
 
+### Phase 2: Comprehensive Scanning ✅
+
+#### Waiver Wire Enhancements
+
+12. **Enhanced Waiver Scanning** ✅
+    - Scan 100-200 free agents (vs 50 before)
+    - Integrated breakout detection
+    - Shows breakout candidates first
+    - Exports to dashboard JSON
+    - **Impact**: Find hidden gems before league mates
+
+13. **Dedicated Breakout Scanner** ✅
+    - New `scan_breakouts.py` script
+    - Scans all free agents for Statcast signals
+    - Filters by hitters/pitchers
+    - Finds STRONG/EMERGING breakouts
+    - **Impact**: Spot emerging talent before ADP catches up
+
+14. **Unified Scan Command** ✅
+    - New `scan_all.py` master script
+    - Runs all intelligence tools
+    - Updates dashboard in one go
+    - Progress tracking
+    - **Impact**: One command = complete intel refresh
+
+#### Better Output
+
+15. **Enhanced Waiver Reports** ✅
+    - Breakout candidates shown first
+    - Detailed breakout signal info
+    - Better sorting (value + breakouts + position)
+    - Summary statistics
+    - **Impact**: Prioritize highest-upside targets
+
 ## Next Steps
 
 ### To Use Your Improvements
