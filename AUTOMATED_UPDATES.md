@@ -1,6 +1,6 @@
 # Automated Dashboard Updates
 
-**Automated data updates with manual refresh button - 100% free forever!**
+**Automated data updates via GitHub Actions - 100% free forever!**
 
 ## How It Works
 
@@ -31,59 +31,25 @@
 ## Features
 
 - ✅ **Auto-updates daily** at 8am ET
-- ✅ **Manual refresh button** in dashboard
+- ✅ **Manual trigger** from GitHub Actions tab
 - ✅ **100% free** (GitHub Actions free tier: 2000 min/month)
 - ✅ **Fast** static JSON files on CDN
 - ✅ **Simple** no backend hosting needed
 
 ---
 
-## Setup (10 minutes)
+## Setup
 
-### Step 1: Create GitHub Personal Access Token
+**No setup required!** The workflow is already configured and will start running automatically.
 
-1. Go to: https://github.com/settings/tokens
-2. Click "Generate new token" → "Generate new token (classic)"
-3. Configure:
-   - **Note**: `Fantasy Dashboard Data Refresh`
-   - **Expiration**: No expiration (or 1 year)
-   - **Scopes**: Check `repo` (Full control of private repositories)
-4. Click "Generate token"
-5. **Copy the token** (you won't see it again!)
+### Test Manual Trigger
 
-### Step 2: Add Token to Vercel (if deploying to Vercel)
-
-If using Vercel:
-1. Go to https://vercel.com/dashboard
-2. Select your `baseball-dashboard` project
-3. Go to "Settings" → "Environment Variables"
-4. Add:
-   - Name: `GITHUB_TOKEN`
-   - Value: `your_token_from_step_1`
-   - Environment: Production, Preview, Development
-5. Click "Save"
-6. Redeploy your site
-
-### Step 3: Add Token to GitHub Pages (if using GitHub Pages)
-
-If using GitHub Pages:
-1. The workflow uses `GITHUB_TOKEN` automatically (no setup needed!)
-2. GitHub provides this token automatically in workflows
-
-### Step 4: Test Manual Trigger
-
-**Option A - From GitHub UI:**
 1. Go to your repo: https://github.com/thanlon-san/fantasy
 2. Click "Actions" tab
 3. Select "Update Dashboard Data" workflow
 4. Click "Run workflow" → "Run workflow"
 5. Watch it run (~2-3 minutes)
-
-**Option B - From Dashboard:**
-1. Visit your dashboard
-2. Click "Refresh Data" button
-3. Wait 2-3 minutes
-4. Reload page to see new data
+6. Visit your dashboard to see updated data
 
 ---
 
@@ -116,9 +82,10 @@ Common schedules:
 2. Just visit the dashboard - data is always fresh
 
 **Manual Refresh:**
-1. Click "Refresh Data" button in dashboard header
-2. Wait 2-3 minutes
-3. Reload page
+1. Go to GitHub → Actions tab
+2. Run "Update Dashboard Data" workflow
+3. Wait 2-3 minutes
+4. Reload dashboard
 
 ### For Developers
 
@@ -135,30 +102,6 @@ python scripts/export_dashboard_data.py
 
 ---
 
-## How the Refresh Button Works
-
-```typescript
-User clicks "Refresh Data"
-    ↓
-Next.js API route (/api/refresh-data)
-    ↓
-Calls GitHub API with token
-    ↓
-Triggers repository_dispatch event
-    ↓
-GitHub Actions starts workflow
-    ↓
-Runs Python scripts
-    ↓
-Commits updated JSON
-    ↓
-GitHub Pages redeploys (~30s)
-    ↓
-New data available!
-```
-
----
-
 ## Cost
 
 **100% FREE:**
@@ -169,23 +112,6 @@ New data available!
 ---
 
 ## Troubleshooting
-
-### Refresh button not working
-
-**Check token:**
-```bash
-# In Vercel, check environment variables
-# Token should start with: ghp_...
-```
-
-**Check logs:**
-1. Vercel: Logs tab → Find API route errors
-2. GitHub: Actions tab → View workflow run
-
-**Common issues:**
-- Token expired → Generate new token
-- Wrong token scope → Must have `repo` access
-- Token not in Vercel → Add to environment variables
 
 ### Workflow fails
 
