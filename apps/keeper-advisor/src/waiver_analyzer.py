@@ -411,40 +411,72 @@ class WaiverAnalyzer:
             return None
 
 
-def print_waiver_report(recommendations: List[WaiverRecommendation]):
-    """Print a formatted waiver wire report"""
+def print_waiver_report(recommendations: List[WaiverRecommendation], breakout_signals: Optional[Dict] = None):
+    """Print a formatted waiver wire report with breakout signals"""
     
     if not recommendations:
         print("\n🤷 No waiver wire upgrades found")
         print("Your roster is solid! No obvious pickups available.")
         return
     
+    breakout_signals = breakout_signals or {}
+    
     print("\n" + "="*70)
     print("🎯 TOP WAIVER WIRE OPPORTUNITIES")
     print("="*70)
     
-    # Group by confidence
-    strong = [r for r in recommendations if r.confidence == "STRONG"]
-    good = [r for r in recommendations if r.confidence == "GOOD"]
-    consider = [r for r in recommendations if r.confidence == "CONSIDER"]
+    # Separate breakout candidates
+    breakout_picks = []
+    regular_picks = []
+    
+    for rec in recommendations:
+        alert = breakout_signals.get(rec.add_player.name)
+        if alert and alert.signal in [BreakoutSignal.STRONG, BreakoutSignal.EMERGING]:
+            breakout_picks.append((rec, alert))
+        else:
+            regular_picks.append(rec)
+    
+    # Show breakout candidates first (HOT PICKS!)
+    if breakout_picks:
+        print(f"\n🔥 BREAKOUT CANDIDATES ({len(breakout_picks)} found)\n")
+        for i, (rec, alert) in enumerate(breakout_picks[:5], 1):
+            signal_emoji = "🔥" if alert.signal == BreakoutSignal.STRONG else "⚡"
+            print(f"{i}. {signal_emoji} {rec.add_player.name} ({rec.add_player.position}) - ADP {int(rec.add_player.adp) if rec.add_player.adp else '?'}")
+            print(f"   {alert.signal.value} {alert.category.value} breakout")
+            print(f"   Value gain: +{int(rec.value_gain)} | {rec.reason}")
+            if rec.drop_player:
+                print(f"   Drop: {rec.drop_player.name}")
+            print()
+    
+    # Group regular picks by confidence
+    strong = [r for r in regular_picks if r.confidence == "STRONG"]
+    good = [r for r in regular_picks if r.confidence == "GOOD"]
+    consider = [r for r in regular_picks if r.confidence == "CONSIDER"]
     
     if strong:
-        print(f"\n⭐ STRONG PICKUPS ({len(strong)} found)\n")
-        for i, rec in enumerate(strong[:3], 1):
+        print(f"\n⭐ STRONG VALUE PICKUPS ({len(strong)} found)\n")
+        for i, rec in enumerate(strong[:5], 1):
             print(f"{i}. {rec}")
     
     if good:
         print(f"\n📈 GOOD PICKUPS ({len(good)} found)\n")
-        for i, rec in enumerate(good[:3], 1):
+        for i, rec in enumerate(good[:5], 1):
             print(f"{i}. {rec}")
     
     if consider:
         print(f"\n🤔 WORTH CONSIDERING ({len(consider)} found)\n")
-        for i, rec in enumerate(consider[:2], 1):
+        for i, rec in enumerate(consider[:3], 1):
             print(f"{i}. {rec}")
     
+    # Summary
     print("\n" + "="*70)
-    print("💡 TIP: Act fast! The best pickups won't last long.")
+    print(f"📊 SCAN SUMMARY")
+    print("-"*70)
+    print(f"Total opportunities: {len(recommendations)}")
+    print(f"Breakout candidates: {len(breakout_picks)}")
+    print(f"High-value pickups: {len(strong)}")
+    print("="*70)
+    print("💡 TIP: Breakout candidates are your highest-upside targets!")
     print("="*70 + "\n")
 
 
