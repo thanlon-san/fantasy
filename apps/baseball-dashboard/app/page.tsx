@@ -79,6 +79,8 @@ export default function Home() {
   const [breakouts, setBreakouts] = useState<Breakout[]>([])
   const [keepers, setKeepers] = useState<Keeper[]>([])
   const [, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+  const [lastRefresh, setLastRefresh] = useState<string | null>(null)
 
   // Fetch real data on mount
   useEffect(() => {
@@ -135,6 +137,29 @@ export default function Home() {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
   }
 
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    try {
+      const response = await fetch('/api/refresh-data', {
+        method: 'POST',
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setLastRefresh(new Date().toLocaleTimeString())
+        alert('✅ Data refresh triggered! New data will be available in ~2 minutes.')
+      } else {
+        const error = await response.json()
+        alert(`❌ Failed to refresh: ${error.message}`)
+      }
+    } catch (error) {
+      console.error('Refresh error:', error)
+      alert('❌ Failed to trigger refresh. Check console for details.')
+    } finally {
+      setRefreshing(false)
+    }
+  }
+
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 80) return "bg-green-600"
     if (confidence >= 60) return "bg-yellow-600"
@@ -146,12 +171,41 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <header className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-2">
-            ⚾ Baseball Dashboard
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Your year-round competitive advantage
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight mb-2">
+                ⚾ Baseball Dashboard
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                Your year-round competitive advantage
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <Button 
+                onClick={handleRefresh} 
+                disabled={refreshing}
+                variant="outline"
+                className="gap-2"
+              >
+                {refreshing ? (
+                  <>
+                    <span className="animate-spin">⟳</span>
+                    Refreshing...
+                  </>
+                ) : (
+                  <>
+                    <span>🔄</span>
+                    Refresh Data
+                  </>
+                )}
+              </Button>
+              {lastRefresh && (
+                <span className="text-xs text-muted-foreground">
+                  Last refreshed: {lastRefresh}
+                </span>
+              )}
+            </div>
+          </div>
         </header>
 
         {/* Quick Stats Grid */}
