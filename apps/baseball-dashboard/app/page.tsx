@@ -62,8 +62,8 @@ export default function Home() {
     start: Player[]
     flex: Player[]
     bench: Player[]
-    not_playing: any[]
-    summary?: any
+    not_playing: { player: string; position: string; team: string; adp?: number }[]
+    summary?: { total_roster: number; playing_today: number; not_playing: number }
   }>({
     must_start: [],
     start: [],
@@ -74,7 +74,7 @@ export default function Home() {
   const [waiverWire, setWaiverWire] = useState<WaiverTarget[]>([])
   const [breakouts, setBreakouts] = useState<Breakout[]>([])
   const [keepers, setKeepers] = useState<Keeper[]>([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
 
   // Fetch real data on mount
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function Home() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Today's Games</CardTitle>
+              <CardTitle className="text-sm font-medium">Today&apos;s Games</CardTitle>
               <span className="text-2xl">📅</span>
             </CardHeader>
             <CardContent>
@@ -159,7 +159,7 @@ export default function Home() {
               <span className="text-2xl">🔥</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{breakouts.filter((b: any) => b.signal === "STRONG").length}</div>
+              <div className="text-2xl font-bold">{breakouts.filter((b) => b.signal === "STRONG").length}</div>
               <p className="text-xs text-muted-foreground">STRONG signals</p>
             </CardContent>
           </Card>

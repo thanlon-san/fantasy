@@ -1,35 +1,125 @@
 {
-  "generated_at": "2026-02-01T20:52:09.470560",
+  "generated_at": "2026-02-01T21:29:48.449897",
   "targets": [
     {
-      "player": "Spencer Steer",
-      "position": "3B/OF",
-      "adp": 145,
-      "reason": "Hot streak + favorable schedule"
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B, 3B",
+      "adp": 23,
+      "value_gain": 463,
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost",
+      "drop_player": "Nathaniel Lowe"
     },
     {
-      "player": "Bryan Reynolds",
-      "position": "OF",
-      "adp": 112,
-      "reason": "Undervalued, top-10 upside"
-    },
-    {
-      "player": "Vinnie Pasquantino",
-      "position": "1B",
-      "adp": 189,
-      "reason": "Breakout metrics, low ownership"
-    },
-    {
-      "player": "Matt Chapman",
-      "position": "3B",
-      "adp": 167,
-      "reason": "Power surge + home games"
-    },
-    {
-      "player": "Michael King",
+      "player": "Hunter Greene",
       "position": "SP",
-      "adp": 201,
-      "reason": "Rotation upgrade, Ks trending up"
+      "adp": 47,
+      "value_gain": 458,
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost",
+      "drop_player": "Nathaniel Lowe"
+    },
+    {
+      "player": "Ketel Marte",
+      "position": "2B",
+      "adp": 27,
+      "value_gain": 458,
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost",
+      "drop_player": "Nathaniel Lowe"
+    },
+    {
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B, 3B",
+      "adp": 23,
+      "value_gain": 457,
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost",
+      "drop_player": "Agust\u00edn Ram\u00edrez"
+    },
+    {
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B, 3B",
+      "adp": 23,
+      "value_gain": 457,
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost",
+      "drop_player": "Kyle Hendricks"
+    },
+    {
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B, 3B",
+      "adp": 23,
+      "value_gain": 456,
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost",
+      "drop_player": "JoJo Romero"
+    },
+    {
+      "player": "Hunter Greene",
+      "position": "SP",
+      "adp": 47,
+      "value_gain": 452,
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost",
+      "drop_player": "Agust\u00edn Ram\u00edrez"
+    },
+    {
+      "player": "Hunter Greene",
+      "position": "SP",
+      "adp": 47,
+      "value_gain": 452,
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost",
+      "drop_player": "Kyle Hendricks"
+    },
+    {
+      "player": "Ketel Marte",
+      "position": "2B",
+      "adp": 27,
+      "value_gain": 452,
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost",
+      "drop_player": "Agust\u00edn Ram\u00edrez"
+    },
+    {
+      "player": "Ketel Marte",
+      "position": "2B",
+      "adp": 27,
+      "value_gain": 452,
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost",
+      "drop_player": "Kyle Hendricks"
+    },
+    {
+      "player": "Hunter Greene",
+      "position": "SP",
+      "adp": 47,
+      "value_gain": 451,
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost",
+      "drop_player": "JoJo Romero"
+    },
+    {
+      "player": "Ketel Marte",
+      "position": "2B",
+      "adp": 27,
+      "value_gain": 451,
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost",
+      "drop_player": "JoJo Romero"
+    },
+    {
+      "player": "Corbin Carroll",
+      "position": "OF",
+      "adp": 6,
+      "value_gain": 449,
+      "reason": "Massive ADP advantage, Round 12 keeper cost",
+      "drop_player": "Nathaniel Lowe"
+    },
+    {
+      "player": "Corbin Carroll",
+      "position": "OF",
+      "adp": 6,
+      "value_gain": 443,
+      "reason": "Massive ADP advantage, Round 12 keeper cost",
+      "drop_player": "Agust\u00edn Ram\u00edrez"
+    },
+    {
+      "player": "Corbin Carroll",
+      "position": "OF",
+      "adp": 6,
+      "value_gain": 443,
+      "reason": "Massive ADP advantage, Round 12 keeper cost",
+      "drop_player": "Kyle Hendricks"
     }
   ]
 }
