@@ -1,5 +1,6 @@
 "use client"
 
+import { useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -167,8 +168,8 @@ export default function Home() {
     })
   }
 
-  // Derived filtered lists
-  const filterPlayers = (players: Player[]) => {
+  // Derived filtered lists - use useCallback to prevent recreation on every render
+  const filterPlayers = useCallback((players: Player[]) => {
     return players.filter(p => {
       const matchesSearch = p.player.toLowerCase().includes(searchTerm.toLowerCase()) || 
                             p.team.toLowerCase().includes(searchTerm.toLowerCase())
@@ -176,7 +177,7 @@ export default function Home() {
       const matchesConfidence = p.confidence >= confidenceThreshold
       return matchesSearch && matchesPosition && matchesConfidence
     })
-  }
+  }, [searchTerm, positionFilter, confidenceThreshold])
 
   const filteredMustStart = useMemo(() => filterPlayers(dailyLineup.must_start), [dailyLineup.must_start, filterPlayers])
   const filteredStart = useMemo(() => filterPlayers(dailyLineup.start), [dailyLineup.start, filterPlayers])
@@ -212,6 +213,7 @@ export default function Home() {
         <CommandPalette 
           players={allPlayers} 
           onSelectPlayer={(player) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             setSelectedPlayer(player as any)
             setDetailsOpen(true)
           }}
