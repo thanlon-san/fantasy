@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from .models import Player, Roster
 from .keeper_rules import KeeperRules
 from .adp_fetcher import ADPFetcher
+from .breakout_detector import BreakoutDetector, BreakoutSignal
 
 logger = logging.getLogger(__name__)
 
@@ -44,9 +45,25 @@ class WaiverAnalyzer:
     STRONG_THRESHOLD = 100  # ADP difference for "Strong" recommendation
     GOOD_THRESHOLD = 50     # ADP difference for "Good" recommendation
     
-    def __init__(self, roster: Roster, settings=None):
+    # Breakout signal value boosts
+    BREAKOUT_BOOST = {
+        BreakoutSignal.STRONG: 150,    # Huge boost - elite breakout
+        BreakoutSignal.EMERGING: 75,   # Significant boost
+        BreakoutSignal.WATCH: 30,      # Moderate boost
+        BreakoutSignal.FADING: -50,    # Penalty - sell high signal
+    }
+    
+    def __init__(self, roster: Roster, settings=None, use_breakout_signals: bool = True):
         self.roster = roster
         self.adp_fetcher = ADPFetcher()
+        
+        # Optional: integrate breakout detector
+        self.use_breakout_signals = use_breakout_signals
+        if use_breakout_signals:
+            self.breakout_detector = BreakoutDetector()
+            logger.info("Breakout signal integration enabled")
+        else:
+            self.breakout_detector = None
         
         # Load settings (use provided or load from file)
         if settings is None:
@@ -180,6 +197,13 @@ class WaiverAnalyzer:
         
         value_gain = drop_adp - add_adp
         
+        # NEW: Apply breakout signal boost
+        if self.use_breakout_signals and self.breakout_detector:
+            breakout_boost = self._get_breakout_boost(add_player)
+            if breakout_boost != 0:
+                logger.debug(f"{add_player.name}: Breakout boost = {breakout_boost:+.0f}")
+                value_gain += breakout_boost
+        
         # Only recommend if positive value
         if value_gain <= 0:
             return None
@@ -232,6 +256,14 @@ class WaiverAnalyzer:
         else:
             reasons.append("Solid value gain")
         
+        # Check for breakout signals
+        if self.use_breakout_signals and self.breakout_detector:
+            alert = self._check_breakout(add_player)
+            if alert and alert.signal == BreakoutSignal.STRONG:
+                reasons.append("🔥 STRONG BREAKOUT")
+            elif alert and alert.signal == BreakoutSignal.EMERGING:
+                reasons.append("⚡ Emerging breakout")
+        
         # Position-specific notes
         if "SP" in add_player.position or "RP" in add_player.position:
             reasons.append("pitcher upgrade")
@@ -242,6 +274,49 @@ class WaiverAnalyzer:
         reasons.append("Round 12 keeper cost")
         
         return ", ".join(reasons)
+    
+    def _get_breakout_boost(self, player: Player) -> float:
+        """
+        Calculate breakout signal boost for a player
+        
+        Returns:
+            Boost value to add to value_gain (can be negative for fading signals)
+        """
+        alert = self._check_breakout(player)
+        if alert:
+            boost = self.BREAKOUT_BOOST.get(alert.signal, 0)
+            return boost
+        return 0
+    
+    def _check_breakout(self, player: Player):
+        """Check for breakout signal (with caching to avoid redundant API calls)"""
+        if not self.breakout_detector:
+            return None
+        
+        # Parse player name
+        parts = player.name.split()
+        if len(parts) < 2:
+            return None
+        
+        first_name = parts[0]
+        last_name = ' '.join(parts[1:])
+        
+        # Determine player type from position
+        player_type = 'pitcher' if any(p in player.position for p in ['SP', 'RP', 'P']) else 'hitter'
+        
+        try:
+            # Analyze for breakout (shorter windows for waiver decisions)
+            alert = self.breakout_detector.analyze_player(
+                first_name,
+                last_name,
+                player_type,
+                recent_days=10,   # Recent hot streak
+                baseline_days=30  # 1 month baseline
+            )
+            return alert
+        except Exception as e:
+            logger.debug(f"Could not check breakout for {player.name}: {e}")
+            return None
 
 
 def print_waiver_report(recommendations: List[WaiverRecommendation]):

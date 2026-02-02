@@ -13,6 +13,8 @@ from datetime import datetime
 from .daily_matchups import MLBStatsAPI, Game, PlayerMatchup, get_park_factor
 from .models import Player, Roster
 from .breakout_detector import BreakoutDetector, BreakoutSignal
+from .cache_manager import get_cache
+from .league_settings import load_league_settings
 
 logger = logging.getLogger(__name__)
 
@@ -76,12 +78,14 @@ class LineupRecommendation:
 class LineupOptimizer:
     """Optimize daily lineups based on matchups and recent performance"""
     
-    # Scoring weights (with breakout factor)
-    MATCHUP_WEIGHT = 0.30      # Opponent pitcher quality
-    PARK_WEIGHT = 0.20         # Ballpark factor
-    FORM_WEIGHT = 0.25         # Recent performance
-    PLATOON_WEIGHT = 0.15      # L/R matchup advantage
-    BREAKOUT_WEIGHT = 0.10     # Breakout signal boost
+    # Default scoring weights (can be overridden by config)
+    DEFAULT_WEIGHTS = {
+        'matchup': 0.30,
+        'park': 0.20,
+        'form': 0.25,
+        'platoon': 0.15,
+        'breakout': 0.10
+    }
     
     # Platoon split advantages (OPS points)
     PLATOON_ADVANTAGE = {
@@ -94,8 +98,28 @@ class LineupOptimizer:
     
     def __init__(self, use_breakout_signals: bool = True):
         self.api = MLBStatsAPI()
+        self.cache = get_cache()
         self._games_cache = None
         self._games_cache_date = None
+        
+        # Load weights from config
+        try:
+            settings = load_league_settings()
+            weights = settings.preferences.get('lineup_weights', {})
+            self.MATCHUP_WEIGHT = weights.get('matchup', self.DEFAULT_WEIGHTS['matchup'])
+            self.PARK_WEIGHT = weights.get('park', self.DEFAULT_WEIGHTS['park'])
+            self.FORM_WEIGHT = weights.get('form', self.DEFAULT_WEIGHTS['form'])
+            self.PLATOON_WEIGHT = weights.get('platoon', self.DEFAULT_WEIGHTS['platoon'])
+            self.BREAKOUT_WEIGHT = weights.get('breakout', self.DEFAULT_WEIGHTS['breakout'])
+            logger.debug(f"Loaded lineup weights from config")
+        except Exception as e:
+            # Fallback to defaults
+            logger.debug(f"Using default weights: {e}")
+            self.MATCHUP_WEIGHT = self.DEFAULT_WEIGHTS['matchup']
+            self.PARK_WEIGHT = self.DEFAULT_WEIGHTS['park']
+            self.FORM_WEIGHT = self.DEFAULT_WEIGHTS['form']
+            self.PLATOON_WEIGHT = self.DEFAULT_WEIGHTS['platoon']
+            self.BREAKOUT_WEIGHT = self.DEFAULT_WEIGHTS['breakout']
         
         # Optional: integrate breakout detector
         self.use_breakout_signals = use_breakout_signals
@@ -173,13 +197,26 @@ class LineupOptimizer:
         return recommendations
     
     def _get_games(self, date: str) -> List[Game]:
-        """Get games with caching"""
+        """Get games with persistent caching"""
+        # Check in-memory cache first
         if self._games_cache_date == date and self._games_cache:
             return self._games_cache
         
+        # Check persistent cache (4 hour TTL - lineups can change)
+        cache_key = f"games_{date}"
+        cached_games = self.cache.get(cache_key, max_age_hours=4)
+        if cached_games:
+            self._games_cache = cached_games
+            self._games_cache_date = date
+            return cached_games
+        
+        # Fetch from API
         games = self.api.get_todays_games(date)
+        
+        # Save to both caches
         self._games_cache = games
         self._games_cache_date = date
+        self.cache.set(cache_key, games)
         
         return games
     

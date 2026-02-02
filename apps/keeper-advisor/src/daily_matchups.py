@@ -8,6 +8,8 @@ import logging
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
@@ -62,9 +64,28 @@ class MLBStatsAPI:
     """Client for MLB Stats API"""
     
     BASE_URL = "https://statsapi.mlb.com/api/v1"
+    TIMEOUT = 30  # seconds
     
     def __init__(self):
-        self.session = requests.Session()
+        self.session = self._create_session_with_retries()
+    
+    def _create_session_with_retries(self) -> requests.Session:
+        """Create session with automatic retries on failures"""
+        session = requests.Session()
+        
+        # Retry strategy: 3 attempts with exponential backoff
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=1,  # Wait 1, 2, 4 seconds between retries
+            status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP codes
+            allowed_methods=["HEAD", "GET", "OPTIONS"]
+        )
+        
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        
+        return session
     
     def get_todays_games(self, date: Optional[str] = None) -> List[Game]:
         """
@@ -88,7 +109,7 @@ class MLBStatsAPI:
             }
             
             logger.info(f"Fetching games for {date}...")
-            response = self.session.get(url, params=params, timeout=10)
+            response = self.session.get(url, params=params, timeout=self.TIMEOUT)
             response.raise_for_status()
             
             data = response.json()
@@ -179,7 +200,7 @@ class MLBStatsAPI:
                 'endDate': end_date
             }
             
-            response = self.session.get(url, params=params, timeout=10)
+            response = self.session.get(url, params=params, timeout=self.TIMEOUT)
             response.raise_for_status()
             
             data = response.json()

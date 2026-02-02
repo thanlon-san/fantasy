@@ -85,3 +85,4 @@ output/
 config.json
 recap_history.json
 trend_history.json
+.cache/

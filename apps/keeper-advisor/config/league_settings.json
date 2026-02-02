@@ -68,6 +68,13 @@
     "min_value_gain_strong": 100,
     "min_value_gain_good": 50,
     "min_value_gain_consider": 20,
-    "auto_refresh_tokens": true
+    "auto_refresh_tokens": true,
+    "lineup_weights": {
+      "matchup": 0.30,
+      "park": 0.20,
+      "form": 0.25,
+      "platoon": 0.15,
+      "breakout": 0.10
+    }
   }
 }

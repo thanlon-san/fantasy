@@ -5,11 +5,14 @@ Fetches Average Draft Position data from multiple sources with fuzzy name matchi
 """
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from typing import Dict, Optional, Tuple, List
 import logging
 import unicodedata
 from fuzzywuzzy import fuzz, process
+from .cache_manager import get_cache
 
 logger = logging.getLogger(__name__)
 
@@ -18,13 +21,35 @@ class ADPFetcher:
     """Fetches ADP data from various sources with smart name matching"""
     
     FANTASYPROS_URL = "https://www.fantasypros.com/mlb/adp/overall.php"
+    CACHE_KEY = "adp_data"
+    CACHE_TTL_HOURS = 24  # Refresh daily
+    TIMEOUT = 30  # seconds
     
     def __init__(self):
-        self.session = requests.Session()
-        self.session.headers.update({
+        self.session = self._create_session_with_retries()
+        self.cache = get_cache()
+        self._adp_cache: Dict[str, float] = {}
+    
+    def _create_session_with_retries(self) -> requests.Session:
+        """Create session with automatic retries on failures"""
+        session = requests.Session()
+        session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
         })
-        self._adp_cache: Dict[str, float] = {}
+        
+        # Retry strategy
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["HEAD", "GET", "OPTIONS"]
+        )
+        
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        
+        return session
     
     @staticmethod
     def normalize_name(name: str) -> str:
@@ -63,12 +88,20 @@ class ADPFetcher:
         Returns:
             Dictionary mapping player names to their ADP values
         """
+        # Check in-memory cache first
         if self._adp_cache:
             return self._adp_cache
         
+        # Check persistent cache (24 hour TTL)
+        cached_data = self.cache.get(self.CACHE_KEY, max_age_hours=self.CACHE_TTL_HOURS)
+        if cached_data:
+            logger.info(f"Using cached ADP data ({len(cached_data)} players)")
+            self._adp_cache = cached_data
+            return cached_data
+        
         try:
             logger.info("Fetching ADP data from FantasyPros...")
-            response = self.session.get(self.FANTASYPROS_URL, timeout=10)
+            response = self.session.get(self.FANTASYPROS_URL, timeout=self.TIMEOUT)
             response.raise_for_status()
             
             soup = BeautifulSoup(response.content, 'html.parser')
@@ -117,6 +150,8 @@ class ADPFetcher:
             if adp_data:
                 logger.info(f"Fetched {len(adp_data)} player ADPs")
                 self._adp_cache = adp_data
+                # Save to persistent cache
+                self.cache.set(self.CACHE_KEY, adp_data)
                 return adp_data
             else:
                 logger.warning("No ADP data found in table")

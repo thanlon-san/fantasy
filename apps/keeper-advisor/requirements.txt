@@ -12,7 +12,14 @@ cryptography>=41.0.0  # For HTTPS OAuth callback
 pandas>=2.0.0
 numpy>=1.24.0
 
-# Optional: Web scraping for ADP data
+# Web scraping for ADP data
 beautifulsoup4>=4.12.0
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.12.0  # Makes fuzzy matching faster
+
+# Statcast data
+pybaseball>=2.2.7
+
+# API server (optional)
 flask==3.0.0
 flask-cors==4.0.0
