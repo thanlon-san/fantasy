@@ -7,8 +7,12 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useState, useEffect } from "react"
 
-// Base path for GitHub Pages
+// API base URL - use environment variable or fallback to local
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+
+// For static JSON fallback during development
 const BASE_PATH = process.env.NODE_ENV === 'production' ? '/fantasy/baseball' : ''
+const USE_API = process.env.NEXT_PUBLIC_USE_API === 'true'
 
 // Type definitions
 type Player = {
@@ -80,22 +84,43 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [lineupRes, waiverRes, breakoutRes, keeperRes] = await Promise.all([
-          fetch(`${BASE_PATH}/api/daily_lineup.json`),
-          fetch(`${BASE_PATH}/api/waiver_wire.json`),
-          fetch(`${BASE_PATH}/api/breakouts.json`),
-          fetch(`${BASE_PATH}/api/keepers.json`),
-        ])
+        if (USE_API) {
+          // Fetch from live API
+          const [lineupRes, waiverRes, breakoutRes, keeperRes] = await Promise.all([
+            fetch(`${API_BASE_URL}/api/lineup`),
+            fetch(`${API_BASE_URL}/api/waivers`),
+            fetch(`${API_BASE_URL}/api/breakouts`),
+            fetch(`${API_BASE_URL}/api/keepers`),
+          ])
 
-        const lineupData = await lineupRes.json()
-        const waiverData = await waiverRes.json()
-        const breakoutData = await breakoutRes.json()
-        const keeperData = await keeperRes.json()
+          const lineupData = await lineupRes.json()
+          const waiverData = await waiverRes.json()
+          const breakoutData = await breakoutRes.json()
+          const keeperData = await keeperRes.json()
 
-        setDailyLineup(lineupData)
-        setWaiverWire(waiverData.targets || [])
-        setBreakouts(breakoutData.alerts || [])
-        setKeepers(keeperData.keepers || [])
+          setDailyLineup(lineupData)
+          setWaiverWire(waiverData.targets || [])
+          setBreakouts(breakoutData.alerts || [])
+          setKeepers(keeperData.keepers || [])
+        } else {
+          // Fallback to static JSON files
+          const [lineupRes, waiverRes, breakoutRes, keeperRes] = await Promise.all([
+            fetch(`${BASE_PATH}/api/daily_lineup.json`),
+            fetch(`${BASE_PATH}/api/waiver_wire.json`),
+            fetch(`${BASE_PATH}/api/breakouts.json`),
+            fetch(`${BASE_PATH}/api/keepers.json`),
+          ])
+
+          const lineupData = await lineupRes.json()
+          const waiverData = await waiverRes.json()
+          const breakoutData = await breakoutRes.json()
+          const keeperData = await keeperRes.json()
+
+          setDailyLineup(lineupData)
+          setWaiverWire(waiverData.targets || [])
+          setBreakouts(breakoutData.alerts || [])
+          setKeepers(keeperData.keepers || [])
+        }
       } catch (error) {
         console.error('Error fetching dashboard data:', error)
       } finally {

@@ -1,0 +1,11 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.0
+pydantic==2.10.6
+python-multipart==0.0.20
+
+# Shared dependencies from keeper-advisor
+requests>=2.32.0
+beautifulsoup4>=4.12.0
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.12.0
+pybaseball>=2.2.7
