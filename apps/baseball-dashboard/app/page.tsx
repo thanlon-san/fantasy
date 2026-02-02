@@ -5,42 +5,43 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown, ChevronUp } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-// Sample data - will be replaced with API calls
-const dailyLineup = {
-  starters: [
-    { player: "Mookie Betts", position: "2B", opponent: "vs COL (Freeland)", confidence: 92, matchup: "Excellent", parkFactor: "+15%", platoon: "Favorable" },
-    { player: "Aaron Judge", position: "OF", opponent: "@ BAL (Kremer)", confidence: 88, matchup: "Good", parkFactor: "+8%", platoon: "Neutral" },
-    { player: "Freddie Freeman", position: "1B", opponent: "vs COL (Freeland)", confidence: 85, matchup: "Good", parkFactor: "+15%", platoon: "Favorable" },
-    { player: "Kyle Tucker", position: "OF", opponent: "vs SEA (Castillo)", confidence: 78, matchup: "Fair", parkFactor: "+3%", platoon: "Neutral" },
-    { player: "Bo Bichette", position: "SS", opponent: "@ TB (Eflin)", confidence: 72, matchup: "Fair", parkFactor: "-5%", platoon: "Unfavorable" },
-  ],
-  bench: [
-    { player: "Tyler O'Neill", position: "OF", opponent: "vs NYY (Cole)", confidence: 45, matchup: "Poor", parkFactor: "-8%", platoon: "Unfavorable" },
-    { player: "Willy Adames", position: "SS", opponent: "@ LAD (Kershaw)", confidence: 38, matchup: "Poor", parkFactor: "-12%", platoon: "Unfavorable" },
-  ]
+// Base path for GitHub Pages
+const BASE_PATH = process.env.NODE_ENV === 'production' ? '/fantasy/baseball' : ''
+
+// Type definitions
+type Player = {
+  player: string
+  position: string
+  opponent: string
+  confidence: number
+  matchup: string
+  parkFactor: string
+  platoon: string
 }
 
-const waiverWire = [
-  { player: "Spencer Steer", position: "3B/OF", adp: 145, reason: "Hot streak + favorable schedule", signal: "Strong" },
-  { player: "Bryan Reynolds", position: "OF", adp: 112, reason: "Undervalued, top-10 upside", signal: "Strong" },
-  { player: "Vinnie Pasquantino", position: "1B", adp: 189, reason: "Breakout metrics, low ownership", signal: "Emerging" },
-  { player: "Matt Chapman", position: "3B", adp: 167, reason: "Power surge + home games", signal: "Emerging" },
-  { player: "Michael King", position: "SP", adp: 201, reason: "Rotation upgrade, Ks trending up", signal: "Emerging" },
-]
+type WaiverTarget = {
+  player: string
+  position: string
+  adp: number
+  reason: string
+}
 
-const breakouts = [
-  { player: "Elly De La Cruz", signal: "STRONG", stat: "Exit velo: 94.2 mph (↑3.5)", category: "Power" },
-  { player: "Jackson Chourio", signal: "STRONG", stat: "Hard-hit%: 52% (↑12)", category: "Contact" },
-  { player: "Wyatt Langford", signal: "EMERGING", stat: "Barrel%: 14.2% (↑6)", category: "Power" },
-]
+type Breakout = {
+  player: string
+  signal: string
+  stat: string
+  category: string
+}
 
-const keepers = [
-  { player: "Mookie Betts", round: "R1", adp: 3, surplus: "+427 ADP", value: "Elite" },
-  { player: "Kyle Tucker", round: "R3", adp: 15, surplus: "+239 ADP", value: "Strong" },
-  { player: "Spencer Strider", round: "R12", adp: 48, surplus: "+96 ADP", value: "Excellent" },
-]
+type Keeper = {
+  player: string
+  round: string
+  adp: number
+  surplus: string
+  value: string
+}
 
 export default function Home() {
   const [expandedSections, setExpandedSections] = useState({
@@ -48,6 +49,43 @@ export default function Home() {
     breakouts: false,
     keepers: false,
   })
+
+  // State for real data
+  const [dailyLineup, setDailyLineup] = useState<{ starters: Player[], bench: Player[] }>({ starters: [], bench: [] })
+  const [waiverWire, setWaiverWire] = useState<WaiverTarget[]>([])
+  const [breakouts, setBreakouts] = useState<Breakout[]>([])
+  const [keepers, setKeepers] = useState<Keeper[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch real data on mount
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [lineupRes, waiverRes, breakoutRes, keeperRes] = await Promise.all([
+          fetch(`${BASE_PATH}/api/daily_lineup.json`),
+          fetch(`${BASE_PATH}/api/waiver_wire.json`),
+          fetch(`${BASE_PATH}/api/breakouts.json`),
+          fetch(`${BASE_PATH}/api/keepers.json`),
+        ])
+
+        const lineupData = await lineupRes.json()
+        const waiverData = await waiverRes.json()
+        const breakoutData = await breakoutRes.json()
+        const keeperData = await keeperRes.json()
+
+        setDailyLineup(lineupData)
+        setWaiverWire(waiverData.targets || [])
+        setBreakouts(breakoutData.alerts || [])
+        setKeepers(keeperData.keepers || [])
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
@@ -102,7 +140,7 @@ export default function Home() {
               <span className="text-2xl">🔥</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{breakouts.filter(b => b.signal === "STRONG").length}</div>
+              <div className="text-2xl font-bold">{breakouts.filter((b: any) => b.signal === "STRONG").length}</div>
               <p className="text-xs text-muted-foreground">STRONG signals</p>
             </CardContent>
           </Card>

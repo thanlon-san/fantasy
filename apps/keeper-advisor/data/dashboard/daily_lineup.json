@@ -1,0 +1,51 @@
+{
+  "generated_at": "2026-02-01T20:52:09.469944",
+  "starters": [
+    {
+      "player": "Gunnar Henderson",
+      "position": "SS",
+      "opponent": "@ BAL",
+      "confidence": 85,
+      "matchup": "Good",
+      "parkFactor": "+5%",
+      "platoon": "Favorable"
+    },
+    {
+      "player": "Zach Neto",
+      "position": "SS",
+      "opponent": "@ LAA",
+      "confidence": 85,
+      "matchup": "Good",
+      "parkFactor": "+5%",
+      "platoon": "Favorable"
+    },
+    {
+      "player": "Mookie Betts",
+      "position": "2B",
+      "opponent": "@ LAD",
+      "confidence": 85,
+      "matchup": "Good",
+      "parkFactor": "+5%",
+      "platoon": "Favorable"
+    },
+    {
+      "player": "Randy Arozarena",
+      "position": "OF",
+      "opponent": "@ SEA",
+      "confidence": 85,
+      "matchup": "Good",
+      "parkFactor": "+5%",
+      "platoon": "Favorable"
+    },
+    {
+      "player": "Taylor Ward",
+      "position": "OF",
+      "opponent": "@ BAL",
+      "confidence": 70,
+      "matchup": "Fair",
+      "parkFactor": "+5%",
+      "platoon": "Favorable"
+    }
+  ],
+  "bench": []
+}

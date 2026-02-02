@@ -14,3 +14,5 @@ numpy>=1.24.0
 
 # Optional: Web scraping for ADP data
 beautifulsoup4>=4.12.0
+flask==3.0.0
+flask-cors==4.0.0
