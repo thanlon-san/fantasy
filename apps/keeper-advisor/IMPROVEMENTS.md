@@ -4,6 +4,8 @@
 
 ### Phase 1: Critical Fixes + Quick Wins ✅
 
+#### Performance & Reliability
+
 1. **Fixed Missing Dependencies** ✅
    - Added `pybaseball>=2.2.7`
    - Added `fuzzywuzzy>=0.18.0`
@@ -43,7 +45,71 @@
 - **Game data cached for 4 hours (accounts for lineup changes)**
 - **Retry logic prevents transient failures**
 
+### Phase 1.5: Quick Wins ✅
+
+#### Lineup Optimizer Enhancements
+
+6. **Real Form Score Implementation** ✅
+   - Now uses actual Statcast data (last 14 days)
+   - Hitters: Hard hit %, barrel %
+   - Pitchers: K %, hard hit % allowed
+   - **Impact**: Accurate hot/cold streak detection
+
+7. **Pitcher Quality Scoring** ✅
+   - Replaced hardcoded "ace list" with real data
+   - Uses ADP + recent Statcast performance
+   - Elite pitchers (ADP <50) = tough matchup
+   - Weak pitchers (ADP >200) = favorable matchup
+   - **Impact**: Much smarter opponent evaluation
+
+8. **Full Roster View** ✅
+   - Shows ALL players (playing + not playing)
+   - Organized by tiers: Must Start, Start, Flex, Bench, Not Playing
+   - Better output format with summary stats
+   - **Impact**: Complete lineup visibility
+
+#### Waiver Analyzer Enhancements
+
+9. **Position Need Scoring** ✅
+   - Calculates which positions need depth
+   - Adds 0-50 point boost for needed positions
+   - Critical needs (empty slots) = +50 points
+   - Good depth = no boost
+   - **Impact**: Prioritizes pickups that fill roster gaps
+
+#### Dashboard Improvements
+
+10. **Full Roster Dashboard** ✅
+    - Shows all tiers (Must Start, Start, Flex, Bench, Not Playing)
+    - Color-coded confidence levels
+    - Detailed matchup information
+    - Opponent pitcher names and game times
+    - Reasons for each recommendation
+
+11. **Real Data Export Script** ✅
+    - Created `export_dashboard_data.py`
+    - Exports actual roster analysis to JSON
+    - Feeds live data to dashboard
+    - Easy workflow: run script → commit → deploy
+
 ## Next Steps
+
+### To Use Your Improvements
+
+```bash
+# 1. Install dependencies (if not already done)
+cd apps/keeper-advisor
+pip install -r requirements.txt
+
+# 2. Generate dashboard data
+python3 scripts/export_dashboard_data.py
+
+# 3. View dashboard locally
+cd ../baseball-dashboard
+npm install
+npm run dev
+# Open http://localhost:3000
+```
 
 ### Phase 2: Foundation (3-4 days)
 - [ ] Create unified player intelligence hub
