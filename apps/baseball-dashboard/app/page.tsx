@@ -14,11 +14,17 @@ const BASE_PATH = process.env.NODE_ENV === 'production' ? '/fantasy/baseball' : 
 type Player = {
   player: string
   position: string
+  team: string
   opponent: string
+  opponent_pitcher?: string
+  game_time?: string
   confidence: number
-  matchup: string
-  parkFactor: string
-  platoon: string
+  matchup: number
+  parkFactor: number
+  platoon: number
+  form: number
+  breakout: number
+  reasons: string[]
 }
 
 type WaiverTarget = {
@@ -51,7 +57,20 @@ export default function Home() {
   })
 
   // State for real data
-  const [dailyLineup, setDailyLineup] = useState<{ starters: Player[], bench: Player[] }>({ starters: [], bench: [] })
+  const [dailyLineup, setDailyLineup] = useState<{
+    must_start: Player[]
+    start: Player[]
+    flex: Player[]
+    bench: Player[]
+    not_playing: any[]
+    summary?: any
+  }>({
+    must_start: [],
+    start: [],
+    flex: [],
+    bench: [],
+    not_playing: []
+  })
   const [waiverWire, setWaiverWire] = useState<WaiverTarget[]>([])
   const [breakouts, setBreakouts] = useState<Breakout[]>([])
   const [keepers, setKeepers] = useState<Keeper[]>([])
@@ -129,8 +148,8 @@ export default function Home() {
               <span className="text-2xl">👥</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dailyLineup.starters.length + dailyLineup.bench.length}</div>
-              <p className="text-xs text-muted-foreground">Players analyzed</p>
+              <div className="text-2xl font-bold">{dailyLineup.summary?.total_roster || 0}</div>
+              <p className="text-xs text-muted-foreground">Players on roster</p>
             </CardContent>
           </Card>
 
@@ -171,59 +190,129 @@ export default function Home() {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Starters */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                  🔥 Must Start ({dailyLineup.starters.length})
-                </h3>
-                <div className="space-y-2">
-                  {dailyLineup.starters.map((player, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-                      <div className="flex items-center gap-3 flex-1">
-                        <Badge className={getConfidenceColor(player.confidence)}>
-                          {player.confidence}
-                        </Badge>
-                        <div className="flex-1">
-                          <div className="font-semibold">{player.player}</div>
-                          <div className="text-sm text-muted-foreground">{player.position} • {player.opponent}</div>
+              {/* Must Start */}
+              {dailyLineup.must_start.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    🔥 Must Start ({dailyLineup.must_start.length})
+                  </h3>
+                  <div className="space-y-2">
+                    {dailyLineup.must_start.map((player, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-lg border border-green-200 bg-green-50 dark:bg-green-950/30 dark:border-green-900 hover:bg-green-100 dark:hover:bg-green-950/50 transition-colors">
+                        <div className="flex items-center gap-3 flex-1">
+                          <Badge className="bg-green-600">{player.confidence}</Badge>
+                          <div className="flex-1">
+                            <div className="font-semibold">{player.player}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {player.position} • {player.opponent} • {player.opponent_pitcher || 'TBD'}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1">{player.reasons.join(', ')}</div>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex gap-2 text-xs">
-                        <Badge variant="outline">{player.matchup}</Badge>
-                        <Badge variant="outline">{player.parkFactor}</Badge>
-                        <Badge variant="outline">{player.platoon}</Badge>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Start */}
+              {dailyLineup.start.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    ✅ Start ({dailyLineup.start.length})
+                  </h3>
+                  <div className="space-y-2">
+                    {dailyLineup.start.map((player, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+                        <div className="flex items-center gap-3 flex-1">
+                          <Badge className={getConfidenceColor(player.confidence)}>{player.confidence}</Badge>
+                          <div className="flex-1">
+                            <div className="font-semibold">{player.player}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {player.position} • {player.opponent} • {player.opponent_pitcher || 'TBD'}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1">{player.reasons.join(', ')}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Flex */}
+              {dailyLineup.flex.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    ➡️ Flex ({dailyLineup.flex.length})
+                  </h3>
+                  <div className="space-y-2">
+                    {dailyLineup.flex.map((player, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+                        <div className="flex items-center gap-3 flex-1">
+                          <Badge variant="secondary">{player.confidence}</Badge>
+                          <div className="flex-1">
+                            <div className="font-semibold">{player.player}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {player.position} • {player.opponent} • {player.opponent_pitcher || 'TBD'}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Bench */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                  ⚠️ Consider Benching ({dailyLineup.bench.length})
-                </h3>
-                <div className="space-y-2">
-                  {dailyLineup.bench.map((player, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-                      <div className="flex items-center gap-3 flex-1">
-                        <Badge className={getConfidenceColor(player.confidence)}>
-                          {player.confidence}
-                        </Badge>
-                        <div className="flex-1">
-                          <div className="font-semibold">{player.player}</div>
-                          <div className="text-sm text-muted-foreground">{player.position} • {player.opponent}</div>
+              {dailyLineup.bench.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    ⚠️ Consider Benching ({dailyLineup.bench.length})
+                  </h3>
+                  <div className="space-y-2">
+                    {dailyLineup.bench.map((player, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-lg border border-yellow-200 bg-yellow-50 dark:bg-yellow-950/30 dark:border-yellow-900 hover:bg-yellow-100 dark:hover:bg-yellow-950/50 transition-colors">
+                        <div className="flex items-center gap-3 flex-1">
+                          <Badge className="bg-yellow-600">{player.confidence}</Badge>
+                          <div className="flex-1">
+                            <div className="font-semibold">{player.player}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {player.position} • {player.opponent} • {player.opponent_pitcher || 'TBD'}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1">{player.reasons.join(', ')}</div>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex gap-2 text-xs">
-                        <Badge variant="outline">{player.matchup}</Badge>
-                        <Badge variant="outline">{player.parkFactor}</Badge>
-                        <Badge variant="outline">{player.platoon}</Badge>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Not Playing */}
+              {dailyLineup.not_playing.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    💤 Not Playing Today ({dailyLineup.not_playing.length})
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {dailyLineup.not_playing.map((player, i) => (
+                      <div key={i} className="p-2 rounded-lg border bg-muted/50 text-sm">
+                        <div className="font-medium">{player.player}</div>
+                        <div className="text-xs text-muted-foreground">{player.position} • {player.team}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Empty state */}
+              {dailyLineup.must_start.length === 0 && dailyLineup.start.length === 0 && dailyLineup.flex.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p className="mb-2">No lineup data available</p>
+                  <p className="text-sm">Run: <code className="bg-muted px-2 py-1 rounded">python scripts/export_dashboard_data.py</code></p>
+                </div>
+              )}
             </CardContent>
           </Card>
 

@@ -1,220 +1,256 @@
 #!/usr/bin/env python3
 """
-Export baseball intelligence data to JSON files for the dashboard.
-Reads from your existing Python tools and exports to JSON.
+Export Dashboard Data
+Generate JSON files for the baseball dashboard from real Python analysis
 """
 
 import json
 import sys
 from pathlib import Path
 from datetime import datetime
-import csv
 
-# Add parent directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+app_root = Path(__file__).parent.parent
+workspace_root = app_root.parent.parent
+sys.path.insert(0, str(app_root))
+sys.path.insert(0, str(workspace_root / 'packages'))
 
-OUTPUT_DIR = Path(__file__).parent.parent / "data" / "dashboard"
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+from src.importers import CSVImporter
+from src.lineup_optimizer import LineupOptimizer
+from src.waiver_analyzer import WaiverAnalyzer
+from src.analyzer import KeeperAnalyzer
+from src.breakout_detector import BreakoutDetector
 
-def load_roster_from_csv():
-    """Load roster from CSV file"""
-    roster_file = Path(__file__).parent.parent / "data" / "my_roster_from_yahoo.csv"
-    players = []
-    
-    with open(roster_file, 'r') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            if row['player_name']:  # Skip empty rows
-                players.append({
-                    'name': row['player_name'],
-                    'position': row['position'],
-                    'team': row['mlb_team'],
-                    'adp': float(row['adp']) if row['adp'] else None
-                })
-    
-    return players
+# Output directory
+dashboard_root = workspace_root / "apps" / "baseball-dashboard"
+output_dir = dashboard_root / "public" / "api"
+output_dir.mkdir(parents=True, exist_ok=True)
 
-def export_daily_lineup():
-    """Export daily lineup recommendations"""
-    print("📊 Exporting daily lineup...")
-    
-    try:
-        roster = load_roster_from_csv()
-        
-        # Generate sample recommendations based on real roster
-        # Filter batters (non-pitchers)
-        batters = [p for p in roster if 'P' not in p['position']]
-        
-        # Top 5 batters as starters (by ADP - lower is better)
-        batters_sorted = sorted([b for b in batters if b['adp']], key=lambda x: x['adp'])[:5]
-        
-        starters = []
-        for player in batters_sorted:
-            confidence = 85 if player['adp'] < 100 else 70
-            starters.append({
-                "player": player['name'],
-                "position": player['position'].split(',')[0].strip(),
-                "opponent": f"@ {player['team']}",
-                "confidence": confidence,
-                "matchup": "Good" if confidence > 75 else "Fair",
-                "parkFactor": "+5%",
-                "platoon": "Favorable"
-            })
-        
-        # Next 2 as bench
-        bench_players = batters_sorted[5:7] if len(batters_sorted) > 5 else []
-        bench = []
-        for player in bench_players:
-            bench.append({
-                "player": player['name'],
-                "position": player['position'].split(',')[0].strip(),
-                "opponent": f"vs {player['team']}",
-                "confidence": 55,
-                "matchup": "Poor",
-                "parkFactor": "-8%",
-                "platoon": "Unfavorable"
-            })
-        
-        data = {
-            "generated_at": datetime.now().isoformat(),
-            "starters": starters,
-            "bench": bench
-        }
-        
-    except Exception as e:
-        print(f"⚠️  Using sample data due to error: {e}")
-        data = {
-            "generated_at": datetime.now().isoformat(),
-            "starters": [],
-            "bench": []
-        }
-    
-    output_file = OUTPUT_DIR / "daily_lineup.json"
-    with open(output_file, 'w') as f:
-        json.dump(data, f, indent=2)
-    
-    print(f"✅ Exported {len(data['starters'])} starters, {len(data['bench'])} bench to {output_file}")
-    return data
+print("\n🔄 Exporting dashboard data...")
+print("="*70)
 
-def export_waiver_wire():
-    """Export waiver wire recommendations"""
-    print("🎯 Exporting waiver wire...")
-    
-    try:
-        roster = load_roster_from_csv()
-        roster_adps = {p['adp'] for p in roster if p['adp']}
-        
-        # Sample high-value free agents not on roster
-        all_targets = [
-            {"player": "Spencer Steer", "position": "3B/OF", "adp": 145, "reason": "Hot streak + favorable schedule"},
-            {"player": "Bryan Reynolds", "position": "OF", "adp": 112, "reason": "Undervalued, top-10 upside"},
-            {"player": "Vinnie Pasquantino", "position": "1B", "adp": 189, "reason": "Breakout metrics, low ownership"},
-            {"player": "Matt Chapman", "position": "3B", "adp": 167, "reason": "Power surge + home games"},
-            {"player": "Michael King", "position": "SP", "adp": 201, "reason": "Rotation upgrade, Ks trending up"},
-        ]
-        
-        # Filter out players already on roster
-        targets = [t for t in all_targets if t['adp'] not in roster_adps]
-        
-        data = {
-            "generated_at": datetime.now().isoformat(),
-            "targets": targets[:5]  # Top 5
-        }
-        
-    except Exception as e:
-        print(f"⚠️  Using sample data due to error: {e}")
-        data = {
-            "generated_at": datetime.now().isoformat(),
-            "targets": []
-        }
-    
-    output_file = OUTPUT_DIR / "waiver_wire.json"
-    with open(output_file, 'w') as f:
-        json.dump(data, f, indent=2)
-    
-    print(f"✅ Exported {len(data['targets'])} targets to {output_file}")
-    return data
+# Load roster
+print("\n📋 Loading roster...")
+roster = CSVImporter.import_roster(
+    app_root / "data" / "my_roster_from_yahoo.csv",
+    team_name="2balls"
+)
+print(f"✅ Loaded {len(roster.players)} players")
 
-def export_breakouts():
-    """Export breakout alerts"""
-    print("🔬 Exporting breakout alerts...")
+# 1. Daily Lineup
+print("\n📊 Generating daily lineup recommendations...")
+try:
+    optimizer = LineupOptimizer(use_breakout_signals=True)
+    recommendations = optimizer.get_daily_recommendations(roster, show_all_players=True)
     
-    # TODO: Run breakout scanner
-    data = {
+    # Group into categories
+    playing = [r for r in recommendations if r.opponent != "No game"]
+    not_playing = [r for r in recommendations if r.opponent == "No game"]
+    
+    # Separate into tiers
+    must_start = [r for r in playing if r.confidence_score >= 80]
+    start = [r for r in playing if 65 <= r.confidence_score < 80]
+    flex = [r for r in playing if 50 <= r.confidence_score < 65]
+    bench = [r for r in playing if r.confidence_score < 50]
+    
+    lineup_data = {
         "generated_at": datetime.now().isoformat(),
-        "alerts": []
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "must_start": [
+            {
+                "player": r.player.name,
+                "position": r.player.position,
+                "team": r.player.team,
+                "opponent": f"{r.home_away.upper()[0]} {r.opponent}",
+                "opponent_pitcher": r.opponent_pitcher or "TBD",
+                "game_time": r.game_time or "TBD",
+                "confidence": int(r.confidence_score),
+                "matchup": r.matchup_score,
+                "parkFactor": r.park_score,
+                "platoon": r.platoon_score,
+                "form": r.form_score,
+                "breakout": r.breakout_boost,
+                "reasons": r.reasons
+            }
+            for r in must_start
+        ],
+        "start": [
+            {
+                "player": r.player.name,
+                "position": r.player.position,
+                "team": r.player.team,
+                "opponent": f"{r.home_away.upper()[0]} {r.opponent}",
+                "opponent_pitcher": r.opponent_pitcher or "TBD",
+                "game_time": r.game_time or "TBD",
+                "confidence": int(r.confidence_score),
+                "matchup": r.matchup_score,
+                "parkFactor": r.park_score,
+                "platoon": r.platoon_score,
+                "form": r.form_score,
+                "breakout": r.breakout_boost,
+                "reasons": r.reasons
+            }
+            for r in start
+        ],
+        "flex": [
+            {
+                "player": r.player.name,
+                "position": r.player.position,
+                "team": r.player.team,
+                "opponent": f"{r.home_away.upper()[0]} {r.opponent}",
+                "opponent_pitcher": r.opponent_pitcher or "TBD",
+                "game_time": r.game_time or "TBD",
+                "confidence": int(r.confidence_score),
+                "matchup": r.matchup_score,
+                "parkFactor": r.park_score,
+                "platoon": r.platoon_score,
+                "form": r.form_score,
+                "breakout": r.breakout_boost,
+                "reasons": r.reasons
+            }
+            for r in flex
+        ],
+        "bench": [
+            {
+                "player": r.player.name,
+                "position": r.player.position,
+                "team": r.player.team,
+                "opponent": f"{r.home_away.upper()[0]} {r.opponent}",
+                "opponent_pitcher": r.opponent_pitcher or "TBD",
+                "game_time": r.game_time or "TBD",
+                "confidence": int(r.confidence_score),
+                "matchup": r.matchup_score,
+                "parkFactor": r.park_score,
+                "platoon": r.platoon_score,
+                "form": r.form_score,
+                "breakout": r.breakout_boost,
+                "reasons": r.reasons
+            }
+            for r in bench
+        ],
+        "not_playing": [
+            {
+                "player": r.player.name,
+                "position": r.player.position,
+                "team": r.player.team,
+                "adp": r.player.adp
+            }
+            for r in not_playing
+        ],
+        "summary": {
+            "total_roster": len(recommendations),
+            "playing_today": len(playing),
+            "not_playing": len(not_playing),
+            "must_start_count": len(must_start),
+            "start_count": len(start),
+            "flex_count": len(flex),
+            "bench_count": len(bench)
+        }
     }
     
-    output_file = OUTPUT_DIR / "breakouts.json"
-    with open(output_file, 'w') as f:
-        json.dump(data, f, indent=2)
+    with open(output_dir / "daily_lineup.json", "w") as f:
+        json.dump(lineup_data, f, indent=2)
     
-    print(f"✅ Exported to {output_file}")
-    return data
+    print(f"✅ Exported daily lineup: {len(playing)} playing, {len(not_playing)} not playing")
+    
+except Exception as e:
+    print(f"❌ Error generating lineup: {e}")
+    # Create minimal data
+    lineup_data = {
+        "generated_at": datetime.now().isoformat(),
+        "error": str(e),
+        "must_start": [],
+        "start": [],
+        "flex": [],
+        "bench": [],
+        "not_playing": []
+    }
+    with open(output_dir / "daily_lineup.json", "w") as f:
+        json.dump(lineup_data, f, indent=2)
 
-def export_keepers():
-    """Export keeper analysis"""
-    print("⭐ Exporting keeper analysis...")
-    
-    try:
-        roster = load_roster_from_csv()
-        
-        # Calculate keeper value based on ADP vs draft round
-        keepers = []
-        for player in roster:
-            if player['adp'] and player['adp'] < 200:  # High-value players only
-                # Simple keeper value calculation
-                draft_round = 12  # Most are from round 12 in your data
-                surplus = f"+{200 - int(player['adp'])} ADP"
-                
-                value = "Elite" if player['adp'] < 50 else "Strong" if player['adp'] < 100 else "Good"
-                
-                keepers.append({
-                    "player": player['name'],
-                    "round": f"R{draft_round}",
-                    "adp": int(player['adp']),
-                    "surplus": surplus,
-                    "value": value
-                })
-        
-        # Sort by ADP (best players first) and take top 3
-        keepers.sort(key=lambda x: x['adp'])
-        
-        data = {
-            "generated_at": datetime.now().isoformat(),
-            "keepers": keepers[:3]
+# 2. Waiver Wire (demo - would fetch free agents in production)
+print("\n🎯 Generating waiver wire data...")
+waiver_data = {
+    "generated_at": datetime.now().isoformat(),
+    "note": "Run waiver_wire.py with Yahoo API for live data",
+    "targets": [
+        {
+            "player": "Example Player",
+            "position": "OF",
+            "adp": 150,
+            "reason": "Run: python scripts/waiver_wire.py"
         }
-        
-    except Exception as e:
-        print(f"⚠️  Using sample data due to error: {e}")
-        data = {
-            "generated_at": datetime.now().isoformat(),
-            "keepers": []
+    ]
+}
+with open(output_dir / "waiver_wire.json", "w") as f:
+    json.dump(waiver_data, f, indent=2)
+print("✅ Exported waiver wire data (placeholder)")
+
+# 3. Breakouts (demo - would scan free agents in production)
+print("\n🔬 Generating breakout data...")
+breakout_data = {
+    "generated_at": datetime.now().isoformat(),
+    "note": "Run breakout_scanner.py for live Statcast data",
+    "alerts": [
+        {
+            "player": "Example Player",
+            "signal": "STRONG",
+            "stat": "Exit velo up 2.5 mph",
+            "category": "Power"
         }
-    
-    output_file = OUTPUT_DIR / "keepers.json"
-    with open(output_file, 'w') as f:
-        json.dump(data, f, indent=2)
-    
-    print(f"✅ Exported {len(data['keepers'])} keepers to {output_file}")
-    return data
+    ]
+}
+with open(output_dir / "breakouts.json", "w") as f:
+    json.dump(breakout_data, f, indent=2)
+print("✅ Exported breakout data (placeholder)")
 
-def main():
-    """Export all dashboard data"""
-    print("🚀 Exporting all dashboard data...\n")
+# 4. Keepers
+print("\n⭐ Generating keeper analysis...")
+try:
+    analyzer = KeeperAnalyzer(roster)
+    analyses = analyzer.analyze_all_players()
+    top_keepers = analyzer.get_recommended_keepers(3)
     
-    try:
-        export_daily_lineup()
-        export_waiver_wire()
-        export_breakouts()
-        export_keepers()
-        
-        print("\n✅ All data exported successfully!")
-        print(f"📁 Files written to: {OUTPUT_DIR}")
-        
-    except Exception as e:
-        print(f"\n❌ Error: {e}")
-        sys.exit(1)
+    keeper_data = {
+        "generated_at": datetime.now().isoformat(),
+        "keepers": [
+            {
+                "player": k.player.name,
+                "position": k.player.position,
+                "round": k.adjusted_keeper_round or k.keeper_round,
+                "adp": int(k.player.adp) if k.player.adp else 0,
+                "surplus": f"+{int(k.surplus_value)}" if k.surplus_value else "N/A",
+                "value": k.recommendation,
+                "years_remaining": k.years_remaining,
+                "reason": k.recommendation_reason
+            }
+            for k in top_keepers
+        ],
+        "summary": {
+            "total_eligible": len([a for a in analyses if a.is_eligible]),
+            "recommended": len([a for a in analyses if a.recommendation == "Keep"])
+        }
+    }
+    
+    with open(output_dir / "keepers.json", "w") as f:
+        json.dump(keeper_data, f, indent=2)
+    
+    print(f"✅ Exported keeper data: {len(top_keepers)} recommended")
+    
+except Exception as e:
+    print(f"❌ Error generating keepers: {e}")
+    keeper_data = {
+        "generated_at": datetime.now().isoformat(),
+        "error": str(e),
+        "keepers": []
+    }
+    with open(output_dir / "keepers.json", "w") as f:
+        json.dump(keeper_data, f, indent=2)
 
-if __name__ == '__main__':
-    main()
+print("\n" + "="*70)
+print("✅ Dashboard data export complete!")
+print(f"📁 Output: {output_dir}")
+print("\n💡 To update dashboard:")
+print("   1. Run this script: python scripts/export_dashboard_data.py")
+print("   2. Commit the updated JSON files")
+print("   3. Push to GitHub (auto-deploys to GitHub Pages)")
+print("="*70 + "\n")
