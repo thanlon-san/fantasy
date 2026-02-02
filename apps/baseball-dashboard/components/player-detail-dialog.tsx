@@ -9,9 +9,8 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Calendar, TrendingUp, User, MapPin, Shield } from "lucide-react"
+import { TrendingUp, User, MapPin, Shield } from "lucide-react"
 
 type Player = {
   player: string

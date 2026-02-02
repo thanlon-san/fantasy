@@ -17,7 +17,6 @@ import {
   ArrowUp, 
   ArrowDown, 
   MoreHorizontal, 
-  Info, 
   ClipboardCopy, 
   BarChart2, 
   Eye

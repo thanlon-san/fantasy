@@ -178,10 +178,10 @@ export default function Home() {
     })
   }
 
-  const filteredMustStart = useMemo(() => filterPlayers(dailyLineup.must_start), [dailyLineup.must_start, searchTerm, positionFilter, confidenceThreshold])
-  const filteredStart = useMemo(() => filterPlayers(dailyLineup.start), [dailyLineup.start, searchTerm, positionFilter, confidenceThreshold])
-  const filteredFlex = useMemo(() => filterPlayers(dailyLineup.flex), [dailyLineup.flex, searchTerm, positionFilter, confidenceThreshold])
-  const filteredBench = useMemo(() => filterPlayers(dailyLineup.bench), [dailyLineup.bench, searchTerm, positionFilter, confidenceThreshold])
+  const filteredMustStart = useMemo(() => filterPlayers(dailyLineup.must_start), [dailyLineup.must_start, searchTerm, positionFilter, confidenceThreshold, filterPlayers])
+  const filteredStart = useMemo(() => filterPlayers(dailyLineup.start), [dailyLineup.start, searchTerm, positionFilter, confidenceThreshold, filterPlayers])
+  const filteredFlex = useMemo(() => filterPlayers(dailyLineup.flex), [dailyLineup.flex, searchTerm, positionFilter, confidenceThreshold, filterPlayers])
+  const filteredBench = useMemo(() => filterPlayers(dailyLineup.bench), [dailyLineup.bench, searchTerm, positionFilter, confidenceThreshold, filterPlayers])
 
   const totalPlayingCount = dailyLineup.must_start.length + dailyLineup.start.length + dailyLineup.flex.length
   const filteredCount = filteredMustStart.length + filteredStart.length + filteredFlex.length + filteredBench.length
