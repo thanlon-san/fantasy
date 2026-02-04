@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-03T12:33:32.715454",
+  "generated_at": "2026-02-04T12:33:50.006657",
   "error": "WaiverAnalyzer.analyze_free_agents() got an unexpected keyword argument 'top_n'",
   "targets": []
 }
