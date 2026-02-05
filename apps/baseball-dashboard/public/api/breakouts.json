@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-04T12:33:50.006811",
+  "generated_at": "2026-02-05T12:34:53.998171",
   "error": "'BreakoutDetector' object has no attribute 'detect_breakout'",
   "alerts": []
 }
