@@ -43,8 +43,15 @@ type Player = {
 type WaiverTarget = {
   player: string
   position: string
+  team: string
   adp: number
+  value_gain: number
+  drop_player: string
+  drop_player_position: string
+  drop_player_adp: number
+  confidence: string
   reason: string
+  keeper_cost: number
 }
 
 type Breakout = {
@@ -471,57 +478,152 @@ export default function Home() {
               </div>
             </CardHeader>
             <CardContent>
-              <Collapsible open={expandedSections.waivers} onOpenChange={() => toggleSection('waivers')}>
-                {/* Preview (first 3) */}
-                <div className="space-y-2 mb-3">
-                  {waiverWire.slice(0, 3).map((player, i) => (
-                    <div key={i} className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-                      <div className="flex items-start justify-between mb-1">
-                        <div className="font-semibold">{player.player}</div>
-                        <Badge className="bg-purple-600">{player.position}</Badge>
-                      </div>
-                      <div className="text-sm text-muted-foreground">{player.reason}</div>
-                      <div className="text-xs text-muted-foreground mt-1">ADP: {player.adp}</div>
-                    </div>
-                  ))}
+              {waiverWire.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Target className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No waiver recommendations</p>
                 </div>
-
-                {/* Expandable Content */}
-                {waiverWire.length > 3 && (
-                  <>
-                    <CollapsibleContent>
-                      <div className="space-y-2 mb-3">
-                        {waiverWire.slice(3).map((player, i) => (
-                          <div key={i} className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-                            <div className="flex items-start justify-between mb-1">
-                              <div className="font-semibold">{player.player}</div>
-                              <Badge className="bg-purple-600">{player.position}</Badge>
+              ) : (
+                <Collapsible open={expandedSections.waivers} onOpenChange={() => toggleSection('waivers')}>
+                  {/* Preview (first 3) */}
+                  <div className="space-y-3 mb-3">
+                    {waiverWire.slice(0, 3).map((target, i) => (
+                      <div key={i} className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+                        {/* Add Player */}
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <div className="font-semibold text-base flex items-center gap-2">
+                              <span className="text-green-600">➕</span>
+                              {target.player}
                             </div>
-                            <div className="text-sm text-muted-foreground">{player.reason}</div>
-                            <div className="text-xs text-muted-foreground mt-1">ADP: {player.adp}</div>
+                            <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
+                              <Badge variant="secondary" className="text-xs">{target.position}</Badge>
+                              <span>{target.team}</span>
+                              <span>•</span>
+                              <span>ADP: {target.adp}</span>
+                              <span>•</span>
+                              <span className="text-emerald-600 font-medium">Rd {target.keeper_cost}</span>
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
+                          <Badge className={target.confidence === "STRONG" ? "bg-purple-600" : "bg-purple-500"}>
+                            {target.confidence}
+                          </Badge>
+                        </div>
 
-                    <CollapsibleTrigger asChild>
-                      <Button variant="outline" className="w-full">
-                        {expandedSections.waivers ? (
-                          <>
-                            <ChevronUp className="mr-2 h-4 w-4" />
-                            Show Less
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="mr-2 h-4 w-4" />
-                            Show All {waiverWire.length} Targets
-                          </>
-                        )}
-                      </Button>
-                    </CollapsibleTrigger>
-                  </>
-                )}
-              </Collapsible>
+                        {/* Arrow & Value Gain */}
+                        <div className="flex items-center gap-2 my-2 pl-6">
+                          <div className="text-xs text-muted-foreground">↓</div>
+                          <div className="text-sm font-semibold text-green-600">
+                            +{target.value_gain} ADP value
+                          </div>
+                        </div>
+
+                        {/* Drop Player */}
+                        <div className="pl-6 mb-2">
+                          <div className="font-medium text-sm flex items-center gap-2 text-muted-foreground">
+                            <span className="text-red-600">➖</span>
+                            Drop: {target.drop_player}
+                          </div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5 pl-6">
+                            <Badge variant="outline" className="text-xs">{target.drop_player_position}</Badge>
+                            <span>ADP: {target.drop_player_adp}</span>
+                          </div>
+                        </div>
+
+                        {/* Reason */}
+                        <div className="text-xs text-muted-foreground pl-6 pt-2 border-t">
+                          {target.reason.split(',').map((r, idx) => (
+                            <span key={idx} className="inline-block mr-2">
+                              {r.trim().replace('🎯 ', '')}
+                              {idx < target.reason.split(',').length - 1 && ' •'}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Expandable Content */}
+                  {waiverWire.length > 3 && (
+                    <>
+                      <CollapsibleContent>
+                        <div className="space-y-3 mb-3">
+                          {waiverWire.slice(3).map((target, i) => (
+                            <div key={i} className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+                              {/* Add Player */}
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <div className="font-semibold text-base flex items-center gap-2">
+                                    <span className="text-green-600">➕</span>
+                                    {target.player}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
+                                    <Badge variant="secondary" className="text-xs">{target.position}</Badge>
+                                    <span>{target.team}</span>
+                                    <span>•</span>
+                                    <span>ADP: {target.adp}</span>
+                                    <span>•</span>
+                                    <span className="text-emerald-600 font-medium">Rd {target.keeper_cost}</span>
+                                  </div>
+                                </div>
+                                <Badge className={target.confidence === "STRONG" ? "bg-purple-600" : "bg-purple-500"}>
+                                  {target.confidence}
+                                </Badge>
+                              </div>
+
+                              {/* Arrow & Value Gain */}
+                              <div className="flex items-center gap-2 my-2 pl-6">
+                                <div className="text-xs text-muted-foreground">↓</div>
+                                <div className="text-sm font-semibold text-green-600">
+                                  +{target.value_gain} ADP value
+                                </div>
+                              </div>
+
+                              {/* Drop Player */}
+                              <div className="pl-6 mb-2">
+                                <div className="font-medium text-sm flex items-center gap-2 text-muted-foreground">
+                                  <span className="text-red-600">➖</span>
+                                  Drop: {target.drop_player}
+                                </div>
+                                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5 pl-6">
+                                  <Badge variant="outline" className="text-xs">{target.drop_player_position}</Badge>
+                                  <span>ADP: {target.drop_player_adp}</span>
+                                </div>
+                              </div>
+
+                              {/* Reason */}
+                              <div className="text-xs text-muted-foreground pl-6 pt-2 border-t">
+                                {target.reason.split(',').map((r, idx) => (
+                                  <span key={idx} className="inline-block mr-2">
+                                    {r.trim().replace('🎯 ', '')}
+                                    {idx < target.reason.split(',').length - 1 && ' •'}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CollapsibleContent>
+
+                      <CollapsibleTrigger asChild>
+                        <Button variant="outline" className="w-full">
+                          {expandedSections.waivers ? (
+                            <>
+                              <ChevronUp className="mr-2 h-4 w-4" />
+                              Show Less
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="mr-2 h-4 w-4" />
+                              Show All {waiverWire.length} Targets
+                            </>
+                          )}
+                        </Button>
+                      </CollapsibleTrigger>
+                    </>
+                  )}
+                </Collapsible>
+              )}
             </CardContent>
           </Card>
 
