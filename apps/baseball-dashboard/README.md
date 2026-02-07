@@ -1,24 +1,54 @@
 # Baseball Dashboard
 
-Modern web interface for the keeper-advisor tools.
+Modern Next.js dashboard for fantasy baseball keeper league analysis.
 
 ## Features
 
-- Daily lineup recommendations
-- Waiver wire analysis
-- Breakout player detection
-- Keeper value analysis
+- 🎯 **Daily Lineup Optimizer** - Smart lineup recommendations with confidence scores
+- 🔍 **Waiver Wire Scanner** - Find hidden gems on the wire
+- ⚡ **Breakout Detection** - Statcast-powered breakout alerts
+- 💎 **Keeper Analysis** - Calculate keeper value and surplus
 
-## Development
+## Quick Start
 
 ```bash
+# Install dependencies
 pnpm install
-pnpm dev  # Opens at localhost:3001
+
+# Run development server
+pnpm dev  # http://localhost:3001
+
+# Build for production
+pnpm build
 ```
+
+## Configuration
+
+Create `.env.local` for dynamic API mode:
+
+```bash
+NEXT_PUBLIC_USE_API=true
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+Or leave unset to use static JSON data (default).
+
+## Tech Stack
+
+- Next.js 15 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- shadcn/ui components
+- Radix UI primitives
 
 ## Deployment
 
-Auto-deploys to GitHub Pages at:
-**https://thanlon-san.github.io/fantasy/baseball/**
+Auto-deploys to GitHub Pages: **https://thanlon-san.github.io/fantasy/baseball/**
 
-See root [DEPLOYMENT.md](../../DEPLOYMENT.md) for details.
+See [Deployment Guide](../../docs/DEPLOYMENT.md) for details.
+
+## Documentation
+
+- [Development Guide](../../docs/DEVELOPMENT.md)
+- [Deployment Guide](../../docs/DEPLOYMENT.md)

@@ -90,3 +90,15 @@ trend_history.json
 # Accuracy tracking data (runtime generated)
 apps/keeper-advisor/data/accuracy/
 apps/keeper-advisor/data/breakout_tracking/
+
+# Next.js local env
+**/.env.local
+**/.env*.local
+
+# Build outputs (all apps)
+**/out/
+**/.next/
+
+# App-specific
+apps/keeper-api/.env
+apps/espn-fantasy-recap/.env

@@ -1,0 +1,59 @@
+# Fantasy Sports Monorepo - Python Dependencies
+# Install all dependencies for development: pip install -r requirements.txt
+
+# ============================================================================
+# Shared Utilities (packages/shared)
+# ============================================================================
+anthropic>=0.69.0
+openai>=1.0.0
+requests>=2.32.0
+python-dotenv>=1.0.0
+
+# ============================================================================
+# Keeper Advisor (apps/keeper-advisor)
+# ============================================================================
+# Yahoo Fantasy API
+yahoo-fantasy-api>=2.12.0
+yahoo-oauth>=2.0
+cryptography>=41.0.0
+
+# Data analysis
+pandas>=2.0.0
+numpy>=1.24.0
+pytz>=2024.1
+
+# Web scraping
+beautifulsoup4>=4.12.0
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.12.0
+
+# Baseball data
+pybaseball>=2.2.7
+
+# Optional API server
+flask==3.0.0
+flask-cors==4.0.0
+
+# ============================================================================
+# Keeper API (apps/keeper-api)
+# ============================================================================
+fastapi==0.115.12
+uvicorn[standard]==0.34.0
+pydantic==2.10.6
+python-multipart==0.0.20
+
+# ============================================================================
+# ESPN Fantasy Recap (apps/espn-fantasy-recap)
+# ============================================================================
+espn_api>=0.34.0
+python-dateutil>=2.8.2
+slowapi>=0.1.9
+
+# ============================================================================
+# Development Tools
+# ============================================================================
+# Add these for development
+# black>=24.0.0
+# flake8>=7.0.0
+# pytest>=8.0.0
+# mypy>=1.8.0

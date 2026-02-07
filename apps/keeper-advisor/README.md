@@ -13,6 +13,15 @@ AI-powered decision support tool for baseball keeper league management.
 ✅ **AI Recommendations** - Get personalized advice from Claude or GPT-4o (optional)  
 ✅ **League Rules Engine** - Handles complex keeper rules automatically
 
+## 📚 Documentation
+
+For detailed guides, see the `docs/` directory:
+- [Quick Start Guide](./docs/QUICKSTART.md)
+- [Daily Lineup Optimizer](./docs/DAILY_LINEUP_OPTIMIZER.md)
+- [Breakout Detector](./docs/BREAKOUT_DETECTOR.md)
+- [Platoon Splits Guide](./docs/PLATOON_SPLITS_GUIDE.md)
+- [Yahoo Setup](./docs/YAHOO_SETUP.md)
+
 ## Quick Start
 
 ### 1. Try it with Sample Data

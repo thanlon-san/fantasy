@@ -2,18 +2,32 @@
   "name": "fantasy-sports-monorepo",
   "version": "1.0.0",
   "private": true,
+  "description": "Fantasy sports toolkit with dashboards and analytics",
+  "author": "",
+  "license": "MIT",
   "scripts": {
-    "build": "pnpm --filter './apps/**' build",
+    "build": "pnpm build:hub && pnpm build:baseball",
     "build:hub": "pnpm --filter @fantasy/hub build",
     "build:baseball": "pnpm --filter @fantasy/baseball-dashboard build",
-    "build:local": "pnpm build:hub && pnpm build:baseball",
+    "build:local": "pnpm build",
+    "dev": "pnpm dev:hub",
     "dev:hub": "pnpm --filter @fantasy/hub dev",
     "dev:baseball": "pnpm --filter @fantasy/baseball-dashboard dev",
     "lint": "pnpm --filter './apps/**' lint",
     "lint:fix": "pnpm --filter './apps/**' lint -- --fix",
+    "typecheck": "pnpm --filter './apps/**' exec tsc --noEmit",
     "clean": "rm -rf apps/*/out apps/*/.next apps/*/node_modules node_modules",
-    "test:build": "pnpm clean && pnpm install && pnpm build:local",
-    "typecheck": "pnpm --filter './apps/**' exec tsc --noEmit"
+    "clean:builds": "rm -rf apps/*/out apps/*/.next",
+    "test:build": "pnpm clean && pnpm install && pnpm build",
+    "preflight": "pnpm install && pnpm typecheck && pnpm lint && pnpm build"
   },
+  "keywords": [
+    "fantasy-sports",
+    "fantasy-baseball",
+    "fantasy-football",
+    "monorepo",
+    "next.js",
+    "python"
+  ],
   "devDependencies": {}
 }
