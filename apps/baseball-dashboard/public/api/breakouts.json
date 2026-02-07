@@ -1,9 +1,5 @@
 {
-  "generated_at": "2026-02-07T05:03:34.651573",
-  "alerts": [],
-  "summary": {
-    "total_scanned": 24,
-    "signals_found": 0,
-    "strong_signals": 0
-  }
+  "generated_at": "2026-02-07T05:40:45.628472",
+  "error": "name 'BreakoutSignal' is not defined",
+  "alerts": []
 }

@@ -1,59 +1,62 @@
 {
-  "generated_at": "2026-02-07T05:02:57.221588",
+  "generated_at": "2026-02-07T05:40:41.956015",
   "targets": [
     {
-      "player": "Yoshinobu Yamamoto",
-      "position": "SP",
-      "team": "LAD",
-      "adp": 37,
-      "value_gain": "+468",
+      "player": "Wyatt Langford",
+      "position": "OF",
+      "team": "TEX",
+      "adp": 74,
+      "value_gain": 531,
       "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "drop_player_adp": 456,
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost",
+      "keeper_cost": 12
+    },
+    {
+      "player": "Michael Busch",
+      "position": "1B, 2B",
+      "team": "CHC",
+      "adp": 127,
+      "value_gain": 433,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "drop_player_adp": 456,
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Position need, Round 12 keeper cost",
+      "keeper_cost": 12
     },
     {
       "player": "Yoshinobu Yamamoto",
       "position": "SP",
       "team": "LAD",
       "adp": 37,
-      "value_gain": "+462",
-      "drop_player": "Agust\u00edn Ram\u00edrez",
+      "value_gain": 418,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "drop_player_adp": 456,
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
-    },
-    {
-      "player": "Yoshinobu Yamamoto",
-      "position": "SP",
-      "team": "LAD",
-      "adp": 37,
-      "value_gain": "+462",
-      "drop_player": "Kyle Hendricks",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
-    },
-    {
-      "player": "Yoshinobu Yamamoto",
-      "position": "SP",
-      "team": "LAD",
-      "adp": 37,
-      "value_gain": "+461",
-      "drop_player": "JoJo Romero",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost",
+      "keeper_cost": 12
     },
     {
       "player": "Hunter Greene",
       "position": "SP",
       "team": "CIN",
       "adp": 70,
-      "value_gain": "+435",
+      "value_gain": 385,
       "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "drop_player_adp": 456,
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost",
+      "keeper_cost": 12
     }
   ],
   "summary": {
     "scanned": 10,
-    "recommended": 5
+    "recommended": 4,
+    "total_combinations": 20
   }
 }
