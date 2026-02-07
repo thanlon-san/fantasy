@@ -251,7 +251,7 @@ try:
     with open(output_dir / "waiver_wire.json", "w") as f:
         json.dump(waiver_data, f, indent=2)
     
-    print(f"✅ Exported waiver wire: {len(recommendations)} recommendations from {len(sample_free_agents)} players")
+    print(f"✅ Exported waiver wire: {len(unique_recommendations)} unique recommendations from {len(sample_free_agents)} players")
     
 except Exception as e:
     print(f"⚠️  Error generating waiver wire: {e}")
