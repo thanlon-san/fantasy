@@ -57,9 +57,12 @@ type WaiverTarget = {
 
 type Breakout = {
   player: string
+  position: string
+  team: string
   signal: string
-  stat: string
+  stats: string[]
   category: string
+  confidence: number
 }
 
 type Keeper = {
@@ -627,29 +630,79 @@ export default function Home() {
               </div>
             </CardHeader>
             <CardContent>
-              <Collapsible open={expandedSections.breakouts} onOpenChange={() => toggleSection('breakouts')}>
-                <div className="space-y-2 mb-3">
-                  {breakouts.map((player, i) => (
-                    <div key={i} className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-                      <div className="flex items-start justify-between mb-1">
-                        <div className="font-semibold">{player.player}</div>
-                        <Badge className={player.signal === "STRONG" ? "bg-orange-600" : "bg-amber-600"}>
-                          {player.signal}
-                        </Badge>
-                      </div>
-                      <div className="text-sm text-muted-foreground">{player.stat}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{player.category} breakout</div>
-                    </div>
-                  ))}
+              {breakouts.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <TrendingUp className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No breakout signals detected</p>
+                  <p className="text-xs mt-1">Check back during the season</p>
                 </div>
+              ) : (
+                <Collapsible open={expandedSections.breakouts} onOpenChange={() => toggleSection('breakouts')}>
+                  <div className="space-y-2.5 mb-3">
+                    {breakouts.map((alert, i) => (
+                      <div key={i} className="p-2.5 rounded-lg border hover:border-orange-300 dark:hover:border-orange-700 bg-card transition-colors">
+                        {/* Header: Player name + confidence */}
+                        <div className="flex items-start justify-between gap-2 mb-1.5">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-orange-600 dark:text-orange-400 text-sm">🔥</span>
+                              <span className="font-bold truncate">{alert.player}</span>
+                              <Badge variant="secondary" className="text-xs px-1 py-0 shrink-0">{alert.position}</Badge>
+                            </div>
+                            <div className="text-xs text-muted-foreground ml-5">
+                              {alert.team} • {alert.category}
+                            </div>
+                          </div>
+                          <div className="text-xs font-bold text-orange-600 dark:text-orange-400 shrink-0">
+                            {alert.confidence}%
+                          </div>
+                        </div>
 
-                <CollapsibleTrigger asChild>
-                  <Button variant="outline" className="w-full">
-                    <ChevronDown className="mr-2 h-4 w-4" />
-                    Scan Free Agents
-                  </Button>
-                </CollapsibleTrigger>
-              </Collapsible>
+                        {/* Key stat improvements - compact */}
+                        <div className="text-xs ml-5 space-y-0.5">
+                          {alert.stats.slice(0, 3).map((stat, idx) => {
+                            const [metric, change] = stat.split(':').map(s => s.trim())
+                            const isPositive = change.startsWith('+')
+                            return (
+                              <div key={idx} className="flex items-center gap-2">
+                                <span className="text-muted-foreground font-medium min-w-[100px]">
+                                  {metric.replace('_', ' ').replace('percent', '%').replace('avg', '')}:
+                                </span>
+                                <span className={isPositive ? "text-green-600 dark:text-green-400 font-semibold" : "text-red-600 dark:text-red-400 font-semibold"}>
+                                  {change}
+                                </span>
+                              </div>
+                            )
+                          })}
+                        </div>
+
+                        {/* Action hint */}
+                        <div className="text-xs text-orange-600 dark:text-orange-400 font-medium mt-2 ml-5">
+                          {alert.signal === "STRONG" ? "⚡ Target in early draft rounds" : "👀 Monitor closely"}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {breakouts.length > 5 && (
+                    <CollapsibleTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        {expandedSections.breakouts ? (
+                          <>
+                            <ChevronUp className="mr-2 h-4 w-4" />
+                            Show Less
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="mr-2 h-4 w-4" />
+                            Show All {breakouts.length} Signals
+                          </>
+                        )}
+                      </Button>
+                    </CollapsibleTrigger>
+                  )}
+                </Collapsible>
+              )}
             </CardContent>
           </Card>
 
