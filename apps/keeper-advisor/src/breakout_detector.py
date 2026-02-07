@@ -65,6 +65,15 @@ class BreakoutDetector:
         'whiff_percent': -2.0,           # -2% improvement (lower is better)
         'k_percent': -3.0,               # -3% improvement (lower is better)
         'bb_percent': 2.0,               # +2% improvement
+        # Expected stats (regression/progression indicators)
+        'xBA': 0.020,                    # +20 points of xBA
+        'xSLG': 0.040,                   # +40 points of xSLG
+        'xwOBA': 0.025,                  # +25 points of xwOBA
+        # Batted ball profile shifts
+        'fly_ball_percent': 5.0,         # +5% more fly balls (power breakout)
+        'ground_ball_percent': -5.0,     # -5% fewer ground balls (paired with FB increase)
+        'line_drive_percent': 3.0,       # +3% more line drives (contact quality)
+        'pull_percent': 5.0,             # +5% pull rate (power approach)
     }
     
     # Thresholds for breakout detection (pitchers)
@@ -75,6 +84,15 @@ class BreakoutDetector:
         'hard_hit_percent': -5.0,        # -5% improvement (lower is better)
         'barrel_percent': -3.0,          # -3% improvement (lower is better)
         'avg_fastball_velocity': 1.0,   # +1 mph improvement
+        # Pitch arsenal changes
+        'fastball_usage': 5.0,           # +5% usage (pitch mix optimization)
+        'breaking_usage': 5.0,           # +5% breaking ball usage
+        'offspeed_usage': 5.0,           # +5% offspeed usage
+        'avg_spin_rate': 100,            # +100 RPM on breaking balls
+        # Expected stats
+        'xBA_against': -0.020,           # -20 points of xBA against
+        'xSLG_against': -0.040,          # -40 points of xSLG against
+        'xwOBA_against': -0.025,         # -25 points of xwOBA against
     }
     
     # Weight of each metric (higher = more important)
@@ -87,6 +105,15 @@ class BreakoutDetector:
         'whiff_percent': 1.5,
         'k_percent': 1.0,
         'bb_percent': 1.0,
+        # Expected stats (high weight - predictive of future performance)
+        'xBA': 2.0,
+        'xSLG': 2.5,
+        'xwOBA': 2.5,
+        # Batted ball profile
+        'fly_ball_percent': 1.5,
+        'ground_ball_percent': 1.0,
+        'line_drive_percent': 1.5,
+        'pull_percent': 1.0,
     }
     
     PITCHER_METRIC_WEIGHTS = {
@@ -96,10 +123,36 @@ class BreakoutDetector:
         'hard_hit_percent': 2.0,
         'barrel_percent': 2.5,
         'avg_fastball_velocity': 1.5,
+        # Pitch arsenal
+        'fastball_usage': 1.0,
+        'breaking_usage': 1.5,
+        'offspeed_usage': 1.5,
+        'avg_spin_rate': 1.5,
+        # Expected stats
+        'xBA_against': 2.0,
+        'xSLG_against': 2.5,
+        'xwOBA_against': 2.5,
     }
     
-    def __init__(self):
+    def __init__(self, enable_tracking: bool = True):
+        """
+        Initialize breakout detector
+        
+        Args:
+            enable_tracking: Whether to log predictions for historical tracking
+        """
         self.statcast = StatcastClient()
+        self.enable_tracking = enable_tracking
+        
+        if enable_tracking:
+            try:
+                from .breakout_tracker import BreakoutTracker
+                self.tracker = BreakoutTracker()
+            except Exception as e:
+                logger.warning(f"Could not initialize breakout tracker: {e}")
+                self.tracker = None
+        else:
+            self.tracker = None
     
     def analyze_player(
         self,
@@ -201,7 +254,7 @@ class BreakoutDetector:
         summary = self._generate_summary(player_type, improving, declining, signal)
         advice = self._generate_advice(signal, player_type, confidence_score)
         
-        return BreakoutAlert(
+        alert = BreakoutAlert(
             player_name=player_name,
             player_id=player_id,
             player_type=player_type,
@@ -213,6 +266,24 @@ class BreakoutDetector:
             summary=summary,
             actionable_advice=advice
         )
+        
+        # Log prediction for historical tracking
+        if self.tracker and signal in [BreakoutSignal.STRONG, BreakoutSignal.EMERGING]:
+            try:
+                self.tracker.log_prediction(
+                    player_name=player_name,
+                    player_id=player_id,
+                    player_type=player_type,
+                    signal=signal.value,
+                    confidence=confidence_score,
+                    improving_metrics=[m.split(':')[0].strip() for m in improving],
+                    declining_metrics=[m.split(':')[0].strip() for m in declining],
+                    key_metric_changes={k: v[1] - v[0] for k, v in key_metrics.items()}
+                )
+            except Exception as e:
+                logger.warning(f"Could not log prediction to tracker: {e}")
+        
+        return alert
     
     def _generate_summary(
         self,

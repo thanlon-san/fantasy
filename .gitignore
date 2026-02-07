@@ -89,3 +89,4 @@ trend_history.json
 
 # Accuracy tracking data (runtime generated)
 apps/keeper-advisor/data/accuracy/
+apps/keeper-advisor/data/breakout_tracking/

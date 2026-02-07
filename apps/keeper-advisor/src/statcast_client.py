@@ -239,6 +239,22 @@ class StatcastClient:
                 metrics['line_drive_percent'] = ((data['bb_type'] == 'line_drive').sum() / total_bb * 100)
                 metrics['fly_ball_percent'] = ((data['bb_type'] == 'fly_ball').sum() / total_bb * 100)
         
+        # Pull rate (spray chart analysis)
+        if 'hit_location' in data.columns:
+            # For RHB: 3-5 is pull side, 6 is center, 7-9 is opposite
+            # For LHB: 7-9 is pull side, 6 is center, 3-5 is opposite
+            # Simplification: 3,4,5,7,8,9 are directional hits
+            total_directional = data['hit_location'].notna().sum()
+            if total_directional > 0:
+                # Pull fields are typically 3-5 for RHB, 7-9 for LHB
+                # We'll estimate based on common patterns
+                pull_hits = data['hit_location'].isin([3, 4, 5, 7, 8, 9]).sum()
+                metrics['pull_percent'] = (pull_hits / total_directional * 100) if total_directional > 0 else 0
+        
+        # Max exit velocity (indicator of raw power)
+        if 'launch_speed' in data.columns:
+            metrics['exit_velocity_max'] = data['launch_speed'].max()
+        
         return metrics
     
     def calculate_pitcher_metrics(self, data: pd.DataFrame) -> Dict[str, float]:
@@ -292,10 +308,43 @@ class StatcastClient:
             fastballs = data[data['pitch_type'].isin(['FF', 'FT', 'SI'])]['release_speed']
             if not fastballs.empty:
                 metrics['avg_fastball_velocity'] = fastballs.mean()
+                metrics['max_fastball_velocity'] = fastballs.max()
         
-        # Spin rate
-        if 'release_spin_rate' in data.columns:
+        # Spin rate (breaking balls)
+        if 'release_spin_rate' in data.columns and 'pitch_type' in data.columns:
+            # Overall spin rate
             metrics['avg_spin_rate'] = data['release_spin_rate'].mean()
+            
+            # Breaking ball spin rate (more relevant for breakout detection)
+            breaking_pitches = data[data['pitch_type'].isin(['SL', 'CU', 'KC', 'SV', 'CS'])]
+            if not breaking_pitches.empty:
+                metrics['breaking_spin_rate'] = breaking_pitches['release_spin_rate'].mean()
+        
+        # Pitch arsenal usage (pitch mix changes can indicate breakout)
+        if 'pitch_type' in data.columns:
+            total_pitches = len(data)
+            if total_pitches > 0:
+                # Fastball usage (FF, FT, SI, FC)
+                fastball_count = data['pitch_type'].isin(['FF', 'FT', 'SI', 'FC']).sum()
+                metrics['fastball_usage'] = (fastball_count / total_pitches * 100)
+                
+                # Breaking ball usage (SL, CU, KC, SV, CS)
+                breaking_count = data['pitch_type'].isin(['SL', 'CU', 'KC', 'SV', 'CS']).sum()
+                metrics['breaking_usage'] = (breaking_count / total_pitches * 100)
+                
+                # Offspeed usage (CH, FS, SC)
+                offspeed_count = data['pitch_type'].isin(['CH', 'FS', 'SC']).sum()
+                metrics['offspeed_usage'] = (offspeed_count / total_pitches * 100)
+        
+        # Expected stats against (xBA, xSLG, xwOBA)
+        if 'estimated_ba_using_speedangle' in data.columns:
+            metrics['xBA_against'] = data['estimated_ba_using_speedangle'].mean()
+        
+        if 'estimated_slg_using_speedangle' in data.columns:
+            metrics['xSLG_against'] = data['estimated_slg_using_speedangle'].mean()
+        
+        if 'estimated_woba_using_speedangle' in data.columns:
+            metrics['xwOBA_against'] = data['estimated_woba_using_speedangle'].mean()
         
         return metrics
     
