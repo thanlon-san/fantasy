@@ -488,80 +488,58 @@ export default function Home() {
                   {/* Preview (first 3) */}
                   <div className="space-y-3 mb-3">
                     {waiverWire.slice(0, 3).map((target, i) => (
-                      <div key={i} className="p-4 rounded-lg border-2 border-muted hover:border-purple-200 dark:hover:border-purple-800 bg-card transition-all">
-                        {/* Header with confidence */}
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                            Waiver Recommendation
-                          </div>
+                      <div key={i} className="p-3 rounded-lg border hover:border-purple-300 dark:hover:border-purple-700 bg-card transition-colors">
+                        {/* Header: Confidence + Value Gain inline */}
+                        <div className="flex items-center justify-between mb-2">
                           <Badge className={target.confidence === "STRONG" ? "bg-purple-600" : "bg-purple-500"}>
                             {target.confidence}
                           </Badge>
+                          <div className="text-sm font-bold text-green-600 dark:text-green-400">
+                            +{target.value_gain} ADP
+                          </div>
                         </div>
 
-                        {/* ADD Section */}
-                        <div className="mb-3 pb-3 border-b">
-                          <div className="text-xs font-medium text-green-700 dark:text-green-400 mb-1 flex items-center gap-1">
-                            <span className="text-base">➕</span>
-                            ADD
+                        {/* ADD → DROP: Compact inline format */}
+                        <div className="space-y-2">
+                          {/* ADD Player */}
+                          <div className="flex items-start gap-2">
+                            <div className="text-green-600 dark:text-green-400 text-sm font-bold mt-0.5">➕</div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-bold truncate">{target.player}</div>
+                              <div className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
+                                <Badge variant="secondary" className="text-xs px-1.5 py-0">{target.position}</Badge>
+                                <span>{target.team}</span>
+                                <span>ADP {target.adp}</span>
+                                {target.keeper_cost && (
+                                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">Rd {target.keeper_cost}</span>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                          <div className="pl-6">
-                            <div className="font-bold text-lg">{target.player}</div>
-                            <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-2 mt-1">
-                              <Badge variant="secondary">{target.position}</Badge>
-                              <span>{target.team}</span>
-                              <span className="text-xs">•</span>
-                              <span className="font-medium">ADP {target.adp}</span>
-                              {target.keeper_cost && (
-                                <>
-                                  <span className="text-xs">•</span>
-                                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                                    Keep in Rd {target.keeper_cost}
-                                  </span>
-                                </>
+
+                          {/* DROP Player */}
+                          <div className="flex items-start gap-2 pl-1">
+                            <div className="text-red-600 dark:text-red-400 text-sm font-bold mt-0.5">➖</div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-sm truncate text-muted-foreground">{target.drop_player}</div>
+                              {target.drop_player_position && target.drop_player_adp && (
+                                <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+                                  <Badge variant="outline" className="text-xs px-1.5 py-0">{target.drop_player_position}</Badge>
+                                  <span>ADP {target.drop_player_adp}</span>
+                                </div>
                               )}
                             </div>
                           </div>
                         </div>
 
-                        {/* Value Gain Callout */}
-                        <div className="my-3 p-2 bg-green-50 dark:bg-green-950/20 rounded-md border border-green-200 dark:border-green-800">
-                          <div className="text-center">
-                            <div className="text-xs text-muted-foreground mb-1">Value Gain</div>
-                            <div className="text-xl font-bold text-green-600 dark:text-green-400">
-                              +{target.value_gain} ADP
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* DROP Section */}
-                        <div className="mb-3 pb-3 border-b">
-                          <div className="text-xs font-medium text-red-700 dark:text-red-400 mb-1 flex items-center gap-1">
-                            <span className="text-base">➖</span>
-                            DROP
-                          </div>
-                          <div className="pl-6">
-                            <div className="font-semibold text-base">{target.drop_player}</div>
-                            {target.drop_player_position && target.drop_player_adp && (
-                              <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                                <Badge variant="outline">{target.drop_player_position}</Badge>
-                                <span className="font-medium">ADP {target.drop_player_adp}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Reason */}
-                        <div className="text-xs text-muted-foreground">
-                          <div className="font-medium mb-1">Why this move:</div>
-                          <div className="space-y-0.5">
-                            {target.reason.split(',').map((r, idx) => (
-                              <div key={idx} className="flex items-start gap-1">
-                                <span className="text-purple-600 dark:text-purple-400">•</span>
-                                <span>{r.trim().replace('🎯 ', '')}</span>
-                              </div>
-                            ))}
-                          </div>
+                        {/* Reason - Compact */}
+                        <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
+                          {target.reason.split(',').slice(0, 2).map((r, idx) => (
+                            <span key={idx}>
+                              {r.trim().replace('🎯 ', '')}
+                              {idx === 0 && ' • '}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     ))}
@@ -573,80 +551,58 @@ export default function Home() {
                       <CollapsibleContent>
                         <div className="space-y-3 mb-3">
                           {waiverWire.slice(3).map((target, i) => (
-                            <div key={i} className="p-4 rounded-lg border-2 border-muted hover:border-purple-200 dark:hover:border-purple-800 bg-card transition-all">
-                              {/* Header with confidence */}
-                              <div className="flex items-center justify-between mb-3">
-                                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                                  Waiver Recommendation
-                                </div>
+                            <div key={i} className="p-3 rounded-lg border hover:border-purple-300 dark:hover:border-purple-700 bg-card transition-colors">
+                              {/* Header: Confidence + Value Gain inline */}
+                              <div className="flex items-center justify-between mb-2">
                                 <Badge className={target.confidence === "STRONG" ? "bg-purple-600" : "bg-purple-500"}>
                                   {target.confidence}
                                 </Badge>
+                                <div className="text-sm font-bold text-green-600 dark:text-green-400">
+                                  +{target.value_gain} ADP
+                                </div>
                               </div>
 
-                              {/* ADD Section */}
-                              <div className="mb-3 pb-3 border-b">
-                                <div className="text-xs font-medium text-green-700 dark:text-green-400 mb-1 flex items-center gap-1">
-                                  <span className="text-base">➕</span>
-                                  ADD
+                              {/* ADD → DROP: Compact inline format */}
+                              <div className="space-y-2">
+                                {/* ADD Player */}
+                                <div className="flex items-start gap-2">
+                                  <div className="text-green-600 dark:text-green-400 text-sm font-bold mt-0.5">➕</div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-bold truncate">{target.player}</div>
+                                    <div className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
+                                      <Badge variant="secondary" className="text-xs px-1.5 py-0">{target.position}</Badge>
+                                      <span>{target.team}</span>
+                                      <span>ADP {target.adp}</span>
+                                      {target.keeper_cost && (
+                                        <span className="text-emerald-600 dark:text-emerald-400 font-medium">Rd {target.keeper_cost}</span>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="pl-6">
-                                  <div className="font-bold text-lg">{target.player}</div>
-                                  <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-2 mt-1">
-                                    <Badge variant="secondary">{target.position}</Badge>
-                                    <span>{target.team}</span>
-                                    <span className="text-xs">•</span>
-                                    <span className="font-medium">ADP {target.adp}</span>
-                                    {target.keeper_cost && (
-                                      <>
-                                        <span className="text-xs">•</span>
-                                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                                          Keep in Rd {target.keeper_cost}
-                                        </span>
-                                      </>
+
+                                {/* DROP Player */}
+                                <div className="flex items-start gap-2 pl-1">
+                                  <div className="text-red-600 dark:text-red-400 text-sm font-bold mt-0.5">➖</div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-medium text-sm truncate text-muted-foreground">{target.drop_player}</div>
+                                    {target.drop_player_position && target.drop_player_adp && (
+                                      <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+                                        <Badge variant="outline" className="text-xs px-1.5 py-0">{target.drop_player_position}</Badge>
+                                        <span>ADP {target.drop_player_adp}</span>
+                                      </div>
                                     )}
                                   </div>
                                 </div>
                               </div>
 
-                              {/* Value Gain Callout */}
-                              <div className="my-3 p-2 bg-green-50 dark:bg-green-950/20 rounded-md border border-green-200 dark:border-green-800">
-                                <div className="text-center">
-                                  <div className="text-xs text-muted-foreground mb-1">Value Gain</div>
-                                  <div className="text-xl font-bold text-green-600 dark:text-green-400">
-                                    +{target.value_gain} ADP
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* DROP Section */}
-                              <div className="mb-3 pb-3 border-b">
-                                <div className="text-xs font-medium text-red-700 dark:text-red-400 mb-1 flex items-center gap-1">
-                                  <span className="text-base">➖</span>
-                                  DROP
-                                </div>
-                                <div className="pl-6">
-                                  <div className="font-semibold text-base">{target.drop_player}</div>
-                                  {target.drop_player_position && target.drop_player_adp && (
-                                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                                      <Badge variant="outline">{target.drop_player_position}</Badge>
-                                      <span className="font-medium">ADP {target.drop_player_adp}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-
-                              {/* Reason */}
-                              <div className="text-xs text-muted-foreground">
-                                <div className="font-medium mb-1">Why this move:</div>
-                                <div className="space-y-0.5">
-                                  {target.reason.split(',').map((r, idx) => (
-                                    <div key={idx} className="flex items-start gap-1">
-                                      <span className="text-purple-600 dark:text-purple-400">•</span>
-                                      <span>{r.trim().replace('🎯 ', '')}</span>
-                                    </div>
-                                  ))}
-                                </div>
+                              {/* Reason - Compact */}
+                              <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
+                                {target.reason.split(',').slice(0, 2).map((r, idx) => (
+                                  <span key={idx}>
+                                    {r.trim().replace('🎯 ', '')}
+                                    {idx === 0 && ' • '}
+                                  </span>
+                                ))}
                               </div>
                             </div>
                           ))}
