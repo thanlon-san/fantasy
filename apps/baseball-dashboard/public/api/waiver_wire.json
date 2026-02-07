@@ -1,5 +1,59 @@
 {
-  "generated_at": "2026-02-06T12:33:11.576387",
-  "error": "WaiverAnalyzer.analyze_free_agents() got an unexpected keyword argument 'top_n'",
-  "targets": []
+  "generated_at": "2026-02-07T05:02:57.221588",
+  "targets": [
+    {
+      "player": "Yoshinobu Yamamoto",
+      "position": "SP",
+      "team": "LAD",
+      "adp": 37,
+      "value_gain": "+468",
+      "drop_player": "Nathaniel Lowe",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
+    {
+      "player": "Yoshinobu Yamamoto",
+      "position": "SP",
+      "team": "LAD",
+      "adp": 37,
+      "value_gain": "+462",
+      "drop_player": "Agust\u00edn Ram\u00edrez",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
+    {
+      "player": "Yoshinobu Yamamoto",
+      "position": "SP",
+      "team": "LAD",
+      "adp": 37,
+      "value_gain": "+462",
+      "drop_player": "Kyle Hendricks",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
+    {
+      "player": "Yoshinobu Yamamoto",
+      "position": "SP",
+      "team": "LAD",
+      "adp": 37,
+      "value_gain": "+461",
+      "drop_player": "JoJo Romero",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
+    {
+      "player": "Hunter Greene",
+      "position": "SP",
+      "team": "CIN",
+      "adp": 70,
+      "value_gain": "+435",
+      "drop_player": "Nathaniel Lowe",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    }
+  ],
+  "summary": {
+    "scanned": 10,
+    "recommended": 5
+  }
 }
