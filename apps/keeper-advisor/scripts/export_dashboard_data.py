@@ -211,7 +211,7 @@ try:
     ]
     
     # Analyze free agents against roster
-    recommendations = waiver_analyzer.analyze_free_agents(sample_free_agents, top_n=5)
+    recommendations = waiver_analyzer.analyze_free_agents(sample_free_agents, max_recommendations=5)
     
     waiver_data = {
         "generated_at": datetime.now().isoformat(),
@@ -262,29 +262,47 @@ try:
         # Scan roster players for breakout signals
         breakout_alerts = []
         for player in roster.players:
-            signals = detector.detect_breakout(player.name)
-            if signals and signals.overall_signal != "NONE":
+            # Parse player name
+            name_parts = player.name.split()
+            if len(name_parts) < 2:
+                continue
+            
+            first_name = name_parts[0]
+            last_name = ' '.join(name_parts[1:])
+            
+            # Determine player type from position
+            is_pitcher = player.position in ['SP', 'RP']
+            player_type = 'pitcher' if is_pitcher else 'hitter'
+            
+            # Analyze for breakout signals
+            alert = detector.analyze_player(
+                first_name,
+                last_name,
+                player_type,
+                recent_days=14,
+                baseline_days=30
+            )
+            
+            if alert and alert.signal in [BreakoutSignal.STRONG, BreakoutSignal.EMERGING]:
+                # Format improving metrics for display
+                metric_changes = []
+                for metric_name, (baseline, recent) in list(alert.key_metrics.items())[:3]:
+                    change = recent - baseline
+                    metric_changes.append(f"{metric_name}: {change:+.1f}")
+                
                 breakout_alerts.append({
                     "player": player.name,
                     "position": player.position,
                     "team": player.team,
-                    "signal": signals.overall_signal,
-                    "stats": [
-                        f"{metric}: {value}" 
-                        for metric, value in [
-                            ("Exit velo", signals.exit_velocity_trend),
-                            ("Hard hit %", signals.hard_hit_rate_trend),
-                            ("Barrel %", signals.barrel_rate_trend)
-                        ]
-                        if value and value != "stable"
-                    ],
-                    "category": signals.breakout_type or "General",
-                    "confidence": signals.confidence
+                    "signal": alert.signal.value,
+                    "stats": metric_changes,
+                    "category": player_type.title(),
+                    "confidence": int(alert.confidence_score)
                 })
         
-        # Sort by signal strength
-        signal_order = {"STRONG": 0, "MODERATE": 1, "WEAK": 2}
-        breakout_alerts.sort(key=lambda x: signal_order.get(x["signal"], 3))
+        # Sort by signal strength and confidence
+        signal_order = {"STRONG": 0, "EMERGING": 1}
+        breakout_alerts.sort(key=lambda x: (signal_order.get(x["signal"], 2), -x["confidence"]))
         
         breakout_data = {
             "generated_at": datetime.now().isoformat(),
@@ -305,6 +323,8 @@ try:
     
 except Exception as e:
     print(f"⚠️  Error generating breakout data: {e}")
+    import traceback
+    traceback.print_exc()
     # Fallback to placeholder
     breakout_data = {
         "generated_at": datetime.now().isoformat(),
