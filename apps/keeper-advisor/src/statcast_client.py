@@ -47,6 +47,40 @@ class StatcastClient:
     def __init__(self):
         self._player_cache = {}
     
+    def _get_analysis_dates(
+        self, 
+        days_back: int,
+        use_previous_season_if_offseason: bool = True
+    ) -> Tuple[str, str]:
+        """
+        Get appropriate start/end dates for analysis, handling offseason
+        
+        Args:
+            days_back: Number of days to look back
+            use_previous_season_if_offseason: Use end of previous season during offseason
+            
+        Returns:
+            Tuple of (start_date, end_date) as YYYY-MM-DD strings
+        """
+        current_date = datetime.now()
+        current_month = current_date.month
+        
+        # Detect offseason (November through February)
+        is_offseason = current_month in [11, 12, 1, 2]
+        
+        if is_offseason and use_previous_season_if_offseason:
+            # Use end of previous season
+            previous_year = current_date.year if current_month >= 11 else current_date.year - 1
+            end_date = datetime(previous_year, 10, 1)
+            start_date = end_date - timedelta(days=days_back)
+            
+            return start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')
+        else:
+            # Normal in-season
+            end_date = current_date
+            start_date = end_date - timedelta(days=days_back)
+            return start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')
+    
     def get_player_id(self, first_name: str, last_name: str) -> Optional[int]:
         """
         Look up MLB player ID
@@ -87,23 +121,23 @@ class StatcastClient:
         self,
         player_id: int,
         start_date: Optional[str] = None,
-        end_date: Optional[str] = None
+        end_date: Optional[str] = None,
+        use_previous_season_if_offseason: bool = True
     ) -> Optional[pd.DataFrame]:
         """
         Get Statcast hitting data for a player
         
         Args:
             player_id: MLB player ID
-            start_date: Start date (YYYY-MM-DD), defaults to 30 days ago
-            end_date: End date (YYYY-MM-DD), defaults to today
+            start_date: Start date (YYYY-MM-DD), defaults to 30 days ago (or end of previous season)
+            end_date: End date (YYYY-MM-DD), defaults to today (or end of previous season)
+            use_previous_season_if_offseason: Use end of previous season during offseason
             
         Returns:
             DataFrame with Statcast data or None
         """
-        if not start_date:
-            start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-        if not end_date:
-            end_date = datetime.now().strftime('%Y-%m-%d')
+        if not start_date or not end_date:
+            start_date, end_date = self._get_analysis_dates(30, use_previous_season_if_offseason)
         
         try:
             logger.info(f"Fetching hitter stats for player {player_id} ({start_date} to {end_date})")
@@ -124,23 +158,23 @@ class StatcastClient:
         self,
         player_id: int,
         start_date: Optional[str] = None,
-        end_date: Optional[str] = None
+        end_date: Optional[str] = None,
+        use_previous_season_if_offseason: bool = True
     ) -> Optional[pd.DataFrame]:
         """
         Get Statcast pitching data for a player
         
         Args:
             player_id: MLB player ID
-            start_date: Start date (YYYY-MM-DD), defaults to 30 days ago
-            end_date: End date (YYYY-MM-DD), defaults to today
+            start_date: Start date (YYYY-MM-DD), defaults to 30 days ago (or end of previous season)
+            end_date: End date (YYYY-MM-DD), defaults to today (or end of previous season)
+            use_previous_season_if_offseason: Use end of previous season during offseason
             
         Returns:
             DataFrame with Statcast data or None
         """
-        if not start_date:
-            start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-        if not end_date:
-            end_date = datetime.now().strftime('%Y-%m-%d')
+        if not start_date or not end_date:
+            start_date, end_date = self._get_analysis_dates(30, use_previous_season_if_offseason)
         
         try:
             logger.info(f"Fetching pitcher stats for player {player_id} ({start_date} to {end_date})")
