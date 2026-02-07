@@ -488,58 +488,48 @@ export default function Home() {
                   {/* Preview (first 3) */}
                   <div className="space-y-3 mb-3">
                     {waiverWire.slice(0, 3).map((target, i) => (
-                      <div key={i} className="p-3 rounded-lg border hover:border-purple-300 dark:hover:border-purple-700 bg-card transition-colors">
-                        {/* Header: Confidence + Value Gain inline */}
-                        <div className="flex items-center justify-between mb-2">
-                          <Badge className={target.confidence === "STRONG" ? "bg-purple-600" : "bg-purple-500"}>
-                            {target.confidence}
-                          </Badge>
-                          <div className="text-sm font-bold text-green-600 dark:text-green-400">
-                            +{target.value_gain} ADP
-                          </div>
-                        </div>
-
-                        {/* ADD → DROP: Compact inline format */}
-                        <div className="space-y-2">
-                          {/* ADD Player */}
-                          <div className="flex items-start gap-2">
-                            <div className="text-green-600 dark:text-green-400 text-sm font-bold mt-0.5">➕</div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-bold truncate">{target.player}</div>
-                              <div className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
-                                <Badge variant="secondary" className="text-xs px-1.5 py-0">{target.position}</Badge>
-                                <span>{target.team}</span>
-                                <span>ADP {target.adp}</span>
-                                {target.keeper_cost && (
-                                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">Rd {target.keeper_cost}</span>
-                                )}
-                              </div>
+                      <div key={i} className="p-2.5 rounded-lg border hover:border-purple-300 dark:hover:border-purple-700 bg-card transition-colors">
+                        {/* Value gain - top right corner */}
+                        <div className="flex items-start justify-between gap-3 mb-1.5">
+                          <div className="flex-1 min-w-0">
+                            {/* ADD Player - inline */}
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-green-600 dark:text-green-400 text-sm">➕</span>
+                              <span className="font-bold truncate">{target.player}</span>
+                              <Badge variant="secondary" className="text-xs px-1 py-0 shrink-0">{target.position}</Badge>
                             </div>
-                          </div>
-
-                          {/* DROP Player */}
-                          <div className="flex items-start gap-2 pl-1">
-                            <div className="text-red-600 dark:text-red-400 text-sm font-bold mt-0.5">➖</div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium text-sm truncate text-muted-foreground">{target.drop_player}</div>
-                              {target.drop_player_position && target.drop_player_adp && (
-                                <div className="text-xs text-muted-foreground flex items-center gap-1.5">
-                                  <Badge variant="outline" className="text-xs px-1.5 py-0">{target.drop_player_position}</Badge>
-                                  <span>ADP {target.drop_player_adp}</span>
-                                </div>
+                            <div className="text-xs text-muted-foreground ml-5 flex items-center gap-1.5 flex-wrap">
+                              <span>{target.team}</span>
+                              <span>•</span>
+                              <span>ADP {target.adp}</span>
+                              {target.keeper_cost && (
+                                <>
+                                  <span>•</span>
+                                  <span className="text-emerald-600 dark:text-emerald-400">Rd {target.keeper_cost}</span>
+                                </>
                               )}
                             </div>
                           </div>
+                          <div className="text-sm font-bold text-green-600 dark:text-green-400 shrink-0">
+                            +{target.value_gain}
+                          </div>
                         </div>
 
-                        {/* Reason - Compact */}
-                        <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
-                          {target.reason.split(',').slice(0, 2).map((r, idx) => (
-                            <span key={idx}>
-                              {r.trim().replace('🎯 ', '')}
-                              {idx === 0 && ' • '}
-                            </span>
-                          ))}
+                        {/* DROP Player - inline */}
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-red-600 dark:text-red-400 text-sm">➖</span>
+                          <span className="font-medium text-sm text-muted-foreground truncate">{target.drop_player}</span>
+                          {target.drop_player_position && target.drop_player_adp && (
+                            <>
+                              <Badge variant="outline" className="text-xs px-1 py-0 shrink-0">{target.drop_player_position}</Badge>
+                              <span className="text-xs text-muted-foreground">ADP {target.drop_player_adp}</span>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Reason - same line as drop player or compact below */}
+                        <div className="text-xs text-muted-foreground ml-5 mt-1">
+                          {target.reason.split(',').slice(0, 2).join(' • ').replace('🎯 ', '')}
                         </div>
                       </div>
                     ))}
@@ -551,58 +541,48 @@ export default function Home() {
                       <CollapsibleContent>
                         <div className="space-y-3 mb-3">
                           {waiverWire.slice(3).map((target, i) => (
-                            <div key={i} className="p-3 rounded-lg border hover:border-purple-300 dark:hover:border-purple-700 bg-card transition-colors">
-                              {/* Header: Confidence + Value Gain inline */}
-                              <div className="flex items-center justify-between mb-2">
-                                <Badge className={target.confidence === "STRONG" ? "bg-purple-600" : "bg-purple-500"}>
-                                  {target.confidence}
-                                </Badge>
-                                <div className="text-sm font-bold text-green-600 dark:text-green-400">
-                                  +{target.value_gain} ADP
-                                </div>
-                              </div>
-
-                              {/* ADD → DROP: Compact inline format */}
-                              <div className="space-y-2">
-                                {/* ADD Player */}
-                                <div className="flex items-start gap-2">
-                                  <div className="text-green-600 dark:text-green-400 text-sm font-bold mt-0.5">➕</div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-bold truncate">{target.player}</div>
-                                    <div className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
-                                      <Badge variant="secondary" className="text-xs px-1.5 py-0">{target.position}</Badge>
-                                      <span>{target.team}</span>
-                                      <span>ADP {target.adp}</span>
-                                      {target.keeper_cost && (
-                                        <span className="text-emerald-600 dark:text-emerald-400 font-medium">Rd {target.keeper_cost}</span>
-                                      )}
-                                    </div>
+                            <div key={i} className="p-2.5 rounded-lg border hover:border-purple-300 dark:hover:border-purple-700 bg-card transition-colors">
+                              {/* Value gain - top right corner */}
+                              <div className="flex items-start justify-between gap-3 mb-1.5">
+                                <div className="flex-1 min-w-0">
+                                  {/* ADD Player - inline */}
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-green-600 dark:text-green-400 text-sm">➕</span>
+                                    <span className="font-bold truncate">{target.player}</span>
+                                    <Badge variant="secondary" className="text-xs px-1 py-0 shrink-0">{target.position}</Badge>
                                   </div>
-                                </div>
-
-                                {/* DROP Player */}
-                                <div className="flex items-start gap-2 pl-1">
-                                  <div className="text-red-600 dark:text-red-400 text-sm font-bold mt-0.5">➖</div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-sm truncate text-muted-foreground">{target.drop_player}</div>
-                                    {target.drop_player_position && target.drop_player_adp && (
-                                      <div className="text-xs text-muted-foreground flex items-center gap-1.5">
-                                        <Badge variant="outline" className="text-xs px-1.5 py-0">{target.drop_player_position}</Badge>
-                                        <span>ADP {target.drop_player_adp}</span>
-                                      </div>
+                                  <div className="text-xs text-muted-foreground ml-5 flex items-center gap-1.5 flex-wrap">
+                                    <span>{target.team}</span>
+                                    <span>•</span>
+                                    <span>ADP {target.adp}</span>
+                                    {target.keeper_cost && (
+                                      <>
+                                        <span>•</span>
+                                        <span className="text-emerald-600 dark:text-emerald-400">Rd {target.keeper_cost}</span>
+                                      </>
                                     )}
                                   </div>
                                 </div>
+                                <div className="text-sm font-bold text-green-600 dark:text-green-400 shrink-0">
+                                  +{target.value_gain}
+                                </div>
                               </div>
 
-                              {/* Reason - Compact */}
-                              <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
-                                {target.reason.split(',').slice(0, 2).map((r, idx) => (
-                                  <span key={idx}>
-                                    {r.trim().replace('🎯 ', '')}
-                                    {idx === 0 && ' • '}
-                                  </span>
-                                ))}
+                              {/* DROP Player - inline */}
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-red-600 dark:text-red-400 text-sm">➖</span>
+                                <span className="font-medium text-sm text-muted-foreground truncate">{target.drop_player}</span>
+                                {target.drop_player_position && target.drop_player_adp && (
+                                  <>
+                                    <Badge variant="outline" className="text-xs px-1 py-0 shrink-0">{target.drop_player_position}</Badge>
+                                    <span className="text-xs text-muted-foreground">ADP {target.drop_player_adp}</span>
+                                  </>
+                                )}
+                              </div>
+
+                              {/* Reason - same line as drop player or compact below */}
+                              <div className="text-xs text-muted-foreground ml-5 mt-1">
+                                {target.reason.split(',').slice(0, 2).join(' • ').replace('🎯 ', '')}
                               </div>
                             </div>
                           ))}
