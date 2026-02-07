@@ -211,7 +211,17 @@ try:
     ]
     
     # Analyze free agents against roster
-    recommendations = waiver_analyzer.analyze_free_agents(sample_free_agents, max_recommendations=5)
+    all_recommendations = waiver_analyzer.analyze_free_agents(sample_free_agents, max_recommendations=20)
+    
+    # Deduplicate: Keep only the best recommendation per add_player
+    seen_players = {}
+    for rec in all_recommendations:
+        player_key = rec.add_player.name
+        if player_key not in seen_players or rec.value_gain > seen_players[player_key].value_gain:
+            seen_players[player_key] = rec
+    
+    # Get top 5 unique add targets
+    unique_recommendations = sorted(seen_players.values(), key=lambda x: x.value_gain, reverse=True)[:5]
     
     waiver_data = {
         "generated_at": datetime.now().isoformat(),
@@ -221,16 +231,20 @@ try:
                 "position": rec.add_player.position,
                 "team": rec.add_player.team,
                 "adp": int(rec.add_player.adp) if rec.add_player.adp else 0,
-                "value_gain": f"+{int(rec.value_gain)}",
+                "value_gain": int(rec.value_gain),
                 "drop_player": rec.drop_player.name,
+                "drop_player_position": rec.drop_player.position,
+                "drop_player_adp": int(rec.drop_player.adp) if rec.drop_player.adp else 999,
                 "confidence": rec.confidence,
-                "reason": rec.reason
+                "reason": rec.reason,
+                "keeper_cost": rec.add_keeper_cost
             }
-            for rec in recommendations
+            for rec in unique_recommendations
         ],
         "summary": {
             "scanned": len(sample_free_agents),
-            "recommended": len(recommendations)
+            "recommended": len(unique_recommendations),
+            "total_combinations": len(all_recommendations)
         }
     }
     
