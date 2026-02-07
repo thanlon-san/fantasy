@@ -183,10 +183,11 @@ class BreakoutDetector:
         
         player_name = f"{first_name} {last_name}"
         
-        # Get comparative metrics
+        # Get comparative metrics (automatically uses previous season during offseason)
         try:
             recent, baseline, changes = self.statcast.compare_time_periods(
-                player_id, player_type, recent_days, baseline_days
+                player_id, player_type, recent_days, baseline_days,
+                use_previous_season_if_offseason=True
             )
         except Exception as e:
             logger.error(f"Error comparing metrics for {player_name}: {e}")

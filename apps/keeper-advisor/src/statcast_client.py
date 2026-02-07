@@ -353,7 +353,8 @@ class StatcastClient:
         player_id: int,
         player_type: str = 'hitter',
         recent_days: int = 14,
-        baseline_days: int = 30
+        baseline_days: int = 30,
+        use_previous_season_if_offseason: bool = True
     ) -> Tuple[Dict[str, float], Dict[str, float], Dict[str, float]]:
         """
         Compare recent performance to baseline
@@ -363,14 +364,37 @@ class StatcastClient:
             player_type: 'hitter' or 'pitcher'
             recent_days: Days for recent sample
             baseline_days: Days for baseline comparison (before recent)
+            use_previous_season_if_offseason: If True and currently offseason, analyze end of previous season
             
         Returns:
             Tuple of (recent_metrics, baseline_metrics, changes)
         """
-        end_date = datetime.now()
-        recent_start = end_date - timedelta(days=recent_days)
-        baseline_start = recent_start - timedelta(days=baseline_days)
-        baseline_end = recent_start
+        current_date = datetime.now()
+        current_month = current_date.month
+        
+        # Detect offseason (November through February)
+        is_offseason = current_month in [11, 12, 1, 2]
+        
+        if is_offseason and use_previous_season_if_offseason:
+            # Use end of previous season for draft analysis
+            # MLB season typically ends early October
+            previous_year = current_date.year if current_month >= 11 else current_date.year - 1
+            
+            # Recent = last 2 weeks of season (Sept 15 - Oct 1)
+            end_date = datetime(previous_year, 10, 1)
+            recent_start = end_date - timedelta(days=recent_days)
+            
+            # Baseline = month before that (Aug 15 - Sept 15)
+            baseline_end = recent_start
+            baseline_start = baseline_end - timedelta(days=baseline_days)
+            
+            logger.info(f"Offseason mode: Analyzing end of {previous_year} season (Sept-Oct)")
+        else:
+            # Normal in-season analysis
+            end_date = current_date
+            recent_start = end_date - timedelta(days=recent_days)
+            baseline_start = recent_start - timedelta(days=baseline_days)
+            baseline_end = recent_start
         
         recent_start_str = recent_start.strftime('%Y-%m-%d')
         baseline_start_str = baseline_start.strftime('%Y-%m-%d')
