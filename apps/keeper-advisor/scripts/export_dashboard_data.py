@@ -18,7 +18,7 @@ from src.importers import CSVImporter
 from src.lineup_optimizer import LineupOptimizer
 from src.waiver_analyzer import WaiverAnalyzer
 from src.analyzer import KeeperAnalyzer
-from src.breakout_detector import BreakoutDetector
+from src.breakout_detector import BreakoutDetector, BreakoutSignal
 from src.accuracy_tracker import AccuracyTracker
 
 # Output directory

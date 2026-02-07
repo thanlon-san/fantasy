@@ -15,6 +15,7 @@ import { CommandPalette } from "@/components/command-palette"
 import { FilterBar } from "@/components/filter-bar"
 import { PlayerDetailDialog } from "@/components/player-detail-dialog"
 import { useToast } from "@/components/ui/use-toast"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 // API base URL - use environment variable or fallback to local
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
@@ -249,14 +250,17 @@ export default function Home() {
                 </kbd> to search
               </p>
             </div>
-            {lastUpdated && (
-              <div className="text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>Updated: {lastUpdated.toLocaleString()}</span>
+            <div className="flex items-center gap-4">
+              {lastUpdated && (
+                <div className="text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span>Updated: {lastUpdated.toLocaleString()}</span>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+              <ThemeToggle />
+            </div>
           </div>
         </header>
 
