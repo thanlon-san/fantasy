@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-02-08T12:25:11.000718",
+  "generated_at": "2026-02-09T12:41:26.371002",
   "targets": [
     {
       "player": "Wyatt Langford",
       "position": "OF",
       "team": "TEX",
       "adp": 50,
-      "value_gain": 555,
+      "value_gain": 556,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "drop_player_adp": 456,
@@ -32,7 +32,7 @@
       "position": "SP",
       "team": "LAD",
       "adp": 24,
-      "value_gain": 432,
+      "value_gain": 431,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "drop_player_adp": 456,
@@ -45,7 +45,7 @@
       "position": "SP",
       "team": "CIN",
       "adp": 47,
-      "value_gain": 408,
+      "value_gain": 409,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "drop_player_adp": 456,
