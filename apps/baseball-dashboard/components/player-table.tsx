@@ -29,13 +29,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { PlayerDetailDialog } from "@/components/player-detail-dialog"
 import { useToast } from "@/components/ui/use-toast"
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type Player = {
   player: string
@@ -149,10 +146,11 @@ export function PlayerTable({ players, variant = "default", showAllColumns = tru
   }
 
   return (
-    <div className="rounded-md border bg-card">
+    <div className="rounded-md border bg-card shadow-sm">
+      <TooltipProvider>
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="border-b bg-muted/50">
             <TableHead className="w-[180px]">
               <Button
                 variant="ghost"
@@ -201,18 +199,41 @@ export function PlayerTable({ players, variant = "default", showAllColumns = tru
             {showAllColumns && (
               <>
                 <TableHead className="w-[100px] hidden lg:table-cell">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 px-2 font-medium"
-                    onClick={() => handleSort("matchup")}
-                  >
-                    Matchup
-                    <SortIcon columnKey="matchup" />
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-2 font-medium"
+                        onClick={() => handleSort("matchup")}
+                      >
+                        Matchup
+                        <SortIcon columnKey="matchup" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Hitter vs Pitcher historical & projected performance</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </TableHead>
-                <TableHead className="w-[80px] hidden lg:table-cell">Park</TableHead>
-                <TableHead className="w-[80px] hidden xl:table-cell">Form</TableHead>
+                <TableHead className="w-[80px] hidden lg:table-cell">
+                  <Tooltip>
+                    <TooltipTrigger className="cursor-help">Park</TooltipTrigger>
+                    <TooltipContent><p>Park Factor (100 = Neutral)</p></TooltipContent>
+                  </Tooltip>
+                </TableHead>
+                <TableHead className="w-[80px] hidden xl:table-cell">
+                  <Tooltip>
+                    <TooltipTrigger className="cursor-help">Form</TooltipTrigger>
+                    <TooltipContent><p>Recent performance rating</p></TooltipContent>
+                  </Tooltip>
+                </TableHead>
+                <TableHead className="w-[80px] hidden xl:table-cell">
+                  <Tooltip>
+                    <TooltipTrigger className="cursor-help">Platoon</TooltipTrigger>
+                    <TooltipContent><p>Handedness Advantage</p></TooltipContent>
+                  </Tooltip>
+                </TableHead>
               </>
             )}
             <TableHead className="min-w-[200px]">Reasons</TableHead>
@@ -250,30 +271,11 @@ export function PlayerTable({ players, variant = "default", showAllColumns = tru
                 {player.opponent_pitcher || "TBD"}
               </TableCell>
               <TableCell onClick={(e) => e.stopPropagation()}>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <div className="flex flex-col gap-1 cursor-help group/badge">
-                      <Badge className={`${getConfidenceColor(player.confidence)} w-12 justify-center transition-transform group-hover/badge:scale-105`}>
-                        {player.confidence}
-                      </Badge>
-                      <Progress
-                        value={player.confidence}
-                        className="h-1.5"
-                      />
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-64 p-3">
-                    <div className="space-y-2">
-                      <h4 className="font-semibold text-sm">Score Breakdown</h4>
-                      <div className="text-xs space-y-1">
-                        <div className="flex justify-between"><span>Matchup Quality:</span> <span>{player.matchup}/100</span></div>
-                        <div className="flex justify-between"><span>Park Factors:</span> <span>{player.parkFactor}/100</span></div>
-                        <div className="flex justify-between"><span>Recent Form:</span> <span>{player.form}/100</span></div>
-                        <div className="flex justify-between"><span>Platoon Adv:</span> <span>{player.platoon}/100</span></div>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <div className="flex flex-col gap-1 group/badge">
+                  <Badge className={`${getConfidenceColor(player.confidence)} w-12 justify-center transition-transform group-hover/badge:scale-105`}>
+                    {player.confidence}
+                  </Badge>
+                </div>
               </TableCell>
               {showAllColumns && (
                 <>
@@ -293,14 +295,19 @@ export function PlayerTable({ players, variant = "default", showAllColumns = tru
                       <span className="text-sm">{player.form}</span>
                     </div>
                   </TableCell>
+                  <TableCell className="hidden xl:table-cell">
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm">{player.platoon}</span>
+                    </div>
+                  </TableCell>
                 </>
               )}
-              <TableCell className="text-xs text-muted-foreground">
-                <div className="flex flex-wrap gap-1 max-w-md">
+              <TableCell className="text-sm text-muted-foreground">
+                <div className="flex flex-wrap gap-1.5 max-w-md">
                   {player.reasons.map((reason, idx) => (
                     <span
                       key={idx}
-                      className="inline-block bg-muted px-2 py-0.5 rounded text-xs"
+                      className="inline-block bg-muted px-2 py-1 rounded text-sm"
                     >
                       {reason}
                     </span>
@@ -340,6 +347,7 @@ export function PlayerTable({ players, variant = "default", showAllColumns = tru
           ))}
         </TableBody>
       </Table>
+      </TooltipProvider>
       
       <PlayerDetailDialog 
         player={selectedPlayer} 

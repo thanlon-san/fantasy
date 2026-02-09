@@ -192,8 +192,12 @@ except Exception as e:
 # 2. Waiver Wire Analysis
 print("\n🎯 Generating waiver wire data...")
 try:
-    # Initialize waiver analyzer with breakout detection
-    waiver_analyzer = WaiverAnalyzer(roster, use_breakout_signals=True)
+    # Initialize waiver analyzer with breakout detection AND recent stats fetching
+    waiver_analyzer = WaiverAnalyzer(
+        roster, 
+        use_breakout_signals=True,
+        fetch_recent_stats=True
+    )
     
     # Sample free agents (in production, would fetch from Yahoo API)
     # Format matches what Yahoo API returns
@@ -223,28 +227,89 @@ try:
     # Get top 5 unique add targets
     unique_recommendations = sorted(seen_players.values(), key=lambda x: x.value_gain, reverse=True)[:5]
     
+    # Helper function to extract stats safely
+    def extract_stats(player, window):
+        """Extract stats for a specific window from player.recent_stats"""
+        if not player.recent_stats or window not in player.recent_stats:
+            return None
+        
+        stats_obj = player.recent_stats[window]
+        return stats_obj.to_dict() if hasattr(stats_obj, 'to_dict') else None
+    
+    # Helper function to extract Statcast changes
+    def extract_statcast_changes(player):
+        """Extract Statcast improvements from breakout detector"""
+        if not waiver_analyzer.breakout_detector:
+            return None
+        
+        # Check for breakout signal with Statcast data
+        parts = player.name.split()
+        if len(parts) < 2:
+            return None
+        
+        first_name = parts[0]
+        last_name = ' '.join(parts[1:])
+        is_pitcher = any(p in player.position for p in ['SP', 'RP', 'P'])
+        player_type = 'pitcher' if is_pitcher else 'hitter'
+        
+        try:
+            alert = waiver_analyzer.breakout_detector.analyze_player(
+                first_name, last_name, player_type,
+                recent_days=14, baseline_days=30
+            )
+            
+            if alert and alert.key_metrics:
+                # Convert key metrics to statcast changes format
+                changes = {}
+                for metric_name, (baseline, recent) in list(alert.key_metrics.items())[:3]:
+                    change = recent - baseline
+                    # Map metric names to frontend keys
+                    if 'exit_velocity' in metric_name.lower():
+                        changes['exit_velo'] = f"{change:+.1f} mph"
+                    elif 'hard_hit' in metric_name.lower():
+                        changes['hard_hit_pct'] = f"{change:+.1f}%"
+                    elif 'barrel' in metric_name.lower():
+                        changes['barrel_rate'] = f"{change:+.1f}%"
+                    elif 'velo' in metric_name.lower() and is_pitcher:
+                        changes['velo'] = f"{change:+.1f} mph"
+                    elif 'chase' in metric_name.lower():
+                        changes['chase_rate'] = f"{change:+.1f}%"
+                    elif 'whiff' in metric_name.lower():
+                        changes['whiff_rate'] = f"{change:+.1f}%"
+                
+                return changes if changes else None
+        except:
+            pass
+        
+        return None
+    
     waiver_data = {
         "generated_at": datetime.now().isoformat(),
+        "data_source": "MLB Stats API + Baseball Savant Statcast",
         "targets": [
             {
                 "player": rec.add_player.name,
                 "position": rec.add_player.position,
                 "team": rec.add_player.team,
-                "adp": int(rec.add_player.adp) if rec.add_player.adp else 0,
-                "value_gain": int(rec.value_gain),
+                "rostered_pct": rec.add_player.rostered_pct,
+                "trending": rec.add_player.trending,
+                "last_7_days": extract_stats(rec.add_player, 'last_7_days'),
+                "last_14_days": extract_stats(rec.add_player, 'last_14_days'),
+                "last_30_days": extract_stats(rec.add_player, 'last_30_days'),
+                "statcast_changes": extract_statcast_changes(rec.add_player),
+                "role_change": None,  # Would need additional data source
+                "upcoming_schedule": None,  # Would need schedule API
                 "drop_player": rec.drop_player.name,
                 "drop_player_position": rec.drop_player.position,
-                "drop_player_adp": int(rec.drop_player.adp) if rec.drop_player.adp else 999,
                 "confidence": rec.confidence,
-                "reason": rec.reason,
-                "keeper_cost": rec.add_keeper_cost
+                "reason": rec.reason
             }
             for rec in unique_recommendations
         ],
         "summary": {
             "scanned": len(sample_free_agents),
             "recommended": len(unique_recommendations),
-            "total_combinations": len(all_recommendations)
+            "criteria": "ADP value, breakout signals, recent performance trends"
         }
     }
     

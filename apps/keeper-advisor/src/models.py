@@ -29,6 +29,11 @@ class Player:
     projected_stats: Optional[dict] = None
     last_season_stats: Optional[dict] = None
     
+    # Recent performance (for waiver analysis)
+    recent_stats: Optional[dict] = None  # Dict of {window: RecentStats}
+    trending: Optional[str] = None  # "HOT", "COLD", "STABLE"
+    rostered_pct: Optional[int] = None  # Percentage rostered in leagues
+    
     # Additional metadata
     rostered_date: Optional[datetime] = None  # When added to roster
     notes: str = ""

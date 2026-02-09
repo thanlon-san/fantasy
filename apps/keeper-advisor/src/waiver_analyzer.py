@@ -13,6 +13,7 @@ from .keeper_rules import KeeperRules
 from .adp_fetcher import ADPFetcher
 from .breakout_detector import BreakoutDetector, BreakoutSignal
 from .league_settings import load_league_settings
+from .stats_fetcher import StatsFetcher
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ class WaiverAnalyzer:
         BreakoutSignal.FADING: -50,    # Penalty - sell high signal
     }
     
-    def __init__(self, roster: Roster, settings=None, use_breakout_signals: bool = True):
+    def __init__(self, roster: Roster, settings=None, use_breakout_signals: bool = True, fetch_recent_stats: bool = True):
         self.roster = roster
         self.adp_fetcher = ADPFetcher()
         
@@ -65,6 +66,14 @@ class WaiverAnalyzer:
             logger.info("Breakout signal integration enabled")
         else:
             self.breakout_detector = None
+        
+        # Optional: fetch recent stats from MLB API
+        self.fetch_recent_stats = fetch_recent_stats
+        if fetch_recent_stats:
+            self.stats_fetcher = StatsFetcher(use_cache=True)
+            logger.info("Recent stats fetching enabled")
+        else:
+            self.stats_fetcher = None
         
         # Load settings (use provided or load from file)
         if settings is None:
@@ -128,7 +137,7 @@ class WaiverAnalyzer:
         return recommendations[:max_recommendations]
     
     def _convert_to_player(self, fa_data: Dict) -> Optional[Player]:
-        """Convert free agent data to Player object"""
+        """Convert free agent data to Player object with enriched data"""
         try:
             name = fa_data.get('name', '')
             position = ', '.join(fa_data.get('eligible_positions', []))
@@ -137,7 +146,7 @@ class WaiverAnalyzer:
             # Get ADP for this player
             adp = self.adp_fetcher.get_player_adp(name)
             
-            return Player(
+            player = Player(
                 name=name,
                 position=position,
                 team=team,
@@ -147,9 +156,44 @@ class WaiverAnalyzer:
                 adp=adp,
                 is_undrafted_fa=True
             )
+            
+            # Enrich with recent stats and metadata
+            if self.fetch_recent_stats and self.stats_fetcher:
+                is_pitcher = any(p in position for p in ['SP', 'RP', 'P'])
+                
+                # Get multi-window stats
+                stats = self.stats_fetcher.get_multi_window_stats(name, is_pitcher)
+                player.recent_stats = stats
+                
+                # Get trending status
+                player.trending = self.stats_fetcher.get_trending_status(name, is_pitcher)
+                
+                # Get rostered percentage (would ideally come from Yahoo, but estimate from ADP)
+                player.rostered_pct = self._estimate_rostered_pct(adp)
+            
+            return player
         except Exception as e:
             logger.warning(f"Error converting FA {fa_data.get('name', 'Unknown')}: {e}")
             return None
+    
+    def _estimate_rostered_pct(self, adp: Optional[float]) -> int:
+        """Estimate rostered percentage from ADP"""
+        if not adp:
+            return 5  # Default low ownership
+        
+        # Rough estimate: top 100 ADP = ~95% rostered, scales down
+        if adp <= 50:
+            return 95
+        elif adp <= 100:
+            return 85
+        elif adp <= 150:
+            return 65
+        elif adp <= 200:
+            return 45
+        elif adp <= 250:
+            return 25
+        else:
+            return 10
     
     def _get_droppable_players(self) -> List[Player]:
         """

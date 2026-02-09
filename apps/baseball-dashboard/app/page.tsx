@@ -1,12 +1,11 @@
 "use client"
 
 import { useCallback } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, ChevronUp, TrendingUp, Users, Target, Star, Calendar, Copy, Search as SearchIcon } from "lucide-react"
+import { ChevronDown, Users, Calendar, Copy } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
 import { PlayerTable } from "@/components/player-table"
 import { NotPlayingTable } from "@/components/not-playing-table"
@@ -16,6 +15,8 @@ import { FilterBar } from "@/components/filter-bar"
 import { PlayerDetailDialog } from "@/components/player-detail-dialog"
 import { useToast } from "@/components/ui/use-toast"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { WaiverWireTable } from "@/components/waiver-wire-table"
+import { BreakoutDetectorTable } from "@/components/breakout-detector-table"
 
 // API base URL - use environment variable or fallback to local
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
@@ -45,14 +46,61 @@ type WaiverTarget = {
   player: string
   position: string
   team: string
-  adp: number
-  value_gain: number
-  drop_player: string
-  drop_player_position: string
-  drop_player_adp: number
   confidence: string
   reason: string
-  keeper_cost: number
+  drop_player: string
+  drop_player_position: string
+  // Legacy keeper fields (may not exist in new format)
+  adp?: number
+  value_gain?: number
+  drop_player_adp?: number
+  keeper_cost?: number
+  // New in-season value fields
+  rostered_pct?: number
+  trending?: "HOT" | "COLD" | "STABLE"
+  last_7_days?: {
+    avg?: number
+    hr?: number
+    rbi?: number
+    sb?: number
+    era?: number
+    whip?: number
+    k?: number
+    w?: number
+    games?: number
+  }
+  last_14_days?: {
+    avg?: number
+    hr?: number
+    rbi?: number
+    sb?: number
+    era?: number
+    whip?: number
+    k?: number
+    w?: number
+    games?: number
+  }
+  last_30_days?: {
+    avg?: number
+    hr?: number
+    rbi?: number
+    sb?: number
+    era?: number
+    whip?: number
+    k?: number
+    w?: number
+    games?: number
+  }
+  statcast_changes?: {
+    exit_velo?: string
+    hard_hit_pct?: string
+    barrel_rate?: string
+    velo?: string
+    chase_rate?: string
+    whiff_rate?: string
+  }
+  role_change?: string
+  upcoming_schedule?: string
 }
 
 type Breakout = {
@@ -75,11 +123,6 @@ type Keeper = {
 
 export default function Home() {
   const { toast } = useToast()
-  const [expandedSections, setExpandedSections] = useState({
-    waivers: false,
-    breakouts: false,
-    keepers: false,
-  })
 
   // Filter State
   const [searchTerm, setSearchTerm] = useState("")
@@ -163,13 +206,9 @@ export default function Home() {
     fetchData()
   }, [])
 
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
-  }
-
   const copyLineupToClipboard = () => {
-    const mustStart = dailyLineup.must_start.map(p => `🔥 ${p.player} (${p.confidence})`).join('\n')
-    const start = dailyLineup.start.map(p => `✅ ${p.player} (${p.confidence})`).join('\n')
+    const mustStart = dailyLineup.must_start.map(p => `${p.player} (${p.confidence})`).join('\n')
+    const start = dailyLineup.start.map(p => `${p.player} (${p.confidence})`).join('\n')
     const text = `Daily Lineup - ${new Date().toLocaleDateString()}\n\nMUST START:\n${mustStart}\n\nSTART:\n${start}`
     navigator.clipboard.writeText(text)
     
@@ -238,28 +277,21 @@ export default function Home() {
         />
 
         {/* Header */}
-        <header className="mb-8">
+        <header className="mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight mb-2">
+              <h1 className="text-3xl font-bold tracking-tight mb-1">
                 ⚾ Baseball Dashboard
               </h1>
-              <p className="text-muted-foreground text-lg">
-                Your year-round competitive advantage • Auto-updates daily at 8am ET
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                  <span className="text-xs">⌘</span>K
-                </kbd> to search
+              <p className="text-muted-foreground text-sm">
+                Auto-updates daily at 8am ET • Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground">⌘K</kbd> to search
               </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {lastUpdated && (
-                <div className="text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>Updated: {lastUpdated.toLocaleString()}</span>
-                  </div>
+                <div className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span className="hidden sm:inline">{lastUpdated.toLocaleDateString()}</span>
                 </div>
               )}
               <ThemeToggle />
@@ -267,513 +299,163 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Quick Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Playing Today</CardTitle>
-              <Users className="h-5 w-5 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalPlayingCount}</div>
-              <p className="text-xs text-muted-foreground">
-                {dailyLineup.summary?.total_roster || 0} total roster
-              </p>
-            </CardContent>
-          </Card>
+        {/* Conditional Filter Bar - Only show when there are players */}
+        {totalPlayingCount > 0 && (
+          <FilterBar 
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            positionFilter={positionFilter}
+            onPositionFilterChange={setPositionFilter}
+            confidenceThreshold={confidenceThreshold}
+            onConfidenceThresholdChange={setConfidenceThreshold}
+            onClearFilters={() => {
+              setSearchTerm("")
+              setPositionFilter("all")
+              setConfidenceThreshold(0)
+            }}
+            playerCount={filteredCount}
+          />
+        )}
 
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Must Start</CardTitle>
-              <TrendingUp className="h-5 w-5 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{dailyLineup.must_start.length}</div>
-              <p className="text-xs text-muted-foreground">High confidence plays</p>
-            </CardContent>
-          </Card>
+        {/* Main Content - Adaptive Layout */}
+        {totalPlayingCount === 0 && dailyLineup.not_playing.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground border rounded-lg border-dashed">
+            <Calendar className="h-16 w-16 mx-auto mb-4 opacity-30" />
+            <p className="mb-2 text-lg font-medium">No lineup data available</p>
+            <p className="text-sm">Run: <code className="bg-muted px-2 py-1 rounded">python scripts/export_dashboard_data.py</code></p>
+          </div>
+        ) : totalPlayingCount === 0 ? (
+          <>
+            {/* Off-Season Layout: Full Width Priority */}
+            <div className="space-y-6">
+              <WaiverWireTable targets={waiverWire} />
+              <BreakoutDetectorTable alerts={breakouts} />
+            </div>
 
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Breakouts</CardTitle>
-              <TrendingUp className="h-5 w-5 text-orange-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{breakouts.filter((b) => b.signal === "STRONG").length}</div>
-              <p className="text-xs text-muted-foreground">STRONG signals</p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Waiver Targets</CardTitle>
-              <Target className="h-5 w-5 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{waiverWire.length}</div>
-              <p className="text-xs text-muted-foreground">High-value pickups</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <FilterBar 
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          positionFilter={positionFilter}
-          onPositionFilterChange={setPositionFilter}
-          confidenceThreshold={confidenceThreshold}
-          onConfidenceThresholdChange={setConfidenceThreshold}
-          onClearFilters={() => {
-            setSearchTerm("")
-            setPositionFilter("all")
-            setConfidenceThreshold(0)
-          }}
-          playerCount={filteredCount}
-        />
-
-        {/* Main Content */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Daily Lineup - FULL WIDTH WITH TABS */}
-          <Card className="lg:col-span-3">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Users className="h-6 w-6 text-primary" />
-                  <div className="flex-1">
-                    <CardTitle>Daily Lineup Recommendations</CardTitle>
-                    <CardDescription>Optimized for today&apos;s matchups • Sort by any column</CardDescription>
-                  </div>
-                </div>
-                {totalPlayingCount > 0 && (
+            {/* Not Playing - Collapsible */}
+            {dailyLineup.not_playing.length > 0 && (
+              <div className="mt-6">
+                <Collapsible>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-start pl-0 hover:bg-transparent font-semibold text-base">
+                      <ChevronDown className="mr-2 h-4 w-4" />
+                      Not Playing Today ({dailyLineup.not_playing.length})
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-3">
+                    <NotPlayingTable players={dailyLineup.not_playing} />
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            {/* In-Season Layout: Daily Lineup Priority */}
+            <div className="space-y-6">
+              {/* Daily Lineup Section */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-bold flex items-center gap-2">
+                    <Users className="h-5 w-5 text-primary" />
+                    Daily Lineup
+                  </h2>
                   <Button variant="outline" size="sm" onClick={copyLineupToClipboard}>
                     <Copy className="mr-2 h-4 w-4" />
-                    Copy Lineup
+                    Copy
                   </Button>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              {totalPlayingCount === 0 && dailyLineup.not_playing.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="mb-2 text-lg font-medium">No lineup data available</p>
-                  <p className="text-sm">Run: <code className="bg-muted px-2 py-1 rounded">python scripts/export_dashboard_data.py</code></p>
                 </div>
-              ) : totalPlayingCount === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="mb-2 text-lg font-medium">No games scheduled today</p>
-                  <p className="text-sm">Check back tomorrow for lineup recommendations</p>
-                </div>
-              ) : (
+
                 <Tabs defaultValue="all" className="w-full">
-                  <TabsList className="grid w-full grid-cols-5 mb-4">
-                    <TabsTrigger value="all" className="gap-1 text-xs md:text-sm px-1">
-                      All <Badge variant="secondary" className="ml-1 hidden md:inline-flex">{filteredCount}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="must-start" className="gap-1 text-xs md:text-sm px-1">
-                      Must Start <Badge variant="secondary" className="ml-1 hidden md:inline-flex bg-green-100 text-green-800">{filteredMustStart.length}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="start" className="gap-1 text-xs md:text-sm px-1">
-                      Start <Badge variant="secondary" className="ml-1 hidden md:inline-flex">{filteredStart.length}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="flex" className="gap-1 text-xs md:text-sm px-1">
-                      Flex <Badge variant="secondary" className="ml-1 hidden md:inline-flex">{filteredFlex.length}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="bench" className="gap-1 text-xs md:text-sm px-1">
-                      Bench <Badge variant="secondary" className="ml-1 hidden md:inline-flex bg-yellow-100 text-yellow-800">{filteredBench.length}</Badge>
-                    </TabsTrigger>
-                  </TabsList>
+                <TabsList className="mb-4">
+                  <TabsTrigger value="all">All ({filteredCount})</TabsTrigger>
+                  <TabsTrigger value="must-start">Must Start ({filteredMustStart.length})</TabsTrigger>
+                  <TabsTrigger value="start">Start ({filteredStart.length})</TabsTrigger>
+                  <TabsTrigger value="flex">Flex ({filteredFlex.length})</TabsTrigger>
+                  <TabsTrigger value="bench">Bench ({filteredBench.length})</TabsTrigger>
+                </TabsList>
 
-                  <TabsContent value="all" className="space-y-4">
-                    {filteredMustStart.length > 0 && (
-                      <div>
-                        <h3 className="text-sm font-semibold mb-2 flex items-center gap-2 text-green-700 dark:text-green-400">
-                          🔥 Must Start ({filteredMustStart.length})
-                        </h3>
-                        <PlayerTable players={filteredMustStart} variant="must-start" />
-                      </div>
-                    )}
-                    
-                    {filteredStart.length > 0 && (
-                      <div>
-                        <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                          ✅ Start ({filteredStart.length})
-                        </h3>
-                        <PlayerTable players={filteredStart} variant="start" />
-                      </div>
-                    )}
-                    
-                    {filteredFlex.length > 0 && (
-                      <div>
-                        <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                          ➡️ Flex ({filteredFlex.length})
-                        </h3>
-                        <PlayerTable players={filteredFlex} variant="flex" />
-                      </div>
-                    )}
-                    
-                    {filteredBench.length > 0 && (
-                      <div>
-                        <h3 className="text-sm font-semibold mb-2 flex items-center gap-2 text-yellow-700 dark:text-yellow-400">
-                          ⚠️ Consider Benching ({filteredBench.length})
-                        </h3>
-                        <PlayerTable players={filteredBench} variant="bench" />
-                      </div>
-                    )}
-                    
-                    {filteredCount === 0 && (
-                      <div className="text-center py-12 text-muted-foreground border rounded-lg border-dashed">
-                        <SearchIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                        <p>No players match your filters</p>
-                        <Button variant="link" onClick={() => {
-                          setSearchTerm("")
-                          setPositionFilter("all")
-                          setConfidenceThreshold(0)
-                        }}>Clear Filters</Button>
-                      </div>
-                    )}
-                  </TabsContent>
+                <TabsContent value="all" className="space-y-4">
+                  {filteredMustStart.length > 0 && (
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-semibold text-green-700 dark:text-green-400 flex items-center gap-2">
+                        Must Start
+                      </h3>
+                      <PlayerTable players={filteredMustStart} variant="must-start" />
+                    </div>
+                  )}
+                  
+                  {filteredStart.length > 0 && (
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-semibold flex items-center gap-2">
+                        Start
+                      </h3>
+                      <PlayerTable players={filteredStart} variant="start" />
+                    </div>
+                  )}
+                  
+                  {filteredFlex.length > 0 && (
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-semibold flex items-center gap-2">
+                        Flex
+                      </h3>
+                      <PlayerTable players={filteredFlex} variant="flex" />
+                    </div>
+                  )}
+                  
+                  {filteredBench.length > 0 && (
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-semibold text-yellow-700 dark:text-yellow-400 flex items-center gap-2">
+                        Consider Benching
+                      </h3>
+                      <PlayerTable players={filteredBench} variant="bench" />
+                    </div>
+                  )}
+                </TabsContent>
 
-                  <TabsContent value="must-start">
-                    <PlayerTable players={filteredMustStart} variant="must-start" />
-                  </TabsContent>
+                <TabsContent value="must-start">
+                  <PlayerTable players={filteredMustStart} variant="must-start" />
+                </TabsContent>
 
-                  <TabsContent value="start">
-                    <PlayerTable players={filteredStart} variant="start" />
-                  </TabsContent>
+                <TabsContent value="start">
+                  <PlayerTable players={filteredStart} variant="start" />
+                </TabsContent>
 
-                  <TabsContent value="flex">
-                    <PlayerTable players={filteredFlex} variant="flex" />
-                  </TabsContent>
+                <TabsContent value="flex">
+                  <PlayerTable players={filteredFlex} variant="flex" />
+                </TabsContent>
 
-                  <TabsContent value="bench">
-                    <PlayerTable players={filteredBench} variant="bench" />
-                  </TabsContent>
-                </Tabs>
-              )}
+                <TabsContent value="bench">
+                  <PlayerTable players={filteredBench} variant="bench" />
+                </TabsContent>
+              </Tabs>
 
               {/* Not Playing Section */}
               {dailyLineup.not_playing.length > 0 && (
                 <div className="mt-6">
                   <Collapsible>
                     <CollapsibleTrigger asChild>
-                      <Button variant="outline" className="w-full">
+                      <Button variant="ghost" className="w-full justify-start pl-0 hover:bg-transparent font-semibold text-base">
                         <ChevronDown className="mr-2 h-4 w-4" />
-                        💤 Not Playing Today ({dailyLineup.not_playing.length})
+                        Not Playing Today ({dailyLineup.not_playing.length})
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-4">
+                    <CollapsibleContent className="mt-3">
                       <NotPlayingTable players={dailyLineup.not_playing} />
                     </CollapsibleContent>
                   </Collapsible>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Waiver Wire - Expandable */}
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Target className="h-6 w-6 text-purple-600" />
-                <div className="flex-1">
-                  <CardTitle>Waiver Wire</CardTitle>
-                  <CardDescription>Top pickup targets</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {waiverWire.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Target className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No waiver recommendations</p>
-                </div>
-              ) : (
-                <Collapsible open={expandedSections.waivers} onOpenChange={() => toggleSection('waivers')}>
-                  {/* Preview (first 3) */}
-                  <div className="space-y-3 mb-3">
-                    {waiverWire.slice(0, 3).map((target, i) => (
-                      <div key={i} className="p-2.5 rounded-lg border hover:border-purple-300 dark:hover:border-purple-700 bg-card transition-colors">
-                        {/* Value gain - top right corner */}
-                        <div className="flex items-start justify-between gap-3 mb-1.5">
-                          <div className="flex-1 min-w-0">
-                            {/* ADD Player - inline */}
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-green-600 dark:text-green-400 text-sm">➕</span>
-                              <span className="font-bold truncate">{target.player}</span>
-                              <Badge variant="secondary" className="text-xs px-1 py-0 shrink-0">{target.position}</Badge>
-                            </div>
-                            <div className="text-xs text-muted-foreground ml-5 flex items-center gap-1.5 flex-wrap">
-                              <span>{target.team}</span>
-                              <span>•</span>
-                              <span>ADP {target.adp}</span>
-                              {target.keeper_cost && (
-                                <>
-                                  <span>•</span>
-                                  <span className="text-emerald-600 dark:text-emerald-400">Rd {target.keeper_cost}</span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                          <div className="text-sm font-bold text-green-600 dark:text-green-400 shrink-0">
-                            +{target.value_gain}
-                          </div>
-                        </div>
-
-                        {/* DROP Player - inline */}
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-red-600 dark:text-red-400 text-sm">➖</span>
-                          <span className="font-medium text-sm text-muted-foreground truncate">{target.drop_player}</span>
-                          {target.drop_player_position && target.drop_player_adp && (
-                            <>
-                              <Badge variant="outline" className="text-xs px-1 py-0 shrink-0">{target.drop_player_position}</Badge>
-                              <span className="text-xs text-muted-foreground">ADP {target.drop_player_adp}</span>
-                            </>
-                          )}
-                        </div>
-
-                        {/* Reason - same line as drop player or compact below */}
-                        <div className="text-xs text-muted-foreground ml-5 mt-1">
-                          {target.reason.split(',').slice(0, 2).join(' • ').replace('🎯 ', '')}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Expandable Content */}
-                  {waiverWire.length > 3 && (
-                    <>
-                      <CollapsibleContent>
-                        <div className="space-y-3 mb-3">
-                          {waiverWire.slice(3).map((target, i) => (
-                            <div key={i} className="p-2.5 rounded-lg border hover:border-purple-300 dark:hover:border-purple-700 bg-card transition-colors">
-                              {/* Value gain - top right corner */}
-                              <div className="flex items-start justify-between gap-3 mb-1.5">
-                                <div className="flex-1 min-w-0">
-                                  {/* ADD Player - inline */}
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="text-green-600 dark:text-green-400 text-sm">➕</span>
-                                    <span className="font-bold truncate">{target.player}</span>
-                                    <Badge variant="secondary" className="text-xs px-1 py-0 shrink-0">{target.position}</Badge>
-                                  </div>
-                                  <div className="text-xs text-muted-foreground ml-5 flex items-center gap-1.5 flex-wrap">
-                                    <span>{target.team}</span>
-                                    <span>•</span>
-                                    <span>ADP {target.adp}</span>
-                                    {target.keeper_cost && (
-                                      <>
-                                        <span>•</span>
-                                        <span className="text-emerald-600 dark:text-emerald-400">Rd {target.keeper_cost}</span>
-                                      </>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="text-sm font-bold text-green-600 dark:text-green-400 shrink-0">
-                                  +{target.value_gain}
-                                </div>
-                              </div>
-
-                              {/* DROP Player - inline */}
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-red-600 dark:text-red-400 text-sm">➖</span>
-                                <span className="font-medium text-sm text-muted-foreground truncate">{target.drop_player}</span>
-                                {target.drop_player_position && target.drop_player_adp && (
-                                  <>
-                                    <Badge variant="outline" className="text-xs px-1 py-0 shrink-0">{target.drop_player_position}</Badge>
-                                    <span className="text-xs text-muted-foreground">ADP {target.drop_player_adp}</span>
-                                  </>
-                                )}
-                              </div>
-
-                              {/* Reason - same line as drop player or compact below */}
-                              <div className="text-xs text-muted-foreground ml-5 mt-1">
-                                {target.reason.split(',').slice(0, 2).join(' • ').replace('🎯 ', '')}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-
-                      <CollapsibleTrigger asChild>
-                        <Button variant="outline" className="w-full">
-                          {expandedSections.waivers ? (
-                            <>
-                              <ChevronUp className="mr-2 h-4 w-4" />
-                              Show Less
-                            </>
-                          ) : (
-                            <>
-                              <ChevronDown className="mr-2 h-4 w-4" />
-                              Show All {waiverWire.length} Targets
-                            </>
-                          )}
-                        </Button>
-                      </CollapsibleTrigger>
-                    </>
-                  )}
-                </Collapsible>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Breakout Detector - Expandable */}
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-6 w-6 text-orange-600" />
-                <div className="flex-1">
-                  <CardTitle>Breakout Detector</CardTitle>
-                  <CardDescription>Statcast-powered alerts</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {breakouts.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <TrendingUp className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No breakout signals detected</p>
-                  <p className="text-xs mt-1">Check back during the season</p>
-                </div>
-              ) : (
-                <Collapsible open={expandedSections.breakouts} onOpenChange={() => toggleSection('breakouts')}>
-                  <div className="space-y-2.5 mb-3">
-                    {breakouts.map((alert, i) => (
-                      <div key={i} className="p-2.5 rounded-lg border hover:border-orange-300 dark:hover:border-orange-700 bg-card transition-colors">
-                        {/* Header: Player name + confidence */}
-                        <div className="flex items-start justify-between gap-2 mb-1.5">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-orange-600 dark:text-orange-400 text-sm">🔥</span>
-                              <span className="font-bold truncate">{alert.player}</span>
-                              <Badge variant="secondary" className="text-xs px-1 py-0 shrink-0">{alert.position}</Badge>
-                            </div>
-                            <div className="text-xs text-muted-foreground ml-5">
-                              {alert.team} • {alert.category}
-                            </div>
-                          </div>
-                          <div className="text-xs font-bold text-orange-600 dark:text-orange-400 shrink-0">
-                            {alert.confidence}%
-                          </div>
-                        </div>
-
-                        {/* Key stat improvements - compact */}
-                        <div className="text-xs ml-5 space-y-0.5">
-                          {alert.stats.slice(0, 3).map((stat, idx) => {
-                            const [metric, change] = stat.split(':').map(s => s.trim())
-                            const isPositive = change.startsWith('+')
-                            return (
-                              <div key={idx} className="flex items-center gap-2">
-                                <span className="text-muted-foreground font-medium min-w-[100px]">
-                                  {metric.replace('_', ' ').replace('percent', '%').replace('avg', '')}:
-                                </span>
-                                <span className={isPositive ? "text-green-600 dark:text-green-400 font-semibold" : "text-red-600 dark:text-red-400 font-semibold"}>
-                                  {change}
-                                </span>
-                              </div>
-                            )
-                          })}
-                        </div>
-
-                        {/* Action hint */}
-                        <div className="text-xs text-orange-600 dark:text-orange-400 font-medium mt-2 ml-5">
-                          {alert.signal === "STRONG" ? "⚡ Target in early draft rounds" : "👀 Monitor closely"}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {breakouts.length > 5 && (
-                    <CollapsibleTrigger asChild>
-                      <Button variant="outline" className="w-full">
-                        {expandedSections.breakouts ? (
-                          <>
-                            <ChevronUp className="mr-2 h-4 w-4" />
-                            Show Less
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="mr-2 h-4 w-4" />
-                            Show All {breakouts.length} Signals
-                          </>
-                        )}
-                      </Button>
-                    </CollapsibleTrigger>
-                  )}
-                </Collapsible>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Keeper Analyzer - Expandable */}
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Star className="h-6 w-6 text-emerald-600" />
-                <div className="flex-1">
-                  <CardTitle>Keeper Analyzer</CardTitle>
-                  <CardDescription>Optimize selections</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Collapsible open={expandedSections.keepers} onOpenChange={() => toggleSection('keepers')}>
-                <div className="space-y-2 mb-3">
-                  {keepers.slice(0, 3).map((keeper, i) => (
-                    <div key={i} className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="font-semibold">{keeper.player}</div>
-                        <Badge className="bg-emerald-600">{keeper.value}</Badge>
-                      </div>
-                      <div className="text-sm text-muted-foreground mb-1">
-                        Keep in {keeper.round} (ADP: {keeper.adp})
-                      </div>
-                      <div className="text-lg font-bold text-emerald-600">{keeper.surplus}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {keepers.length > 3 && (
-                  <>
-                    <CollapsibleContent>
-                      <div className="space-y-2 mb-3">
-                        {keepers.slice(3).map((keeper, i) => (
-                          <div key={i} className="p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-                            <div className="flex items-start justify-between mb-2">
-                              <div className="font-semibold">{keeper.player}</div>
-                              <Badge className="bg-emerald-600">{keeper.value}</Badge>
-                            </div>
-                            <div className="text-sm text-muted-foreground mb-1">
-                              Keep in {keeper.round} (ADP: {keeper.adp})
-                            </div>
-                            <div className="text-lg font-bold text-emerald-600">{keeper.surplus}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
-
-                    <CollapsibleTrigger asChild>
-                      <Button variant="outline" className="w-full">
-                        {expandedSections.keepers ? (
-                          <>
-                            <ChevronUp className="mr-2 h-4 w-4" />
-                            Show Less
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="mr-2 h-4 w-4" />
-                            Show All {keepers.length} Keepers
-                          </>
-                        )}
-                      </Button>
-                    </CollapsibleTrigger>
-                  </>
-                )}
-              </Collapsible>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Insights Panel Below Lineup */}
+            <div className="space-y-6 mt-6">
+              <WaiverWireTable targets={waiverWire} />
+              <BreakoutDetectorTable alerts={breakouts} />
+            </div>
+          </div>
+          </>
+        )}
 
         {/* Footer */}
         <footer className="mt-12 text-center text-sm text-muted-foreground">

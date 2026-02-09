@@ -1,62 +1,91 @@
 {
-  "generated_at": "2026-02-07T05:49:47.947783",
+  "generated_at": "2026-02-09T10:02:14.281732",
+  "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
       "player": "Wyatt Langford",
       "position": "OF",
       "team": "TEX",
-      "adp": 74,
-      "value_gain": 531,
+      "rostered_pct": 85,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": {
+        "exit_velo": "-0.7 mph",
+        "hard_hit_pct": "-8.1%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
-      "drop_player_adp": 456,
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost",
-      "keeper_cost": 12
-    },
-    {
-      "player": "Michael Busch",
-      "position": "1B, 2B",
-      "team": "CHC",
-      "adp": 127,
-      "value_gain": 433,
-      "drop_player": "Nathaniel Lowe",
-      "drop_player_position": "1B, Util",
-      "drop_player_adp": 456,
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Position need, Round 12 keeper cost",
-      "keeper_cost": 12
+      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost"
     },
     {
       "player": "Yoshinobu Yamamoto",
       "position": "SP",
       "team": "LAD",
-      "adp": 37,
-      "value_gain": 418,
+      "rostered_pct": 95,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": {
+        "hard_hit_pct": "-5.6%",
+        "whiff_rate": "+0.0%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
-      "drop_player_adp": 456,
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost",
-      "keeper_cost": 12
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
     },
     {
       "player": "Hunter Greene",
       "position": "SP",
       "team": "CIN",
-      "adp": 70,
-      "value_gain": 385,
+      "rostered_pct": 95,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": {
+        "hard_hit_pct": "+5.5%",
+        "whiff_rate": "+0.0%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
-      "drop_player_adp": 456,
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost",
-      "keeper_cost": 12
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
+    {
+      "player": "Michael Busch",
+      "position": "1B, 2B",
+      "team": "CHC",
+      "rostered_pct": 45,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": {
+        "exit_velo": "-1.8 mph",
+        "hard_hit_pct": "-0.4%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Position need, Round 12 keeper cost"
     }
   ],
   "summary": {
     "scanned": 10,
     "recommended": 4,
-    "total_combinations": 20
+    "criteria": "ADP value, breakout signals, recent performance trends"
   }
 }

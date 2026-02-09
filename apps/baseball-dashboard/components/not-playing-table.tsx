@@ -92,10 +92,10 @@ export function NotPlayingTable({ players }: NotPlayingTableProps) {
   }
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border bg-card shadow-sm">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="border-b bg-muted/50">
             <TableHead>
               <Button
                 variant="ghost"
