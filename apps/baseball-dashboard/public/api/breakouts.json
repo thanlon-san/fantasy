@@ -1,36 +1,9 @@
 {
-  "generated_at": "2026-02-28T12:24:20.974031",
-  "alerts": [
-    {
-      "player": "Taylor Ward",
-      "position": "OF, Util",
-      "team": "BAL",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +1.4",
-        "hard_hit_percent: +14.7",
-        "sweet_spot_percent: +6.2"
-      ],
-      "category": "Hitter",
-      "confidence": 93
-    },
-    {
-      "player": "Nolan Schanuel",
-      "position": "1B, Util",
-      "team": "LAA",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +0.2",
-        "hard_hit_percent: +7.5",
-        "sweet_spot_percent: -4.3"
-      ],
-      "category": "Hitter",
-      "confidence": 79
-    }
-  ],
+  "generated_at": "2026-03-01T12:25:50.580762",
+  "alerts": [],
   "summary": {
     "total_scanned": 24,
-    "signals_found": 2,
-    "strong_signals": 2
+    "signals_found": 0,
+    "strong_signals": 0
   }
 }
