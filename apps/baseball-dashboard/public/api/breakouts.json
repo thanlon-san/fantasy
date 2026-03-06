@@ -1,9 +1,36 @@
 {
-  "generated_at": "2026-03-05T12:36:28.834895",
-  "alerts": [],
+  "generated_at": "2026-03-06T12:31:59.199642",
+  "alerts": [
+    {
+      "player": "Randy Arozarena",
+      "position": "OF, Util",
+      "team": "SEA",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +7.0",
+        "hard_hit_percent: +27.3",
+        "sweet_spot_percent: -6.8"
+      ],
+      "category": "Hitter",
+      "confidence": 77
+    },
+    {
+      "player": "Gunnar Henderson",
+      "position": "SS, Util",
+      "team": "BAL",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: +4.5",
+        "hard_hit_percent: +8.8",
+        "sweet_spot_percent: +3.5"
+      ],
+      "category": "Hitter",
+      "confidence": 50
+    }
+  ],
   "summary": {
     "total_scanned": 24,
-    "signals_found": 0,
-    "strong_signals": 0
+    "signals_found": 2,
+    "strong_signals": 1
   }
 }
