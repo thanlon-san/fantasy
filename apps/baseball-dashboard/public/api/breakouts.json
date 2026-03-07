@@ -1,18 +1,122 @@
 {
-  "generated_at": "2026-03-06T12:31:59.199642",
+  "generated_at": "2026-03-07T12:24:59.639820",
   "alerts": [
+    {
+      "player": "Kyle Manzardo",
+      "position": "1B, Util",
+      "team": "CLE",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +25.6",
+        "hard_hit_percent: +33.3",
+        "sweet_spot_percent: +22.2"
+      ],
+      "category": "Hitter",
+      "confidence": 100
+    },
+    {
+      "player": "Zach Neto",
+      "position": "SS, Util",
+      "team": "LAA",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +27.6",
+        "hard_hit_percent: +48.1",
+        "sweet_spot_percent: +0.0"
+      ],
+      "category": "Hitter",
+      "confidence": 100
+    },
+    {
+      "player": "Taylor Ward",
+      "position": "OF, Util",
+      "team": "BAL",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +22.1",
+        "hard_hit_percent: +27.8",
+        "sweet_spot_percent: +33.3"
+      ],
+      "category": "Hitter",
+      "confidence": 100
+    },
+    {
+      "player": "Nathaniel Lowe",
+      "position": "1B, Util",
+      "team": "BOS",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +11.9",
+        "hard_hit_percent: +15.9",
+        "sweet_spot_percent: -4.5"
+      ],
+      "category": "Hitter",
+      "confidence": 100
+    },
+    {
+      "player": "Nolan Schanuel",
+      "position": "1B, Util",
+      "team": "LAA",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +7.7",
+        "hard_hit_percent: +6.2",
+        "sweet_spot_percent: +37.5"
+      ],
+      "category": "Hitter",
+      "confidence": 100
+    },
     {
       "player": "Randy Arozarena",
       "position": "OF, Util",
       "team": "SEA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +7.0",
-        "hard_hit_percent: +27.3",
-        "sweet_spot_percent: -6.8"
+        "exit_velocity_avg: +8.6",
+        "hard_hit_percent: +33.3",
+        "sweet_spot_percent: -8.3"
       ],
       "category": "Hitter",
-      "confidence": 77
+      "confidence": 97
+    },
+    {
+      "player": "Jakob Marsee",
+      "position": "OF, Util",
+      "team": "MIA",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -1.4",
+        "hard_hit_percent: +18.2",
+        "sweet_spot_percent: -4.5"
+      ],
+      "category": "Hitter",
+      "confidence": 84
+    },
+    {
+      "player": "Jo Adell",
+      "position": "OF, Util",
+      "team": "LAA",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -11.1",
+        "hard_hit_percent: -30.0",
+        "sweet_spot_percent: +40.0"
+      ],
+      "category": "Hitter",
+      "confidence": 51
+    },
+    {
+      "player": "Royce Lewis",
+      "position": "3B, Util",
+      "team": "MIN",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -2.9",
+        "hard_hit_percent: -26.7",
+        "sweet_spot_percent: +6.7"
+      ],
+      "category": "Hitter",
+      "confidence": 46
     },
     {
       "player": "Gunnar Henderson",
@@ -20,17 +124,17 @@
       "team": "BAL",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +4.5",
-        "hard_hit_percent: +8.8",
-        "sweet_spot_percent: +3.5"
+        "exit_velocity_avg: +2.6",
+        "hard_hit_percent: +15.2",
+        "sweet_spot_percent: +8.9"
       ],
       "category": "Hitter",
-      "confidence": 50
+      "confidence": 41
     }
   ],
   "summary": {
     "total_scanned": 24,
-    "signals_found": 2,
-    "strong_signals": 1
+    "signals_found": 10,
+    "strong_signals": 7
   }
 }

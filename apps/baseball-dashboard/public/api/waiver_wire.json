@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-06T12:30:50.760299",
+  "generated_at": "2026-03-07T12:23:58.047823",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -11,13 +11,33 @@
       "last_7_days": null,
       "last_14_days": null,
       "last_30_days": null,
-      "statcast_changes": null,
+      "statcast_changes": {
+        "hard_hit_pct": "-12.5%",
+        "whiff_rate": "+0.0%"
+      },
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \u26a1 Emerging breakout, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
+    {
+      "player": "Wyatt Langford",
+      "position": "OF",
+      "team": "TEX",
+      "rostered_pct": 85,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": null,
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost"
     },
     {
       "player": "Hunter Greene",
@@ -54,23 +74,6 @@
       "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Position need, Round 12 keeper cost"
     },
     {
-      "player": "Wyatt Langford",
-      "position": "OF",
-      "team": "TEX",
-      "rostered_pct": 85,
-      "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
-      "last_30_days": null,
-      "statcast_changes": null,
-      "role_change": null,
-      "upcoming_schedule": null,
-      "drop_player": "Nathaniel Lowe",
-      "drop_player_position": "1B, Util",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Round 12 keeper cost"
-    },
-    {
       "player": "Royce Lewis",
       "position": "3B, OF",
       "team": "MIN",
@@ -79,7 +82,10 @@
       "last_7_days": null,
       "last_14_days": null,
       "last_30_days": null,
-      "statcast_changes": null,
+      "statcast_changes": {
+        "exit_velo": "-2.9 mph",
+        "hard_hit_pct": "-26.7%"
+      },
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
