@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-03-07T12:24:59.639820",
+  "generated_at": "2026-03-08T12:25:46.307434",
   "alerts": [
     {
-      "player": "Kyle Manzardo",
-      "position": "1B, Util",
-      "team": "CLE",
+      "player": "Jakob Marsee",
+      "position": "OF, Util",
+      "team": "MIA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +25.6",
-        "hard_hit_percent: +33.3",
-        "sweet_spot_percent: +22.2"
+        "exit_velocity_avg: -1.7",
+        "hard_hit_percent: +22.2",
+        "sweet_spot_percent: -5.6"
       ],
       "category": "Hitter",
       "confidence": 100
@@ -20,9 +20,9 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +27.6",
-        "hard_hit_percent: +48.1",
-        "sweet_spot_percent: +0.0"
+        "exit_velocity_avg: +30.4",
+        "hard_hit_percent: +51.9",
+        "sweet_spot_percent: +3.7"
       ],
       "category": "Hitter",
       "confidence": 100
@@ -33,8 +33,8 @@
       "team": "BAL",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +22.1",
-        "hard_hit_percent: +27.8",
+        "exit_velocity_avg: +24.5",
+        "hard_hit_percent: +28.6",
         "sweet_spot_percent: +33.3"
       ],
       "category": "Hitter",
@@ -46,9 +46,9 @@
       "team": "BOS",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +11.9",
-        "hard_hit_percent: +15.9",
-        "sweet_spot_percent: -4.5"
+        "exit_velocity_avg: +14.6",
+        "hard_hit_percent: +19.4",
+        "sweet_spot_percent: -5.6"
       ],
       "category": "Hitter",
       "confidence": 100
@@ -59,12 +59,25 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +7.7",
-        "hard_hit_percent: +6.2",
-        "sweet_spot_percent: +37.5"
+        "exit_velocity_avg: +7.3",
+        "hard_hit_percent: -3.9",
+        "sweet_spot_percent: +31.6"
       ],
       "category": "Hitter",
       "confidence": 100
+    },
+    {
+      "player": "Dylan Crews",
+      "position": "OF, Util",
+      "team": "WSH",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +3.7",
+        "hard_hit_percent: +18.2",
+        "sweet_spot_percent: -15.9"
+      ],
+      "category": "Hitter",
+      "confidence": 85
     },
     {
       "player": "Randy Arozarena",
@@ -72,69 +85,56 @@
       "team": "SEA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +8.6",
-        "hard_hit_percent: +33.3",
+        "exit_velocity_avg: +4.3",
+        "hard_hit_percent: +16.7",
         "sweet_spot_percent: -8.3"
       ],
       "category": "Hitter",
-      "confidence": 97
+      "confidence": 67
     },
     {
-      "player": "Jakob Marsee",
-      "position": "OF, Util",
-      "team": "MIA",
+      "player": "Kyle Manzardo",
+      "position": "1B, Util",
+      "team": "CLE",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -1.4",
-        "hard_hit_percent: +18.2",
-        "sweet_spot_percent: -4.5"
+        "exit_velocity_avg: +4.3",
+        "hard_hit_percent: +3.3",
+        "sweet_spot_percent: +6.7"
       ],
       "category": "Hitter",
-      "confidence": 84
+      "confidence": 64
     },
     {
       "player": "Jo Adell",
       "position": "OF, Util",
       "team": "LAA",
-      "signal": "EMERGING",
+      "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -11.1",
-        "hard_hit_percent: -30.0",
-        "sweet_spot_percent: +40.0"
+        "exit_velocity_avg: -10.1",
+        "hard_hit_percent: -26.0",
+        "sweet_spot_percent: +48.0"
       ],
       "category": "Hitter",
-      "confidence": 51
+      "confidence": 62
     },
     {
       "player": "Royce Lewis",
       "position": "3B, Util",
       "team": "MIN",
-      "signal": "EMERGING",
+      "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -2.9",
-        "hard_hit_percent: -26.7",
-        "sweet_spot_percent: +6.7"
+        "exit_velocity_avg: -4.2",
+        "hard_hit_percent: -38.1",
+        "sweet_spot_percent: +9.5"
       ],
       "category": "Hitter",
-      "confidence": 46
-    },
-    {
-      "player": "Gunnar Henderson",
-      "position": "SS, Util",
-      "team": "BAL",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: +2.6",
-        "hard_hit_percent: +15.2",
-        "sweet_spot_percent: +8.9"
-      ],
-      "category": "Hitter",
-      "confidence": 41
+      "confidence": 61
     }
   ],
   "summary": {
     "total_scanned": 24,
-    "signals_found": 10,
-    "strong_signals": 7
+    "signals_found": 11,
+    "strong_signals": 10
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-07T12:23:58.047823",
+  "generated_at": "2026-03-08T12:24:55.160317",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -12,7 +12,7 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "hard_hit_pct": "-12.5%",
+        "hard_hit_pct": "-21.4%",
         "whiff_rate": "+0.0%"
       },
       "role_change": null,
@@ -21,23 +21,6 @@
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \u26a1 Emerging breakout, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
-    },
-    {
-      "player": "Wyatt Langford",
-      "position": "OF",
-      "team": "TEX",
-      "rostered_pct": 85,
-      "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
-      "last_30_days": null,
-      "statcast_changes": null,
-      "role_change": null,
-      "upcoming_schedule": null,
-      "drop_player": "Nathaniel Lowe",
-      "drop_player_position": "1B, Util",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost"
     },
     {
       "player": "Hunter Greene",
@@ -57,10 +40,10 @@
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
     },
     {
-      "player": "Michael Busch",
-      "position": "1B, 2B",
-      "team": "CHC",
-      "rostered_pct": 45,
+      "player": "Wyatt Langford",
+      "position": "OF",
+      "team": "TEX",
+      "rostered_pct": 85,
       "trending": "STABLE",
       "last_7_days": null,
       "last_14_days": null,
@@ -71,7 +54,7 @@
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Position need, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Round 12 keeper cost"
     },
     {
       "player": "Royce Lewis",
@@ -83,8 +66,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "-2.9 mph",
-        "hard_hit_pct": "-26.7%"
+        "exit_velo": "-4.2 mph",
+        "hard_hit_pct": "-38.1%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -96,7 +79,7 @@
   ],
   "summary": {
     "scanned": 10,
-    "recommended": 5,
+    "recommended": 4,
     "criteria": "ADP value, breakout signals, recent performance trends"
   }
 }
