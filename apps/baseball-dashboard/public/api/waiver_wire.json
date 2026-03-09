@@ -1,7 +1,24 @@
 {
-  "generated_at": "2026-03-08T12:24:55.160317",
+  "generated_at": "2026-03-09T12:35:14.186338",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
+    {
+      "player": "Wyatt Langford",
+      "position": "OF",
+      "team": "TEX",
+      "rostered_pct": 85,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": null,
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost"
+    },
     {
       "player": "Yoshinobu Yamamoto",
       "position": "SP",
@@ -20,7 +37,7 @@
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
     },
     {
       "player": "Hunter Greene",
@@ -40,10 +57,10 @@
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
     },
     {
-      "player": "Wyatt Langford",
-      "position": "OF",
-      "team": "TEX",
-      "rostered_pct": 85,
+      "player": "Michael Busch",
+      "position": "1B, 2B",
+      "team": "CHC",
+      "rostered_pct": 45,
       "trending": "STABLE",
       "last_7_days": null,
       "last_14_days": null,
@@ -54,27 +71,7 @@
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Round 12 keeper cost"
-    },
-    {
-      "player": "Royce Lewis",
-      "position": "3B, OF",
-      "team": "MIN",
-      "rostered_pct": 25,
-      "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
-      "last_30_days": null,
-      "statcast_changes": {
-        "exit_velo": "-4.2 mph",
-        "hard_hit_pct": "-38.1%"
-      },
-      "role_change": null,
-      "upcoming_schedule": null,
-      "drop_player": "Nathaniel Lowe",
-      "drop_player_position": "1B, Util",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Position need, Round 12 keeper cost"
     }
   ],
   "summary": {
