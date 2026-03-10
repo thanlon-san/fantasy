@@ -1,28 +1,15 @@
 {
-  "generated_at": "2026-03-09T12:36:10.120520",
+  "generated_at": "2026-03-10T12:36:21.173735",
   "alerts": [
-    {
-      "player": "Randy Arozarena",
-      "position": "OF, Util",
-      "team": "SEA",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +6.0",
-        "hard_hit_percent: +23.3",
-        "sweet_spot_percent: -15.0"
-      ],
-      "category": "Hitter",
-      "confidence": 100
-    },
     {
       "player": "Zach Neto",
       "position": "SS, Util",
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +10.9",
-        "hard_hit_percent: +9.0",
-        "sweet_spot_percent: +8.5"
+        "exit_velocity_avg: +8.3",
+        "hard_hit_percent: -0.5",
+        "sweet_spot_percent: +9.9"
       ],
       "category": "Hitter",
       "confidence": 100
@@ -33,12 +20,25 @@
       "team": "BOS",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +14.0",
-        "hard_hit_percent: +15.0",
-        "sweet_spot_percent: -5.0"
+        "exit_velocity_avg: +12.9",
+        "hard_hit_percent: +12.5",
+        "sweet_spot_percent: +0.0"
       ],
       "category": "Hitter",
       "confidence": 100
+    },
+    {
+      "player": "Agust\u00edn Ram\u00edrez",
+      "position": "C, 1B, Util",
+      "team": "MIA",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -10.4",
+        "hard_hit_percent: -8.8",
+        "sweet_spot_percent: +13.2"
+      ],
+      "category": "Hitter",
+      "confidence": 86
     },
     {
       "player": "Kyle Manzardo",
@@ -46,12 +46,12 @@
       "team": "CLE",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +3.4",
-        "hard_hit_percent: +1.3",
-        "sweet_spot_percent: +6.4"
+        "exit_velocity_avg: +4.4",
+        "hard_hit_percent: +8.3",
+        "sweet_spot_percent: +10.8"
       ],
       "category": "Hitter",
-      "confidence": 67
+      "confidence": 74
     },
     {
       "player": "Dylan Crews",
@@ -59,12 +59,25 @@
       "team": "WSH",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +3.5",
-        "hard_hit_percent: +18.2",
-        "sweet_spot_percent: -7.6"
+        "exit_velocity_avg: +4.2",
+        "hard_hit_percent: +22.2",
+        "sweet_spot_percent: -5.6"
       ],
       "category": "Hitter",
-      "confidence": 63
+      "confidence": 74
+    },
+    {
+      "player": "Randy Arozarena",
+      "position": "OF, Util",
+      "team": "SEA",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +3.6",
+        "hard_hit_percent: +16.9",
+        "sweet_spot_percent: -13.1"
+      ],
+      "category": "Hitter",
+      "confidence": 64
     },
     {
       "player": "Gunnar Henderson",
@@ -72,30 +85,17 @@
       "team": "BAL",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +2.6",
-        "hard_hit_percent: +27.8",
-        "sweet_spot_percent: +8.3"
-      ],
-      "category": "Hitter",
-      "confidence": 44
-    },
-    {
-      "player": "Royce Lewis",
-      "position": "3B, Util",
-      "team": "MIN",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: -6.4",
-        "hard_hit_percent: -36.7",
+        "exit_velocity_avg: +2.9",
+        "hard_hit_percent: +37.8",
         "sweet_spot_percent: +6.7"
       ],
       "category": "Hitter",
-      "confidence": 40
+      "confidence": 56
     }
   ],
   "summary": {
     "total_scanned": 24,
     "signals_found": 7,
-    "strong_signals": 5
+    "strong_signals": 6
   }
 }

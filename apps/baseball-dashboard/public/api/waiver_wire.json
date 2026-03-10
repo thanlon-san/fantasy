@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-09T12:35:14.186338",
+  "generated_at": "2026-03-10T12:35:17.900681",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -11,7 +11,10 @@
       "last_7_days": null,
       "last_14_days": null,
       "last_30_days": null,
-      "statcast_changes": null,
+      "statcast_changes": {
+        "exit_velo": "-5.9 mph",
+        "hard_hit_pct": "-30.6%"
+      },
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
@@ -65,13 +68,16 @@
       "last_7_days": null,
       "last_14_days": null,
       "last_30_days": null,
-      "statcast_changes": null,
+      "statcast_changes": {
+        "exit_velo": "-0.1 mph",
+        "hard_hit_pct": "+11.0%"
+      },
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Position need, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Position need, Round 12 keeper cost"
     }
   ],
   "summary": {
