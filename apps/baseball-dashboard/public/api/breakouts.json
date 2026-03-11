@@ -1,57 +1,18 @@
 {
-  "generated_at": "2026-03-10T12:36:21.173735",
+  "generated_at": "2026-03-11T12:35:45.241089",
   "alerts": [
-    {
-      "player": "Zach Neto",
-      "position": "SS, Util",
-      "team": "LAA",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +8.3",
-        "hard_hit_percent: -0.5",
-        "sweet_spot_percent: +9.9"
-      ],
-      "category": "Hitter",
-      "confidence": 100
-    },
     {
       "player": "Nathaniel Lowe",
       "position": "1B, Util",
       "team": "BOS",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +12.9",
-        "hard_hit_percent: +12.5",
-        "sweet_spot_percent: +0.0"
+        "exit_velocity_avg: +7.6",
+        "hard_hit_percent: +3.7",
+        "sweet_spot_percent: +14.8"
       ],
       "category": "Hitter",
       "confidence": 100
-    },
-    {
-      "player": "Agust\u00edn Ram\u00edrez",
-      "position": "C, 1B, Util",
-      "team": "MIA",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -10.4",
-        "hard_hit_percent: -8.8",
-        "sweet_spot_percent: +13.2"
-      ],
-      "category": "Hitter",
-      "confidence": 86
-    },
-    {
-      "player": "Kyle Manzardo",
-      "position": "1B, Util",
-      "team": "CLE",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +4.4",
-        "hard_hit_percent: +8.3",
-        "sweet_spot_percent: +10.8"
-      ],
-      "category": "Hitter",
-      "confidence": 74
     },
     {
       "player": "Dylan Crews",
@@ -59,43 +20,69 @@
       "team": "WSH",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +4.2",
-        "hard_hit_percent: +22.2",
-        "sweet_spot_percent: -5.6"
+        "exit_velocity_avg: +3.3",
+        "hard_hit_percent: +20.0",
+        "sweet_spot_percent: -6.7"
       ],
       "category": "Hitter",
-      "confidence": 74
+      "confidence": 92
+    },
+    {
+      "player": "Kyle Manzardo",
+      "position": "1B, Util",
+      "team": "CLE",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +5.1",
+        "hard_hit_percent: +10.7",
+        "sweet_spot_percent: +12.5"
+      ],
+      "category": "Hitter",
+      "confidence": 87
+    },
+    {
+      "player": "Agust\u00edn Ram\u00edrez",
+      "position": "C, 1B, Util",
+      "team": "MIA",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -7.1",
+        "hard_hit_percent: -4.5",
+        "sweet_spot_percent: +3.6"
+      ],
+      "category": "Hitter",
+      "confidence": 54
     },
     {
       "player": "Randy Arozarena",
       "position": "OF, Util",
       "team": "SEA",
-      "signal": "STRONG",
+      "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +3.6",
-        "hard_hit_percent: +16.9",
-        "sweet_spot_percent: -13.1"
+        "exit_velocity_avg: +0.7",
+        "hard_hit_percent: +10.3",
+        "sweet_spot_percent: -12.0"
       ],
       "category": "Hitter",
-      "confidence": 64
+      "confidence": 49
     },
     {
-      "player": "Gunnar Henderson",
+      "player": "Zach Neto",
       "position": "SS, Util",
-      "team": "BAL",
+      "team": "LAA",
       "signal": "EMERGING",
       "stats": [
         "exit_velocity_avg: +2.9",
-        "hard_hit_percent: +37.8",
-        "sweet_spot_percent: +6.7"
+        "hard_hit_percent: -3.6",
+        "sweet_spot_percent: +6.4"
       ],
       "category": "Hitter",
-      "confidence": 56
+      "confidence": 42
     }
   ],
   "summary": {
     "total_scanned": 24,
-    "signals_found": 7,
-    "strong_signals": 6
+    "signals_found": 6,
+    "strong_signals": 3
   }
 }
