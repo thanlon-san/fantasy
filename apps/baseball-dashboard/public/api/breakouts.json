@@ -1,19 +1,6 @@
 {
-  "generated_at": "2026-03-11T12:35:45.241089",
+  "generated_at": "2026-03-12T12:34:50.447570",
   "alerts": [
-    {
-      "player": "Nathaniel Lowe",
-      "position": "1B, Util",
-      "team": "BOS",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +7.6",
-        "hard_hit_percent: +3.7",
-        "sweet_spot_percent: +14.8"
-      ],
-      "category": "Hitter",
-      "confidence": 100
-    },
     {
       "player": "Dylan Crews",
       "position": "OF, Util",
@@ -25,64 +12,77 @@
         "sweet_spot_percent: -6.7"
       ],
       "category": "Hitter",
-      "confidence": 92
+      "confidence": 100
     },
     {
-      "player": "Kyle Manzardo",
+      "player": "Nathaniel Lowe",
       "position": "1B, Util",
-      "team": "CLE",
+      "team": "BOS",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +5.1",
-        "hard_hit_percent: +10.7",
-        "sweet_spot_percent: +12.5"
+        "exit_velocity_avg: +7.4",
+        "hard_hit_percent: +2.7",
+        "sweet_spot_percent: +18.7"
       ],
       "category": "Hitter",
-      "confidence": 87
+      "confidence": 100
     },
     {
       "player": "Agust\u00edn Ram\u00edrez",
       "position": "C, 1B, Util",
       "team": "MIA",
-      "signal": "EMERGING",
+      "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -7.1",
-        "hard_hit_percent: -4.5",
-        "sweet_spot_percent: +3.6"
+        "exit_velocity_avg: -1.5",
+        "hard_hit_percent: +6.2",
+        "sweet_spot_percent: -25.0"
       ],
       "category": "Hitter",
-      "confidence": 54
+      "confidence": 64
     },
     {
-      "player": "Randy Arozarena",
+      "player": "Jakob Marsee",
       "position": "OF, Util",
-      "team": "SEA",
-      "signal": "EMERGING",
+      "team": "MIA",
+      "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.7",
-        "hard_hit_percent: +10.3",
-        "sweet_spot_percent: -12.0"
+        "exit_velocity_avg: -2.3",
+        "hard_hit_percent: -28.6",
+        "sweet_spot_percent: +7.1"
       ],
       "category": "Hitter",
-      "confidence": 49
+      "confidence": 63
     },
     {
-      "player": "Zach Neto",
-      "position": "SS, Util",
-      "team": "LAA",
+      "player": "Kyle Manzardo",
+      "position": "1B, Util",
+      "team": "CLE",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +2.9",
-        "hard_hit_percent: -3.6",
-        "sweet_spot_percent: +6.4"
+        "exit_velocity_avg: +3.1",
+        "hard_hit_percent: +10.7",
+        "sweet_spot_percent: +16.7"
       ],
       "category": "Hitter",
-      "confidence": 42
+      "confidence": 56
+    },
+    {
+      "player": "Max Muncy",
+      "position": "3B, Util",
+      "team": "LAD",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: +1.1",
+        "hard_hit_percent: +0.0",
+        "sweet_spot_percent: +0.0"
+      ],
+      "category": "Hitter",
+      "confidence": 56
     }
   ],
   "summary": {
     "total_scanned": 24,
     "signals_found": 6,
-    "strong_signals": 3
+    "strong_signals": 4
   }
 }

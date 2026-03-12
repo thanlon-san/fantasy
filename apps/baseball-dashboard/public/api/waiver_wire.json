@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-11T12:34:51.873651",
+  "generated_at": "2026-03-12T12:33:51.602759",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -12,8 +12,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "-6.8 mph",
-        "hard_hit_pct": "-34.3%"
+        "exit_velo": "+0.4 mph",
+        "hard_hit_pct": "-2.1%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -52,8 +52,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "-0.1 mph",
-        "hard_hit_pct": "+12.5%"
+        "exit_velo": "-2.9 mph",
+        "hard_hit_pct": "-2.5%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -78,11 +78,31 @@
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
+    {
+      "player": "Spencer Steer",
+      "position": "2B, 3B, OF",
+      "team": "CIN",
+      "rostered_pct": 10,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": {
+        "exit_velo": "+0.8 mph",
+        "hard_hit_pct": "-4.3%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Position need, Round 12 keeper cost"
     }
   ],
   "summary": {
     "scanned": 10,
-    "recommended": 4,
+    "recommended": 5,
     "criteria": "ADP value, breakout signals, recent performance trends"
   }
 }
