@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-12T12:33:51.602759",
+  "generated_at": "2026-03-13T12:33:33.068406",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -12,8 +12,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "+0.4 mph",
-        "hard_hit_pct": "-2.1%"
+        "exit_velo": "+2.0 mph",
+        "hard_hit_pct": "+3.3%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -31,10 +31,7 @@
       "last_7_days": null,
       "last_14_days": null,
       "last_30_days": null,
-      "statcast_changes": {
-        "hard_hit_pct": "-21.4%",
-        "whiff_rate": "+0.0%"
-      },
+      "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
@@ -52,8 +49,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "-2.9 mph",
-        "hard_hit_pct": "-2.5%"
+        "exit_velo": "+5.4 mph",
+        "hard_hit_pct": "+22.3%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -89,8 +86,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "+0.8 mph",
-        "hard_hit_pct": "-4.3%"
+        "exit_velo": "+3.3 mph",
+        "hard_hit_pct": "+0.0%"
       },
       "role_change": null,
       "upcoming_schedule": null,

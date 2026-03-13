@@ -1,18 +1,44 @@
 {
-  "generated_at": "2026-03-12T12:34:50.447570",
+  "generated_at": "2026-03-13T12:34:37.369672",
   "alerts": [
     {
-      "player": "Dylan Crews",
+      "player": "Randy Arozarena",
       "position": "OF, Util",
-      "team": "WSH",
+      "team": "SEA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +3.3",
-        "hard_hit_percent: +20.0",
-        "sweet_spot_percent: -6.7"
+        "exit_velocity_avg: +25.9",
+        "hard_hit_percent: +80.0",
+        "sweet_spot_percent: -20.0"
       ],
       "category": "Hitter",
       "confidence": 100
+    },
+    {
+      "player": "Gunnar Henderson",
+      "position": "SS, Util",
+      "team": "BAL",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +11.2",
+        "hard_hit_percent: +68.8",
+        "sweet_spot_percent: -4.2"
+      ],
+      "category": "Hitter",
+      "confidence": 95
+    },
+    {
+      "player": "Max Muncy",
+      "position": "3B, Util",
+      "team": "LAD",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +1.8",
+        "hard_hit_percent: +0.9",
+        "sweet_spot_percent: -1.9"
+      ],
+      "category": "Hitter",
+      "confidence": 87
     },
     {
       "player": "Nathaniel Lowe",
@@ -20,69 +46,69 @@
       "team": "BOS",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +7.4",
-        "hard_hit_percent: +2.7",
-        "sweet_spot_percent: +18.7"
+        "exit_velocity_avg: +2.7",
+        "hard_hit_percent: -8.4",
+        "sweet_spot_percent: +7.6"
       ],
       "category": "Hitter",
-      "confidence": 100
+      "confidence": 84
     },
     {
-      "player": "Agust\u00edn Ram\u00edrez",
-      "position": "C, 1B, Util",
-      "team": "MIA",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -1.5",
-        "hard_hit_percent: +6.2",
-        "sweet_spot_percent: -25.0"
-      ],
-      "category": "Hitter",
-      "confidence": 64
-    },
-    {
-      "player": "Jakob Marsee",
+      "player": "Dylan Crews",
       "position": "OF, Util",
-      "team": "MIA",
+      "team": "WSH",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -2.3",
-        "hard_hit_percent: -28.6",
-        "sweet_spot_percent: +7.1"
+        "exit_velocity_avg: +3.5",
+        "hard_hit_percent: +11.8",
+        "sweet_spot_percent: +1.8"
       ],
       "category": "Hitter",
-      "confidence": 63
+      "confidence": 77
     },
     {
       "player": "Kyle Manzardo",
       "position": "1B, Util",
       "team": "CLE",
-      "signal": "EMERGING",
+      "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +3.1",
-        "hard_hit_percent: +10.7",
-        "sweet_spot_percent: +16.7"
+        "exit_velocity_avg: +4.2",
+        "hard_hit_percent: +15.7",
+        "sweet_spot_percent: +17.6"
       ],
       "category": "Hitter",
-      "confidence": 56
+      "confidence": 60
     },
     {
-      "player": "Max Muncy",
-      "position": "3B, Util",
-      "team": "LAD",
+      "player": "Agust\u00edn Ram\u00edrez",
+      "position": "C, 1B, Util",
+      "team": "MIA",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +1.1",
-        "hard_hit_percent: +0.0",
-        "sweet_spot_percent: +0.0"
+        "exit_velocity_avg: -1.2",
+        "hard_hit_percent: +5.0",
+        "sweet_spot_percent: -20.0"
       ],
       "category": "Hitter",
-      "confidence": 56
+      "confidence": 48
+    },
+    {
+      "player": "Jakob Marsee",
+      "position": "OF, Util",
+      "team": "MIA",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -1.4",
+        "hard_hit_percent: -18.2",
+        "sweet_spot_percent: +4.5"
+      ],
+      "category": "Hitter",
+      "confidence": 46
     }
   ],
   "summary": {
     "total_scanned": 24,
-    "signals_found": 6,
-    "strong_signals": 4
+    "signals_found": 8,
+    "strong_signals": 6
   }
 }
