@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-13T12:33:33.068406",
+  "generated_at": "2026-03-14T12:26:59.807777",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -12,8 +12,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "+2.0 mph",
-        "hard_hit_pct": "+3.3%"
+        "exit_velo": "-0.6 mph",
+        "hard_hit_pct": "-3.6%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -49,8 +49,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "+5.4 mph",
-        "hard_hit_pct": "+22.3%"
+        "exit_velo": "+7.5 mph",
+        "hard_hit_pct": "+25.8%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -86,8 +86,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "+3.3 mph",
-        "hard_hit_pct": "+0.0%"
+        "exit_velo": "+3.0 mph",
+        "hard_hit_pct": "-8.3%"
       },
       "role_change": null,
       "upcoming_schedule": null,
