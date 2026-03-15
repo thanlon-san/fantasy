@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-14T12:26:59.807777",
+  "generated_at": "2026-03-15T12:28:04.236719",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -13,7 +13,7 @@
       "last_30_days": null,
       "statcast_changes": {
         "exit_velo": "-0.6 mph",
-        "hard_hit_pct": "-3.6%"
+        "hard_hit_pct": "-1.9%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -49,8 +49,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "+7.5 mph",
-        "hard_hit_pct": "+25.8%"
+        "exit_velo": "+4.9 mph",
+        "hard_hit_pct": "+18.1%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -63,7 +63,7 @@
       "player": "Hunter Greene",
       "position": "SP",
       "team": "CIN",
-      "rostered_pct": 85,
+      "rostered_pct": 65,
       "trending": "STABLE",
       "last_7_days": null,
       "last_14_days": null,
@@ -86,8 +86,8 @@
       "last_14_days": null,
       "last_30_days": null,
       "statcast_changes": {
-        "exit_velo": "+3.0 mph",
-        "hard_hit_pct": "-8.3%"
+        "exit_velo": "+3.6 mph",
+        "hard_hit_pct": "-9.5%"
       },
       "role_change": null,
       "upcoming_schedule": null,
