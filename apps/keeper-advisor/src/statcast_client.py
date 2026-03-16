@@ -64,19 +64,36 @@ class StatcastClient:
         """
         current_date = datetime.now()
         current_month = current_date.month
-        
-        # Detect offseason (November through February)
-        is_offseason = current_month in [11, 12, 1, 2]
-        
-        if is_offseason and use_previous_season_if_offseason:
-            # Use end of previous season
+        current_day = current_date.day
+
+        # Spring training: ~Feb 15 through early April (before Opening Day)
+        is_spring_training = (
+            (current_month == 2 and current_day >= 15) or
+            (current_month == 3) or
+            (current_month == 4 and current_day < 5)
+        )
+
+        # True offseason: November through mid-February
+        is_offseason = (
+            current_month in [11, 12, 1] or
+            (current_month == 2 and current_day < 15)
+        )
+
+        if is_spring_training:
+            # Use current spring training window so pybaseball returns
+            # spring training Statcast data (game_type S is included by default)
+            spring_start = datetime(current_date.year, 2, 15)
+            end_date = current_date
+            start_date = max(spring_start, end_date - timedelta(days=days_back))
+            return start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')
+        elif is_offseason and use_previous_season_if_offseason:
+            # Use end of previous regular season
             previous_year = current_date.year if current_month >= 11 else current_date.year - 1
             end_date = datetime(previous_year, 10, 1)
             start_date = end_date - timedelta(days=days_back)
-            
             return start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')
         else:
-            # Normal in-season
+            # Normal in-season: rolling window from today
             end_date = current_date
             start_date = end_date - timedelta(days=days_back)
             return start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')

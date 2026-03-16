@@ -2,30 +2,27 @@
 
 import { useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, Users, Calendar, Copy } from "lucide-react"
+import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
+import Link from "next/link"
 import { PlayerTable } from "@/components/player-table"
 import { NotPlayingTable } from "@/components/not-playing-table"
 import { DashboardSkeleton } from "@/components/loading-skeleton"
 import { CommandPalette } from "@/components/command-palette"
 import { FilterBar } from "@/components/filter-bar"
 import { PlayerDetailDialog } from "@/components/player-detail-dialog"
+import { KeeperAnalyzerTable } from "@/components/keeper-analyzer-table"
 import { useToast } from "@/components/ui/use-toast"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { WaiverWireTable } from "@/components/waiver-wire-table"
 import { BreakoutDetectorTable } from "@/components/breakout-detector-table"
 
-// API base URL - use environment variable or fallback to local
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-
-// For static JSON fallback during development
 const BASE_PATH = process.env.NODE_ENV === 'production' ? '/fantasy/baseball' : ''
 const USE_API = process.env.NEXT_PUBLIC_USE_API === 'true'
 
-// Type definitions
 type Player = {
   player: string
   position: string
@@ -50,54 +47,27 @@ type WaiverTarget = {
   reason: string
   drop_player: string
   drop_player_position: string
-  // Legacy keeper fields (may not exist in new format)
   adp?: number
   value_gain?: number
   drop_player_adp?: number
   keeper_cost?: number
-  // New in-season value fields
   rostered_pct?: number
   trending?: "HOT" | "COLD" | "STABLE"
   last_7_days?: {
-    avg?: number
-    hr?: number
-    rbi?: number
-    sb?: number
-    era?: number
-    whip?: number
-    k?: number
-    w?: number
-    games?: number
+    avg?: number; hr?: number; rbi?: number; sb?: number
+    era?: number; whip?: number; k?: number; w?: number; games?: number
   }
   last_14_days?: {
-    avg?: number
-    hr?: number
-    rbi?: number
-    sb?: number
-    era?: number
-    whip?: number
-    k?: number
-    w?: number
-    games?: number
+    avg?: number; hr?: number; rbi?: number; sb?: number
+    era?: number; whip?: number; k?: number; w?: number; games?: number
   }
   last_30_days?: {
-    avg?: number
-    hr?: number
-    rbi?: number
-    sb?: number
-    era?: number
-    whip?: number
-    k?: number
-    w?: number
-    games?: number
+    avg?: number; hr?: number; rbi?: number; sb?: number
+    era?: number; whip?: number; k?: number; w?: number; games?: number
   }
   statcast_changes?: {
-    exit_velo?: string
-    hard_hit_pct?: string
-    barrel_rate?: string
-    velo?: string
-    chase_rate?: string
-    whiff_rate?: string
+    exit_velo?: string; hard_hit_pct?: string; barrel_rate?: string
+    velo?: string; chase_rate?: string; whiff_rate?: string
   }
   role_change?: string
   upcoming_schedule?: string
@@ -115,25 +85,25 @@ type Breakout = {
 
 type Keeper = {
   player: string
-  round: string
+  position?: string
+  round: number | string
   adp: number
   surplus: string
   value: string
+  years_remaining?: number
+  reason?: string
 }
 
 export default function Home() {
   const { toast } = useToast()
 
-  // Filter State
   const [searchTerm, setSearchTerm] = useState("")
   const [positionFilter, setPositionFilter] = useState("all")
   const [confidenceThreshold, setConfidenceThreshold] = useState(0)
-  
-  // Search Dialog State
+
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
 
-  // State for real data
   const [dailyLineup, setDailyLineup] = useState<{
     must_start: Player[]
     start: Player[]
@@ -141,43 +111,31 @@ export default function Home() {
     bench: Player[]
     not_playing: { player: string; position: string; team: string; adp?: number }[]
     summary?: { total_roster: number; playing_today: number; not_playing: number }
-  }>({
-    must_start: [],
-    start: [],
-    flex: [],
-    bench: [],
-    not_playing: []
-  })
+  }>({ must_start: [], start: [], flex: [], bench: [], not_playing: [] })
+
   const [waiverWire, setWaiverWire] = useState<WaiverTarget[]>([])
   const [breakouts, setBreakouts] = useState<Breakout[]>([])
   const [keepers, setKeepers] = useState<Keeper[]>([])
   const [loading, setLoading] = useState(true)
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [dataTimestamp, setDataTimestamp] = useState<string | null>(null)
 
-  // Fetch real data on mount
   useEffect(() => {
     async function fetchData() {
       try {
+        let lineupData, waiverData, breakoutData, keeperData
+
         if (USE_API) {
-          // Fetch from live API
           const [lineupRes, waiverRes, breakoutRes, keeperRes] = await Promise.all([
             fetch(`${API_BASE_URL}/api/lineup`),
             fetch(`${API_BASE_URL}/api/waivers`),
             fetch(`${API_BASE_URL}/api/breakouts`),
             fetch(`${API_BASE_URL}/api/keepers`),
           ])
-
-          const lineupData = await lineupRes.json()
-          const waiverData = await waiverRes.json()
-          const breakoutData = await breakoutRes.json()
-          const keeperData = await keeperRes.json()
-
-          setDailyLineup(lineupData)
-          setWaiverWire(waiverData.targets || [])
-          setBreakouts(breakoutData.alerts || [])
-          setKeepers(keeperData.keepers || [])
+          ;[lineupData, waiverData, breakoutData, keeperData] = await Promise.all([
+            lineupRes.json(), waiverRes.json(), breakoutRes.json(), keeperRes.json(),
+          ])
         } else {
-          // Fallback to static JSON files
           const [lineupRes, waiverRes, breakoutRes, keeperRes] = await Promise.all([
             fetch(`${BASE_PATH}/api/daily_lineup.json`),
             fetch(`${BASE_PATH}/api/waiver_wire.json`),
@@ -185,19 +143,32 @@ export default function Home() {
             fetch(`${BASE_PATH}/api/keepers.json`),
           ])
 
-          const lineupData = await lineupRes.json()
-          const waiverData = await waiverRes.json()
-          const breakoutData = await breakoutRes.json()
-          const keeperData = await keeperRes.json()
+          if (!lineupRes.ok || !waiverRes.ok || !breakoutRes.ok || !keeperRes.ok) {
+            throw new Error("One or more data files failed to load.")
+          }
 
-          setDailyLineup(lineupData)
-          setWaiverWire(waiverData.targets || [])
-          setBreakouts(breakoutData.alerts || [])
-          setKeepers(keeperData.keepers || [])
+          ;[lineupData, waiverData, breakoutData, keeperData] = await Promise.all([
+            lineupRes.json(), waiverRes.json(), breakoutRes.json(), keeperRes.json(),
+          ])
         }
-        setLastUpdated(new Date())
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error)
+
+        setDailyLineup(lineupData)
+        setWaiverWire(waiverData.targets || [])
+        setBreakouts(breakoutData.alerts || [])
+        setKeepers(keeperData.keepers || [])
+
+        // Use the actual generated_at timestamp from the JSON, falling back
+        // to the waiver or breakout timestamp
+        const ts =
+          lineupData.generated_at ||
+          waiverData.generated_at ||
+          breakoutData.generated_at ||
+          null
+        setDataTimestamp(ts)
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Failed to load dashboard data."
+        setError(msg)
+        console.error("Error fetching dashboard data:", err)
       } finally {
         setLoading(false)
       }
@@ -211,19 +182,17 @@ export default function Home() {
     const start = dailyLineup.start.map(p => `${p.player} (${p.confidence})`).join('\n')
     const text = `Daily Lineup - ${new Date().toLocaleDateString()}\n\nMUST START:\n${mustStart}\n\nSTART:\n${start}`
     navigator.clipboard.writeText(text)
-    
-    toast({
-      title: "Lineup Copied!",
-      description: "Your lineup has been copied to clipboard.",
-    })
+    toast({ title: "Lineup Copied!", description: "Your lineup has been copied to clipboard." })
   }
 
-  // Derived filtered lists - use useCallback to prevent recreation on every render
   const filterPlayers = useCallback((players: Player[]) => {
     return players.filter(p => {
-      const matchesSearch = p.player.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            p.team.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesPosition = positionFilter === "all" || p.position === positionFilter
+      const matchesSearch =
+        p.player.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.team.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesPosition =
+        positionFilter === "all" ||
+        p.position.split(',').map(s => s.trim()).includes(positionFilter)
       const matchesConfidence = p.confidence >= confidenceThreshold
       return matchesSearch && matchesPosition && matchesConfidence
     })
@@ -236,19 +205,26 @@ export default function Home() {
 
   const totalPlayingCount = dailyLineup.must_start.length + dailyLineup.start.length + dailyLineup.flex.length
   const filteredCount = filteredMustStart.length + filteredStart.length + filteredFlex.length + filteredBench.length
-  const allPlayers = [...dailyLineup.must_start, ...dailyLineup.start, ...dailyLineup.flex, ...dailyLineup.bench]
+  const activeRosterPlayers = [...dailyLineup.must_start, ...dailyLineup.start, ...dailyLineup.flex, ...dailyLineup.bench]
+
+  const formattedTimestamp = useMemo(() => {
+    if (!dataTimestamp) return null
+    try {
+      return new Date(dataTimestamp).toLocaleString(undefined, {
+        month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+      })
+    } catch {
+      return null
+    }
+  }, [dataTimestamp])
 
   if (loading) {
     return (
       <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <header className="mb-8">
-            <h1 className="text-4xl font-bold tracking-tight mb-2">
-              ⚾ Baseball Dashboard
-            </h1>
-            <p className="text-muted-foreground text-lg">
-              Loading your competitive advantage...
-            </p>
+            <h1 className="text-4xl font-bold tracking-tight mb-2">⚾ Baseball Dashboard</h1>
+            <p className="text-muted-foreground text-lg">Loading your competitive advantage...</p>
           </header>
           <DashboardSkeleton />
         </div>
@@ -259,18 +235,19 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Command Palette */}
-        <CommandPalette 
-          players={allPlayers} 
+        <CommandPalette
+          rosterPlayers={activeRosterPlayers}
+          notPlayingPlayers={dailyLineup.not_playing}
+          waiverPlayers={waiverWire}
+          breakoutPlayers={breakouts}
           onSelectPlayer={(player) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             setSelectedPlayer(player as any)
             setDetailsOpen(true)
           }}
         />
-        
-        {/* Detail Dialog (Global for search) */}
-        <PlayerDetailDialog 
+
+        <PlayerDetailDialog
           player={selectedPlayer}
           open={detailsOpen}
           onOpenChange={setDetailsOpen}
@@ -280,18 +257,26 @@ export default function Home() {
         <header className="mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight mb-1">
-                ⚾ Baseball Dashboard
-              </h1>
+              <h1 className="text-3xl font-bold tracking-tight mb-1">⚾ Baseball Dashboard</h1>
               <p className="text-muted-foreground text-sm">
-                Auto-updates daily at 8am ET • Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground">⌘K</kbd> to search
+                Auto-updates daily at 8am ET • Press{" "}
+                <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground">
+                  ⌘K
+                </kbd>{" "}
+                to search
               </p>
             </div>
             <div className="flex items-center gap-3">
-              {lastUpdated && (
+              <Link href="/draft">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Star className="h-4 w-4" />
+                  Draft Board
+                </Button>
+              </Link>
+              {formattedTimestamp && (
                 <div className="text-sm text-muted-foreground flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
-                  <span className="hidden sm:inline">{lastUpdated.toLocaleDateString()}</span>
+                  <span className="hidden sm:inline">Data: {formattedTimestamp}</span>
                 </div>
               )}
               <ThemeToggle />
@@ -299,9 +284,20 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Conditional Filter Bar - Only show when there are players */}
+        {/* Error Banner */}
+        {error && (
+          <div className="mb-6 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
+            <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+            <div>
+              <span className="font-medium">Data failed to load.</span> {error}
+              {" "}Check that the GitHub Actions workflow ran successfully and the JSON files are up to date.
+            </div>
+          </div>
+        )}
+
+        {/* Filter Bar */}
         {totalPlayingCount > 0 && (
-          <FilterBar 
+          <FilterBar
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             positionFilter={positionFilter}
@@ -317,22 +313,30 @@ export default function Home() {
           />
         )}
 
-        {/* Main Content - Adaptive Layout */}
-        {totalPlayingCount === 0 && dailyLineup.not_playing.length === 0 ? (
+        {/* Main Content */}
+        {totalPlayingCount === 0 && dailyLineup.not_playing.length === 0 && !error ? (
           <div className="text-center py-16 text-muted-foreground border rounded-lg border-dashed">
             <Calendar className="h-16 w-16 mx-auto mb-4 opacity-30" />
             <p className="mb-2 text-lg font-medium">No lineup data available</p>
-            <p className="text-sm">Run: <code className="bg-muted px-2 py-1 rounded">python scripts/export_dashboard_data.py</code></p>
+            <p className="text-sm">
+              Run:{" "}
+              <code className="bg-muted px-2 py-1 rounded">python scripts/export_dashboard_data.py</code>
+            </p>
           </div>
         ) : totalPlayingCount === 0 ? (
           <>
-            {/* Off-Season Layout: Full Width Priority */}
+            {/* Off-Season / Spring Training Layout */}
             <div className="space-y-6">
+              {keepers.length > 0 && (
+                <KeeperAnalyzerTable recommendations={keepers.map(k => ({
+                  ...k,
+                  round: String(k.round),
+                }))} />
+              )}
               <WaiverWireTable targets={waiverWire} />
               <BreakoutDetectorTable alerts={breakouts} />
             </div>
 
-            {/* Not Playing - Collapsible */}
             {dailyLineup.not_playing.length > 0 && (
               <div className="mt-6">
                 <Collapsible>
@@ -351,9 +355,8 @@ export default function Home() {
           </>
         ) : (
           <>
-            {/* In-Season Layout: Daily Lineup Priority */}
+            {/* In-Season Layout */}
             <div className="space-y-6">
-              {/* Daily Lineup Section */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-bold flex items-center gap-2">
@@ -367,97 +370,79 @@ export default function Home() {
                 </div>
 
                 <Tabs defaultValue="all" className="w-full">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="all">All ({filteredCount})</TabsTrigger>
-                  <TabsTrigger value="must-start">Must Start ({filteredMustStart.length})</TabsTrigger>
-                  <TabsTrigger value="start">Start ({filteredStart.length})</TabsTrigger>
-                  <TabsTrigger value="flex">Flex ({filteredFlex.length})</TabsTrigger>
-                  <TabsTrigger value="bench">Bench ({filteredBench.length})</TabsTrigger>
-                </TabsList>
+                  <TabsList className="mb-4">
+                    <TabsTrigger value="all">All ({filteredCount})</TabsTrigger>
+                    <TabsTrigger value="must-start">Must Start ({filteredMustStart.length})</TabsTrigger>
+                    <TabsTrigger value="start">Start ({filteredStart.length})</TabsTrigger>
+                    <TabsTrigger value="flex">Flex ({filteredFlex.length})</TabsTrigger>
+                    <TabsTrigger value="bench">Bench ({filteredBench.length})</TabsTrigger>
+                  </TabsList>
 
-                <TabsContent value="all" className="space-y-4">
-                  {filteredMustStart.length > 0 && (
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-semibold text-green-700 dark:text-green-400 flex items-center gap-2">
-                        Must Start
-                      </h3>
-                      <PlayerTable players={filteredMustStart} variant="must-start" />
-                    </div>
-                  )}
-                  
-                  {filteredStart.length > 0 && (
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-semibold flex items-center gap-2">
-                        Start
-                      </h3>
-                      <PlayerTable players={filteredStart} variant="start" />
-                    </div>
-                  )}
-                  
-                  {filteredFlex.length > 0 && (
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-semibold flex items-center gap-2">
-                        Flex
-                      </h3>
-                      <PlayerTable players={filteredFlex} variant="flex" />
-                    </div>
-                  )}
-                  
-                  {filteredBench.length > 0 && (
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-semibold text-yellow-700 dark:text-yellow-400 flex items-center gap-2">
-                        Consider Benching
-                      </h3>
-                      <PlayerTable players={filteredBench} variant="bench" />
-                    </div>
-                  )}
-                </TabsContent>
+                  <TabsContent value="all" className="space-y-4">
+                    {filteredMustStart.length > 0 && (
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-green-700 dark:text-green-400">Must Start</h3>
+                        <PlayerTable players={filteredMustStart} variant="must-start" />
+                      </div>
+                    )}
+                    {filteredStart.length > 0 && (
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold">Start</h3>
+                        <PlayerTable players={filteredStart} variant="start" />
+                      </div>
+                    )}
+                    {filteredFlex.length > 0 && (
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold">Flex</h3>
+                        <PlayerTable players={filteredFlex} variant="flex" />
+                      </div>
+                    )}
+                    {filteredBench.length > 0 && (
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">Consider Benching</h3>
+                        <PlayerTable players={filteredBench} variant="bench" />
+                      </div>
+                    )}
+                  </TabsContent>
+                  <TabsContent value="must-start">
+                    <PlayerTable players={filteredMustStart} variant="must-start" />
+                  </TabsContent>
+                  <TabsContent value="start">
+                    <PlayerTable players={filteredStart} variant="start" />
+                  </TabsContent>
+                  <TabsContent value="flex">
+                    <PlayerTable players={filteredFlex} variant="flex" />
+                  </TabsContent>
+                  <TabsContent value="bench">
+                    <PlayerTable players={filteredBench} variant="bench" />
+                  </TabsContent>
+                </Tabs>
 
-                <TabsContent value="must-start">
-                  <PlayerTable players={filteredMustStart} variant="must-start" />
-                </TabsContent>
+                {dailyLineup.not_playing.length > 0 && (
+                  <div className="mt-6">
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" className="w-full justify-start pl-0 hover:bg-transparent font-semibold text-base">
+                          <ChevronDown className="mr-2 h-4 w-4" />
+                          Not Playing Today ({dailyLineup.not_playing.length})
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-3">
+                        <NotPlayingTable players={dailyLineup.not_playing} />
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </div>
+                )}
+              </div>
 
-                <TabsContent value="start">
-                  <PlayerTable players={filteredStart} variant="start" />
-                </TabsContent>
-
-                <TabsContent value="flex">
-                  <PlayerTable players={filteredFlex} variant="flex" />
-                </TabsContent>
-
-                <TabsContent value="bench">
-                  <PlayerTable players={filteredBench} variant="bench" />
-                </TabsContent>
-              </Tabs>
-
-              {/* Not Playing Section */}
-              {dailyLineup.not_playing.length > 0 && (
-                <div className="mt-6">
-                  <Collapsible>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" className="w-full justify-start pl-0 hover:bg-transparent font-semibold text-base">
-                        <ChevronDown className="mr-2 h-4 w-4" />
-                        Not Playing Today ({dailyLineup.not_playing.length})
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3">
-                      <NotPlayingTable players={dailyLineup.not_playing} />
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-              )}
+              <div className="space-y-6">
+                <WaiverWireTable targets={waiverWire} />
+                <BreakoutDetectorTable alerts={breakouts} />
+              </div>
             </div>
-
-            {/* Insights Panel Below Lineup */}
-            <div className="space-y-6 mt-6">
-              <WaiverWireTable targets={waiverWire} />
-              <BreakoutDetectorTable alerts={breakouts} />
-            </div>
-          </div>
           </>
         )}
 
-        {/* Footer */}
         <footer className="mt-12 text-center text-sm text-muted-foreground">
           <p>Built with Next.js • Powered by Statcast • Deployed on GitHub Pages</p>
           <p className="mt-1">🏆 Your year-round competitive advantage</p>

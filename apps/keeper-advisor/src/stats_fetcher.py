@@ -194,33 +194,46 @@ class StatsFetcher:
             logger.debug(f"Error finding player ID for {player_name}: {e}")
             return None
     
+    @staticmethod
+    def _is_spring_training_period() -> bool:
+        """Return True if the current date falls in the MLB spring training window."""
+        today = datetime.now()
+        # Spring training runs roughly Feb 15 – Opening Day (early April)
+        return (today.month == 3) or (today.month == 2 and today.day >= 15)
+
     def _fetch_game_logs(
         self,
         player_id: int,
         is_pitcher: bool,
         days: int
     ) -> Optional[RecentStats]:
-        """Fetch and aggregate game logs for a player"""
+        """Fetch and aggregate game logs for a player.
+
+        During spring training the MLB Stats API defaults to regular-season
+        game logs, which are empty. We explicitly request preseason (S) game
+        types so spring stats are returned.
+        """
         try:
             # Calculate date range
             end_date = datetime.now()
             start_date = end_date - timedelta(days=days)
             
-            # Get current season
             season = end_date.year
             
-            # Fetch stats
-            if is_pitcher:
-                stats_group = "pitching"
-            else:
-                stats_group = "hitting"
+            stats_group = "pitching" if is_pitcher else "hitting"
             
             url = f"{self.MLB_API_BASE}/people/{player_id}/stats"
-            params = {
+            params: dict = {
                 'stats': 'gameLog',
                 'season': season,
-                'group': stats_group
+                'group': stats_group,
             }
+
+            # During spring training, include preseason game type (S).
+            # The regular season hasn't started yet, so without this the API
+            # returns zero splits and all stats come back null.
+            if self._is_spring_training_period():
+                params['gameType'] = 'S'
             
             response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()

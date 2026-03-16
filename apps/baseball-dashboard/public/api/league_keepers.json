@@ -1,0 +1,72 @@
+{
+  "season": 2026,
+  "league_name": "California Palm League",
+  "confirmed": false,
+  "last_updated": "2026-03-16",
+  "teams": [
+    {
+      "team_name": "2balls",
+      "owner": "Tyler",
+      "is_my_team": true,
+      "keepers": [
+        { "player": "Garrett Crochet", "position": "SP", "round": 9, "adp": 11 },
+        { "player": "Zach Neto", "position": "SS", "round": 11, "adp": 36 },
+        { "player": "Mason Miller", "position": "RP", "round": 10, "adp": 55 }
+      ]
+    },
+    {
+      "team_name": "Team 2",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    },
+    {
+      "team_name": "Team 3",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    },
+    {
+      "team_name": "Team 4",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    },
+    {
+      "team_name": "Team 5",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    },
+    {
+      "team_name": "Team 6",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    },
+    {
+      "team_name": "Team 7",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    },
+    {
+      "team_name": "Team 8",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    },
+    {
+      "team_name": "Team 9",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    },
+    {
+      "team_name": "Team 10",
+      "owner": "",
+      "is_my_team": false,
+      "keepers": []
+    }
+  ]
+}

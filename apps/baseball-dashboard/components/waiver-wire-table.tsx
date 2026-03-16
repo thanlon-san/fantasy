@@ -250,19 +250,22 @@ export function WaiverWireTable({ targets }: WaiverWireTableProps) {
                       <div className="space-y-3">
                         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1">
                           <TrendingUp className="h-3 w-3" />
-                          Statcast Improvements
+                          Statcast Changes
                         </div>
                         <div className="grid grid-cols-3 gap-2">
-                          {Object.entries(target.statcast_changes).map(([key, value]) => (
-                            <div key={key} className="bg-muted/30 p-2 rounded text-center">
-                              <div className="text-[10px] text-muted-foreground uppercase mb-1">
-                                {key.replace(/_/g, ' ')}
+                          {Object.entries(target.statcast_changes).map(([key, value]) => {
+                            const isPositive = !String(value).trimStart().startsWith('-')
+                            return (
+                              <div key={key} className="bg-muted/30 p-2 rounded text-center">
+                                <div className="text-[10px] text-muted-foreground uppercase mb-1">
+                                  {key.replace(/_/g, ' ')}
+                                </div>
+                                <div className={`text-sm font-semibold ${isPositive ? 'text-green-600' : 'text-red-500'}`}>
+                                  {value}
+                                </div>
                               </div>
-                              <div className="text-sm font-semibold text-green-600">
-                                {value}
-                              </div>
-                            </div>
-                          ))}
+                            )
+                          })}
                         </div>
                       </div>
                     )}
