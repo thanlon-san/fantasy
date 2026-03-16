@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-15T12:28:04.236719",
+  "generated_at": "2026-03-16T12:44:41.264281",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -8,12 +8,42 @@
       "team": "TEX",
       "rostered_pct": 85,
       "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
-      "last_30_days": null,
+      "last_7_days": {
+        "avg": 0.5454545454545454,
+        "hr": 2,
+        "rbi": 5,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 4
+      },
+      "last_14_days": {
+        "avg": 0.5263157894736842,
+        "hr": 3,
+        "rbi": 8,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 7
+      },
+      "last_30_days": {
+        "avg": 0.48148148148148145,
+        "hr": 4,
+        "rbi": 12,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 11
+      },
       "statcast_changes": {
-        "exit_velo": "-0.6 mph",
-        "hard_hit_pct": "-1.9%"
+        "exit_velo": "-0.3 mph",
+        "hard_hit_pct": "+1.5%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -30,7 +60,17 @@
       "trending": "STABLE",
       "last_7_days": null,
       "last_14_days": null,
-      "last_30_days": null,
+      "last_30_days": {
+        "avg": null,
+        "hr": null,
+        "rbi": null,
+        "sb": null,
+        "era": 5.7857142857142865,
+        "whip": 1.7142857142857144,
+        "k": 7,
+        "w": 0,
+        "games": 2
+      },
       "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
@@ -45,29 +85,69 @@
       "team": "CHC",
       "rostered_pct": 45,
       "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
-      "last_30_days": null,
+      "last_7_days": {
+        "avg": 0.2727272727272727,
+        "hr": 0,
+        "rbi": 0,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 4
+      },
+      "last_14_days": {
+        "avg": 0.2777777777777778,
+        "hr": 0,
+        "rbi": 0,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 7
+      },
+      "last_30_days": {
+        "avg": 0.25,
+        "hr": 0,
+        "rbi": 2,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 11
+      },
       "statcast_changes": {
-        "exit_velo": "+4.9 mph",
-        "hard_hit_pct": "+18.1%"
+        "exit_velo": "+6.5 mph",
+        "hard_hit_pct": "+24.9%"
       },
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Position need, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Position need, Round 12 keeper cost"
     },
     {
       "player": "Hunter Greene",
       "position": "SP",
       "team": "CIN",
-      "rostered_pct": 65,
+      "rostered_pct": 45,
       "trending": "STABLE",
       "last_7_days": null,
       "last_14_days": null,
-      "last_30_days": null,
+      "last_30_days": {
+        "avg": null,
+        "hr": null,
+        "rbi": null,
+        "sb": null,
+        "era": 36.0,
+        "whip": 6.0,
+        "k": 0,
+        "w": 0,
+        "games": 1
+      },
       "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
@@ -81,13 +161,43 @@
       "position": "2B, 3B, OF",
       "team": "CIN",
       "rostered_pct": 10,
-      "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
-      "last_30_days": null,
+      "trending": "COLD",
+      "last_7_days": {
+        "avg": 0.09090909090909091,
+        "hr": 0,
+        "rbi": 0,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 4
+      },
+      "last_14_days": {
+        "avg": 0.19047619047619047,
+        "hr": 0,
+        "rbi": 1,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 8
+      },
+      "last_30_days": {
+        "avg": 0.17647058823529413,
+        "hr": 0,
+        "rbi": 2,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 13
+      },
       "statcast_changes": {
-        "exit_velo": "+3.6 mph",
-        "hard_hit_pct": "-9.5%"
+        "exit_velo": "+3.0 mph",
+        "hard_hit_pct": "-2.0%"
       },
       "role_change": null,
       "upcoming_schedule": null,
