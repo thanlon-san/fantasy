@@ -1,6 +1,19 @@
 {
-  "generated_at": "2026-03-16T12:45:44.318560",
+  "generated_at": "2026-03-17T12:44:25.821315",
   "alerts": [
+    {
+      "player": "Mookie Betts",
+      "position": "2B, SS, OF, Util",
+      "team": "LAD",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -11.3",
+        "hard_hit_percent: -22.7",
+        "sweet_spot_percent: +24.2"
+      ],
+      "category": "Hitter",
+      "confidence": 100
+    },
     {
       "player": "Randy Arozarena",
       "position": "OF, Util",
@@ -20,25 +33,12 @@
       "team": "WSH",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +7.2",
-        "hard_hit_percent: +27.8",
-        "sweet_spot_percent: +12.2"
+        "exit_velocity_avg: +5.7",
+        "hard_hit_percent: +22.7",
+        "sweet_spot_percent: +12.7"
       ],
       "category": "Hitter",
       "confidence": 100
-    },
-    {
-      "player": "Mookie Betts",
-      "position": "2B, SS, OF, Util",
-      "team": "LAD",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -10.1",
-        "hard_hit_percent: -22.7",
-        "sweet_spot_percent: +15.2"
-      ],
-      "category": "Hitter",
-      "confidence": 91
     },
     {
       "player": "Max Muncy",
@@ -46,12 +46,12 @@
       "team": "LAD",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -4.5",
-        "hard_hit_percent: +5.0",
-        "sweet_spot_percent: -13.6"
+        "exit_velocity_avg: -2.7",
+        "hard_hit_percent: +6.5",
+        "sweet_spot_percent: -21.8"
       ],
       "category": "Hitter",
-      "confidence": 76
+      "confidence": 90
     },
     {
       "player": "Matt Chapman",
@@ -67,17 +67,17 @@
       "confidence": 72
     },
     {
-      "player": "Kyle Manzardo",
-      "position": "1B, Util",
-      "team": "CLE",
+      "player": "Jo Adell",
+      "position": "OF, Util",
+      "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +1.0",
-        "hard_hit_percent: +6.5",
-        "sweet_spot_percent: +8.0"
+        "exit_velocity_avg: +3.4",
+        "hard_hit_percent: +9.7",
+        "sweet_spot_percent: +13.6"
       ],
       "category": "Hitter",
-      "confidence": 69
+      "confidence": 61
     },
     {
       "player": "Daulton Varsho",
@@ -85,25 +85,25 @@
       "team": "TOR",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +5.3",
-        "hard_hit_percent: +13.7",
-        "sweet_spot_percent: +1.8"
+        "exit_velocity_avg: +3.7",
+        "hard_hit_percent: +14.6",
+        "sweet_spot_percent: +0.0"
       ],
       "category": "Hitter",
       "confidence": 56
     },
     {
-      "player": "Jo Adell",
-      "position": "OF, Util",
+      "player": "Zach Neto",
+      "position": "SS, Util",
       "team": "LAA",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +4.0",
-        "hard_hit_percent: +13.3",
-        "sweet_spot_percent: +15.0"
+        "exit_velocity_avg: -5.5",
+        "hard_hit_percent: -20.5",
+        "sweet_spot_percent: +2.6"
       ],
       "category": "Hitter",
-      "confidence": 54
+      "confidence": 42
     }
   ],
   "summary": {
