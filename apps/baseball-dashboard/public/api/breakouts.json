@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-17T12:44:25.821315",
+  "generated_at": "2026-03-18T12:44:29.998263",
   "alerts": [
     {
       "player": "Mookie Betts",
@@ -10,19 +10,6 @@
         "exit_velocity_avg: -11.3",
         "hard_hit_percent: -22.7",
         "sweet_spot_percent: +24.2"
-      ],
-      "category": "Hitter",
-      "confidence": 100
-    },
-    {
-      "player": "Randy Arozarena",
-      "position": "OF, Util",
-      "team": "SEA",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -3.3",
-        "hard_hit_percent: -27.3",
-        "sweet_spot_percent: +6.8"
       ],
       "category": "Hitter",
       "confidence": 100
@@ -54,30 +41,17 @@
       "confidence": 90
     },
     {
-      "player": "Matt Chapman",
-      "position": "3B, Util",
-      "team": "SF",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +9.5",
-        "hard_hit_percent: +14.5",
-        "sweet_spot_percent: +14.5"
-      ],
-      "category": "Hitter",
-      "confidence": 72
-    },
-    {
-      "player": "Jo Adell",
+      "player": "Randy Arozarena",
       "position": "OF, Util",
-      "team": "LAA",
+      "team": "SEA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +3.4",
-        "hard_hit_percent: +9.7",
-        "sweet_spot_percent: +13.6"
+        "exit_velocity_avg: -0.7",
+        "hard_hit_percent: -27.3",
+        "sweet_spot_percent: +19.3"
       ],
       "category": "Hitter",
-      "confidence": 61
+      "confidence": 67
     },
     {
       "player": "Daulton Varsho",
@@ -93,22 +67,48 @@
       "confidence": 56
     },
     {
+      "player": "Jo Adell",
+      "position": "OF, Util",
+      "team": "LAA",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: +4.5",
+        "hard_hit_percent: +10.2",
+        "sweet_spot_percent: +11.5"
+      ],
+      "category": "Hitter",
+      "confidence": 54
+    },
+    {
+      "player": "Matt Chapman",
+      "position": "3B, Util",
+      "team": "SF",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: +8.2",
+        "hard_hit_percent: +12.8",
+        "sweet_spot_percent: +12.8"
+      ],
+      "category": "Hitter",
+      "confidence": 53
+    },
+    {
       "player": "Zach Neto",
       "position": "SS, Util",
       "team": "LAA",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: -5.5",
-        "hard_hit_percent: -20.5",
-        "sweet_spot_percent: +2.6"
+        "exit_velocity_avg: -4.5",
+        "hard_hit_percent: -19.7",
+        "sweet_spot_percent: +5.3"
       ],
       "category": "Hitter",
-      "confidence": 42
+      "confidence": 47
     }
   ],
   "summary": {
     "total_scanned": 24,
     "signals_found": 8,
-    "strong_signals": 6
+    "strong_signals": 4
   }
 }
