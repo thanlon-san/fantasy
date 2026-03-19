@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-18T12:43:34.576121",
+  "generated_at": "2026-03-19T12:37:06.807158",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -34,9 +34,9 @@
       "position": "OF",
       "team": "TEX",
       "rostered_pct": 85,
-      "trending": "HOT",
+      "trending": "STABLE",
       "last_7_days": {
-        "avg": 0.6,
+        "avg": 0.45454545454545453,
         "hr": 2,
         "rbi": 5,
         "sb": 0,
@@ -47,7 +47,7 @@
         "games": 4
       },
       "last_14_days": {
-        "avg": 0.5238095238095238,
+        "avg": 0.43478260869565216,
         "hr": 3,
         "rbi": 8,
         "sb": 0,
@@ -58,19 +58,19 @@
         "games": 8
       },
       "last_30_days": {
-        "avg": 0.4827586206896552,
-        "hr": 4,
-        "rbi": 12,
+        "avg": 0.45454545454545453,
+        "hr": 5,
+        "rbi": 15,
         "sb": 0,
         "era": null,
         "whip": null,
         "k": null,
         "w": null,
-        "games": 12
+        "games": 13
       },
       "statcast_changes": {
-        "exit_velo": "-2.8 mph",
-        "hard_hit_pct": "-5.3%"
+        "exit_velo": "-1.3 mph",
+        "hard_hit_pct": "+1.2%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -107,16 +107,16 @@
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
     },
     {
-      "player": "Michael Busch",
-      "position": "1B, 2B",
-      "team": "CHC",
-      "rostered_pct": 45,
-      "trending": "HOT",
+      "player": "Spencer Steer",
+      "position": "2B, 3B, OF",
+      "team": "CIN",
+      "rostered_pct": 10,
+      "trending": "STABLE",
       "last_7_days": {
-        "avg": 0.3333333333333333,
+        "avg": 0.18181818181818182,
         "hr": 0,
-        "rbi": 0,
-        "sb": 0,
+        "rbi": 1,
+        "sb": 1,
         "era": null,
         "whip": null,
         "k": null,
@@ -124,7 +124,46 @@
         "games": 4
       },
       "last_14_days": {
-        "avg": 0.2727272727272727,
+        "avg": 0.2,
+        "hr": 0,
+        "rbi": 2,
+        "sb": 1,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 9
+      },
+      "last_30_days": {
+        "avg": 0.1794871794871795,
+        "hr": 0,
+        "rbi": 3,
+        "sb": 1,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 15
+      },
+      "statcast_changes": {
+        "exit_velo": "+5.6 mph",
+        "hard_hit_pct": "+7.3%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Position need, Round 12 keeper cost"
+    },
+    {
+      "player": "Michael Busch",
+      "position": "1B, 2B",
+      "team": "CHC",
+      "rostered_pct": 45,
+      "trending": "STABLE",
+      "last_7_days": {
+        "avg": 0.2222222222222222,
         "hr": 0,
         "rbi": 0,
         "sb": 0,
@@ -132,7 +171,18 @@
         "whip": null,
         "k": null,
         "w": null,
-        "games": 8
+        "games": 3
+      },
+      "last_14_days": {
+        "avg": 0.2631578947368421,
+        "hr": 0,
+        "rbi": 0,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 7
       },
       "last_30_days": {
         "avg": 0.25,
@@ -146,8 +196,8 @@
         "games": 12
       },
       "statcast_changes": {
-        "exit_velo": "+1.6 mph",
-        "hard_hit_pct": "+18.1%"
+        "exit_velo": "-0.8 mph",
+        "hard_hit_pct": "+7.7%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -159,7 +209,7 @@
   ],
   "summary": {
     "scanned": 10,
-    "recommended": 4,
+    "recommended": 5,
     "criteria": "ADP value, breakout signals, recent performance trends"
   }
 }

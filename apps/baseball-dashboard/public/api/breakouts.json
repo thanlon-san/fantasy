@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-18T12:44:29.998263",
+  "generated_at": "2026-03-19T12:38:30.972394",
   "alerts": [
     {
       "player": "Mookie Betts",
@@ -7,9 +7,9 @@
       "team": "LAD",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -11.3",
-        "hard_hit_percent: -22.7",
-        "sweet_spot_percent: +24.2"
+        "exit_velocity_avg: -10.3",
+        "hard_hit_percent: -22.0",
+        "sweet_spot_percent: +27.3"
       ],
       "category": "Hitter",
       "confidence": 100
@@ -28,30 +28,17 @@
       "confidence": 100
     },
     {
-      "player": "Max Muncy",
-      "position": "3B, Util",
-      "team": "LAD",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -2.7",
-        "hard_hit_percent: +6.5",
-        "sweet_spot_percent: -21.8"
-      ],
-      "category": "Hitter",
-      "confidence": 90
-    },
-    {
       "player": "Randy Arozarena",
       "position": "OF, Util",
       "team": "SEA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -0.7",
-        "hard_hit_percent: -27.3",
-        "sweet_spot_percent: +19.3"
+        "exit_velocity_avg: +1.2",
+        "hard_hit_percent: -19.6",
+        "sweet_spot_percent: +12.6"
       ],
       "category": "Hitter",
-      "confidence": 67
+      "confidence": 72
     },
     {
       "player": "Daulton Varsho",
@@ -59,12 +46,12 @@
       "team": "TOR",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +3.7",
-        "hard_hit_percent: +14.6",
-        "sweet_spot_percent: +0.0"
+        "exit_velocity_avg: +5.3",
+        "hard_hit_percent: +19.4",
+        "sweet_spot_percent: +2.5"
       ],
       "category": "Hitter",
-      "confidence": 56
+      "confidence": 59
     },
     {
       "player": "Jo Adell",
@@ -72,43 +59,30 @@
       "team": "LAA",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +4.5",
+        "exit_velocity_avg: +4.8",
         "hard_hit_percent: +10.2",
-        "sweet_spot_percent: +11.5"
+        "sweet_spot_percent: +6.5"
       ],
       "category": "Hitter",
-      "confidence": 54
+      "confidence": 49
     },
     {
-      "player": "Matt Chapman",
-      "position": "3B, Util",
-      "team": "SF",
+      "player": "Taylor Ward",
+      "position": "OF, Util",
+      "team": "BAL",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +8.2",
-        "hard_hit_percent: +12.8",
-        "sweet_spot_percent: +12.8"
+        "exit_velocity_avg: +7.8",
+        "hard_hit_percent: +6.7",
+        "sweet_spot_percent: -1.1"
       ],
       "category": "Hitter",
-      "confidence": 53
-    },
-    {
-      "player": "Zach Neto",
-      "position": "SS, Util",
-      "team": "LAA",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: -4.5",
-        "hard_hit_percent: -19.7",
-        "sweet_spot_percent: +5.3"
-      ],
-      "category": "Hitter",
-      "confidence": 47
+      "confidence": 46
     }
   ],
   "summary": {
     "total_scanned": 24,
-    "signals_found": 8,
-    "strong_signals": 4
+    "signals_found": 6,
+    "strong_signals": 3
   }
 }
