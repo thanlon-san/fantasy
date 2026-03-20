@@ -1,57 +1,44 @@
 {
-  "generated_at": "2026-03-19T12:38:30.972394",
+  "generated_at": "2026-03-20T12:34:38.627714",
   "alerts": [
-    {
-      "player": "Mookie Betts",
-      "position": "2B, SS, OF, Util",
-      "team": "LAD",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -10.3",
-        "hard_hit_percent: -22.0",
-        "sweet_spot_percent: +27.3"
-      ],
-      "category": "Hitter",
-      "confidence": 100
-    },
     {
       "player": "Dylan Crews",
       "position": "OF, Util",
       "team": "WSH",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +5.7",
-        "hard_hit_percent: +22.7",
-        "sweet_spot_percent: +12.7"
+        "exit_velocity_avg: +3.7",
+        "hard_hit_percent: +13.7",
+        "sweet_spot_percent: +10.7"
       ],
       "category": "Hitter",
       "confidence": 100
     },
     {
-      "player": "Randy Arozarena",
-      "position": "OF, Util",
-      "team": "SEA",
+      "player": "Mookie Betts",
+      "position": "2B, SS, OF, Util",
+      "team": "LAD",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +1.2",
-        "hard_hit_percent: -19.6",
-        "sweet_spot_percent: +12.6"
+        "exit_velocity_avg: -6.6",
+        "hard_hit_percent: -17.5",
+        "sweet_spot_percent: +7.6"
       ],
       "category": "Hitter",
-      "confidence": 72
+      "confidence": 76
     },
     {
-      "player": "Daulton Varsho",
-      "position": "OF, Util",
-      "team": "TOR",
-      "signal": "EMERGING",
+      "player": "Gunnar Henderson",
+      "position": "SS, Util",
+      "team": "BAL",
+      "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +5.3",
-        "hard_hit_percent: +19.4",
-        "sweet_spot_percent: +2.5"
+        "exit_velocity_avg: +4.8",
+        "hard_hit_percent: +24.6",
+        "sweet_spot_percent: -3.5"
       ],
       "category": "Hitter",
-      "confidence": 59
+      "confidence": 63
     },
     {
       "player": "Jo Adell",
@@ -59,12 +46,25 @@
       "team": "LAA",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +4.8",
-        "hard_hit_percent: +10.2",
-        "sweet_spot_percent: +6.5"
+        "exit_velocity_avg: +5.6",
+        "hard_hit_percent: +12.5",
+        "sweet_spot_percent: +2.5"
       ],
       "category": "Hitter",
-      "confidence": 49
+      "confidence": 51
+    },
+    {
+      "player": "Daulton Varsho",
+      "position": "OF, Util",
+      "team": "TOR",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: +1.0",
+        "hard_hit_percent: +11.9",
+        "sweet_spot_percent: -2.4"
+      ],
+      "category": "Hitter",
+      "confidence": 44
     },
     {
       "player": "Taylor Ward",
@@ -72,17 +72,30 @@
       "team": "BAL",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +7.8",
-        "hard_hit_percent: +6.7",
-        "sweet_spot_percent: -1.1"
+        "exit_velocity_avg: +8.3",
+        "hard_hit_percent: +7.0",
+        "sweet_spot_percent: -2.9"
       ],
       "category": "Hitter",
-      "confidence": 46
+      "confidence": 43
+    },
+    {
+      "player": "Nathaniel Lowe",
+      "position": "1B, Util",
+      "team": "BOS",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -1.5",
+        "hard_hit_percent: -11.3",
+        "sweet_spot_percent: -8.4"
+      ],
+      "category": "Hitter",
+      "confidence": 43
     }
   ],
   "summary": {
     "total_scanned": 24,
-    "signals_found": 6,
+    "signals_found": 7,
     "strong_signals": 3
   }
 }

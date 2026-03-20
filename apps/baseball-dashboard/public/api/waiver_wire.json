@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-19T12:37:06.807158",
+  "generated_at": "2026-03-20T12:33:26.489308",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -34,9 +34,9 @@
       "position": "OF",
       "team": "TEX",
       "rostered_pct": 85,
-      "trending": "STABLE",
+      "trending": "HOT",
       "last_7_days": {
-        "avg": 0.45454545454545453,
+        "avg": 0.5555555555555556,
         "hr": 2,
         "rbi": 5,
         "sb": 0,
@@ -44,7 +44,7 @@
         "whip": null,
         "k": null,
         "w": null,
-        "games": 4
+        "games": 3
       },
       "last_14_days": {
         "avg": 0.43478260869565216,
@@ -70,7 +70,7 @@
       },
       "statcast_changes": {
         "exit_velo": "-1.3 mph",
-        "hard_hit_pct": "+1.2%"
+        "hard_hit_pct": "+1.0%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -78,6 +78,106 @@
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, Round 12 keeper cost"
+    },
+    {
+      "player": "Spencer Steer",
+      "position": "2B, 3B, OF",
+      "team": "CIN",
+      "rostered_pct": 10,
+      "trending": "HOT",
+      "last_7_days": {
+        "avg": 0.25,
+        "hr": 0,
+        "rbi": 1,
+        "sb": 1,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 3
+      },
+      "last_14_days": {
+        "avg": 0.2,
+        "hr": 0,
+        "rbi": 2,
+        "sb": 1,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 9
+      },
+      "last_30_days": {
+        "avg": 0.1794871794871795,
+        "hr": 0,
+        "rbi": 3,
+        "sb": 1,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 15
+      },
+      "statcast_changes": {
+        "exit_velo": "+6.0 mph",
+        "hard_hit_pct": "+8.6%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Position need, Round 12 keeper cost"
+    },
+    {
+      "player": "Ezequiel Tovar",
+      "position": "SS",
+      "team": "COL",
+      "rostered_pct": 10,
+      "trending": "STABLE",
+      "last_7_days": {
+        "avg": 0.0,
+        "hr": 0,
+        "rbi": 0,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 1
+      },
+      "last_14_days": {
+        "avg": 0.0,
+        "hr": 0,
+        "rbi": 0,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 1
+      },
+      "last_30_days": {
+        "avg": 0.1875,
+        "hr": 1,
+        "rbi": 4,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 6
+      },
+      "statcast_changes": {
+        "exit_velo": "+2.7 mph",
+        "hard_hit_pct": "+15.2%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost"
     },
     {
       "player": "Hunter Greene",
@@ -105,106 +205,6 @@
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
-    },
-    {
-      "player": "Spencer Steer",
-      "position": "2B, 3B, OF",
-      "team": "CIN",
-      "rostered_pct": 10,
-      "trending": "STABLE",
-      "last_7_days": {
-        "avg": 0.18181818181818182,
-        "hr": 0,
-        "rbi": 1,
-        "sb": 1,
-        "era": null,
-        "whip": null,
-        "k": null,
-        "w": null,
-        "games": 4
-      },
-      "last_14_days": {
-        "avg": 0.2,
-        "hr": 0,
-        "rbi": 2,
-        "sb": 1,
-        "era": null,
-        "whip": null,
-        "k": null,
-        "w": null,
-        "games": 9
-      },
-      "last_30_days": {
-        "avg": 0.1794871794871795,
-        "hr": 0,
-        "rbi": 3,
-        "sb": 1,
-        "era": null,
-        "whip": null,
-        "k": null,
-        "w": null,
-        "games": 15
-      },
-      "statcast_changes": {
-        "exit_velo": "+5.6 mph",
-        "hard_hit_pct": "+7.3%"
-      },
-      "role_change": null,
-      "upcoming_schedule": null,
-      "drop_player": "Nathaniel Lowe",
-      "drop_player_position": "1B, Util",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, Position need, Round 12 keeper cost"
-    },
-    {
-      "player": "Michael Busch",
-      "position": "1B, 2B",
-      "team": "CHC",
-      "rostered_pct": 45,
-      "trending": "STABLE",
-      "last_7_days": {
-        "avg": 0.2222222222222222,
-        "hr": 0,
-        "rbi": 0,
-        "sb": 0,
-        "era": null,
-        "whip": null,
-        "k": null,
-        "w": null,
-        "games": 3
-      },
-      "last_14_days": {
-        "avg": 0.2631578947368421,
-        "hr": 0,
-        "rbi": 0,
-        "sb": 0,
-        "era": null,
-        "whip": null,
-        "k": null,
-        "w": null,
-        "games": 7
-      },
-      "last_30_days": {
-        "avg": 0.25,
-        "hr": 0,
-        "rbi": 2,
-        "sb": 0,
-        "era": null,
-        "whip": null,
-        "k": null,
-        "w": null,
-        "games": 12
-      },
-      "statcast_changes": {
-        "exit_velo": "-0.8 mph",
-        "hard_hit_pct": "+7.7%"
-      },
-      "role_change": null,
-      "upcoming_schedule": null,
-      "drop_player": "Nathaniel Lowe",
-      "drop_player_position": "1B, Util",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost"
     }
   ],
   "summary": {
