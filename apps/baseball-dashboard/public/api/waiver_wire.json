@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-20T12:33:26.489308",
+  "generated_at": "2026-03-21T12:24:59.608321",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -8,20 +8,43 @@
       "team": "LAD",
       "rostered_pct": 95,
       "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
+      "last_7_days": {
+        "avg": null,
+        "hr": null,
+        "rbi": null,
+        "sb": null,
+        "era": 0.0,
+        "whip": 0.8,
+        "k": 7,
+        "w": 0,
+        "games": 1
+      },
+      "last_14_days": {
+        "avg": null,
+        "hr": null,
+        "rbi": null,
+        "sb": null,
+        "era": 0.0,
+        "whip": 0.8,
+        "k": 7,
+        "w": 0,
+        "games": 1
+      },
       "last_30_days": {
         "avg": null,
         "hr": null,
         "rbi": null,
         "sb": null,
-        "era": 5.7857142857142865,
-        "whip": 1.7142857142857144,
-        "k": 7,
+        "era": 2.793103448275862,
+        "whip": 1.2413793103448276,
+        "k": 14,
         "w": 0,
-        "games": 2
+        "games": 3
       },
-      "statcast_changes": null,
+      "statcast_changes": {
+        "hard_hit_pct": "+9.2%",
+        "whiff_rate": "+0.0%"
+      },
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Nathaniel Lowe",
@@ -34,11 +57,11 @@
       "position": "OF",
       "team": "TEX",
       "rostered_pct": 85,
-      "trending": "HOT",
+      "trending": "COLD",
       "last_7_days": {
-        "avg": 0.5555555555555556,
-        "hr": 2,
-        "rbi": 5,
+        "avg": 0.3333333333333333,
+        "hr": 1,
+        "rbi": 3,
         "sb": 0,
         "era": null,
         "whip": null,
@@ -58,7 +81,7 @@
         "games": 8
       },
       "last_30_days": {
-        "avg": 0.45454545454545453,
+        "avg": 0.4444444444444444,
         "hr": 5,
         "rbi": 15,
         "sb": 0,
@@ -66,11 +89,11 @@
         "whip": null,
         "k": null,
         "w": null,
-        "games": 13
+        "games": 14
       },
       "statcast_changes": {
-        "exit_velo": "-1.3 mph",
-        "hard_hit_pct": "+1.0%"
+        "exit_velo": "-1.7 mph",
+        "hard_hit_pct": "+4.2%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -80,16 +103,16 @@
       "reason": "Massive ADP advantage, Round 12 keeper cost"
     },
     {
-      "player": "Spencer Steer",
-      "position": "2B, 3B, OF",
-      "team": "CIN",
-      "rostered_pct": 10,
-      "trending": "HOT",
+      "player": "Michael Busch",
+      "position": "1B, 2B",
+      "team": "CHC",
+      "rostered_pct": 45,
+      "trending": "COLD",
       "last_7_days": {
-        "avg": 0.25,
+        "avg": 0.1111111111111111,
         "hr": 0,
-        "rbi": 1,
-        "sb": 1,
+        "rbi": 0,
+        "sb": 0,
         "era": null,
         "whip": null,
         "k": null,
@@ -97,9 +120,59 @@
         "games": 3
       },
       "last_14_days": {
-        "avg": 0.2,
+        "avg": 0.23809523809523808,
+        "hr": 0,
+        "rbi": 0,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 7
+      },
+      "last_30_days": {
+        "avg": 0.22857142857142856,
         "hr": 0,
         "rbi": 2,
+        "sb": 0,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 13
+      },
+      "statcast_changes": {
+        "exit_velo": "-2.2 mph",
+        "hard_hit_pct": "-3.5%"
+      },
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Nathaniel Lowe",
+      "drop_player_position": "1B, Util",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, Position need, Round 12 keeper cost"
+    },
+    {
+      "player": "Spencer Steer",
+      "position": "2B, 3B, OF",
+      "team": "CIN",
+      "rostered_pct": 10,
+      "trending": "HOT",
+      "last_7_days": {
+        "avg": 0.36363636363636365,
+        "hr": 1,
+        "rbi": 3,
+        "sb": 1,
+        "era": null,
+        "whip": null,
+        "k": null,
+        "w": null,
+        "games": 4
+      },
+      "last_14_days": {
+        "avg": 0.2,
+        "hr": 1,
+        "rbi": 4,
         "sb": 1,
         "era": null,
         "whip": null,
@@ -108,19 +181,19 @@
         "games": 9
       },
       "last_30_days": {
-        "avg": 0.1794871794871795,
-        "hr": 0,
-        "rbi": 3,
+        "avg": 0.21428571428571427,
+        "hr": 1,
+        "rbi": 5,
         "sb": 1,
         "era": null,
         "whip": null,
         "k": null,
         "w": null,
-        "games": 15
+        "games": 16
       },
       "statcast_changes": {
-        "exit_velo": "+6.0 mph",
-        "hard_hit_pct": "+8.6%"
+        "exit_velo": "+5.7 mph",
+        "hard_hit_pct": "+13.9%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -134,43 +207,43 @@
       "position": "SS",
       "team": "COL",
       "rostered_pct": 10,
-      "trending": "STABLE",
+      "trending": "HOT",
       "last_7_days": {
-        "avg": 0.0,
-        "hr": 0,
-        "rbi": 0,
+        "avg": 0.3333333333333333,
+        "hr": 1,
+        "rbi": 1,
         "sb": 0,
         "era": null,
         "whip": null,
         "k": null,
         "w": null,
-        "games": 1
+        "games": 2
       },
       "last_14_days": {
-        "avg": 0.0,
-        "hr": 0,
-        "rbi": 0,
+        "avg": 0.3333333333333333,
+        "hr": 1,
+        "rbi": 1,
         "sb": 0,
         "era": null,
         "whip": null,
         "k": null,
         "w": null,
-        "games": 1
+        "games": 2
       },
       "last_30_days": {
-        "avg": 0.1875,
-        "hr": 1,
-        "rbi": 4,
+        "avg": 0.25,
+        "hr": 2,
+        "rbi": 5,
         "sb": 0,
         "era": null,
         "whip": null,
         "k": null,
         "w": null,
-        "games": 6
+        "games": 7
       },
       "statcast_changes": {
-        "exit_velo": "+2.7 mph",
-        "hard_hit_pct": "+15.2%"
+        "exit_velo": "-0.9 mph",
+        "hard_hit_pct": "+6.7%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -178,33 +251,6 @@
       "drop_player_position": "1B, Util",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, Round 12 keeper cost"
-    },
-    {
-      "player": "Hunter Greene",
-      "position": "SP",
-      "team": "CIN",
-      "rostered_pct": 45,
-      "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
-      "last_30_days": {
-        "avg": null,
-        "hr": null,
-        "rbi": null,
-        "sb": null,
-        "era": 36.0,
-        "whip": 6.0,
-        "k": 0,
-        "w": 0,
-        "games": 1
-      },
-      "statcast_changes": null,
-      "role_change": null,
-      "upcoming_schedule": null,
-      "drop_player": "Nathaniel Lowe",
-      "drop_player_position": "1B, Util",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
     }
   ],
   "summary": {
