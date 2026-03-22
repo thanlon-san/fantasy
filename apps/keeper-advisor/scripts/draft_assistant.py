@@ -15,6 +15,7 @@ import json
 import re
 import argparse
 import unicodedata
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
@@ -1005,5 +1006,4 @@ def main():
 
 
 if __name__ == "__main__":
-    from datetime import datetime
     main()

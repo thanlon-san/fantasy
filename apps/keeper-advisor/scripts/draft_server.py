@@ -450,18 +450,22 @@ def _parse_stats(stats_list: list) -> dict:
     return result
 
 def _category_status(my_val, opp_val, better: str) -> str:
-    """Return 'win' | 'loss' | 'tied' | 'close' | 'unknown'."""
+    """Return 'win' | 'loss' | 'tied' | 'close_win' | 'close_loss' | 'unknown'."""
     if my_val is None or opp_val is None:
         return "unknown"
     if my_val == opp_val:
         return "tied"
     winning = (my_val > opp_val) if better == "high" else (my_val < opp_val)
+    diff    = abs(my_val - opp_val)
+    base    = max(abs(opp_val if winning else my_val), 0.001)
+    diff_pct = diff / base
+    # "Close" = within 12% OR within a small absolute threshold for rate stats
+    # ERA: <0.35 difference, WHIP: <0.05, OPS: <0.020 — tighter than 12% catches these
+    is_close = diff_pct < 0.12
     if winning:
-        diff_pct = abs(my_val - opp_val) / max(abs(opp_val), 0.001)
-        return "win" if diff_pct > 0.05 else "close_win"
+        return "close_win" if is_close else "win"
     else:
-        diff_pct = abs(my_val - opp_val) / max(abs(my_val), 0.001)
-        return "loss" if diff_pct > 0.05 else "close_loss"
+        return "close_loss" if is_close else "loss"
 
 
 @app.get("/season/matchup")
@@ -565,9 +569,17 @@ def get_matchup(week: Optional[int] = None):
     }
 
 
+_standings_cache: dict = {}
+_standings_cache_time: float = 0.0
+STANDINGS_CACHE_TTL = 300  # 5 minutes — standings don't change by the second
+
 @app.get("/season/standings")
 def get_standings():
     """League-wide standings with per-team win totals and category ranking."""
+    global _standings_cache, _standings_cache_time
+    if _standings_cache and (time.time() - _standings_cache_time) < STANDINGS_CACHE_TTL:
+        return _standings_cache
+
     # Get overall standings
     st_data = _yahoo_get(f"/league/{LEAGUE_KEY}/standings")
     if not st_data:
@@ -640,7 +652,7 @@ def get_standings():
 
     teams.sort(key=lambda t: t["rank"])
 
-    return {
+    result = {
         "teams":       teams,
         "stat_map":    STAT_MAP,
         "season_started": any(
@@ -649,6 +661,9 @@ def get_standings():
             for v in cat_stats.get(t["team_key"], {}).values()
         ),
     }
+    _standings_cache      = result
+    _standings_cache_time = time.time()
+    return result
 
 
 @app.get("/season/closers")
@@ -683,7 +698,7 @@ def get_closers():
     # Add keeper RPs if roster is empty pre-draft
     if not closers:
         closers = [
-            {"name": "Mason Miller", "position": "RP", "team": "OAK",
+            {"name": "Mason Miller", "position": "RP", "team": "SD",
              "player_key": "", "is_keeper": True},
         ]
 

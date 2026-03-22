@@ -196,7 +196,18 @@ class BreakoutDetector:
         if not changes:
             logger.info(f"No data available for {player_name} (likely off-season)")
             return None
-        
+
+        # Require a minimum sample size in the recent window to avoid spring
+        # training noise.  recent_pa / recent_bf is stored as 'pa' / 'bf' if
+        # the statcast client returns it; fall back to checking recent dict size.
+        recent_pa = recent.get("pa") or recent.get("bf") or len(recent)
+        MIN_RECENT_PA = 30
+        if recent_pa < MIN_RECENT_PA:
+            logger.info(
+                f"Skipping {player_name}: only {recent_pa} recent PA/BF (min {MIN_RECENT_PA})"
+            )
+            return None
+
         # Analyze changes
         thresholds = (self.HITTER_BREAKOUT_THRESHOLDS if player_type == 'hitter' 
                       else self.PITCHER_BREAKOUT_THRESHOLDS)
