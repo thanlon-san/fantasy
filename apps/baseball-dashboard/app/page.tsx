@@ -4,7 +4,7 @@ import { useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star, Swords, Trophy, Shield, Zap } from "lucide-react"
+import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star, Swords, Trophy, Shield, Zap, TrendingUp } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import { PlayerTable } from "@/components/player-table"
@@ -20,6 +20,7 @@ import { WaiverWireTable } from "@/components/waiver-wire-table"
 import { BreakoutDetectorTable } from "@/components/breakout-detector-table"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const DRAFT_API_BASE = process.env.NEXT_PUBLIC_DRAFT_API_URL ?? "http://localhost:8001"
 const BASE_PATH = process.env.NODE_ENV === 'production' ? '/fantasy/baseball' : ''
 const USE_API = process.env.NEXT_PUBLIC_USE_API === 'true'
 
@@ -94,6 +95,22 @@ type Keeper = {
   reason?: string
 }
 
+type SwingCategory = {
+  stat_name: string
+  stat_id: string
+  status: "close_win" | "close_loss"
+  my_value: number | null
+  opp_value: number | null
+  focus_players: string[]
+  waiver_suggestion: string | null
+}
+
+type LineupFocus = {
+  week: number
+  swing_categories: SwingCategory[]
+  season_started: boolean
+}
+
 export default function Home() {
   const { toast } = useToast()
 
@@ -119,6 +136,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [dataTimestamp, setDataTimestamp] = useState<string | null>(null)
+  const [lineupFocus, setLineupFocus] = useState<LineupFocus | null>(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -176,6 +194,22 @@ export default function Home() {
 
     fetchData()
   }, [])
+
+  const fetchLineupFocus = useCallback(async () => {
+    try {
+      const res = await fetch(`${DRAFT_API_BASE}/season/lineup-focus`, { cache: "no-store" })
+      if (!res.ok) return
+      setLineupFocus(await res.json())
+    } catch {
+      // Server not running — silently ignore
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchLineupFocus()
+    const t = setInterval(() => fetchLineupFocus(), 60_000)
+    return () => clearInterval(t)
+  }, [fetchLineupFocus])
 
   const copyLineupToClipboard = () => {
     const mustStart = dailyLineup.must_start.map(p => `${p.player} (${p.confidence})`).join('\n')
@@ -297,6 +331,12 @@ export default function Home() {
                   Closers
                 </Button>
               </Link>
+              <Link href="/trajectory">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <TrendingUp className="h-4 w-4" />
+                  Trajectory
+                </Button>
+              </Link>
               {formattedTimestamp && (
                 <div className="text-sm text-muted-foreground flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
@@ -315,6 +355,33 @@ export default function Home() {
             <div>
               <span className="font-medium">Data failed to load.</span> {error}
               {" "}Check that the GitHub Actions workflow ran successfully and the JSON files are up to date.
+            </div>
+          </div>
+        )}
+
+        {/* Lineup Focus Banner */}
+        {lineupFocus && lineupFocus.season_started && lineupFocus.swing_categories.length > 0 && (
+          <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+            <div className="flex items-center gap-2 mb-1.5">
+              <Swords className="h-4 w-4 text-amber-400" />
+              <span className="text-xs font-bold text-amber-400 uppercase tracking-wide">
+                Week {lineupFocus.week}: Focus Here
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {lineupFocus.swing_categories.map(cat => (
+                <div key={cat.stat_id} className="flex items-center gap-1.5 text-sm">
+                  <span className={`font-bold ${cat.status === "close_loss" ? "text-red-400" : "text-emerald-400"}`}>
+                    {cat.stat_name}
+                  </span>
+                  <span className="text-slate-500 text-xs">
+                    ({cat.my_value ?? "–"} vs {cat.opp_value ?? "–"})
+                  </span>
+                  {cat.focus_players.length > 0 && (
+                    <span className="text-slate-400 text-xs">— {cat.focus_players.slice(0, 2).join(", ")}</span>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         )}

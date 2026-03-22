@@ -8,6 +8,7 @@ Usage:
     python draft_server.py --port 8002
 """
 
+import os
 import sys
 import time
 import argparse
@@ -34,6 +35,12 @@ from draft_assistant import (
     LEAGUE_KEY, OAUTH_CONFIG,
     get_tier, calc_my_picks, norm_name,
 )
+
+# ─── Railway / CI: load OAuth from env var if config file is absent ────────────
+_oauth_env = os.environ.get("YAHOO_OAUTH_JSON")
+if _oauth_env and not Path(OAUTH_CONFIG).exists():
+    Path(OAUTH_CONFIG).parent.mkdir(parents=True, exist_ok=True)
+    Path(OAUTH_CONFIG).write_text(_oauth_env)
 
 # ─── App ──────────────────────────────────────────────────────────────────────
 app = FastAPI(title="Draft Day API", version="1.0")
@@ -728,6 +735,333 @@ def get_closers():
         })
 
     return {"closers": enriched}
+
+
+# ─── /season/lineup-focus ─────────────────────────────────────────────────────
+
+@app.get("/season/lineup-focus")
+def get_lineup_focus():
+    """
+    Returns players on my roster who most help with this week's swing categories.
+    Combines matchup data (which categories are close) with roster data (who helps there).
+    """
+    try:
+        matchup = get_matchup()
+    except HTTPException:
+        return {"week": 0, "swing_categories": [], "season_started": False}
+
+    season_started = matchup["status"] not in ("preevent", "no_matchup") and any(
+        c["my_value"] is not None for c in matchup["categories"]
+    )
+
+    swing_cats = [
+        c for c in matchup["categories"]
+        if c["status"] in ("close_win", "close_loss")
+    ]
+
+    # Fetch my roster to map players to categories
+    my_roster_players: list[dict] = []
+    ts = _yahoo_get(f"/team/{MY_TEAM_KEY}/roster")
+    if ts:
+        try:
+            roster_data = ts["team"][1]["roster"]
+            players_raw = roster_data.get("0", {}).get("players", {})
+            if isinstance(players_raw, dict):
+                for pk, pv in players_raw.items():
+                    if pk == "count":
+                        continue
+                    player_arr = pv.get("player", [[]])[0]
+                    pinfo: dict = {}
+                    for prop in player_arr:
+                        if not isinstance(prop, dict):
+                            continue
+                        if "name" in prop:
+                            pinfo["name"] = prop["name"].get("full", "")
+                        if "display_position" in prop:
+                            pinfo["position"] = prop["display_position"]
+                        if "editorial_team_abbr" in prop:
+                            pinfo["team"] = prop["editorial_team_abbr"]
+                    if pinfo.get("name"):
+                        my_roster_players.append(pinfo)
+        except Exception:
+            pass
+
+    BATTING_CATS = {"7", "8", "12", "13", "16", "55"}   # R H HR RBI SB OPS
+    PITCHING_CATS = {"32", "38", "42", "26", "27", "83"} # SV HR_allowed K ERA WHIP QS
+
+    def _relevant_players(stat_id: str) -> list[str]:
+        """Return roster player names relevant to a scoring category."""
+        if stat_id in BATTING_CATS:
+            return [p["name"] for p in my_roster_players
+                    if not any(pos in p.get("position", "") for pos in ("SP", "RP"))]
+        else:
+            return [p["name"] for p in my_roster_players
+                    if any(pos in p.get("position", "") for pos in ("SP", "RP", "P"))]
+
+    result_cats = []
+    for cat in swing_cats:
+        sid = cat["stat_id"]
+        focus = _relevant_players(sid)[:4]
+        waiver_hint = None
+        if cat["status"] == "close_loss":
+            if sid in BATTING_CATS:
+                waiver_hint = f"Consider streaming a batter who profiles well in {cat['name']}"
+            else:
+                waiver_hint = f"Consider streaming a pitcher who profiles well in {cat['name']}"
+        result_cats.append({
+            "stat_name":        cat["name"],
+            "stat_id":          sid,
+            "status":           cat["status"],
+            "my_value":         cat["my_value"],
+            "opp_value":        cat["opp_value"],
+            "focus_players":    focus,
+            "waiver_suggestion": waiver_hint,
+        })
+
+    return {
+        "week":             matchup["week"],
+        "swing_categories": result_cats,
+        "season_started":   season_started,
+    }
+
+
+# ─── /season/trajectory ───────────────────────────────────────────────────────
+
+_trajectory_cache: dict = {}
+_trajectory_cache_time: float = 0.0
+TRAJECTORY_CACHE_TTL = 3600  # 1 hour
+
+@app.get("/season/trajectory")
+def get_trajectory():
+    """
+    Returns weekly category rank history for my team.
+    Fetches league scoreboard for each past week and computes my rank per category.
+    """
+    global _trajectory_cache, _trajectory_cache_time
+    if _trajectory_cache and (time.time() - _trajectory_cache_time) < TRAJECTORY_CACHE_TTL:
+        return _trajectory_cache
+
+    meta_data = _yahoo_get(f"/league/{LEAGUE_KEY}/scoreboard")
+    if not meta_data:
+        raise HTTPException(status_code=503, detail="Yahoo API unavailable")
+
+    try:
+        current_week = int(meta_data["league"][0].get("current_week", 1))
+    except (KeyError, IndexError, TypeError):
+        current_week = 1
+
+    # For each past week, collect per-team stats
+    weekly_team_stats: list[dict] = []  # [{team_key: {stat_id: value}}]
+    for w in range(1, current_week):
+        week_data = _yahoo_get(f"/league/{LEAGUE_KEY}/scoreboard;week={w}")
+        if not week_data:
+            weekly_team_stats.append({})
+            continue
+        try:
+            matchups_raw = week_data["league"][1]["scoreboard"]["0"]["matchups"]
+        except (KeyError, IndexError, TypeError):
+            weekly_team_stats.append({})
+            continue
+
+        week_stats: dict = {}
+        for mk, mv in matchups_raw.items():
+            if mk == "count":
+                continue
+            matchup = mv.get("matchup", {})
+            teams_raw = matchup.get("0", {}).get("teams", {})
+            for tk, tv in teams_raw.items():
+                if tk == "count":
+                    continue
+                team_arr = tv.get("team", [[], {}])
+                meta = team_arr[0]
+                stats_section = team_arr[1] if len(team_arr) > 1 else {}
+                team_key = next((p["team_key"] for p in meta if isinstance(p, dict) and "team_key" in p), "")
+                raw_stats = stats_section.get("team_stats", {}).get("stats", [])
+                if team_key:
+                    week_stats[team_key] = _parse_stats(raw_stats)
+        weekly_team_stats.append(week_stats)
+
+    # Build per-category weekly rank history for my team
+    categories_out: dict = {}
+    for sid, smeta in STAT_MAP.items():
+        weekly_ranks: list = []
+        weekly_values: list = []
+        for week_stats in weekly_team_stats:
+            if not week_stats or MY_TEAM_KEY not in week_stats:
+                weekly_ranks.append(None)
+                weekly_values.append(None)
+                continue
+            my_val = week_stats.get(MY_TEAM_KEY, {}).get(sid)
+            all_vals = [(tk, v.get(sid)) for tk, v in week_stats.items()]
+            valid = [(tk, v) for tk, v in all_vals if v is not None]
+            if not valid or my_val is None:
+                weekly_ranks.append(None)
+                weekly_values.append(None)
+                continue
+            reverse = smeta["better"] == "high"
+            sorted_vals = sorted(valid, key=lambda x: x[1], reverse=reverse)
+            rank = next((i + 1 for i, (tk, _) in enumerate(sorted_vals) if tk == MY_TEAM_KEY), None)
+            weekly_ranks.append(rank)
+            weekly_values.append(my_val)
+
+        # Append None for current week (in progress)
+        weekly_ranks.append(None)
+        weekly_values.append(None)
+
+        valid_ranks = [r for r in weekly_ranks if r is not None]
+        avg_rank = round(sum(valid_ranks) / len(valid_ranks), 1) if valid_ranks else None
+
+        # Trend: compare last 2 non-None ranks
+        trend = "neutral"
+        if len(valid_ranks) >= 2:
+            diff = valid_ranks[-1] - valid_ranks[-2]
+            if diff < -1:
+                trend = "improving"
+            elif diff > 1:
+                trend = "declining"
+            else:
+                trend = "stable"
+
+        categories_out[sid] = {
+            "name":          smeta["name"],
+            "label":         smeta["label"],
+            "group":         smeta["group"],
+            "better":        smeta["better"],
+            "weekly_ranks":  weekly_ranks,
+            "weekly_values": weekly_values,
+            "trend":         trend,
+            "avg_rank":      avg_rank,
+        }
+
+    # Summary buckets
+    dominating = [m["name"] for sid, m in categories_out.items()
+                  if m["avg_rank"] is not None and m["avg_rank"] <= 4]
+    struggling  = [m["name"] for sid, m in categories_out.items()
+                  if m["avg_rank"] is not None and m["avg_rank"] >= 9]
+    improving   = [m["name"] for sid, m in categories_out.items()
+                  if m["trend"] == "improving"]
+
+    result = {
+        "current_week": current_week,
+        "categories":   categories_out,
+        "summary": {
+            "dominating": dominating,
+            "struggling":  struggling,
+            "improving":   improving,
+        },
+    }
+    _trajectory_cache      = result
+    _trajectory_cache_time = time.time()
+    return result
+
+
+# ─── /season/opponent ─────────────────────────────────────────────────────────
+
+@app.get("/season/opponent")
+def get_opponent_scouting():
+    """Returns a scouting report on this week's opponent."""
+    try:
+        matchup = get_matchup()
+    except HTTPException as e:
+        raise e
+
+    if matchup.get("status") == "no_matchup" or not matchup.get("opp_team"):
+        return {
+            "opponent_name":     None,
+            "their_strengths":   [],
+            "their_weaknesses":  [],
+            "your_advantages":   [],
+            "threat_categories": [],
+            "game_plan":         "No matchup found for this week.",
+            "week":              matchup.get("week", 0),
+            "season_started":    False,
+        }
+
+    # Don't show scouting data before the season starts — no real stats means
+    # arbitrary rankings that produce misleading output.
+    all_unknown = all(c["status"] == "unknown" for c in matchup.get("categories", []))
+    if all_unknown:
+        return {
+            "opponent_name":     matchup.get("opp_team"),
+            "their_strengths":   [],
+            "their_weaknesses":  [],
+            "your_advantages":   [],
+            "threat_categories": [],
+            "game_plan":         f"Season starts {matchup.get('week_start', 'soon')} — scouting data will populate once games are played.",
+            "week":              matchup.get("week", 0),
+            "season_started":    False,
+        }
+
+    # Get standings for category rankings
+    try:
+        standings = get_standings()
+    except HTTPException:
+        standings = None
+
+    opp_name = matchup["opp_team"]
+
+    # Find opponent's team key from standings
+    opp_team_key = None
+    opp_cat_ranks: dict = {}
+    my_cat_ranks: dict = {}
+    if standings:
+        for t in standings["teams"]:
+            if t["name"] == opp_name:
+                opp_team_key = t["team_key"]
+                opp_cat_ranks = t.get("cat_ranks", {})
+            if t["is_mine"]:
+                my_cat_ranks = t.get("cat_ranks", {})
+
+    # Build scouting report from category rankings
+    their_strengths: list[str] = []
+    their_weaknesses: list[str] = []
+    your_advantages: list[str] = []
+    threat_categories: list[str] = []
+
+    swing_stat_ids = {c["stat_id"] for c in matchup["categories"]
+                      if c["status"] in ("close_win", "close_loss")}
+
+    for sid, smeta in STAT_MAP.items():
+        opp_rank = opp_cat_ranks.get(sid)
+        my_rank  = my_cat_ranks.get(sid)
+        cat_name = smeta["name"]
+
+        if opp_rank is not None:
+            if opp_rank <= 4:
+                their_strengths.append(cat_name)
+            elif opp_rank >= 9:
+                their_weaknesses.append(cat_name)
+
+        if opp_rank is not None and my_rank is not None:
+            if my_rank < opp_rank:
+                your_advantages.append(cat_name)
+            elif opp_rank < my_rank and sid in swing_stat_ids:
+                threat_categories.append(cat_name)
+
+    # Generate game plan text
+    parts = []
+    if their_strengths:
+        parts.append(f"They dominate {', '.join(their_strengths[:2])} — expect a tough fight there.")
+    if their_weaknesses:
+        parts.append(f"Exploit their weakness in {', '.join(their_weaknesses[:2])}.")
+    if your_advantages:
+        parts.append(f"You have the edge in {', '.join(your_advantages[:3])} — protect those leads.")
+    if threat_categories:
+        parts.append(f"Watch out for {', '.join(threat_categories)} — these are battleground categories.")
+    if not parts:
+        parts.append("Game plan data will populate once the season is underway.")
+
+    game_plan = " ".join(parts)
+
+    return {
+        "opponent_name":    opp_name,
+        "their_strengths":  their_strengths,
+        "their_weaknesses": their_weaknesses,
+        "your_advantages":  your_advantages,
+        "threat_categories": threat_categories,
+        "game_plan":        game_plan,
+        "week":             matchup["week"],
+    }
 
 
 # ─── Entry point ──────────────────────────────────────────────────────────────

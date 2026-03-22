@@ -14,7 +14,9 @@ workspace_root = app_root.parent.parent
 sys.path.insert(0, str(app_root))
 sys.path.insert(0, str(workspace_root / 'packages'))
 
-from src.importers import CSVImporter
+from src.yahoo_oauth_manual import YahooOAuth2
+from src.yahoo_client import YahooFantasyClient
+from src.models import Player, Roster
 from src.lineup_optimizer import LineupOptimizer
 from src.waiver_analyzer import WaiverAnalyzer
 from src.analyzer import KeeperAnalyzer
@@ -26,16 +28,81 @@ dashboard_root = workspace_root / "apps" / "baseball-dashboard"
 output_dir = dashboard_root / "public" / "api"
 output_dir.mkdir(parents=True, exist_ok=True)
 
+LEAGUE_KEY = "469.l.25136"
+MY_TEAM_KEY = "469.l.25136.t.2"
+
 print("\n🔄 Exporting dashboard data...")
 print("="*70)
 
+# ─── Yahoo client (initialized once, reused throughout) ───────────────────────
+
+_yahoo_client: YahooFantasyClient | None = None
+
+def _get_yahoo_client() -> YahooFantasyClient:
+    global _yahoo_client
+    if _yahoo_client is not None:
+        return _yahoo_client
+    config_path = app_root / "config" / "oauth2.json"
+    if not config_path.exists():
+        raise FileNotFoundError(f"Yahoo OAuth config not found: {config_path}")
+    oauth = YahooOAuth2.load_from_file(str(config_path))
+    oauth.refresh_access_token()
+    oauth.save_to_file(str(config_path))
+    _yahoo_client = YahooFantasyClient(oauth)
+    return _yahoo_client
+
+
+def fetch_roster_from_yahoo() -> Roster:
+    """Fetch current roster from Yahoo Fantasy API."""
+    client = _get_yahoo_client()
+
+    adp_fetcher = None
+    try:
+        from src.adp_fetcher import ADPFetcher
+        adp_fetcher = ADPFetcher()
+    except Exception:
+        pass
+
+    raw_players = client.get_team_roster(MY_TEAM_KEY)
+
+    roster = Roster(team_name="2balls", league_name="California Palm League", year=2026)
+    for p in raw_players:
+        name = p.get("name", "")
+        if not name:
+            continue
+
+        position = p.get("display_position") or (
+            p.get("eligible_positions", ["UTIL"])[0]
+            if p.get("eligible_positions") else "UTIL"
+        )
+        team = p.get("editorial_team_abbr", "FA")
+
+        adp = 300.0
+        if adp_fetcher:
+            try:
+                adp = adp_fetcher.get_player_adp(name) or 300.0
+            except Exception:
+                pass
+
+        player = Player(
+            name=name,
+            position=position,
+            team=team,
+            draft_round=12,
+            draft_year=2025,
+            years_kept=0,
+            adp=adp,
+            is_undrafted_fa=False,
+        )
+        roster.add_player(player)
+
+    return roster
+
+
 # Load roster
-print("\n📋 Loading roster...")
-roster = CSVImporter.import_roster(
-    app_root / "data" / "my_roster_from_yahoo.csv",
-    team_name="2balls"
-)
-print(f"✅ Loaded {len(roster.players)} players")
+print("\n📋 Loading roster from Yahoo API...")
+roster = fetch_roster_from_yahoo()
+print(f"✅ Loaded {len(roster.players)} players from Yahoo API")
 
 # 1. Daily Lineup
 print("\n📊 Generating daily lineup recommendations...")
@@ -199,20 +266,24 @@ try:
         fetch_recent_stats=True
     )
     
-    # Sample free agents (in production, would fetch from Yahoo API)
-    # Format matches what Yahoo API returns
-    sample_free_agents = [
-        {'name': 'Yoshinobu Yamamoto', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'LAD'},
-        {'name': 'Royce Lewis', 'eligible_positions': ['3B', 'OF'], 'editorial_team_abbr': 'MIN'},
-        {'name': 'Wyatt Langford', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'TEX'},
-        {'name': 'Luis Robert Jr.', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'CWS'},
-        {'name': 'Hunter Greene', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'CIN'},
-        {'name': 'Bobby Miller', 'eligible_positions': ['SP'], 'editorial_team_abbr': 'LAD'},
-        {'name': 'Ezequiel Tovar', 'eligible_positions': ['SS'], 'editorial_team_abbr': 'COL'},
-        {'name': 'Colton Cowser', 'eligible_positions': ['OF'], 'editorial_team_abbr': 'BAL'},
-        {'name': 'Michael Busch', 'eligible_positions': ['1B', '2B'], 'editorial_team_abbr': 'CHC'},
-        {'name': 'Spencer Steer', 'eligible_positions': ['2B', '3B', 'OF'], 'editorial_team_abbr': 'CIN'},
-    ]
+    # Fetch real free agents from Yahoo
+    try:
+        print("  Fetching free agents from Yahoo...")
+        client = _get_yahoo_client()
+        free_agents_raw = client.get_free_agents(LEAGUE_KEY, count=75)
+        sample_free_agents = [
+            {
+                "name": fa["name"],
+                "eligible_positions": fa.get("eligible_positions", []),
+                "editorial_team_abbr": fa.get("editorial_team_abbr", "FA"),
+            }
+            for fa in free_agents_raw
+            if fa.get("name")
+        ]
+        print(f"  Got {len(sample_free_agents)} real free agents from Yahoo")
+    except Exception as e:
+        print(f"  ⚠️  Yahoo FA fetch failed: {e}. Using empty list.")
+        sample_free_agents = []
     
     # Analyze free agents against roster
     all_recommendations = waiver_analyzer.analyze_free_agents(sample_free_agents, max_recommendations=20)
@@ -309,7 +380,8 @@ try:
         "summary": {
             "scanned": len(sample_free_agents),
             "recommended": len(unique_recommendations),
-            "criteria": "ADP value, breakout signals, recent performance trends"
+            "criteria": "ADP value, breakout signals, recent performance trends",
+            "source": "Yahoo Fantasy API (live free agents)"
         }
     }
     

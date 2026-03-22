@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
-import { ArrowLeft, RefreshCw, TrendingUp, TrendingDown, Minus, AlertTriangle, Swords } from "lucide-react"
+import { ArrowLeft, RefreshCw, TrendingUp, TrendingDown, Minus, AlertTriangle, Swords, Shield, Crosshair } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 const API_BASE = process.env.NEXT_PUBLIC_DRAFT_API_URL ?? "http://localhost:8001"
 
@@ -30,6 +31,16 @@ type MatchupData = {
   my_team:    string | null
   opp_team:   string | null
   categories: Category[]
+}
+
+type ScoutingData = {
+  opponent_name: string | null
+  their_strengths: string[]
+  their_weaknesses: string[]
+  your_advantages: string[]
+  threat_categories: string[]
+  game_plan: string
+  week: number
 }
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
@@ -108,6 +119,7 @@ export default function MatchupPage() {
   const [loading,   setLoading]   = useState(true)
   const [error,     setError]     = useState<string | null>(null)
   const [refreshing,setRefreshing] = useState(false)
+  const [scouting,  setScouting]  = useState<ScoutingData | null>(null)
 
   const fetch_ = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true)
@@ -124,11 +136,22 @@ export default function MatchupPage() {
     }
   }, [])
 
+  const fetchScouting = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/season/opponent`, { cache: "no-store" })
+      if (!res.ok) return
+      setScouting(await res.json())
+    } catch {
+      // Server not running — silently ignore
+    }
+  }, [])
+
   useEffect(() => {
     fetch_()
-    const t = setInterval(() => fetch_(), 60_000)
+    fetchScouting()
+    const t = setInterval(() => { fetch_(); fetchScouting() }, 60_000)
     return () => clearInterval(t)
-  }, [fetch_])
+  }, [fetch_, fetchScouting])
 
   if (loading) return (
     <main className="min-h-screen bg-slate-950 flex items-center justify-center">
@@ -215,6 +238,68 @@ export default function MatchupPage() {
             <div className="text-xs text-amber-500/70 mt-1">
               These are within range — lineup and waiver decisions here matter most this week.
             </div>
+          </div>
+        )}
+
+        {/* Opponent Scouting Card */}
+        {scouting && scouting.opponent_name && (
+          <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <Crosshair className="h-4 w-4 text-slate-400" />
+              <span className="text-sm font-bold text-slate-200">Opponent Scout: {scouting.opponent_name}</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              {scouting.their_strengths.length > 0 && (
+                <div>
+                  <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                    <Shield className="h-3 w-3" /> Their Strengths
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {scouting.their_strengths.map(s => (
+                      <Badge key={s} className="bg-red-500/20 text-red-400 border-red-500/30 text-[10px]">{s}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {scouting.their_weaknesses.length > 0 && (
+                <div>
+                  <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Their Weaknesses</div>
+                  <div className="flex flex-wrap gap-1">
+                    {scouting.their_weaknesses.map(s => (
+                      <Badge key={s} className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">{s}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {scouting.your_advantages.length > 0 && (
+                <div>
+                  <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Your Advantages</div>
+                  <div className="flex flex-wrap gap-1">
+                    {scouting.your_advantages.map(s => (
+                      <Badge key={s} className="bg-sky-500/20 text-sky-400 border-sky-500/30 text-[10px]">{s}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {scouting.threat_categories.length > 0 && (
+                <div>
+                  <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Threat Categories</div>
+                  <div className="flex flex-wrap gap-1">
+                    {scouting.threat_categories.map(s => (
+                      <Badge key={s} className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">{s}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {scouting.game_plan && (
+              <div className="rounded-lg bg-slate-800/60 border border-slate-700 px-4 py-3">
+                <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Game Plan</div>
+                <div className="text-sm text-slate-300 leading-relaxed">{scouting.game_plan}</div>
+              </div>
+            )}
           </div>
         )}
 

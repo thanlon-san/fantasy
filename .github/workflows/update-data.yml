@@ -36,6 +36,11 @@ jobs:
         run: |
           pip install -r requirements.txt
       
+      - name: Set up Yahoo OAuth credentials
+        run: |
+          mkdir -p apps/keeper-advisor/config
+          echo '${{ secrets.YAHOO_OAUTH_JSON }}' > apps/keeper-advisor/config/oauth2.json
+
       - name: Run data export
         working-directory: apps/keeper-advisor
         run: |
