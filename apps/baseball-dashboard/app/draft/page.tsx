@@ -17,7 +17,6 @@ import {
   ArrowLeft,
   Star,
   Clock,
-  Trophy,
   AlertCircle,
   CheckCircle2,
   Info,
@@ -378,13 +377,8 @@ export default function DraftPage() {
 
   const countdown = getDraftCountdown(DRAFT_DATE)
 
-  const myTeam = leagueData?.teams.find(t => t.is_my_team)
   const myKeeperRounds = myKeepers.map(k => Number(k.round))
-  // Picks I'm making by drafting (not using a keeper slot)
   const totalRounds = 24
-  const myRealPickRounds = Array.from({ length: totalRounds }, (_, i) => i + 1).filter(
-    r => !myKeeperRounds.includes(r)
-  )
 
   if (loading) {
     return (

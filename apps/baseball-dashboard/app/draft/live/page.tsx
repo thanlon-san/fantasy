@@ -12,13 +12,14 @@ const POLL_MS  = 15_000
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Recommendation = {
-  rank:      number
-  name:      string
-  team:      string
-  positions: string[]
-  adp:       number
-  tier:      string
-  reason:    string
+  rank:           number
+  name:           string
+  team:           string
+  positions:      string[]
+  adp:            number
+  tier:           string
+  reason:         string
+  yahoo_discount: number
 }
 
 type RosterPlayer = {
@@ -158,7 +159,6 @@ function RecommendationRow({
   onMine: (name: string) => void
   onDrafted: (name: string) => void
 }) {
-  const isPitcher = rec.positions.some(p => ["SP", "RP", "P"].includes(p))
   const isPenalized = rec.reason.includes("wait")
 
   return (
@@ -183,7 +183,14 @@ function RecommendationRow({
 
       {/* Name + team */}
       <div className="flex-1 min-w-0">
-        <div className="font-semibold text-sm text-slate-100 truncate">{rec.name}</div>
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-sm text-slate-100 truncate">{rec.name}</span>
+          {rec.yahoo_discount >= 20 && (
+            <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              Yahoo +{Math.round(rec.yahoo_discount)}
+            </span>
+          )}
+        </div>
         <div className="text-[11px] text-slate-500">{rec.team} · <span className="text-slate-400">{rec.reason}</span></div>
       </div>
 
@@ -323,7 +330,7 @@ export default function LiveDraftPage() {
       <main className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="text-5xl">⏳</div>
-          <div className="text-slate-200 text-xl font-bold">Draft hasn't started yet</div>
+          <div className="text-slate-200 text-xl font-bold">Draft hasn&apos;t started yet</div>
           <div className="text-slate-400 text-sm">This page will update automatically when picks begin.</div>
           <div className="text-slate-600 text-xs">Polling every {POLL_MS / 1000}s · {state.last_synced}</div>
           <Button variant="ghost" size="sm" onClick={() => fetchState(true)} disabled={refreshing}>

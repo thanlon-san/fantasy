@@ -181,6 +181,11 @@ class FPScraper:
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(resp.content, "html.parser")
 
+        # Table columns: rank | player | yahoo_adp | cbs | rts | nfbc | ft | avg_adp
+        # We capture both yahoo_adp and avg_adp to compute the value discount.
+        # A positive yahoo_discount means Yahoo drafters are sleeping on this player
+        # relative to the broader expert consensus — a real value signal.
+
         # Parse all rows, then deduplicate (keep best ADP per player)
         seen: Dict[str, Dict] = {}  # normalized_name -> player dict
 
@@ -190,6 +195,7 @@ class FPScraper:
                 if i + 7 >= len(cells):
                     break
                 player_text = cells[i + 1].get_text(strip=True)
+                yahoo_text  = cells[i + 2].get_text(strip=True)
                 avg_text    = cells[i + 7].get_text(strip=True)
 
                 m = re.match(r"^(.+?)\s*\(([A-Z]{2,3}(?:/[A-Z]{2,3})?)\s*-\s*([^)]+)\)", player_text)
@@ -207,9 +213,28 @@ class FPScraper:
                 except ValueError:
                     continue
 
+                # Yahoo-specific ADP — if Yahoo drafters sleep on this player
+                # relative to expert consensus, it's a value opportunity.
+                # Positive yahoo_discount = Yahoo drafts LATER than consensus = undervalued on Yahoo
+                _yahoo_adp = adp  # default: no platform difference
+                _yahoo_discount = 0.0
+                try:
+                    _yahoo_adp = float(yahoo_text)
+                    # yahoo_adp > adp means Yahoo drafts later → undervalued here
+                    _yahoo_discount = round(_yahoo_adp - adp, 1)
+                except ValueError:
+                    pass
+
                 key = norm_name(name)
                 if key not in seen or adp < seen[key]["adp"]:
-                    seen[key] = {"name": name, "team": team, "positions": positions, "adp": adp}
+                    seen[key] = {
+                        "name":           name,
+                        "team":           team,
+                        "positions":      positions,
+                        "adp":            adp,
+                        "yahoo_adp":      _yahoo_adp,
+                        "yahoo_discount": _yahoo_discount,
+                    }
 
         players = sorted(seen.values(), key=lambda x: x["adp"])
 
@@ -479,6 +504,19 @@ class DraftBoard:
             score  = max(0, 350 - adp)
             reason = ""
 
+            # Yahoo value bonus: positive discount means Yahoo drafters are sleeping
+            # on this player relative to expert consensus — genuine value for us.
+            # Thresholds are intentionally conservative to avoid noise.
+            yahoo_discount = p.get("yahoo_discount", 0.0)
+            if yahoo_discount >= 40:
+                score += 35
+                value_tag = f" · Yahoo sleeper +{yahoo_discount:.0f}"
+            elif yahoo_discount >= 20:
+                score += 15
+                value_tag = f" · Yahoo +{yahoo_discount:.0f}"
+            else:
+                value_tag = ""
+
             if rnd in BATTER_ROUNDS:
                 if not is_bat:
                     score -= 300  # strongly deprioritize pitchers
@@ -518,7 +556,7 @@ class DraftBoard:
                 elif is_bat:
                     score += 20;  reason = "bat depth"
 
-            scored.append({**p, "_score": score, "_reason": reason or "value"})
+            scored.append({**p, "_score": score, "_reason": (reason or "value") + value_tag})
 
         scored.sort(key=lambda x: (-x["_score"], x["adp"]))
         return scored[:n]

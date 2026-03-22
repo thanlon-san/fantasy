@@ -177,13 +177,14 @@ class PickInfo(BaseModel):
     is_mine:   bool
 
 class Recommendation(BaseModel):
-    rank:      int
-    name:      str
-    team:      str
-    positions: List[str]
-    adp:       float
-    tier:      str
-    reason:    str
+    rank:           int
+    name:           str
+    team:           str
+    positions:      List[str]
+    adp:            float
+    tier:           str
+    reason:         str
+    yahoo_discount: float = 0.0
 
 class RosterPlayer(BaseModel):
     name:     str
@@ -262,6 +263,7 @@ def get_state():
             adp=r["adp"],
             tier=get_tier(r["adp"]),
             reason=r.get("_reason", ""),
+            yahoo_discount=r.get("yahoo_discount", 0.0),
         )
         for i, r in enumerate(recs)
     ]
