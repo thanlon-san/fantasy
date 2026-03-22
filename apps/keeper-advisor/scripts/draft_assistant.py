@@ -51,25 +51,58 @@ MY_DRAFT_POSITION = 11
 TOTAL_TEAMS       = 12
 TOTAL_ROUNDS      = 24
 SEASON            = 2026
-MY_KEEPER_ROUNDS  = {9, 10, 11}
+MY_KEEPER_ROUNDS  = {9, 11, 12}   # Confirmed from Yahoo: Crochet R9, Miller R11, Neto R12
 
 MY_KEEPERS = [
     {"name": "Garrett Crochet", "position": "SP", "round": 9,  "adp": 11},
-    {"name": "Mason Miller",    "position": "RP", "round": 10, "adp": 55},
-    {"name": "Zach Neto",       "position": "SS", "round": 11, "adp": 36},
+    {"name": "Mason Miller",    "position": "RP", "round": 11, "adp": 55},
+    {"name": "Zach Neto",       "position": "SS", "round": 12, "adp": 36},
 ]
 
-# Remaining roster slots to fill via the draft (keepers subtract from these)
+# All 12 teams' confirmed keepers — pre-removed from the available pool at draft start.
+# Knowing these shifts the effective ADP board significantly (Skenes ADP 4, Raleigh ADP 11,
+# Ketel Marte ADP 13, Elly De La Cruz ADP ~29, George Kirby ADP ~22 all off the board).
+LEAGUE_KEEPERS_ALL = [
+    # Col. Chin Music
+    "Cal Raleigh", "Elly De La Cruz", "Roman Anthony",
+    # 2balls (my own)
+    "Garrett Crochet", "Mason Miller", "Zach Neto",
+    # Bloodrocuted
+    "George Kirby", "Chris Sale", "Riley Greene",
+    # Clayton Kerfax
+    "Jesus Luzardo", "Tyler Soderstrom", "Hunter Goodman",
+    # Eephus Knieephus
+    "William Contreras", "Devin Williams", "Ben Rice",
+    # Jobu
+    "Pete Crow-Armstrong", "Nolan McLean",
+    # Jedi Master All Stars
+    "Josh Naylor", "Jarren Duran",
+    # Ooh Piece Of Candy
+    "Trevor Story", "Kyle Stowers", "Nico Hoerner",
+    # PrepareTheLazorbeam
+    "Ketel Marte", "Brent Rooker", "Maikel Garcia",
+    # sallywithacrouton
+    "Junior Caminero", "Cristopher Sanchez", "Brice Turang",
+    # Slam Diego
+    "Byron Buxton", "Aroldis Chapman", "Jacob Misiorowski",
+    # Uncle Charlie
+    "Paul Skenes", "Jackson Merrill", "Nick Kurtz",
+]
+
+# Remaining roster slots to fill via the draft (keepers subtract from these).
+# Updated after confirming keeper rounds from Yahoo:
+#   Crochet R9 (SP kept), Miller R11 (RP kept), Neto R12 (SS kept)
+#   Round 10 is now a REAL pick (was previously Miller's keeper slot).
 ROSTER_NEEDS = {
     "C":    1,
     "1B":   1,
     "2B":   1,
     "3B":   1,
-    "SS":   0,   # Neto
+    "SS":   0,   # Neto (R12)
     "OF":   3,
     "Util": 2,
-    "SP":   5,   # 6 slots − Crochet
-    "RP":   2,   # 3 slots − Miller
+    "SP":   5,   # 6 slots − Crochet (R9)
+    "RP":   2,   # 3 slots − Miller (R11)
     "P":    1,   # Pitcher flex slot
     "BN":   4,
 }
@@ -396,9 +429,11 @@ class DraftBoard:
         self.my_picks     = calc_my_picks()
         self.my_roster    = list(MY_KEEPERS) # start with keepers
 
-        # Pre-mark my own keepers
-        for k in MY_KEEPERS:
-            self.drafted_norm.add(norm_name(k["name"]))
+        # Pre-mark ALL league keepers (including other teams') as off the board.
+        # This shifts the effective available pool — Skenes, Raleigh, Ketel Marte,
+        # Elly De La Cruz, George Kirby etc. are all gone before pick 1.
+        for name in LEAGUE_KEEPERS_ALL:
+            self.drafted_norm.add(norm_name(name))
 
     # ── Drafting ──────────────────────────────────────────────────────────────
 

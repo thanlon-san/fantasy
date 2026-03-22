@@ -1,84 +1,126 @@
 {
   "season": 2026,
   "league_name": "California Palm League",
-  "confirmed": false,
+  "confirmed": true,
   "last_updated": "2026-03-22",
   "teams": [
     {
       "team_name": "Col. Chin Music",
       "owner": "Schafe",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Cal Raleigh",      "position": "C",  "round": 6  },
+        { "player": "Elly De La Cruz",  "position": "SS", "round": 9  },
+        { "player": "Roman Anthony",    "position": "OF", "round": 12 }
+      ]
     },
     {
       "team_name": "2balls",
       "owner": "Tyler",
       "is_my_team": true,
       "keepers": [
-        { "player": "Garrett Crochet", "position": "SP", "round": 9, "adp": 11 },
-        { "player": "Zach Neto", "position": "SS", "round": 11, "adp": 36 },
-        { "player": "Mason Miller", "position": "RP", "round": 10, "adp": 55 }
+        { "player": "Garrett Crochet", "position": "SP", "round": 9,  "adp": 11 },
+        { "player": "Mason Miller",    "position": "RP", "round": 11, "adp": 55 },
+        { "player": "Zach Neto",       "position": "SS", "round": 12, "adp": 36 }
       ]
     },
     {
       "team_name": "Bloodrocuted",
       "owner": "Benjamin",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "George Kirby",  "position": "SP", "round": 6  },
+        { "player": "Chris Sale",    "position": "SP", "round": 7  },
+        { "player": "Riley Greene",  "position": "OF", "round": 11 }
+      ]
     },
     {
       "team_name": "Clayton Kerfax",
       "owner": "Alex",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Jesus Luzardo",     "position": "SP", "round": 10 },
+        { "player": "Tyler Soderstrom",  "position": "1B", "round": 11 },
+        { "player": "Hunter Goodman",    "position": "C",  "round": 12 }
+      ]
     },
     {
       "team_name": "Eephus Knieephus",
       "owner": "Scott",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "William Contreras", "position": "C",  "round": 10 },
+        { "player": "Devin Williams",    "position": "RP", "round": 11 },
+        { "player": "Ben Rice",          "position": "C",  "round": 12 }
+      ]
     },
     {
       "team_name": "Jobu",
       "owner": "Tyler",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Pete Crow-Armstrong", "position": "OF", "round": 11 },
+        { "player": "Nolan McLean",        "position": "SP", "round": 12 }
+      ]
     },
     {
       "team_name": "Jedi Master All Stars",
       "owner": "SD skeptic",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Josh Naylor",   "position": "1B", "round": 10 },
+        { "player": "Jarren Duran",  "position": "OF", "round": 11 }
+      ]
     },
     {
       "team_name": "Ooh Piece Of Candy",
       "owner": "Sean",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Trevor Story",  "position": "SS", "round": 10 },
+        { "player": "Kyle Stowers",  "position": "OF", "round": 11 },
+        { "player": "Nico Hoerner",  "position": "2B", "round": 12 }
+      ]
     },
     {
       "team_name": "PrepareTheLazorbeam",
       "owner": "Peter",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Ketel Marte",   "position": "2B", "round": 10 },
+        { "player": "Brent Rooker",  "position": "OF", "round": 11 },
+        { "player": "Maikel Garcia", "position": "2B", "round": 12 }
+      ]
     },
     {
       "team_name": "sallywithacrouton",
       "owner": "sallywithacrouton",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Junior Caminero",    "position": "3B", "round": 10 },
+        { "player": "Cristopher Sanchez", "position": "SP", "round": 11 },
+        { "player": "Brice Turang",       "position": "2B", "round": 12 }
+      ]
     },
     {
       "team_name": "Slam Diego",
       "owner": "Steven",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Byron Buxton",       "position": "OF", "round": 10 },
+        { "player": "Aroldis Chapman",    "position": "RP", "round": 11 },
+        { "player": "Jacob Misiorowski",  "position": "SP", "round": 12 }
+      ]
     },
     {
       "team_name": "Uncle Charlie",
       "owner": "R-Dubs",
       "is_my_team": false,
-      "keepers": []
+      "keepers": [
+        { "player": "Paul Skenes",       "position": "SP", "round": 10 },
+        { "player": "Jackson Merrill",   "position": "OF", "round": 11 },
+        { "player": "Nick Kurtz",        "position": "1B", "round": 12 }
+      ]
     }
   ]
 }

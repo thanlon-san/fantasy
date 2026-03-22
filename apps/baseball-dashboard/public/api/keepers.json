@@ -1,8 +1,39 @@
 {
-  "generated_at": "2026-03-22T23:06:23.147770",
-  "keepers": [],
+  "generated_at": "2026-03-22T16:45:00.000000",
+  "keepers": [
+    {
+      "player": "Garrett Crochet",
+      "position": "SP, P",
+      "round": 9,
+      "adp": 11,
+      "surplus": "+79",
+      "value": "Keep",
+      "years_remaining": 3,
+      "reason": "Excellent value: 79.0 surplus points, cost: round 9"
+    },
+    {
+      "player": "Zach Neto",
+      "position": "SS, Util",
+      "round": 12,
+      "adp": 36,
+      "surplus": "+96",
+      "value": "Keep",
+      "years_remaining": 3,
+      "reason": "Excellent value: 96.0 surplus points, cost: round 12"
+    },
+    {
+      "player": "Mason Miller",
+      "position": "RP, P",
+      "round": 11,
+      "adp": 55,
+      "surplus": "+77",
+      "value": "Keep",
+      "years_remaining": 3,
+      "reason": "Excellent value: 77.0 surplus points, cost: round 11"
+    }
+  ],
   "summary": {
-    "total_eligible": 0,
-    "recommended": 0
+    "total_eligible": 23,
+    "recommended": 3
   }
 }
