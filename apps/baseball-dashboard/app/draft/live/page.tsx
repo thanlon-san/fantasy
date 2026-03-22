@@ -45,6 +45,28 @@ type NextPick = {
   picks_away: number
 }
 
+type TurnPick = {
+  overall:   number
+  name:      string
+  team:      string
+  positions: string[]
+  adp:       number
+  reason:    string
+}
+
+type TurnCombo = {
+  pick1_overall: number
+  pick2_overall: number
+  pick1:         TurnPick
+  pick2:         TurnPick
+  gap:           number
+}
+
+type TierBreak = {
+  before_index: number
+  adp_gap:      number
+}
+
 type DraftState = {
   status:          "predraft" | "live" | "complete"
   picks_made:      number
@@ -53,6 +75,8 @@ type DraftState = {
   phase_label:     string
   my_next_pick:    NextPick | null
   recommendations: Recommendation[]
+  tier_breaks:     TierBreak[]
+  turn_combo:      TurnCombo | null
   my_roster:       RosterPlayer[]
   recent_picks:    RecentPick[]
   open_needs:      Record<string, number>
@@ -406,14 +430,47 @@ export default function LiveDraftPage() {
                 {state.phase.replace("_", " ")}
               </div>
             </div>
+            {/* Turn combo banner */}
+            {state.turn_combo && (
+              <div className="mx-3 my-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3">
+                <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2">
+                  Turn Combo — Picks {state.turn_combo.pick1_overall} + {state.turn_combo.pick2_overall}
+                </div>
+                <div className="flex gap-4 text-sm">
+                  {[state.turn_combo.pick1, state.turn_combo.pick2].map((p, i) => (
+                    <div key={i} className="flex-1 flex items-center gap-2">
+                      <span className="text-slate-400 text-xs">#{i === 0 ? state.turn_combo!.pick1_overall : state.turn_combo!.pick2_overall}</span>
+                      <div className="flex gap-1">
+                        {p.positions.slice(0,2).map(pos => (
+                          <span key={pos} className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${positionBadgeClass(pos)}`}>{pos}</span>
+                        ))}
+                      </div>
+                      <span className="font-semibold text-slate-100">{p.name}</span>
+                      <span className="text-slate-500 text-xs">{p.team} · {p.adp}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="divide-y-0">
-              {state.recommendations.map(rec => (
-                <RecommendationRow
-                  key={rec.name}
-                  rec={rec}
-                  onMine={(name) => markPick(name, true)}
-                  onDrafted={(name) => markPick(name, false)}
-                />
+              {state.recommendations.map((rec, i) => (
+                <div key={rec.name}>
+                  {state.tier_breaks.some(tb => tb.before_index === i) && (
+                    <div className="flex items-center gap-2 px-4 py-1">
+                      <div className="flex-1 border-t border-dashed border-amber-500/40" />
+                      <span className="text-[10px] text-amber-500/70 font-medium">
+                        tier drop · +{state.tier_breaks.find(tb => tb.before_index === i)!.adp_gap.toFixed(0)} ADP gap
+                      </span>
+                      <div className="flex-1 border-t border-dashed border-amber-500/40" />
+                    </div>
+                  )}
+                  <RecommendationRow
+                    rec={rec}
+                    onMine={(name) => markPick(name, true)}
+                    onDrafted={(name) => markPick(name, false)}
+                  />
+                </div>
               ))}
               {state.recommendations.length === 0 && (
                 <div className="px-4 py-8 text-center text-slate-500 text-sm">

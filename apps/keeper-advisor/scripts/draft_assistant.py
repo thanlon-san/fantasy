@@ -484,7 +484,94 @@ class DraftBoard:
             return 0
         return nxt["overall"] - self.picks_made
 
+    def next_two_picks(self) -> List[Optional[Dict]]:
+        """Return the next two draft pick slots for my team (for turn optimization)."""
+        picks = []
+        for p in self.my_picks:
+            if p["is_keeper"]:
+                continue
+            if p["overall"] and p["overall"] > self.picks_made:
+                picks.append(p)
+            if len(picks) == 2:
+                break
+        return picks
+
+    # ── Dynamic scarcity ─────────────────────────────────────────────────────
+
+    # Expected number of draftable players per position in a 12-team league
+    # Based on typical ADP depth charts (players with meaningful draft value)
+    _POSITION_POOL = {"C": 16, "SS": 22, "2B": 24, "3B": 24, "1B": 28, "OF": 80,
+                      "SP": 90, "RP": 40}
+
+    def _scarcity_bonus(self, position: str) -> float:
+        """
+        Dynamic positional scarcity bonus. Increases as the available pool
+        depletes — so if 10 of 16 viable catchers are gone, C urgency spikes.
+        Returns a bonus score (0–120) to add to the player's base score.
+        """
+        avail        = self.available()
+        pool_size    = self._POSITION_POOL.get(position, 30)
+        remaining    = sum(1 for p in avail if position in p.get("positions", []))
+        depletion    = max(0.0, 1.0 - (remaining / pool_size))
+        # Scale 0→120 with a curve that accelerates past 50% depletion
+        raw          = depletion ** 1.4 * 120
+        return round(raw, 1)
+
     # ── Recommendations ───────────────────────────────────────────────────────
+
+    def tier_breaks(self, players: List[Dict], top_n: int = 12) -> List[int]:
+        """Return indices in the top_n list where a significant ADP gap begins."""
+        subset = players[:top_n]
+        breaks = []
+        for i in range(1, len(subset)):
+            gap = subset[i]["adp"] - subset[i - 1]["adp"]
+            if gap >= 18:   # ~1.5 rounds worth of gap = meaningful tier cliff
+                breaks.append(i)
+        return breaks
+
+    def recommend_turn(self) -> Optional[Dict]:
+        """
+        When you're 1–4 picks from the turn (picks 11+14), project what will
+        still be available at your second pick and suggest the optimal pair.
+        Returns a dict with pick1 and pick2 suggestions, or None if not near turn.
+        """
+        slots = self.next_two_picks()
+        if len(slots) < 2:
+            return None
+        picks_away = slots[0]["overall"] - self.picks_made
+        if picks_away > 4:
+            return None
+
+        # How many picks happen between slot 1 and slot 2?
+        gap = slots[1]["overall"] - slots[0]["overall"] - 1  # picks between yours
+
+        top = self.recommend(40)   # broad pool to work from
+        batters = [p for p in top if any(pos in p.get("positions", [])
+                                         for pos in ("C","1B","2B","3B","SS","OF","DH"))
+                   and "pitcher" not in p.get("_reason", "")]
+
+        if len(batters) < gap + 2:
+            return None
+
+        pick1 = batters[0]
+        # Simulate gap picks taking the next best players, then pick the best remaining
+        simulated_gone = {self._norm(p["name"]) for p in batters[1 : gap + 1]}
+        pick2_candidates = [p for p in batters[1:] if self._norm(p["name"]) not in simulated_gone]
+        if not pick2_candidates:
+            return None
+        pick2 = pick2_candidates[0]
+
+        return {
+            "pick1_overall": slots[0]["overall"],
+            "pick2_overall": slots[1]["overall"],
+            "pick1": pick1,
+            "pick2": pick2,
+            "gap": gap,
+        }
+
+    @staticmethod
+    def _norm(name: str) -> str:
+        return norm_name(name)
 
     def recommend(self, n: int = 15) -> List[Dict]:
         avail = self.available()
@@ -522,11 +609,18 @@ class DraftBoard:
                     score -= 300  # strongly deprioritize pitchers
                     reason = "pitcher — wait"
                 else:
-                    for pos in BAT_SCARCITY:
-                        if pos in positions and needs.get(pos, 0) > 0:
-                            score += (len(BAT_SCARCITY) - BAT_SCARCITY.index(pos)) * 20
-                            reason = f"fills {pos} need (scarce)"
-                            break
+                    # Dynamic scarcity: replaces fixed BAT_SCARCITY order
+                    best_pos_bonus = 0.0
+                    best_pos       = ""
+                    for pos in positions:
+                        if pos in BAT_SCARCITY and needs.get(pos, 0) > 0:
+                            bonus = self._scarcity_bonus(pos)
+                            if bonus > best_pos_bonus:
+                                best_pos_bonus = bonus
+                                best_pos       = pos
+                    if best_pos:
+                        score += best_pos_bonus
+                        reason = f"fills {best_pos} need (scarce)"
                     if not reason:
                         if needs.get("Util", 0) > 0:
                             score += 10; reason = "Util slot"

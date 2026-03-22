@@ -4,7 +4,7 @@ import { useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star } from "lucide-react"
+import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star, Swords, Trophy, Shield, Zap } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import { PlayerTable } from "@/components/player-table"
@@ -266,11 +266,35 @@ export default function Home() {
                 to search
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
               <Link href="/draft">
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-1.5">
                   <Star className="h-4 w-4" />
-                  Draft Board
+                  Draft
+                </Button>
+              </Link>
+              <Link href="/draft/live">
+                <Button size="sm" className="gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white">
+                  <Zap className="h-3.5 w-3.5" />
+                  Live Draft
+                </Button>
+              </Link>
+              <Link href="/matchup">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Swords className="h-4 w-4" />
+                  Matchup
+                </Button>
+              </Link>
+              <Link href="/standings">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Trophy className="h-4 w-4" />
+                  Standings
+                </Button>
+              </Link>
+              <Link href="/closers">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Shield className="h-4 w-4" />
+                  Closers
                 </Button>
               </Link>
               {formattedTimestamp && (
