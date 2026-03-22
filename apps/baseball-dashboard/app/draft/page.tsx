@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   Info,
   Users,
+  Zap,
 } from "lucide-react"
 
 const BASE_PATH = process.env.NODE_ENV === 'production' ? '/fantasy/baseball' : ''
@@ -97,52 +98,38 @@ function positionColor(pos: string): string {
   return "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300"
 }
 
-// ─── My Keepers Card ──────────────────────────────────────────────────────────
+// ─── My Keepers Strip (compact) ───────────────────────────────────────────────
 
-function MyKeeperCard({ keeper }: { keeper: MyKeeper }) {
-  const round = Number(keeper.round)
-  const surplus = parseInt(keeper.surplus.replace('+', ''))
-  const isGreatValue = surplus >= 60
+function MyKeepersStrip({ keepers, keeperRounds }: { keepers: MyKeeper[]; keeperRounds: number[] }) {
+  if (keepers.length === 0) return null
 
   return (
-    <div className={`rounded-xl border bg-card overflow-hidden shadow-sm transition-all hover:shadow-md ${
-      isGreatValue ? 'border-emerald-200 dark:border-emerald-800' : ''
-    }`}>
-      <div className={`px-5 py-3 border-b flex items-center justify-between ${
-        isGreatValue ? 'bg-emerald-50/60 dark:bg-emerald-950/20' : 'bg-muted/20'
-      }`}>
-        <div>
-          <div className="font-bold text-lg leading-tight">{keeper.player}</div>
-          <div className="text-sm text-muted-foreground mt-0.5">
-            {keeper.position || '—'}
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-card px-4 py-2.5">
+      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide mr-1">
+        Keepers
+      </span>
+      {keepers.map((k, i) => {
+        const surplus = parseInt(k.surplus.replace('+', ''))
+        return (
+          <div
+            key={i}
+            className="flex items-center gap-1.5 rounded-full border bg-muted/40 px-3 py-1 text-sm"
+          >
+            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${positionColor(k.position || '')}`}>
+              {k.position}
+            </span>
+            <span className="font-medium">{k.player}</span>
+            <span className="text-muted-foreground">·</span>
+            <span className="text-muted-foreground text-xs">Rd {k.round}</span>
+            <span className={`text-xs font-semibold ${surplus > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+              {k.surplus}
+            </span>
           </div>
-        </div>
-        {isGreatValue && (
-          <Trophy className="h-5 w-5 text-emerald-600 shrink-0" />
-        )}
-      </div>
-      <div className="px-5 py-4 grid grid-cols-3 gap-4 text-center">
-        <div>
-          <div className="text-2xl font-bold text-primary">Rd {round}</div>
-          <div className="text-xs text-muted-foreground mt-1">Keeper Cost</div>
-        </div>
-        <div>
-          <div className="text-2xl font-bold text-muted-foreground">{keeper.adp}</div>
-          <div className="text-xs text-muted-foreground mt-1">ADP</div>
-        </div>
-        <div>
-          <div className={`text-2xl font-bold ${surplus > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-            {keeper.surplus}
-          </div>
-          <div className="text-xs text-muted-foreground mt-1">Surplus</div>
-        </div>
-      </div>
-      {keeper.years_remaining !== undefined && (
-        <div className="px-5 pb-3 flex items-center gap-2 text-xs text-muted-foreground border-t pt-3">
-          <Clock className="h-3.5 w-3.5" />
-          {keeper.years_remaining} year{keeper.years_remaining !== 1 ? 's' : ''} of control remaining
-        </div>
-      )}
+        )
+      })}
+      <span className="ml-auto text-xs text-muted-foreground">
+        Locks rounds {keeperRounds.sort((a, b) => a - b).join(', ')}
+      </span>
     </div>
   )
 }
@@ -439,7 +426,15 @@ export default function DraftPage() {
                 </p>
               </div>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <Link href="/draft/live">
+                <Button size="sm" className="gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white">
+                  <Zap className="h-3.5 w-3.5" />
+                  Go Live
+                </Button>
+              </Link>
+              <ThemeToggle />
+            </div>
           </div>
 
           {/* Countdown Banner */}
@@ -494,43 +489,10 @@ export default function DraftPage() {
           </div>
         )}
 
-        {/* My Keepers */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-emerald-600" />
-              My Keepers
-              {myTeam?.team_name && (
-                <span className="text-muted-foreground font-normal text-base">— {myTeam.team_name}</span>
-              )}
-            </h2>
-            {myKeepers.length > 0 && (
-              <div className="text-sm text-muted-foreground">
-                Using rounds {myKeeperRounds.sort((a, b) => a - b).join(', ')}
-              </div>
-            )}
-          </div>
-
-          {myKeepers.length === 0 ? (
-            <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-              <Star className="h-10 w-10 mx-auto mb-3 opacity-30" />
-              <p>No keeper data. Run the export script to generate keeper recommendations.</p>
-            </div>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {myKeepers.map((keeper, i) => (
-                <MyKeeperCard key={i} keeper={keeper} />
-              ))}
-            </div>
-          )}
-
-          {myKeepers.length > 0 && myRealPickRounds.length > 0 && (
-            <div className="rounded-lg bg-muted/40 border px-4 py-3 text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Your {myRealPickRounds.length} live picks: </span>
-              Rounds {myRealPickRounds.slice(0, 12).join(', ')}{myRealPickRounds.length > 12 ? `, …Rd ${myRealPickRounds[myRealPickRounds.length - 1]}` : ''}
-            </div>
-          )}
-        </section>
+        {/* My Keepers — compact strip, hidden once draft is underway */}
+        {!countdown.isPast && (
+          <MyKeepersStrip keepers={myKeepers} keeperRounds={myKeeperRounds} />
+        )}
 
         {/* League Keeper Board */}
         <section className="space-y-4">

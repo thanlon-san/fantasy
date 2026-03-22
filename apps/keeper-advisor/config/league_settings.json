@@ -41,10 +41,10 @@
     "type": "points",
     "categories": {
       "hitting": [
-        "R", "H", "HR", "RBI", "SB", "AVG", "OBP"
+        "R", "H", "HR", "RBI", "SB", "OPS"
       ],
       "pitching": [
-        "W", "K", "ERA", "WHIP", "SV", "QS"
+        "HR", "K", "ERA", "WHIP", "SV", "QS"
       ]
     }
   },
