@@ -405,16 +405,7 @@ export default function Home() {
         )}
 
         {/* Main Content */}
-        {totalPlayingCount === 0 && dailyLineup.not_playing.length === 0 && !error ? (
-          <div className="text-center py-16 text-muted-foreground border rounded-lg border-dashed">
-            <Calendar className="h-16 w-16 mx-auto mb-4 opacity-30" />
-            <p className="mb-2 text-lg font-medium">No lineup data available</p>
-            <p className="text-sm">
-              Run:{" "}
-              <code className="bg-muted px-2 py-1 rounded">python scripts/export_dashboard_data.py</code>
-            </p>
-          </div>
-        ) : totalPlayingCount === 0 ? (
+        {totalPlayingCount === 0 && !error ? (
           <>
             {/* Off-Season / Spring Training Layout */}
             <div className="space-y-6">
@@ -426,6 +417,17 @@ export default function Home() {
               )}
               <WaiverWireTable targets={waiverWire} />
               <BreakoutDetectorTable alerts={breakouts} />
+              {keepers.length === 0 && waiverWire.length === 0 && breakouts.length === 0 && (
+                <div className="text-center py-16 text-muted-foreground border rounded-lg border-dashed">
+                  <Calendar className="h-16 w-16 mx-auto mb-4 opacity-30" />
+                  <p className="mb-2 text-lg font-medium">Season starts soon — no data yet</p>
+                  <p className="text-sm">
+                    Run:{" "}
+                    <code className="bg-muted px-2 py-1 rounded">python scripts/export_dashboard_data.py</code>
+                    {" "}once games begin.
+                  </p>
+                </div>
+              )}
             </div>
 
             {dailyLineup.not_playing.length > 0 && (
