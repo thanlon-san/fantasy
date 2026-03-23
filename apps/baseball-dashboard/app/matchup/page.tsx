@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
-import { ArrowLeft, RefreshCw, TrendingUp, TrendingDown, Minus, AlertTriangle, Swords, Shield, Crosshair } from "lucide-react"
+import { ArrowLeft, RefreshCw, TrendingUp, TrendingDown, AlertTriangle, Swords, Shield, Crosshair } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 

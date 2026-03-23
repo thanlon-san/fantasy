@@ -19,18 +19,18 @@ type Closer = {
   hr_allowed: number | null
 }
 
-function statCell(val: number | null, name: string, isGood?: boolean): { text: string; color: string } {
-  if (val === null || val === undefined) return { text: "–", color: "text-slate-500" }
-  let text = ""
-  if (name === "ERA" || name === "WHIP") text = val.toFixed(2)
-  else text = val.toString()
-
-  let color = "text-slate-300"
-  if (isGood !== undefined) {
-    color = isGood ? "text-emerald-400" : "text-slate-300"
-  }
-  return { text, color }
-}
+// function statCell(val: number | null, name: string, isGood?: boolean): { text: string; color: string } {
+//   if (val === null || val === undefined) return { text: "–", color: "text-slate-500" }
+//   let text = ""
+//   if (name === "ERA" || name === "WHIP") text = val.toFixed(2)
+//   else text = val.toString()
+//
+//   let color = "text-slate-300"
+//   if (isGood !== undefined) {
+//     color = isGood ? "text-emerald-400" : "text-slate-300"
+//   }
+//   return { text, color }
+// }
 
 function eraColor(era: number | null): string {
   if (era === null) return "text-slate-500"

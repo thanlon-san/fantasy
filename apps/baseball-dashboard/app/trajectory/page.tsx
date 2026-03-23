@@ -68,7 +68,7 @@ function Sparkline({ ranks, width = 80, height = 28 }: { ranks: (number | null)[
 
 // ─── Category Card ────────────────────────────────────────────────────────────
 
-function CategoryCard({ sid, cat }: { sid: string; cat: CategoryData }) {
+function CategoryCard({ cat }: { cat: CategoryData }) {
   const avgRank = cat.avg_rank
   const rankColor =
     avgRank === null ? "text-slate-500"
@@ -223,7 +223,7 @@ export default function TrajectoryPage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {battingCats.map(([sid, cat]) => (
-              <CategoryCard key={sid} sid={sid} cat={cat} />
+              <CategoryCard key={sid} cat={cat} />
             ))}
           </div>
         </section>
@@ -235,7 +235,7 @@ export default function TrajectoryPage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {pitchingCats.map(([sid, cat]) => (
-              <CategoryCard key={sid} sid={sid} cat={cat} />
+              <CategoryCard key={sid} cat={cat} />
             ))}
           </div>
         </section>

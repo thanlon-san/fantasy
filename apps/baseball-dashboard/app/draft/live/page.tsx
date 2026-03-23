@@ -203,10 +203,11 @@ function RecommendationRow({
   onMine: (name: string) => void
   onDrafted: (name: string) => void
 }) {
-  const isPenalized = rec.reason.includes("wait")
+  const isPenalized = rec.reason.includes("wait") || rec.reason.includes("DND") || rec.reason.includes("Middle Reliever")
+  const isBoosted = rec.reason.includes("MY GUY") || rec.reason.includes("Breakout") || rec.reason.includes("Speed") || rec.reason.includes("Swiss") || rec.reason.includes("Riser") || rec.reason.includes("Groundball") || rec.reason.includes("Prospect Stash") || rec.reason.includes("OPS")
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-2.5 border-b border-slate-800/70 hover:bg-slate-800/40 transition-colors group ${isPenalized ? "opacity-40" : ""}`}>
+    <div className={`flex items-center gap-3 px-4 py-2.5 border-b border-slate-800/70 hover:bg-slate-800/40 transition-colors group ${isPenalized ? "opacity-40" : ""} ${isBoosted ? "bg-slate-800/20" : ""}`}>
       {/* Rank */}
       <span className="w-5 text-right text-xs font-mono text-slate-600 shrink-0">{rec.rank}</span>
 
