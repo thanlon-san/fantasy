@@ -47,7 +47,7 @@ class C:
     WHITE   = "\033[97m"
 
 # ─── League & Strategy Configuration ─────────────────────────────────────────
-MY_DRAFT_POSITION = 11
+MY_DRAFT_POSITION = 7
 TOTAL_TEAMS       = 12
 TOTAL_ROUNDS      = 24
 SEASON            = 2026
@@ -93,6 +93,62 @@ LEAGUE_KEEPERS_ALL = [
     "Byron Buxton", "Aroldis Chapman", "Jacob Misiorowski",
     # Uncle Charlie
     "Paul Skenes", "Jackson Merrill", "Nick Kurtz",
+]
+
+# ─── Target Lists & Breakouts ─────────────────────────────────────────────────
+
+# Players you absolutely want. Huge score boost.
+MY_GUYS = [
+    "Oneil Cruz",
+    "Wyatt Langford",
+    "Jackson Chourio",
+    "Hunter Greene",
+    "Cole Ragans",
+    "Vinnie Pasquantino",
+    "Mark Vientos",
+    "Lawrence Butler",
+    "Royce Lewis",
+    "Tarik Skubal",
+]
+
+# Players you want to avoid entirely. Huge score penalty.
+DND = [
+    "Aaron Judge",
+    "Mike Trout",
+    "Jacob deGrom",
+    "Max Scherzer",
+    "Justin Verlander",
+    "Gerrit Cole",
+    "Giancarlo Stanton",
+    "Anthony Rendon",
+]
+
+# Late 2025 Statcast darlings (high barrel %, low xwOBA vs wOBA, etc.)
+STATCAST_BREAKOUTS = [
+    "Riley Greene",
+    "Brent Rooker",
+    "CJ Abrams",
+    "Jared Jones",
+    "Tarik Skubal",
+    "Paul Skenes",
+    "Jackson Merrill",
+    "Kerry Carpenter",
+    "Yainer Diaz",
+    "Oneil Cruz",
+    "Jo Adell",
+    "Tyler Fitzgerald",
+]
+
+# Top 30 Closers/High-Leverage RPs. Non-SP Relievers not on this list are penalized.
+ELITE_CLOSERS = [
+    "Emmanuel Clase", "Ryan Helsley", "Mason Miller", "Josh Hader", 
+    "Devin Williams", "Kirby Yates", "Edwin Diaz", "Andres Munoz", 
+    "Jhoan Duran", "Robert Suarez", "Raisel Iglesias", "Camilo Doval", 
+    "Kenley Jansen", "Pete Fairbanks", "Evan Phillips", "Kyle Finnegan", 
+    "Clay Holmes", "Carlos Estevez", "Tanner Scott", "Alexis Diaz", 
+    "Ryan Walker", "Justin Martinez", "Lucas Erceg", "Chad Green",
+    "Aroldis Chapman", "David Bednar", "Jordan Romano", "Paul Sewald",
+    "Jason Foley", "Luke Weaver"
 ]
 
 # Remaining roster slots to fill via the draft (keepers subtract from these).
@@ -449,6 +505,12 @@ class DraftBoard:
         self.my_picks     = calc_my_picks()
         self.my_roster    = list(MY_KEEPERS) # start with keepers
 
+        # Initialize normalized lists for fast lookup
+        self.my_guys_norm = {norm_name(n) for n in MY_GUYS}
+        self.dnd_norm = {norm_name(n) for n in DND}
+        self.breakouts_norm = {norm_name(n) for n in STATCAST_BREAKOUTS}
+        self.closers_norm = {norm_name(n) for n in ELITE_CLOSERS}
+
         # Pre-mark ALL league keepers (including other teams') as off the board.
         # This shifts the effective available pool — Skenes, Raleigh, Ketel Marte,
         # Elly De La Cruz, George Kirby etc. are all gone before pick 1.
@@ -634,10 +696,15 @@ class DraftBoard:
         rnd   = self.current_round
         needs = self.remaining_needs()
 
+        # Calculate next pick for "Will He Be There?" indicator
+        slots = self.next_two_picks()
+        next_pick_overall = slots[1]["overall"] if len(slots) > 1 else 999
+
         scored = []
         for p in avail:
             positions = p.get("positions", [])
             adp       = p["adp"]
+            norm      = self._norm(p["name"])
 
             is_bat = any(pos in positions for pos in ("C", "1B", "2B", "3B", "SS", "OF", "DH"))
             is_sp  = "SP" in positions
@@ -646,6 +713,29 @@ class DraftBoard:
             # ADP value score — lower ADP = better value
             score  = max(0, 350 - adp)
             reason = ""
+            tags   = []
+
+            # 1. My Guys & DND
+            if norm in self.dnd_norm:
+                score -= 500
+                tags.append("❌ DND")
+            elif norm in self.my_guys_norm:
+                score += 50
+                tags.append("🎯 MY GUY")
+
+            # 2. Statcast Breakouts
+            if norm in self.breakouts_norm:
+                score += 20
+                tags.append("🔥 Statcast Breakout")
+
+            # 3. Closer Hierarchy Filter
+            if is_rp and not is_sp and norm not in self.closers_norm:
+                score -= 150
+                tags.append("⚠️ Middle Reliever")
+
+            # 4. "Will He Be There?" Indicator
+            if adp < next_pick_overall - 2:
+                tags.append("🚨 Draft Now or Lose Him")
 
             # Yahoo value bonus: positive discount means Yahoo drafters are sleeping
             # on this player relative to expert consensus — genuine value for us.
@@ -653,12 +743,10 @@ class DraftBoard:
             yahoo_discount = p.get("yahoo_discount", 0.0)
             if yahoo_discount >= 40:
                 score += 35
-                value_tag = f" · Yahoo sleeper +{yahoo_discount:.0f}"
+                tags.append(f"Yahoo sleeper +{yahoo_discount:.0f}")
             elif yahoo_discount >= 20:
                 score += 15
-                value_tag = f" · Yahoo +{yahoo_discount:.0f}"
-            else:
-                value_tag = ""
+                tags.append(f"Yahoo +{yahoo_discount:.0f}")
 
             if rnd in BATTER_ROUNDS:
                 if not is_bat:
@@ -706,7 +794,12 @@ class DraftBoard:
                 elif is_bat:
                     score += 20;  reason = "bat depth"
 
-            scored.append({**p, "_score": score, "_reason": (reason or "value") + value_tag})
+            # Combine reason and tags
+            final_reason = reason or "value"
+            if tags:
+                final_reason += " · " + " · ".join(tags)
+
+            scored.append({**p, "_score": score, "_reason": final_reason})
 
         scored.sort(key=lambda x: (-x["_score"], x["adp"]))
         return scored[:n]
@@ -823,7 +916,7 @@ def display_cheatsheet(board: DraftBoard):
     }
 
     print(f"\n{C.BOLD}{C.CYAN}{'═' * 80}")
-    print(f"  DRAFT CHEAT SHEET — 2balls  |  Pick 11/12  |  2026 Season")
+    print(f"  DRAFT CHEAT SHEET — 2balls  |  Pick 7/12  |  2026 Season")
     print(f"  Hitting: R H HR RBI SB OPS  |  Pitching: HR K ERA WHIP SV QS")
     print(f"  Strategy: Batters R1–8 → SP window R10,13 → Closers R14–24")
     print(f"  Target: dominate HR/ERA/WHIP/SV (4 of 6 pitching cats) every week")
@@ -1020,7 +1113,7 @@ def main():
 
     print(f"\n{C.BOLD}{C.CYAN}{'═' * 60}")
     print(f"  2balls Draft Assistant — California Palm League 2026")
-    print(f"  Draft position: 11 of 12  |  Snake  |  24 rounds")
+    print(f"  Draft position: 7 of 12  |  Snake  |  24 rounds")
     print(f"{'═' * 60}{C.RESET}")
 
     if args.refresh and ADP_CACHE.exists():
