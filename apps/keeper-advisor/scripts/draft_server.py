@@ -14,7 +14,7 @@ import time
 import argparse
 from pathlib import Path
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 # ─── Path setup ───────────────────────────────────────────────────────────────
 SCRIPTS_DIR = Path(__file__).parent
@@ -60,7 +60,7 @@ _last_poll:  float = 0.0              # epoch time of last Yahoo poll
 _error:      Optional[str] = None
 
 YAHOO_POLL_INTERVAL = 25              # seconds between Yahoo API calls
-MY_TEAM_ID          = 2               # 2balls = team 2 in California Palm League
+MY_TEAM_ID          = 2                # 2balls = team 2 in California Palm League
 MY_TEAM_KEY         = f"{LEAGUE_KEY}.t.{MY_TEAM_ID}"
 
 
@@ -117,9 +117,10 @@ def maybe_sync_yahoo() -> List[dict]:
             _last_poll = now
             return _all_picks
 
-        # Resolve any new player keys to names
-        all_keys    = [p["player_key"] for p in raw_picks if p.get("player_key")]
-        new_keys    = [k for k in all_keys if k not in _yahoo._pk_cache]
+        # Resolve player names.
+        all_keys = [p["player_key"] for p in raw_picks]
+        roster_by_team: Dict[str, List] = {}
+        new_keys = [k for k in all_keys if k not in _yahoo._pk_cache]
         if new_keys:
             _yahoo.resolve_player_keys(new_keys)
 
@@ -133,36 +134,70 @@ def maybe_sync_yahoo() -> List[dict]:
                 "team_key":  pick["team_key"],
                 "is_mine":   pick["team_key"] == MY_TEAM_KEY,
                 "player_key": pick["player_key"],
-                "name":      info.get("name", f"(unknown)"),
+                "name":      info.get("name", "(unknown)"),
                 "positions": info.get("positions", []),
                 "team":      info.get("team", ""),
             })
 
+        # Compute the consecutive draft watermark: the highest pick number where
+        # every slot from 1..N is filled. Yahoo pre-assigns player_keys to all
+        # keeper slots (rounds 9-12, etc.) before the draft reaches them, which
+        # inflates the pick count. The watermark gives the actual draft position.
+        sorted_overalls = sorted(p["overall"] for p in enriched)
+        watermark = 0
+        for i, overall in enumerate(sorted_overalls):
+            if overall == i + 1:
+                watermark = overall
+            else:
+                break
+
         # Update board with any new picks
         if len(enriched) > len(_all_picks):
             _board.apply_picks(raw_picks, _yahoo._pk_cache)
-            _board.picks_made = len(enriched)
+            _board.picks_made = watermark  # use watermark, not total count
 
-            # Add my picks to my_roster
-            my_pick_overalls = {
-                p["overall"] for p in calc_my_picks()
-                if not p["is_keeper"] and p["overall"] is not None
-            }
-            for pick in enriched:
-                if pick["is_mine"]:
-                    already = any(norm_name(r.get("name","")) == norm_name(pick["name"])
-                                  for r in _board.my_roster)
-                    if not already:
-                        _board.my_roster.append({
-                            "name":     pick["name"],
-                            "position": pick["positions"][0] if pick["positions"] else "?",
-                            "round":    pick["round"],
-                            "adp":      next(
-                                (p["adp"] for p in _board.all_players
-                                 if norm_name(p["name"]) == norm_name(pick["name"])),
-                                None
-                            ),
-                        })
+            # Rebuild my_roster from actual Yahoo roster data (authoritative source).
+            my_team_players = roster_by_team.get(MY_TEAM_KEY, [])
+            if my_team_players:
+                keeper_names = {norm_name(k["name"]) for k in MY_KEEPERS}
+                _board.my_roster = list(MY_KEEPERS)  # reset to keepers
+                for player in my_team_players:
+                    name = player.get("name", "")
+                    if not name or norm_name(name) in keeper_names:
+                        continue
+                    # Find which round this player was drafted
+                    draft_round = next(
+                        (p["round"] for p in enriched
+                         if p["player_key"] == player.get("player_key") and p["is_mine"]),
+                        None
+                    )
+                    _board.my_roster.append({
+                        "name":     name,
+                        "position": player.get("positions", ["?"])[0],
+                        "round":    draft_round,
+                        "adp":      next(
+                            (p["adp"] for p in _board.all_players
+                             if norm_name(p["name"]) == norm_name(name)),
+                            None
+                        ),
+                    })
+            else:
+                # Fallback: add from enriched picks where is_mine and name is known
+                for pick in enriched:
+                    if pick["is_mine"] and pick["name"] != "(unknown)":
+                        already = any(norm_name(r.get("name","")) == norm_name(pick["name"])
+                                      for r in _board.my_roster)
+                        if not already:
+                            _board.my_roster.append({
+                                "name":     pick["name"],
+                                "position": pick["positions"][0] if pick["positions"] else "?",
+                                "round":    pick["round"],
+                                "adp":      next(
+                                    (p["adp"] for p in _board.all_players
+                                     if norm_name(p["name"]) == norm_name(pick["name"])),
+                                    None
+                                ),
+                            })
 
         _all_picks = enriched
         _last_poll = now
@@ -184,14 +219,16 @@ class PickInfo(BaseModel):
     is_mine:   bool
 
 class Recommendation(BaseModel):
-    rank:           int
-    name:           str
-    team:           str
-    positions:      List[str]
-    adp:            float
-    tier:           str
-    reason:         str
-    yahoo_discount: float = 0.0
+    rank:             int
+    name:             str
+    team:             str
+    positions:        List[str]
+    adp:              float
+    tier:             str
+    reason:           str
+    yahoo_discount:   float = 0.0
+    expert_rank:      Optional[int] = None
+    expert_rank_gap:  float = 0.0
 
 class RosterPlayer(BaseModel):
     name:     str
@@ -294,6 +331,8 @@ def get_state():
             tier=get_tier(r["adp"]),
             reason=r.get("_reason", ""),
             yahoo_discount=r.get("yahoo_discount", 0.0),
+            expert_rank=r.get("expert_rank"),
+            expert_rank_gap=r.get("expert_rank_gap", 0.0),
         )
         for i, r in enumerate(recs)
     ]
@@ -310,6 +349,9 @@ def get_state():
         for p in _board.my_roster
     ]
 
+    # Only show picks up to the consecutive watermark — excludes future keeper slots
+    # that Yahoo pre-assigns player_keys to before the draft reaches them.
+    picks_watermark = _board.picks_made
     recent_picks = [
         PickInfo(
             overall=p["overall"],
@@ -319,7 +361,10 @@ def get_state():
             team=p["team"],
             is_mine=p["is_mine"],
         )
-        for p in sorted(picks, key=lambda x: -x["overall"])[:20]
+        for p in sorted(
+            (p for p in picks if p["overall"] <= picks_watermark),
+            key=lambda x: -x["overall"]
+        )[:20]
     ]
 
     open_needs = {k: v for k, v in needs.items() if v > 0}

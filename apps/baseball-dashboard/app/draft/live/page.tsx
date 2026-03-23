@@ -15,14 +15,16 @@ type PosFilter = typeof POSITIONS[number] | null
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Recommendation = {
-  rank:           number
-  name:           string
-  team:           string
-  positions:      string[]
-  adp:            number
-  tier:           string
-  reason:         string
-  yahoo_discount: number
+  rank:             number
+  name:             string
+  team:             string
+  positions:        string[]
+  adp:              number
+  tier:             string
+  reason:           string
+  yahoo_discount:   number
+  expert_rank:      number | null
+  expert_rank_gap:  number
 }
 
 type RosterPlayer = {
@@ -233,6 +235,16 @@ function RecommendationRow({
           {rec.yahoo_discount >= 20 && (
             <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
               Yahoo +{Math.round(rec.yahoo_discount)}
+            </span>
+          )}
+          {rec.expert_rank !== null && rec.expert_rank_gap <= -40 && (
+            <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/30">
+              Exp #{rec.expert_rank} ↓{Math.abs(Math.round(rec.expert_rank_gap))}
+            </span>
+          )}
+          {rec.expert_rank !== null && rec.expert_rank_gap >= 40 && (
+            <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">
+              Exp #{rec.expert_rank} ↑{Math.round(rec.expert_rank_gap)}
             </span>
           )}
         </div>

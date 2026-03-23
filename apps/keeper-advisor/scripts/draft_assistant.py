@@ -99,56 +99,114 @@ LEAGUE_KEEPERS_ALL = [
 
 # Players you absolutely want. Huge score boost.
 MY_GUYS = [
-    "Oneil Cruz",
-    "Wyatt Langford",
-    "Jackson Chourio",
-    "Hunter Greene",
-    "Cole Ragans",
-    "Vinnie Pasquantino",
-    "Mark Vientos",
-    "Lawrence Butler",
-    "Royce Lewis",
-    "Tarik Skubal",
+    "Juan Soto",
+    "Julio Rodriguez",
+    "Kyle Tucker",
+    "Fernando Tatis Jr.",
+    "Corbin Carroll",
+    "Ryan Pepiot",
+    "Andres Munoz",
+    "Cade Smith",
+    "Matt Wallner",
+]
+
+# Elite Groundball SPs (Protects your HR Allowed category)
+GROUNDBALL_SPS = [
+    "Logan Webb",
+    "Framber Valdez",
+    "Sonny Gray",
+    "Zack Wheeler",
+    "Max Fried"
+]
+
+# Elite OPS/Power targets (Massive bump since your league uses OPS instead of AVG)
+OPS_MONSTERS = [
+    "Kyle Schwarber",
+    "Max Muncy",
+    "Pete Alonso",
+    "Matt Olson",
+    "Marcell Ozuna"
+]
+
+# Late-round prospect stashes (Draft in R23/24 to save waiver moves)
+PROSPECT_STASHES = [
+    "Jasson Dominguez",
+    "Jordan Lawlar",
+    "Christian Moore",
+    "Coby Mayo",
+    "Emmanuel Rodriguez"
 ]
 
 # Players you want to avoid entirely. Huge score penalty.
 DND = [
-    "Aaron Judge",
-    "Mike Trout",
-    "Jacob deGrom",
-    "Max Scherzer",
-    "Justin Verlander",
-    "Gerrit Cole",
-    "Giancarlo Stanton",
-    "Anthony Rendon",
+    "Cole Ragans",
+    "Kyle Bradish",
+    "Chris Sale",
+    "Yoshinobu Yamamoto",
+    "Ranger Suarez",
+    "Ryne Nelson",
+    "Sandy Alcantara",
+    "George Springer",
+    "James Wood",
+    "Junior Caminero",
+    "Byron Buxton",
+    "Esteury Ruiz",   # Empty speed, kills other cats
 ]
 
 # Late 2025 Statcast darlings (high barrel %, low xwOBA vs wOBA, etc.)
 STATCAST_BREAKOUTS = [
+    "Matt Wallner",
+    "Sal Stewart",
+    "Daylen Lile",
+    "JJ Wetherholt",
+    "Ryan Waldschmidt",
+    "Ryan Pepiot",
+    "Shea Langeliers",
     "Riley Greene",
     "Brent Rooker",
-    "CJ Abrams",
-    "Jared Jones",
     "Tarik Skubal",
-    "Paul Skenes",
-    "Jackson Merrill",
-    "Kerry Carpenter",
-    "Yainer Diaz",
-    "Oneil Cruz",
-    "Jo Adell",
-    "Tyler Fitzgerald",
+]
+
+# 2026 Spring Training Risers (Velocity spikes, new pitches, winning jobs)
+SPRING_RISERS = [
+    "Ryan Weathers",
+    "Triston McKenzie",
+    "Carson Whisenhunt",
+    "Chayce McDermott",
+    "Matt McLain",
+    "Jac Caglianone",
+    "Mick Abel",
+    "Konnor Griffin",
+    "Samuel Basallo",
+    "Angel Bastardo",
+]
+
+# Elite Speed / Stolen Base targets (SB dries up FAST, these guys carry the category)
+ELITE_SPEED = [
+    "Elly De La Cruz", "Corbin Carroll", "Bobby Witt Jr.", "CJ Abrams", 
+    "Brice Turang", "Esteury Ruiz", "Jose Caballero", "Maikel Garcia", 
+    "Lane Thomas", "Jarren Duran", "David Hamilton", "Jacob Young", 
+    "Victor Scott II", "Jon Berti", "Johan Rojas"
 ]
 
 # Top 30 Closers/High-Leverage RPs. Non-SP Relievers not on this list are penalized.
 ELITE_CLOSERS = [
-    "Emmanuel Clase", "Ryan Helsley", "Mason Miller", "Josh Hader", 
-    "Devin Williams", "Kirby Yates", "Edwin Diaz", "Andres Munoz", 
-    "Jhoan Duran", "Robert Suarez", "Raisel Iglesias", "Camilo Doval", 
-    "Kenley Jansen", "Pete Fairbanks", "Evan Phillips", "Kyle Finnegan", 
-    "Clay Holmes", "Carlos Estevez", "Tanner Scott", "Alexis Diaz", 
-    "Ryan Walker", "Justin Martinez", "Lucas Erceg", "Chad Green",
-    "Aroldis Chapman", "David Bednar", "Jordan Romano", "Paul Sewald",
-    "Jason Foley", "Luke Weaver"
+    "Mason Miller", "Edwin Diaz", "Andres Munoz", "Aroldis Chapman", 
+    "Josh Hader", "Cade Smith", "Jhoan Duran", "Emmanuel Clase", 
+    "Ryan Helsley", "Devin Williams", "Kirby Yates", "Robert Suarez", 
+    "Raisel Iglesias", "Camilo Doval", "Kenley Jansen", "Pete Fairbanks", 
+    "Evan Phillips", "Kyle Finnegan", "Clay Holmes", "Carlos Estevez", 
+    "Tanner Scott", "Alexis Diaz", "Ryan Walker", "Justin Martinez", 
+    "Lucas Erceg", "Chad Green", "David Bednar", "Jordan Romano", 
+    "Paul Sewald", "Jason Foley", "Luke Weaver"
+]
+
+# Elite Setup Men (Insane K-rates and sub-2.50 ERAs). Perfect for your ratio-heavy strategy!
+ELITE_SETUP_MEN = [
+    "Bryan Abreu", "Orion Kerkering", "Jeremiah Estrada", "Matt Strahm", 
+    "Jeff Hoffman", "Griffin Jax", "Jason Adam", "Hunter Harvey", 
+    "Kevin Ginkel", "Yennier Cano", "A.J. Minter", "Colin Holderman",
+    "Garrett Whitlock"
 ]
 
 # Remaining roster slots to fill via the draft (keepers subtract from these).
@@ -195,6 +253,10 @@ def norm_name(name: str) -> str:
     """Normalize a player name for fuzzy matching."""
     s = unicodedata.normalize("NFKD", name)
     s = "".join(c for c in s if not unicodedata.combining(c))
+    # Strip Yahoo two-way player role qualifiers
+    for role in (" (Batter)", " (Pitcher)", " (IL)"):
+        if s.endswith(role):
+            s = s[: -len(role)]
     for sfx in (" Jr.", " Jr", " Sr.", " Sr", " II", " III", " IV", " V"):
         if s.endswith(sfx):
             s = s[: -len(sfx)]
@@ -294,6 +356,7 @@ class FPScraper:
         player_col = next((i for i, h in enumerate(headers) if "player" in h), 1)
         yahoo_col  = next((i for i, h in enumerate(headers) if h == "yahoo"), 2)
         avg_col    = next((i for i, h in enumerate(headers) if h in ("avg", "average")), num_cols - 1)
+        rank_col   = next((i for i, h in enumerate(headers) if h == "rank"), 0)
 
         # Parse all rows, then deduplicate (keep lowest avg ADP per player)
         seen: Dict[str, Dict] = {}  # normalized_name -> player dict
@@ -308,6 +371,7 @@ class FPScraper:
                 player_text = cells[i + player_col].get_text(strip=True)
                 yahoo_text  = cells[i + yahoo_col].get_text(strip=True)  if i + yahoo_col < len(cells) else ""
                 avg_text    = cells[i + avg_col].get_text(strip=True)
+                rank_text   = cells[i + rank_col].get_text(strip=True)   if i + rank_col < len(cells) else ""
 
                 m = re.match(r"^(.+?)\s*\(([A-Z]{2,3}(?:/[A-Z]{2,3})?)\s*-\s*([^)]+)\)", player_text)
                 if not m:
@@ -323,6 +387,18 @@ class FPScraper:
                 except ValueError:
                     continue
 
+                # expert_rank: where FP consensus experts rank this player.
+                # expert_rank_gap = adp - expert_rank:
+                #   positive → drafted later than experts say (market sleeping = value)
+                #   negative → drafted earlier than experts say (market overrating = risky)
+                _expert_rank     = None
+                _expert_rank_gap = 0.0
+                try:
+                    _expert_rank     = int(rank_text)
+                    _expert_rank_gap = round(adp - _expert_rank, 1)
+                except (ValueError, TypeError):
+                    pass
+
                 # Positive yahoo_discount = Yahoo drafts LATER than consensus = undervalued on Yahoo
                 _yahoo_adp      = adp
                 _yahoo_discount = 0.0
@@ -335,12 +411,14 @@ class FPScraper:
                 key = norm_name(name)
                 if key not in seen or adp < seen[key]["adp"]:
                     seen[key] = {
-                        "name":           name,
-                        "team":           team,
-                        "positions":      positions,
-                        "adp":            adp,
-                        "yahoo_adp":      _yahoo_adp,
-                        "yahoo_discount": _yahoo_discount,
+                        "name":            name,
+                        "team":            team,
+                        "positions":       positions,
+                        "adp":             adp,
+                        "yahoo_adp":       _yahoo_adp,
+                        "yahoo_discount":  _yahoo_discount,
+                        "expert_rank":     _expert_rank,
+                        "expert_rank_gap": _expert_rank_gap,
                     }
 
         players = sorted(seen.values(), key=lambda x: x["adp"])
@@ -416,7 +494,12 @@ class YahooDraft:
     # ── Draft results ─────────────────────────────────────────────────────────
 
     def fetch_picks(self) -> List[Dict]:
-        """Return all picks made so far, sorted by overall pick number."""
+        """Return all picks made so far, sorted by overall pick number.
+
+        Yahoo's /draftresults endpoint returns ALL draft slots (including future
+        unfilled ones). We filter to only entries that have a player_key, which
+        indicates the pick has actually been made.
+        """
         if not self.league_key:
             return []
         data = self._get(f"{YAHOO_BASE}/league/{self.league_key}/draftresults?")
@@ -432,11 +515,14 @@ class YahooDraft:
                 if k == "count":
                     continue
                 d = v.get("draft_result", {})
+                pk = d.get("player_key", "")
+                if not pk:
+                    continue  # skip unfilled future slots
                 picks.append({
                     "overall":    int(d.get("pick", 0)),
                     "round":      int(d.get("round", 0)),
                     "team_key":   d.get("team_key", ""),
-                    "player_key": d.get("player_key", ""),
+                    "player_key": pk,
                 })
             return sorted(picks, key=lambda x: x["overall"])
         except Exception as e:
@@ -455,6 +541,67 @@ class YahooDraft:
         with open(PLAYER_KEY_CACHE, "w") as f:
             json.dump(self._pk_cache, f, indent=2)
 
+    def seed_cache_from_rosters(self) -> Dict[str, List[Dict]]:
+        """
+        Fetch all 12 team rosters and populate _pk_cache with every drafted player.
+        This is the reliable fallback when /draftresults stops returning player_keys
+        after the first ~45 picks (a Yahoo API truncation quirk).
+        Returns {team_key: [player_info, ...]} for all teams.
+        """
+        data = self._get(f"{YAHOO_BASE}/league/{self.league_key}/teams;out=roster?")
+        if not data:
+            return {}
+        result: Dict[str, List[Dict]] = {}
+        added = 0
+        try:
+            teams_raw = {}
+            if "league" in data:
+                league_data = data["league"]
+                if isinstance(league_data, list) and len(league_data) > 1:
+                    teams_raw = league_data[1].get("teams", {})
+            if not isinstance(teams_raw, dict):
+                return {}
+            for tk, tv in teams_raw.items():
+                if tk == "count":
+                    continue
+                team_arr = tv.get("team", [[], {}])
+                team_meta = team_arr[0]
+                team_key = next((p["team_key"] for p in team_meta if isinstance(p, dict) and "team_key" in p), "")
+                roster_section = team_arr[1] if len(team_arr) > 1 else {}
+                players_raw = roster_section.get("roster", {}).get("0", {}).get("players", {})
+                if not isinstance(players_raw, dict):
+                    continue
+                team_players: List[Dict] = []
+                for pk, pv in players_raw.items():
+                    if pk == "count":
+                        continue
+                    player_arr = pv.get("player", [[]])[0]
+                    info: Dict = {}
+                    for prop in player_arr:
+                        if not isinstance(prop, dict):
+                            continue
+                        if "player_key" in prop:
+                            info["player_key"] = prop["player_key"]
+                        if "name" in prop:
+                            info["name"] = prop["name"].get("full", "")
+                        if "display_position" in prop:
+                            info["positions"] = [p.strip() for p in prop["display_position"].split(",")]
+                        if "editorial_team_abbr" in prop:
+                            info["team"] = prop["editorial_team_abbr"]
+                    if info.get("player_key") and info.get("name"):
+                        if info["player_key"] not in self._pk_cache:
+                            self._pk_cache[info["player_key"]] = info
+                            added += 1
+                        team_players.append(info)
+                if team_key and team_players:
+                    result[team_key] = team_players
+        except Exception as e:
+            print(f"{C.RED}  seed_cache_from_rosters error: {e}{C.RESET}")
+        if added:
+            self._save_pk_cache()
+            print(f"  seed_cache_from_rosters: added {added} new player names.")
+        return result
+
     def resolve_player_keys(self, keys: List[str]) -> Dict[str, Dict]:
         """Resolve player_keys to {name, positions, team}. Uses local cache first."""
         unknown = [k for k in keys if k not in self._pk_cache]
@@ -463,8 +610,11 @@ class YahooDraft:
 
         for i in range(0, len(unknown), 25):
             batch = unknown[i : i + 25]
+            if i > 0:
+                time.sleep(0.4)  # brief pause between batches to avoid rate limiting
             data  = self._get(f"{YAHOO_BASE}/players;player_keys={','.join(batch)};out=metadata?")
             if not data:
+                print(f"{C.YELLOW}  resolve_player_keys: no data for batch {i//25 + 1}{C.RESET}")
                 continue
             try:
                 players_raw = data.get("players", {})
@@ -486,7 +636,8 @@ class YahooDraft:
                             info["team"] = prop["editorial_team_abbr"]
                     if "player_key" in info:
                         self._pk_cache[info["player_key"]] = info
-            except Exception:
+            except Exception as e:
+                print(f"{C.RED}  resolve_player_keys parse error batch {i//25 + 1}: {e}{C.RESET}")
                 continue
 
         self._save_pk_cache()
@@ -509,7 +660,13 @@ class DraftBoard:
         self.my_guys_norm = {norm_name(n) for n in MY_GUYS}
         self.dnd_norm = {norm_name(n) for n in DND}
         self.breakouts_norm = {norm_name(n) for n in STATCAST_BREAKOUTS}
+        self.spring_risers_norm = {norm_name(n) for n in SPRING_RISERS}
+        self.speed_norm = {norm_name(n) for n in ELITE_SPEED}
         self.closers_norm = {norm_name(n) for n in ELITE_CLOSERS}
+        self.setup_norm = {norm_name(n) for n in ELITE_SETUP_MEN}
+        self.gb_sps_norm = {norm_name(n) for n in GROUNDBALL_SPS}
+        self.prospects_norm = {norm_name(n) for n in PROSPECT_STASHES}
+        self.ops_norm = {norm_name(n) for n in OPS_MONSTERS}
 
         # Pre-mark ALL league keepers (including other teams') as off the board.
         # This shifts the effective available pool — Skenes, Raleigh, Ketel Marte,
@@ -698,7 +855,7 @@ class DraftBoard:
 
         # Calculate next pick for "Will He Be There?" indicator
         slots = self.next_two_picks()
-        next_pick_overall = slots[1]["overall"] if len(slots) > 1 else 999
+        next_pick_overall = slots[1]["overall"] if len(slots) > 1 else None
 
         scored = []
         for p in avail:
@@ -723,18 +880,57 @@ class DraftBoard:
                 score += 50
                 tags.append("🎯 MY GUY")
 
-            # 2. Statcast Breakouts
+            # 2. Statcast Breakouts & Spring Risers
             if norm in self.breakouts_norm:
                 score += 20
                 tags.append("🔥 Statcast Breakout")
+            if norm in self.spring_risers_norm:
+                score += 25
+                tags.append("📈 Spring Riser")
 
-            # 3. Closer Hierarchy Filter
-            if is_rp and not is_sp and norm not in self.closers_norm:
-                score -= 150
-                tags.append("⚠️ Middle Reliever")
+            # 3. Elite Speed & Multi-Position (Swiss Army Knife)
+            if norm in self.speed_norm:
+                score += 15
+                tags.append("🏃‍♂️ Elite Speed")
+            
+            # Count distinct fielding positions (ignore Util/DH/P)
+            fielding_pos = [pos for pos in positions if pos not in ("Util", "DH", "P")]
+            if len(fielding_pos) >= 3:
+                score += 25  # Boosted for 4-move limit
+                tags.append("🪖 Swiss Army Knife")
 
-            # 4. "Will He Be There?" Indicator
-            if adp < next_pick_overall - 2:
+            # 4. Pitching Strategy (Groundball SPs & Closers)
+            if is_sp and norm in self.gb_sps_norm:
+                score += 30
+                tags.append("🎳 Groundball SP (HR Allowed Buffer)")
+
+            if is_rp and not is_sp:
+                if norm in self.closers_norm:
+                    pass  # Elite closer, handled below
+                elif norm in self.setup_norm:
+                    score += 10
+                    tags.append("🛡️ Elite Ratio Reliever")
+                else:
+                    score -= 150
+                    tags.append("⚠️ Middle Reliever")
+
+            # 5. Prospect Stashes (Only boost in late rounds)
+            if norm in self.prospects_norm:
+                if rnd >= 20:
+                    score += 60
+                    tags.append("🌱 Prospect Stash")
+                else:
+                    # Don't draft them too early
+                    score -= 50
+                    tags.append("🌱 Prospect (Wait for late rounds)")
+
+            # 6. OPS Monsters (Format Boost)
+            if norm in self.ops_norm:
+                score += 20
+                tags.append("💪 Elite OPS (Format Boost)")
+
+            # 7. "Will He Be There?" Indicator
+            if next_pick_overall and adp < next_pick_overall - 2:
                 tags.append("🚨 Draft Now or Lose Him")
 
             # Yahoo value bonus: positive discount means Yahoo drafters are sleeping
@@ -747,6 +943,26 @@ class DraftBoard:
             elif yahoo_discount >= 20:
                 score += 15
                 tags.append(f"Yahoo +{yahoo_discount:.0f}")
+
+            # Expert rank vs ADP divergence.
+            # expert_rank_gap = adp - expert_rank
+            #   Large negative → market drafting way ahead of experts (overrated/risky)
+            #   Large positive → market sleeping vs expert opinion (undervalued)
+            expert_rank_gap = p.get("expert_rank_gap", 0.0)
+            expert_rank     = p.get("expert_rank")
+            if expert_rank is not None:
+                if expert_rank_gap <= -60:
+                    score -= 40
+                    tags.append(f"⚠️ Experts rank #{expert_rank} (overdrafted -{abs(expert_rank_gap):.0f})")
+                elif expert_rank_gap <= -30:
+                    score -= 15
+                    tags.append(f"⚠️ Experts rank #{expert_rank} (-{abs(expert_rank_gap):.0f})")
+                elif expert_rank_gap >= 60:
+                    score += 30
+                    tags.append(f"📊 Expert sleeper #{expert_rank} (+{expert_rank_gap:.0f})")
+                elif expert_rank_gap >= 30:
+                    score += 12
+                    tags.append(f"📊 Expert value #{expert_rank} (+{expert_rank_gap:.0f})")
 
             if rnd in BATTER_ROUNDS:
                 if not is_bat:
@@ -874,11 +1090,11 @@ def display_recommendations(board: DraftBoard, n: int = 15):
         reason = p.get("_reason", "")
         if "pitcher — wait" in reason:
             reason_c = C.DIM + C.RED
-        elif "closer" in reason or "ERA" in reason:
+        elif "closer" in reason or "ERA" in reason or "Ratio" in reason:
             reason_c = C.MAGENTA
-        elif "SP window" in reason or "K/W" in reason:
+        elif "SP window" in reason or "K/W" in reason or "Riser" in reason or "Groundball" in reason:
             reason_c = C.YELLOW
-        elif "fills" in reason or "need" in reason:
+        elif "fills" in reason or "need" in reason or "Speed" in reason or "Swiss" in reason or "Prospect" in reason or "OPS" in reason:
             reason_c = C.GREEN
         else:
             reason_c = C.DIM
