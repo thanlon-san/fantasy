@@ -237,7 +237,7 @@ function RecommendationRow({
           )}
         </div>
         <div className="text-[11px] text-slate-500">
-          {rec.team} · <span className={rec.reason.includes("Draft Now") ? "text-red-400 font-bold" : "text-slate-400"}>{rec.reason}</span>
+          {rec.team} · <span dangerouslySetInnerHTML={{ __html: rec.reason.replace(/🚨 Draft Now or Lose Him/g, '<span class="text-red-400 font-bold">🚨 Draft Now or Lose Him</span>') }} className="text-slate-400" />
         </div>
       </div>
 
