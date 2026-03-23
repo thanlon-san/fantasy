@@ -204,7 +204,7 @@ function RecommendationRow({
   onDrafted: (name: string) => void
 }) {
   const isPenalized = rec.reason.includes("wait") || rec.reason.includes("DND") || rec.reason.includes("Middle Reliever")
-  const isBoosted = rec.reason.includes("MY GUY") || rec.reason.includes("Breakout") || rec.reason.includes("Speed") || rec.reason.includes("Swiss") || rec.reason.includes("Riser") || rec.reason.includes("Groundball") || rec.reason.includes("Prospect Stash") || rec.reason.includes("OPS")
+  const isBoosted = rec.reason.includes("MY GUY") || rec.reason.includes("Breakout") || rec.reason.includes("Speed") || rec.reason.includes("Swiss") || rec.reason.includes("Riser") || rec.reason.includes("Groundball") || rec.reason.includes("Prospect Stash") || rec.reason.includes("OPS") || rec.reason.includes("Draft Now")
 
   return (
     <div className={`flex items-center gap-3 px-4 py-2.5 border-b border-slate-800/70 hover:bg-slate-800/40 transition-colors group ${isPenalized ? "opacity-40" : ""} ${isBoosted ? "bg-slate-800/20" : ""}`}>
@@ -236,7 +236,9 @@ function RecommendationRow({
             </span>
           )}
         </div>
-        <div className="text-[11px] text-slate-500">{rec.team} · <span className="text-slate-400">{rec.reason}</span></div>
+        <div className="text-[11px] text-slate-500">
+          {rec.team} · <span className={rec.reason.includes("Draft Now") ? "text-red-400 font-bold" : "text-slate-400"}>{rec.reason}</span>
+        </div>
       </div>
 
       {/* Actions — visible on hover */}
