@@ -1,15 +1,154 @@
 {
-  "generated_at": "2026-03-23T00:30:48.070040",
+  "generated_at": "2026-03-23T12:39:32.521950",
   "date": "2026-03-23",
   "must_start": [],
   "start": [],
   "flex": [],
   "bench": [],
-  "not_playing": [],
+  "not_playing": [
+    {
+      "player": "Agust\u00edn Ram\u00edrez",
+      "position": "C",
+      "team": "MIA",
+      "adp": 115.0
+    },
+    {
+      "player": "Spencer Torkelson",
+      "position": "1B",
+      "team": "DET",
+      "adp": 181.0
+    },
+    {
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B,3B",
+      "team": "NYY",
+      "adp": 45.0
+    },
+    {
+      "player": "Eugenio Su\u00e1rez",
+      "position": "3B",
+      "team": "CIN",
+      "adp": 87.0
+    },
+    {
+      "player": "CJ Abrams",
+      "position": "SS",
+      "team": "WSH",
+      "adp": 131.0
+    },
+    {
+      "player": "Ronald Acu\u00f1a Jr.",
+      "position": "OF",
+      "team": "ATL",
+      "adp": 8.0
+    },
+    {
+      "player": "Wyatt Langford",
+      "position": "OF",
+      "team": "TEX",
+      "adp": 90.0
+    },
+    {
+      "player": "Cody Bellinger",
+      "position": "OF",
+      "team": "NYY",
+      "adp": 43.0
+    },
+    {
+      "player": "Jo Adell",
+      "position": "OF",
+      "team": "LAA",
+      "adp": 182.0
+    },
+    {
+      "player": "Lawrence Butler",
+      "position": "OF",
+      "team": "ATH",
+      "adp": 200.0
+    },
+    {
+      "player": "Zach Neto",
+      "position": "SS",
+      "team": "LAA",
+      "adp": 135.0
+    },
+    {
+      "player": "Brandon Lowe",
+      "position": "2B",
+      "team": "PIT",
+      "adp": 174.0
+    },
+    {
+      "player": "Jackson Holliday",
+      "position": "2B,SS",
+      "team": "BAL",
+      "adp": 183.0
+    },
+    {
+      "player": "Kyle Manzardo",
+      "position": "1B",
+      "team": "CLE",
+      "adp": 290.0
+    },
+    {
+      "player": "Alec Bohm",
+      "position": "1B,3B",
+      "team": "PHI",
+      "adp": 220.0
+    },
+    {
+      "player": "Garrett Crochet",
+      "position": "SP",
+      "team": "BOS",
+      "adp": 9.0
+    },
+    {
+      "player": "Spencer Strider",
+      "position": "SP",
+      "team": "ATL",
+      "adp": 84.0
+    },
+    {
+      "player": "Mason Miller",
+      "position": "RP",
+      "team": "SD",
+      "adp": 36.0
+    },
+    {
+      "player": "Dennis Santana",
+      "position": "RP",
+      "team": "PIT",
+      "adp": 244.0
+    },
+    {
+      "player": "Abner Uribe",
+      "position": "RP",
+      "team": "MIL",
+      "adp": 161.0
+    },
+    {
+      "player": "Robert Garcia",
+      "position": "RP",
+      "team": "TEX",
+      "adp": 254.0
+    },
+    {
+      "player": "Jeremiah Estrada",
+      "position": "RP",
+      "team": "SD",
+      "adp": 243.0
+    },
+    {
+      "player": "Garrett Cleavinger",
+      "position": "RP",
+      "team": "TB",
+      "adp": 300.0
+    }
+  ],
   "summary": {
-    "total_roster": 0,
+    "total_roster": 23,
     "playing_today": 0,
-    "not_playing": 0,
+    "not_playing": 23,
     "must_start_count": 0,
     "start_count": 0,
     "flex_count": 0,
