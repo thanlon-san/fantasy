@@ -413,6 +413,136 @@ def health():
     }
 
 
+# ─── Draft-day utility endpoints ──────────────────────────────────────────────
+
+@app.get("/draft/best-available")
+def get_best_available(position: Optional[str] = None, n: int = 10):
+    """
+    Returns the best available players, optionally filtered to a position.
+    position: C | 1B | 2B | 3B | SS | OF | SP | RP  (or omit for overall)
+    """
+    if _board is None:
+        raise HTTPException(status_code=503, detail=_error or "Board not initialized")
+    maybe_sync_yahoo()
+
+    avail = _board.available()
+    if position:
+        pos_upper = position.upper()
+        avail = [p for p in avail if pos_upper in p.get("positions", [])]
+
+    avail = sorted(avail, key=lambda x: x["adp"])[:n]
+    return {
+        "position": position,
+        "players": [
+            {
+                "rank":           i + 1,
+                "name":           p["name"],
+                "team":           p.get("team", ""),
+                "positions":      p.get("positions", []),
+                "adp":            p["adp"],
+                "tier":           get_tier(p["adp"]),
+                "yahoo_discount": p.get("yahoo_discount", 0.0),
+            }
+            for i, p in enumerate(avail)
+        ],
+        "picks_made": _board.picks_made,
+    }
+
+
+@app.get("/draft/run-detector")
+def get_run_detector(window: int = 8):
+    """
+    Detects if a position run is happening in the last N picks.
+    Returns positions where ≥3 players were taken in the last `window` picks.
+    """
+    if _board is None:
+        raise HTTPException(status_code=503, detail=_error or "Board not initialized")
+
+    picks = maybe_sync_yahoo()
+    recent = picks[-window:] if len(picks) >= window else picks
+
+    pos_counts: dict[str, int] = {}
+    for pick in recent:
+        for pos in pick.get("positions", []):
+            if pos in ("C", "1B", "2B", "3B", "SS", "OF", "SP", "RP"):
+                pos_counts[pos] = pos_counts.get(pos, 0) + 1
+
+    runs = [
+        {"position": pos, "count": cnt, "window": len(recent)}
+        for pos, cnt in pos_counts.items()
+        if cnt >= 3
+    ]
+    runs.sort(key=lambda x: -x["count"])
+
+    # For each detected run, show the best still available at that position
+    enriched = []
+    for run in runs:
+        best = _board.available()
+        best = [p for p in best if run["position"] in p.get("positions", [])]
+        best = sorted(best, key=lambda x: x["adp"])[:3]
+        enriched.append({
+            **run,
+            "best_remaining": [{"name": p["name"], "adp": p["adp"]} for p in best],
+        })
+
+    return {
+        "window_size":    len(recent),
+        "picks_made":     _board.picks_made,
+        "runs_detected":  enriched,
+        "all_pos_counts": pos_counts,
+    }
+
+
+@app.get("/draft/pick-clock")
+def get_pick_clock():
+    """
+    Returns countdown to your next pick, your roster gaps, and a
+    one-line strategy note for right now.
+    """
+    if _board is None:
+        raise HTTPException(status_code=503, detail=_error or "Board not initialized")
+    maybe_sync_yahoo()
+
+    rnd          = _board.current_round
+    nxt          = _board.next_my_pick()
+    until        = _board.picks_until_mine()
+    needs        = _board.remaining_needs()
+    open_needs   = {k: v for k, v in needs.items() if v > 0}
+    phase, label = current_phase(rnd)
+
+    # One-line strategy tailored to urgency
+    if until == 0:
+        urgency = "ON THE CLOCK"
+        note    = f"You're up! Phase: {label}"
+    elif until <= 2:
+        urgency = "URGENT"
+        note    = f"{until} pick{'s' if until > 1 else ''} away — lock in your target now. {label}"
+    elif until <= 5:
+        urgency = "SOON"
+        note    = f"{until} picks away. {label}"
+    else:
+        urgency = "WATCHING"
+        note    = f"{until} picks until yours (Rd {nxt['round'] if nxt else '?'}). {label}"
+
+    # Top 5 recs for rapid scanning
+    top_recs = _board.recommend(5)
+
+    return {
+        "picks_made":     _board.picks_made,
+        "current_round":  rnd,
+        "until_my_pick":  until,
+        "next_pick":      nxt,
+        "urgency":        urgency,
+        "strategy_note":  note,
+        "open_needs":     open_needs,
+        "top_5":          [
+            {"name": p["name"], "adp": p["adp"],
+             "positions": p.get("positions", []), "reason": p.get("_reason", "")}
+            for p in top_recs
+        ],
+    }
+
+
 # ─── Season endpoints ─────────────────────────────────────────────────────────
 #
 # Stat ID map (confirmed from league settings API):

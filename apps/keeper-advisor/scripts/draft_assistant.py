@@ -54,9 +54,15 @@ SEASON            = 2026
 MY_KEEPER_ROUNDS  = {9, 11, 12}   # Confirmed from Yahoo: Crochet R9, Miller R11, Neto R12
 
 MY_KEEPERS = [
-    {"name": "Garrett Crochet", "position": "SP", "round": 9,  "adp": 11},
-    {"name": "Mason Miller",    "position": "RP", "round": 11, "adp": 55},
-    {"name": "Zach Neto",       "position": "SS", "round": 12, "adp": 36},
+    # ADP values = FantasyPros 2026 consensus avg (refreshed pre-draft).
+    # All three keepers are strong surplus picks at their keeper rounds:
+    #   Crochet: consensus 12, keeping in R9 (~#107) → +95 picks early
+    #   Miller:  consensus 43, keeping in R11 (~#131) → +88 picks early
+    #   Neto:    consensus 34, keeping in R12 (~#155) → +121 picks early
+    #            (Yahoo ADP 29 means Yahoo drafters actually value him even higher)
+    {"name": "Garrett Crochet", "position": "SP", "round": 9,  "adp": 12},
+    {"name": "Mason Miller",    "position": "RP", "round": 11, "adp": 43},
+    {"name": "Zach Neto",       "position": "SS", "round": 12, "adp": 34},
 ]
 
 # All 12 teams' confirmed keepers — pre-removed from the available pool at draft start.
@@ -112,7 +118,9 @@ ROSTER_NEEDS = {
 # Relievers dominate HR, ERA, WHIP, SV — 4 of 6 very winnable
 # Only need 1–2 SPs for K counting stats (punting QS entirely)
 BATTER_ROUNDS    = set(range(1, 9))    # Rounds 1–8: batters only
-SP_TARGET_ROUNDS = {12, 13}            # 1–2 K-upside SPs (no W category to chase)
+# R9 = Crochet keeper, R11 = Miller keeper, R12 = Neto keeper — no picks those rounds.
+# R10 (overall ~119) and R13 (overall ~155) are the two real SP windows.
+SP_TARGET_ROUNDS = {10, 13}            # 1–2 K-upside SPs (no W category to chase)
 CLOSER_ROUNDS    = set(range(14, 25))  # Closers for HR/ERA/WHIP/SV dominance
 
 # Scarcity priority for batters (most scarce first)
@@ -215,31 +223,43 @@ class FPScraper:
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(resp.content, "html.parser")
 
-        # Table columns: rank | player | yahoo_adp | cbs | rts | nfbc | ft | avg_adp
-        # We capture both yahoo_adp and avg_adp to compute the value discount.
-        # A positive yahoo_discount means Yahoo drafters are sleeping on this player
-        # relative to the broader expert consensus — a real value signal.
+        # Detect column layout from thead — FantasyPros occasionally adds/removes
+        # platform columns (e.g. ESPN was added between FT and AVG).
+        # Always trust the header, never hardcode column offsets.
+        table = soup.select_one("table")
+        if not table:
+            print(f" {C.YELLOW}no table found{C.RESET}")
+            return []
 
-        # Parse all rows, then deduplicate (keep best ADP per player)
+        headers = [th.get_text(strip=True).lower() for th in table.select("thead th")]
+        num_cols = len(headers)
+
+        # Locate the columns we care about
+        player_col = next((i for i, h in enumerate(headers) if "player" in h), 1)
+        yahoo_col  = next((i for i, h in enumerate(headers) if h == "yahoo"), 2)
+        avg_col    = next((i for i, h in enumerate(headers) if h in ("avg", "average")), num_cols - 1)
+
+        # Parse all rows, then deduplicate (keep lowest avg ADP per player)
         seen: Dict[str, Dict] = {}  # normalized_name -> player dict
 
-        for row in soup.select("table tbody tr"):
+        for row in table.select("tbody tr"):
             cells = row.find_all("td")
-            for i in range(0, len(cells), 8):
-                if i + 7 >= len(cells):
+            # Step through grouped-player blocks within each table row.
+            # FantasyPros uses one big <tr> with all players packed in.
+            for i in range(0, len(cells), num_cols):
+                if i + avg_col >= len(cells):
                     break
-                player_text = cells[i + 1].get_text(strip=True)
-                yahoo_text  = cells[i + 2].get_text(strip=True)
-                avg_text    = cells[i + 7].get_text(strip=True)
+                player_text = cells[i + player_col].get_text(strip=True)
+                yahoo_text  = cells[i + yahoo_col].get_text(strip=True)  if i + yahoo_col < len(cells) else ""
+                avg_text    = cells[i + avg_col].get_text(strip=True)
 
                 m = re.match(r"^(.+?)\s*\(([A-Z]{2,3}(?:/[A-Z]{2,3})?)\s*-\s*([^)]+)\)", player_text)
                 if not m:
                     continue
-                name      = m.group(1).strip()
-                team      = m.group(2).strip()
+                name          = m.group(1).strip()
+                team          = m.group(2).strip()
                 raw_positions = [p.strip() for p in m.group(3).split(",")]
 
-                # Normalize positions to fantasy slots
                 positions = self._normalize_positions(raw_positions)
 
                 try:
@@ -247,14 +267,11 @@ class FPScraper:
                 except ValueError:
                     continue
 
-                # Yahoo-specific ADP — if Yahoo drafters sleep on this player
-                # relative to expert consensus, it's a value opportunity.
                 # Positive yahoo_discount = Yahoo drafts LATER than consensus = undervalued on Yahoo
-                _yahoo_adp = adp  # default: no platform difference
+                _yahoo_adp      = adp
                 _yahoo_discount = 0.0
                 try:
-                    _yahoo_adp = float(yahoo_text)
-                    # yahoo_adp > adp means Yahoo drafts later → undervalued here
+                    _yahoo_adp      = float(yahoo_text)
                     _yahoo_discount = round(_yahoo_adp - adp, 1)
                 except ValueError:
                     pass
@@ -351,6 +368,9 @@ class YahooDraft:
             return []
         try:
             dr = data["league"][1]["draft_results"]
+            # Pre-draft: Yahoo returns an empty list instead of a numbered dict
+            if not isinstance(dr, dict):
+                return []
             picks = []
             for k, v in dr.items():
                 if k == "count":
@@ -646,7 +666,7 @@ class DraftBoard:
                     reason = "pitcher — wait"
                 else:
                     # Dynamic scarcity: replaces fixed BAT_SCARCITY order
-                    best_pos_bonus = 0.0
+                    best_pos_bonus = -1.0   # -1 so any non-negative bonus wins
                     best_pos       = ""
                     for pos in positions:
                         if pos in BAT_SCARCITY and needs.get(pos, 0) > 0:
@@ -805,7 +825,7 @@ def display_cheatsheet(board: DraftBoard):
     print(f"\n{C.BOLD}{C.CYAN}{'═' * 80}")
     print(f"  DRAFT CHEAT SHEET — 2balls  |  Pick 11/12  |  2026 Season")
     print(f"  Hitting: R H HR RBI SB OPS  |  Pitching: HR K ERA WHIP SV QS")
-    print(f"  Strategy: Batters R1–8 → 1–2 K-SP R12–13 → Closers R14–24")
+    print(f"  Strategy: Batters R1–8 → SP window R10,13 → Closers R14–24")
     print(f"  Target: dominate HR/ERA/WHIP/SV (4 of 6 pitching cats) every week")
     print(f"{'═' * 80}{C.RESET}")
     display_keepers()

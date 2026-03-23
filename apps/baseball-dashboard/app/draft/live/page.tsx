@@ -4,10 +4,13 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, RefreshCw, Zap, CheckCircle2, AlertTriangle, Wifi, WifiOff } from "lucide-react"
+import { ArrowLeft, RefreshCw, Zap, CheckCircle2, AlertTriangle, Wifi, WifiOff, TrendingDown } from "lucide-react"
 
 const API_BASE = process.env.NEXT_PUBLIC_DRAFT_API_URL ?? "http://localhost:8001"
 const POLL_MS  = 15_000
+
+const POSITIONS = ["C", "1B", "2B", "3B", "SS", "OF", "SP", "RP"] as const
+type PosFilter = typeof POSITIONS[number] | null
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -82,6 +85,23 @@ type DraftState = {
   open_needs:      Record<string, number>
   last_synced:     string
   error:           string | null
+}
+
+type BestAvailPlayer = {
+  rank: number
+  name: string
+  team: string
+  positions: string[]
+  adp: number
+  tier: string
+  yahoo_discount: number
+}
+
+type RunAlert = {
+  position: string
+  count: number
+  window: number
+  best_remaining: { name: string; adp: number }[]
 }
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
@@ -271,11 +291,14 @@ function PickLogRow({ pick }: { pick: RecentPick }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function LiveDraftPage() {
-  const [state,     setState]     = useState<DraftState | null>(null)
-  const [loading,   setLoading]   = useState(true)
-  const [connected, setConnected] = useState(false)
-  const [refreshing,setRefreshing] = useState(false)
-  const [apiError,  setApiError]  = useState<string | null>(null)
+  const [state,      setState]      = useState<DraftState | null>(null)
+  const [loading,    setLoading]    = useState(true)
+  const [connected,  setConnected]  = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [apiError,   setApiError]   = useState<string | null>(null)
+  const [posFilter,  setPosFilter]  = useState<PosFilter>(null)
+  const [bestAvail,  setBestAvail]  = useState<BestAvailPlayer[]>([])
+  const [runAlerts,  setRunAlerts]  = useState<RunAlert[]>([])
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const fetchState = useCallback(async (showRefreshing = false) => {
@@ -296,6 +319,27 @@ export default function LiveDraftPage() {
     }
   }, [])
 
+  const fetchBestAvail = useCallback(async (pos: PosFilter) => {
+    try {
+      const url = pos
+        ? `${API_BASE}/draft/best-available?position=${pos}&n=10`
+        : `${API_BASE}/draft/best-available?n=10`
+      const res = await fetch(url, { cache: "no-store" })
+      if (!res.ok) return
+      const data = await res.json()
+      setBestAvail(data.players ?? [])
+    } catch {/* silent */}
+  }, [])
+
+  const fetchRunAlerts = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/draft/run-detector`, { cache: "no-store" })
+      if (!res.ok) return
+      const data = await res.json()
+      setRunAlerts(data.runs_detected ?? [])
+    } catch {/* silent */}
+  }, [])
+
   const markPick = useCallback(async (playerName: string, isMine: boolean) => {
     try {
       await fetch(`${API_BASE}/mark-pick`, {
@@ -304,14 +348,25 @@ export default function LiveDraftPage() {
         body: JSON.stringify({ player_name: playerName, is_mine: isMine }),
       })
       await fetchState()
+      fetchRunAlerts()
     } catch {/* silent */}
-  }, [fetchState])
+  }, [fetchState, fetchRunAlerts])
+
+  // When position filter changes, fetch filtered best-available
+  useEffect(() => {
+    fetchBestAvail(posFilter)
+  }, [posFilter, fetchBestAvail])
 
   useEffect(() => {
     fetchState()
-    timerRef.current = setInterval(() => fetchState(), POLL_MS)
+    fetchRunAlerts()
+    timerRef.current = setInterval(() => {
+      fetchState()
+      fetchRunAlerts()
+      if (posFilter !== null) fetchBestAvail(posFilter)
+    }, POLL_MS)
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [fetchState])
+  }, [fetchState, fetchRunAlerts, fetchBestAvail, posFilter])
 
   // ── Loading / Error screens ──────────────────────────────────────────────
 
@@ -430,6 +485,85 @@ export default function LiveDraftPage() {
                 {state.phase.replace("_", " ")}
               </div>
             </div>
+
+            {/* Position filter — Best Available by position */}
+            <div className="px-4 py-2.5 border-b border-slate-800/70 flex items-center gap-1.5 flex-wrap">
+              <span className="text-[10px] text-slate-500 uppercase tracking-wider mr-1">Best at:</span>
+              {POSITIONS.map(pos => (
+                <button
+                  key={pos}
+                  onClick={() => setPosFilter(posFilter === pos ? null : pos)}
+                  className={`text-[10px] font-bold px-2 py-1 rounded border transition-colors ${
+                    posFilter === pos
+                      ? `${positionBadgeClass(pos)} ring-1 ring-offset-0 ring-current`
+                      : "border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-300"
+                  }`}
+                >
+                  {pos}
+                </button>
+              ))}
+              {posFilter && (
+                <button
+                  onClick={() => setPosFilter(null)}
+                  className="text-[10px] text-slate-600 hover:text-slate-400 ml-1"
+                >
+                  ✕ clear
+                </button>
+              )}
+            </div>
+
+            {/* Run detector alerts */}
+            {runAlerts.length > 0 && (
+              <div className="mx-3 mt-2 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <TrendingDown className="h-3 w-3 text-red-400" />
+                  <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider">Position Run Detected</span>
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                  {runAlerts.map(run => (
+                    <div key={run.position} className="text-xs text-slate-300">
+                      <span className={`font-bold ${positionBadgeClass(run.position).split(" ").find(c => c.startsWith("text-")) ?? "text-slate-300"}`}>
+                        {run.position}
+                      </span>
+                      <span className="text-slate-500"> — {run.count} taken in last {run.window} picks. </span>
+                      <span className="text-slate-400">
+                        Best left: {run.best_remaining.map(p => p.name).join(", ")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Best Available by position (when filter active) */}
+            {posFilter && bestAvail.length > 0 && (
+              <div className="mx-3 mt-2 mb-1 rounded-lg border border-slate-700 bg-slate-800/50 overflow-hidden">
+                <div className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                  Best {posFilter} Available
+                </div>
+                {bestAvail.map((p, i) => (
+                  <div key={p.name} className="flex items-center gap-3 px-3 py-1.5 border-b border-slate-800/50 last:border-0 hover:bg-slate-700/30 group">
+                    <span className="text-xs text-slate-600 w-4 text-right">{i + 1}</span>
+                    <span className="text-xs font-mono text-slate-400 w-10 text-right">{Math.round(p.adp)}</span>
+                    <span className={`text-xs ${tierColor(p.tier)}`}>{p.tier}</span>
+                    <span className="text-sm text-slate-100 flex-1 truncate font-medium">{p.name}</span>
+                    <span className="text-xs text-slate-500">{p.team}</span>
+                    {p.yahoo_discount >= 20 && (
+                      <span className="text-[9px] font-bold px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        +{Math.round(p.yahoo_discount)}
+                      </span>
+                    )}
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button size="sm" variant="ghost" className="h-6 px-1.5 text-[10px] text-emerald-400 hover:bg-emerald-500/20"
+                        onClick={() => markPick(p.name, true)}>Mine</Button>
+                      <Button size="sm" variant="ghost" className="h-6 px-1.5 text-[10px] text-slate-500 hover:bg-slate-700"
+                        onClick={() => markPick(p.name, false)}>Skip</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Turn combo banner */}
             {state.turn_combo && (
               <div className="mx-3 my-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3">
