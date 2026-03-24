@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-03-23T12:39:32.521950",
-  "date": "2026-03-23",
+  "generated_at": "2026-03-24T12:43:19.666555",
+  "date": "2026-03-24",
   "must_start": [],
   "start": [],
   "flex": [],
@@ -10,7 +10,7 @@
       "player": "Agust\u00edn Ram\u00edrez",
       "position": "C",
       "team": "MIA",
-      "adp": 115.0
+      "adp": 117.0
     },
     {
       "player": "Spencer Torkelson",
@@ -22,19 +22,19 @@
       "player": "Jazz Chisholm Jr.",
       "position": "2B,3B",
       "team": "NYY",
-      "adp": 45.0
+      "adp": 44.0
     },
     {
       "player": "Eugenio Su\u00e1rez",
       "position": "3B",
       "team": "CIN",
-      "adp": 87.0
+      "adp": 86.0
     },
     {
-      "player": "CJ Abrams",
+      "player": "Zach Neto",
       "position": "SS",
-      "team": "WSH",
-      "adp": 131.0
+      "team": "LAA",
+      "adp": 134.0
     },
     {
       "player": "Ronald Acu\u00f1a Jr.",
@@ -58,43 +58,43 @@
       "player": "Jo Adell",
       "position": "OF",
       "team": "LAA",
-      "adp": 182.0
+      "adp": 188.0
     },
     {
       "player": "Lawrence Butler",
       "position": "OF",
       "team": "ATH",
-      "adp": 200.0
+      "adp": 198.0
     },
     {
-      "player": "Zach Neto",
+      "player": "CJ Abrams",
       "position": "SS",
-      "team": "LAA",
-      "adp": 135.0
+      "team": "WSH",
+      "adp": 131.0
     },
     {
       "player": "Brandon Lowe",
       "position": "2B",
       "team": "PIT",
-      "adp": 174.0
+      "adp": 173.0
     },
     {
       "player": "Jackson Holliday",
       "position": "2B,SS",
       "team": "BAL",
-      "adp": 183.0
+      "adp": 186.0
     },
     {
       "player": "Kyle Manzardo",
       "position": "1B",
       "team": "CLE",
-      "adp": 290.0
+      "adp": 287.0
     },
     {
       "player": "Alec Bohm",
       "position": "1B,3B",
       "team": "PHI",
-      "adp": 220.0
+      "adp": 222.0
     },
     {
       "player": "Garrett Crochet",
@@ -106,7 +106,7 @@
       "player": "Spencer Strider",
       "position": "SP",
       "team": "ATL",
-      "adp": 84.0
+      "adp": 88.0
     },
     {
       "player": "Mason Miller",
@@ -118,25 +118,25 @@
       "player": "Dennis Santana",
       "position": "RP",
       "team": "PIT",
-      "adp": 244.0
+      "adp": 242.0
     },
     {
       "player": "Abner Uribe",
       "position": "RP",
       "team": "MIL",
-      "adp": 161.0
+      "adp": 156.0
     },
     {
       "player": "Robert Garcia",
       "position": "RP",
       "team": "TEX",
-      "adp": 254.0
+      "adp": 253.0
     },
     {
       "player": "Jeremiah Estrada",
       "position": "RP",
       "team": "SD",
-      "adp": 243.0
+      "adp": 241.0
     },
     {
       "player": "Garrett Cleavinger",
