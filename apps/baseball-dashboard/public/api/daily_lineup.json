@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-03-24T12:43:19.666555",
-  "date": "2026-03-24",
+  "generated_at": "2026-03-25T12:40:30.466362",
+  "date": "2026-03-25",
   "must_start": [],
   "start": [],
   "flex": [],
@@ -31,10 +31,10 @@
       "adp": 86.0
     },
     {
-      "player": "Zach Neto",
+      "player": "CJ Abrams",
       "position": "SS",
-      "team": "LAA",
-      "adp": 134.0
+      "team": "WSH",
+      "adp": 131.0
     },
     {
       "player": "Ronald Acu\u00f1a Jr.",
@@ -67,10 +67,10 @@
       "adp": 198.0
     },
     {
-      "player": "CJ Abrams",
+      "player": "Zach Neto",
       "position": "SS",
-      "team": "WSH",
-      "adp": 131.0
+      "team": "LAA",
+      "adp": 134.0
     },
     {
       "player": "Brandon Lowe",
