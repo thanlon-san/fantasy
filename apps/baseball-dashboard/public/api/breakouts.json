@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-03-25T12:41:20.431290",
+  "generated_at": "2026-03-26T12:48:05.798829",
   "alerts": [],
   "summary": {
-    "total_scanned": 23,
+    "total_scanned": 24,
     "signals_found": 0,
     "strong_signals": 0
   }

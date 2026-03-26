@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-03-25T12:40:30.466362",
-  "date": "2026-03-25",
+  "generated_at": "2026-03-26T12:47:17.085757",
+  "date": "2026-03-26",
   "must_start": [],
   "start": [],
   "flex": [],
@@ -19,10 +19,10 @@
       "adp": 181.0
     },
     {
-      "player": "Jazz Chisholm Jr.",
-      "position": "2B,3B",
-      "team": "NYY",
-      "adp": 44.0
+      "player": "Brandon Lowe",
+      "position": "2B",
+      "team": "PIT",
+      "adp": 173.0
     },
     {
       "player": "Eugenio Su\u00e1rez",
@@ -35,12 +35,6 @@
       "position": "SS",
       "team": "WSH",
       "adp": 131.0
-    },
-    {
-      "player": "Ronald Acu\u00f1a Jr.",
-      "position": "OF",
-      "team": "ATL",
-      "adp": 8.0
     },
     {
       "player": "Wyatt Langford",
@@ -61,34 +55,10 @@
       "adp": 188.0
     },
     {
-      "player": "Lawrence Butler",
-      "position": "OF",
-      "team": "ATH",
-      "adp": 198.0
-    },
-    {
       "player": "Zach Neto",
       "position": "SS",
       "team": "LAA",
       "adp": 134.0
-    },
-    {
-      "player": "Brandon Lowe",
-      "position": "2B",
-      "team": "PIT",
-      "adp": 173.0
-    },
-    {
-      "player": "Jackson Holliday",
-      "position": "2B,SS",
-      "team": "BAL",
-      "adp": 186.0
-    },
-    {
-      "player": "Kyle Manzardo",
-      "position": "1B",
-      "team": "CLE",
-      "adp": 287.0
     },
     {
       "player": "Alec Bohm",
@@ -97,16 +67,34 @@
       "adp": 222.0
     },
     {
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B,3B",
+      "team": "NYY",
+      "adp": 44.0
+    },
+    {
+      "player": "Ronald Acu\u00f1a Jr.",
+      "position": "OF",
+      "team": "ATL",
+      "adp": 8.0
+    },
+    {
+      "player": "Lawrence Butler",
+      "position": "OF",
+      "team": "ATH",
+      "adp": 198.0
+    },
+    {
+      "player": "Kyle Manzardo",
+      "position": "1B",
+      "team": "CLE",
+      "adp": 287.0
+    },
+    {
       "player": "Garrett Crochet",
       "position": "SP",
       "team": "BOS",
       "adp": 9.0
-    },
-    {
-      "player": "Spencer Strider",
-      "position": "SP",
-      "team": "ATL",
-      "adp": 88.0
     },
     {
       "player": "Mason Miller",
@@ -143,12 +131,30 @@
       "position": "RP",
       "team": "TB",
       "adp": 300.0
+    },
+    {
+      "player": "Kyle Harrison",
+      "position": "SP,RP",
+      "team": "MIL",
+      "adp": 300.0
+    },
+    {
+      "player": "Jackson Holliday",
+      "position": "2B,SS",
+      "team": "BAL",
+      "adp": 186.0
+    },
+    {
+      "player": "Spencer Strider",
+      "position": "SP",
+      "team": "ATL",
+      "adp": 88.0
     }
   ],
   "summary": {
-    "total_roster": 23,
+    "total_roster": 24,
     "playing_today": 0,
-    "not_playing": 23,
+    "not_playing": 24,
     "must_start_count": 0,
     "start_count": 0,
     "flex_count": 0,
