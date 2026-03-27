@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-03-26T12:47:17.085757",
-  "date": "2026-03-26",
+  "generated_at": "2026-03-27T12:37:50.464808",
+  "date": "2026-03-27",
   "must_start": [],
   "start": [],
   "flex": [],
@@ -19,10 +19,10 @@
       "adp": 181.0
     },
     {
-      "player": "Brandon Lowe",
-      "position": "2B",
-      "team": "PIT",
-      "adp": 173.0
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B,3B",
+      "team": "NYY",
+      "adp": 44.0
     },
     {
       "player": "Eugenio Su\u00e1rez",
@@ -31,46 +31,16 @@
       "adp": 86.0
     },
     {
-      "player": "CJ Abrams",
-      "position": "SS",
-      "team": "WSH",
-      "adp": 131.0
-    },
-    {
-      "player": "Wyatt Langford",
-      "position": "OF",
-      "team": "TEX",
-      "adp": 90.0
-    },
-    {
-      "player": "Cody Bellinger",
-      "position": "OF",
-      "team": "NYY",
-      "adp": 43.0
-    },
-    {
-      "player": "Jo Adell",
-      "position": "OF",
-      "team": "LAA",
-      "adp": 188.0
-    },
-    {
       "player": "Zach Neto",
       "position": "SS",
       "team": "LAA",
       "adp": 134.0
     },
     {
-      "player": "Alec Bohm",
-      "position": "1B,3B",
-      "team": "PHI",
-      "adp": 222.0
-    },
-    {
-      "player": "Jazz Chisholm Jr.",
-      "position": "2B,3B",
-      "team": "NYY",
-      "adp": 44.0
+      "player": "Jo Adell",
+      "position": "OF",
+      "team": "LAA",
+      "adp": 188.0
     },
     {
       "player": "Ronald Acu\u00f1a Jr.",
@@ -85,16 +55,52 @@
       "adp": 198.0
     },
     {
+      "player": "Cody Bellinger",
+      "position": "OF",
+      "team": "NYY",
+      "adp": 43.0
+    },
+    {
       "player": "Kyle Manzardo",
       "position": "1B",
       "team": "CLE",
       "adp": 287.0
     },
     {
+      "player": "Brandon Lowe",
+      "position": "2B",
+      "team": "PIT",
+      "adp": 173.0
+    },
+    {
+      "player": "CJ Abrams",
+      "position": "SS",
+      "team": "WSH",
+      "adp": 131.0
+    },
+    {
+      "player": "Wyatt Langford",
+      "position": "OF",
+      "team": "TEX",
+      "adp": 90.0
+    },
+    {
+      "player": "Alec Bohm",
+      "position": "1B,3B",
+      "team": "PHI",
+      "adp": 222.0
+    },
+    {
       "player": "Garrett Crochet",
       "position": "SP",
       "team": "BOS",
       "adp": 9.0
+    },
+    {
+      "player": "Kyle Harrison",
+      "position": "SP,RP",
+      "team": "MIL",
+      "adp": 300.0
     },
     {
       "player": "Mason Miller",
@@ -130,12 +136,6 @@
       "player": "Garrett Cleavinger",
       "position": "RP",
       "team": "TB",
-      "adp": 300.0
-    },
-    {
-      "player": "Kyle Harrison",
-      "position": "SP,RP",
-      "team": "MIL",
       "adp": 300.0
     },
     {
