@@ -127,15 +127,21 @@ class YahooFantasyClient:
         
         # Parse players
         players = []
-        
+
         if isinstance(players_data, dict):
-            # Players are in a dict with count and player array
             if 'player' in players_data:
+                # Flat list under a single 'player' key
                 player_list = players_data['player']
+                if not isinstance(player_list, list):
+                    player_list = [player_list]
             else:
-                return []
+                # Numbered-key format: {"count": N, "0": {"player": [...]}, ...}
+                player_list = [
+                    v for k, v in players_data.items()
+                    if k != 'count' and isinstance(v, dict) and 'player' in v
+                ]
         else:
-            player_list = players_data
+            player_list = players_data if isinstance(players_data, list) else []
         
         # Parse each player
         for player_entry in player_list:

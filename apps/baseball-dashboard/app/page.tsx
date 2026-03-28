@@ -407,26 +407,37 @@ export default function Home() {
         {/* Main Content */}
         {totalPlayingCount === 0 && !error ? (
           <>
-            {/* Off-Season / Spring Training Layout */}
+            {/* No-Lineup Layout (off-day or early morning before schedule loads) */}
             <div className="space-y-6">
-              {keepers.length > 0 && (
-                <KeeperAnalyzerTable recommendations={keepers.map(k => ({
-                  ...k,
-                  round: String(k.round),
-                }))} />
-              )}
               <WaiverWireTable targets={waiverWire} />
               <BreakoutDetectorTable alerts={breakouts} />
-              {keepers.length === 0 && waiverWire.length === 0 && breakouts.length === 0 && (
+              {waiverWire.length === 0 && breakouts.length === 0 && keepers.length === 0 && (
                 <div className="text-center py-16 text-muted-foreground border rounded-lg border-dashed">
                   <Calendar className="h-16 w-16 mx-auto mb-4 opacity-30" />
-                  <p className="mb-2 text-lg font-medium">Season starts soon — no data yet</p>
+                  <p className="mb-2 text-lg font-medium">No data yet for today</p>
                   <p className="text-sm">
                     Run:{" "}
                     <code className="bg-muted px-2 py-1 rounded">python scripts/export_dashboard_data.py</code>
-                    {" "}once games begin.
                   </p>
                 </div>
+              )}
+              {keepers.length > 0 && (
+                <Collapsible>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-start pl-0 hover:bg-transparent font-semibold text-base gap-2">
+                      <ChevronDown className="h-4 w-4" />
+                      <Star className="h-4 w-4 text-muted-foreground" />
+                      <span>Keeper Projections</span>
+                      <span className="text-xs text-muted-foreground font-normal ml-1">(next offseason)</span>
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-3">
+                    <KeeperAnalyzerTable recommendations={keepers.map(k => ({
+                      ...k,
+                      round: String(k.round),
+                    }))} />
+                  </CollapsibleContent>
+                </Collapsible>
               )}
             </div>
 
