@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-03-27T12:37:50.464808",
-  "date": "2026-03-27",
+  "generated_at": "2026-03-28T12:30:06.282945",
+  "date": "2026-03-28",
   "must_start": [],
   "start": [],
   "flex": [],
@@ -49,28 +49,10 @@
       "adp": 8.0
     },
     {
-      "player": "Lawrence Butler",
+      "player": "Wyatt Langford",
       "position": "OF",
-      "team": "ATH",
-      "adp": 198.0
-    },
-    {
-      "player": "Cody Bellinger",
-      "position": "OF",
-      "team": "NYY",
-      "adp": 43.0
-    },
-    {
-      "player": "Kyle Manzardo",
-      "position": "1B",
-      "team": "CLE",
-      "adp": 287.0
-    },
-    {
-      "player": "Brandon Lowe",
-      "position": "2B",
-      "team": "PIT",
-      "adp": 173.0
+      "team": "TEX",
+      "adp": 90.0
     },
     {
       "player": "CJ Abrams",
@@ -79,16 +61,34 @@
       "adp": 131.0
     },
     {
-      "player": "Wyatt Langford",
-      "position": "OF",
-      "team": "TEX",
-      "adp": 90.0
+      "player": "Brandon Lowe",
+      "position": "2B",
+      "team": "PIT",
+      "adp": 173.0
     },
     {
       "player": "Alec Bohm",
       "position": "1B,3B",
       "team": "PHI",
       "adp": 222.0
+    },
+    {
+      "player": "Cody Bellinger",
+      "position": "OF",
+      "team": "NYY",
+      "adp": 43.0
+    },
+    {
+      "player": "Lawrence Butler",
+      "position": "OF",
+      "team": "ATH",
+      "adp": 198.0
+    },
+    {
+      "player": "Kyle Manzardo",
+      "position": "1B",
+      "team": "CLE",
+      "adp": 287.0
     },
     {
       "player": "Garrett Crochet",
