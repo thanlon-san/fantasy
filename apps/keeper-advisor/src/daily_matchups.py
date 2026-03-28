@@ -69,6 +69,33 @@ class MLBStatsAPI:
     
     def __init__(self):
         self.session = self._create_session_with_retries()
+        self._team_abbrev_cache: Dict[int, str] = {}
+
+    # MLB Stats API uses different abbreviations than Yahoo in a few cases
+    _ABBREV_NORMALIZE = {
+        'AZ':  'ARI',  # Arizona Diamondbacks
+        'ATH': 'OAK',  # Athletics (Yahoo may still use OAK)
+        'WSN': 'WSH',  # Washington Nationals (older MLB abbrev)
+    }
+
+    def _get_team_abbreviations(self) -> Dict[int, str]:
+        """Fetch team ID → abbreviation map from the /teams endpoint (cached)."""
+        if self._team_abbrev_cache:
+            return self._team_abbrev_cache
+        try:
+            url = f"{self.BASE_URL}/teams"
+            params = {'sportId': 1}
+            resp = self.session.get(url, params=params, timeout=self.TIMEOUT)
+            resp.raise_for_status()
+            for team in resp.json().get('teams', []):
+                tid = team.get('id')
+                abbr = team.get('abbreviation')
+                if tid and abbr:
+                    normalized = self._ABBREV_NORMALIZE.get(abbr, abbr)
+                    self._team_abbrev_cache[tid] = normalized
+        except Exception as e:
+            logger.warning(f"Could not fetch team abbreviations: {e}")
+        return self._team_abbrev_cache
     
     def _create_session_with_retries(self) -> requests.Session:
         """Create session with automatic retries on failures"""
@@ -133,10 +160,13 @@ class MLBStatsAPI:
                     else:
                         game_time = 'TBD'
                     
-                    # Teams - use abbreviations for consistency with roster format
+                    # Teams - the schedule endpoint omits 'abbreviation'; look it up by ID
+                    abbrevs = self._get_team_abbreviations()
                     teams = game_data.get('teams', {})
-                    away_team = teams.get('away', {}).get('team', {}).get('abbreviation', 'UNK')
-                    home_team = teams.get('home', {}).get('team', {}).get('abbreviation', 'UNK')
+                    away_id = teams.get('away', {}).get('team', {}).get('id')
+                    home_id = teams.get('home', {}).get('team', {}).get('id')
+                    away_team = abbrevs.get(away_id, teams.get('away', {}).get('team', {}).get('name', 'UNK'))
+                    home_team = abbrevs.get(home_id, teams.get('home', {}).get('team', {}).get('name', 'UNK'))
                     
                     # Probable pitchers
                     away_pitcher = None
