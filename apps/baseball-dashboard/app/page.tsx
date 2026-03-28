@@ -302,13 +302,13 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               <Link href="/draft">
-                <Button variant="outline" size="sm" className="gap-1.5">
+                <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                   <Star className="h-4 w-4" />
                   Draft
                 </Button>
               </Link>
               <Link href="/draft/live">
-                <Button size="sm" className="gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white">
+                <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                   <Zap className="h-3.5 w-3.5" />
                   Live Draft
                 </Button>
