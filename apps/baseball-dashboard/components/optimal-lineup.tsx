@@ -57,21 +57,22 @@ interface RosterSlot {
 // Standard 12-team Yahoo H2H Baseball (adjust slot counts to match your league)
 
 const ROSTER_SLOTS: RosterSlot[] = [
-  // ── Hitters ──
+  // ── Hitters (9 active slots) ──
   { id: "C",    label: "C",    positions: ["C"],                               group: "hitter" },
-  { id: "SS",   label: "SS",   positions: ["SS"],                             group: "hitter" },
+  { id: "1B",   label: "1B",   positions: ["1B"],                             group: "hitter" },
   { id: "2B",   label: "2B",   positions: ["2B"],                             group: "hitter" },
   { id: "3B",   label: "3B",   positions: ["3B"],                             group: "hitter" },
-  { id: "1B",   label: "1B",   positions: ["1B"],                             group: "hitter" },
+  { id: "SS",   label: "SS",   positions: ["SS"],                             group: "hitter" },
   { id: "OF1",  label: "OF",   positions: ["OF"],                             group: "hitter" },
   { id: "OF2",  label: "OF",   positions: ["OF"],                             group: "hitter" },
   { id: "OF3",  label: "OF",   positions: ["OF"],                             group: "hitter" },
-  { id: "UTIL", label: "UTIL", positions: ["C","1B","2B","3B","SS","OF","DH"], group: "hitter", isUtil: true },
-  // ── Pitchers ──
+  { id: "UTIL", label: "UTIL", positions: ["C","1B","2B","3B","SS","OF"],     group: "hitter", isUtil: true },
+  // ── Pitchers (6 active slots: 3 SP + 3 RP) ──
+  // SP slots accept SP or SP,RP eligible players
   { id: "SP1",  label: "SP",   positions: ["SP"],                             group: "pitcher" },
   { id: "SP2",  label: "SP",   positions: ["SP"],                             group: "pitcher" },
   { id: "SP3",  label: "SP",   positions: ["SP"],                             group: "pitcher" },
-  { id: "SP4",  label: "SP",   positions: ["SP"],                             group: "pitcher" },
+  // RP slots accept RP or SP,RP eligible players
   { id: "RP1",  label: "RP",   positions: ["RP"],                             group: "pitcher" },
   { id: "RP2",  label: "RP",   positions: ["RP"],                             group: "pitcher" },
   { id: "RP3",  label: "RP",   positions: ["RP"],                             group: "pitcher" },
@@ -85,7 +86,14 @@ function getPositions(player: Player): string[] {
 
 function canFillSlot(player: Player, slot: RosterSlot): boolean {
   const pp = getPositions(player)
-  return slot.positions.some((sp) => pp.includes(sp))
+  // SP,RP eligible players can fill SP or RP slots
+  const hasSP = pp.includes("SP")
+  const hasRP = pp.includes("RP")
+  return slot.positions.some((sp) => {
+    if (sp === "SP") return hasSP
+    if (sp === "RP") return hasRP || (hasSP && hasRP) // SP,RP can fill RP too
+    return pp.includes(sp)
+  })
 }
 
 function isRisky(player: Player): { risky: boolean; reason: string } {
