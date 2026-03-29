@@ -1,163 +1,432 @@
 {
-  "generated_at": "2026-03-28T12:30:06.282945",
+  "generated_at": "2026-03-28T23:59:24.298384",
   "date": "2026-03-28",
   "must_start": [],
-  "start": [],
-  "flex": [],
-  "bench": [],
-  "not_playing": [
+  "start": [
     {
       "player": "Agust\u00edn Ram\u00edrez",
       "position": "C",
       "team": "MIA",
-      "adp": 117.0
-    },
-    {
-      "player": "Spencer Torkelson",
-      "position": "1B",
-      "team": "DET",
-      "adp": 181.0
-    },
-    {
-      "player": "Jazz Chisholm Jr.",
-      "position": "2B,3B",
-      "team": "NYY",
-      "adp": 44.0
-    },
-    {
-      "player": "Eugenio Su\u00e1rez",
-      "position": "3B",
-      "team": "CIN",
-      "adp": 86.0
-    },
-    {
-      "player": "Zach Neto",
-      "position": "SS",
-      "team": "LAA",
-      "adp": 134.0
-    },
-    {
-      "player": "Jo Adell",
-      "position": "OF",
-      "team": "LAA",
-      "adp": 188.0
-    },
-    {
-      "player": "Ronald Acu\u00f1a Jr.",
-      "position": "OF",
-      "team": "ATL",
-      "adp": 8.0
-    },
-    {
-      "player": "Wyatt Langford",
-      "position": "OF",
-      "team": "TEX",
-      "adp": 90.0
-    },
-    {
-      "player": "CJ Abrams",
-      "position": "SS",
-      "team": "WSH",
-      "adp": 131.0
-    },
-    {
-      "player": "Brandon Lowe",
-      "position": "2B",
-      "team": "PIT",
-      "adp": 173.0
-    },
-    {
-      "player": "Alec Bohm",
-      "position": "1B,3B",
-      "team": "PHI",
-      "adp": 222.0
-    },
-    {
-      "player": "Cody Bellinger",
-      "position": "OF",
-      "team": "NYY",
-      "adp": 43.0
-    },
-    {
-      "player": "Lawrence Butler",
-      "position": "OF",
-      "team": "ATH",
-      "adp": 198.0
-    },
-    {
-      "player": "Kyle Manzardo",
-      "position": "1B",
-      "team": "CLE",
-      "adp": 287.0
+      "opponent": "vs COL",
+      "opponent_pitcher": "Michael Lorenzen",
+      "game_time": "04:10 PM ET",
+      "confidence": 72,
+      "matchup": 100,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "vs weak pitcher (Michael Lorenzen)"
+      ]
     },
     {
       "player": "Garrett Crochet",
       "position": "SP",
       "team": "BOS",
-      "adp": 9.0
-    },
-    {
-      "player": "Kyle Harrison",
-      "position": "SP,RP",
-      "team": "MIL",
-      "adp": 300.0
-    },
-    {
-      "player": "Mason Miller",
-      "position": "RP",
-      "team": "SD",
-      "adp": 36.0
+      "opponent": "@ CIN",
+      "opponent_pitcher": "Brady Singer",
+      "game_time": "04:10 PM ET",
+      "confidence": 72,
+      "matchup": 70,
+      "parkFactor": 85,
+      "platoon": 90,
+      "form": 85,
+      "breakout": 0,
+      "reasons": [
+        "At hitter-friendly park (1.09)",
+        "Cold weather suppressing power",
+        "Hot streak"
+      ]
     },
     {
       "player": "Dennis Santana",
       "position": "RP",
       "team": "PIT",
-      "adp": 242.0
-    },
-    {
-      "player": "Abner Uribe",
-      "position": "RP",
-      "team": "MIL",
-      "adp": 156.0
+      "opponent": "@ NYM",
+      "opponent_pitcher": "David Peterson",
+      "game_time": "04:10 PM ET",
+      "confidence": 67,
+      "matchup": 70,
+      "parkFactor": 60,
+      "platoon": 90,
+      "form": 85,
+      "breakout": 0,
+      "reasons": [
+        "Cold weather suppressing power",
+        "Hot streak"
+      ]
     },
     {
       "player": "Robert Garcia",
       "position": "RP",
       "team": "TEX",
-      "adp": 253.0
+      "opponent": "@ PHI",
+      "opponent_pitcher": "Aaron Nola",
+      "game_time": "04:05 PM ET",
+      "confidence": 65,
+      "matchup": 65,
+      "parkFactor": 60,
+      "platoon": 60,
+      "form": 100,
+      "breakout": 0,
+      "reasons": [
+        "Wind suppressing power",
+        "Cold weather suppressing power",
+        "Hot streak"
+      ]
+    }
+  ],
+  "flex": [
+    {
+      "player": "Alec Bohm",
+      "position": "1B,3B",
+      "team": "PHI",
+      "opponent": "vs TEX",
+      "opponent_pitcher": "Jacob Latz",
+      "game_time": "04:05 PM ET",
+      "confidence": 64,
+      "matchup": 75,
+      "parkFactor": 50,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Pitcher-friendly park (0.91)",
+        "Wind suppressing power",
+        "Cold weather suppressing power"
+      ]
     },
     {
       "player": "Jeremiah Estrada",
       "position": "RP",
       "team": "SD",
-      "adp": 241.0
+      "opponent": "vs DET",
+      "opponent_pitcher": "Jack Flaherty",
+      "game_time": "08:40 PM ET",
+      "confidence": 64,
+      "matchup": 55,
+      "parkFactor": 50,
+      "platoon": 85,
+      "form": 100,
+      "breakout": 0,
+      "reasons": [
+        "Pitcher-friendly park (0.94)",
+        "Hot streak"
+      ]
     },
     {
       "player": "Garrett Cleavinger",
       "position": "RP",
       "team": "TB",
-      "adp": 300.0
+      "opponent": "@ STL",
+      "opponent_pitcher": "Michael McGreevy",
+      "game_time": "02:15 PM ET",
+      "confidence": 63,
+      "matchup": 65,
+      "parkFactor": 70,
+      "platoon": 60,
+      "form": 85,
+      "breakout": 0,
+      "reasons": [
+        "Hot streak"
+      ]
     },
     {
       "player": "Jackson Holliday",
       "position": "2B,SS",
       "team": "BAL",
-      "adp": 186.0
+      "opponent": "vs MIN",
+      "opponent_pitcher": "Taj Bradley",
+      "game_time": "04:05 PM ET",
+      "confidence": 63,
+      "matchup": 65,
+      "parkFactor": 75,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Cold weather suppressing power",
+        "Limited recent data"
+      ]
+    },
+    {
+      "player": "CJ Abrams",
+      "position": "SS",
+      "team": "WSH",
+      "opponent": "@ CHC",
+      "opponent_pitcher": "Cade Horton",
+      "game_time": "02:20 PM ET",
+      "confidence": 62,
+      "matchup": 55,
+      "parkFactor": 70,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Cold weather suppressing power"
+      ]
+    },
+    {
+      "player": "Kyle Harrison",
+      "position": "SP,RP",
+      "team": "MIL",
+      "opponent": "vs CWS",
+      "opponent_pitcher": "Sean Burke",
+      "game_time": "07:10 PM ET",
+      "confidence": 62,
+      "matchup": 65,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Standard matchup"
+      ]
+    },
+    {
+      "player": "Abner Uribe",
+      "position": "RP",
+      "team": "MIL",
+      "opponent": "vs CWS",
+      "opponent_pitcher": "Sean Burke",
+      "game_time": "07:10 PM ET",
+      "confidence": 62,
+      "matchup": 65,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Standard matchup"
+      ]
+    },
+    {
+      "player": "Wyatt Langford",
+      "position": "OF",
+      "team": "TEX",
+      "opponent": "@ PHI",
+      "opponent_pitcher": "Aaron Nola",
+      "game_time": "04:05 PM ET",
+      "confidence": 61,
+      "matchup": 65,
+      "parkFactor": 60,
+      "platoon": 60,
+      "form": 85,
+      "breakout": 0,
+      "reasons": [
+        "Wind suppressing power",
+        "Cold weather suppressing power",
+        "Hot streak"
+      ]
+    },
+    {
+      "player": "Zach Neto",
+      "position": "SS",
+      "team": "LAA",
+      "opponent": "@ HOU",
+      "opponent_pitcher": "Cristian Javier",
+      "game_time": "07:10 PM ET",
+      "confidence": 61,
+      "matchup": 65,
+      "parkFactor": 70,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Standard matchup"
+      ]
+    },
+    {
+      "player": "Jo Adell",
+      "position": "OF",
+      "team": "LAA",
+      "opponent": "@ HOU",
+      "opponent_pitcher": "Cristian Javier",
+      "game_time": "07:10 PM ET",
+      "confidence": 61,
+      "matchup": 65,
+      "parkFactor": 70,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Standard matchup"
+      ]
+    },
+    {
+      "player": "Brandon Lowe",
+      "position": "2B",
+      "team": "PIT",
+      "opponent": "@ NYM",
+      "opponent_pitcher": "David Peterson",
+      "game_time": "04:10 PM ET",
+      "confidence": 60,
+      "matchup": 70,
+      "parkFactor": 60,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Cold weather suppressing power"
+      ]
+    },
+    {
+      "player": "Cody Bellinger",
+      "position": "OF",
+      "team": "NYY",
+      "opponent": "@ SF",
+      "opponent_pitcher": "Tyler Mahle",
+      "game_time": "07:15 PM ET",
+      "confidence": 60,
+      "matchup": 55,
+      "parkFactor": 60,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Standard matchup"
+      ]
+    },
+    {
+      "player": "Spencer Torkelson",
+      "position": "1B",
+      "team": "DET",
+      "opponent": "@ SD",
+      "opponent_pitcher": "Randy V\u00e1squez",
+      "game_time": "08:40 PM ET",
+      "confidence": 59,
+      "matchup": 65,
+      "parkFactor": 60,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Standard matchup"
+      ]
+    },
+    {
+      "player": "Ronald Acu\u00f1a Jr.",
+      "position": "OF",
+      "team": "ATL",
+      "opponent": "vs KC",
+      "opponent_pitcher": "Michael Wacha",
+      "game_time": "07:15 PM ET",
+      "confidence": 59,
+      "matchup": 65,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Limited recent data"
+      ]
     },
     {
       "player": "Spencer Strider",
       "position": "SP",
       "team": "ATL",
-      "adp": 88.0
+      "opponent": "vs KC",
+      "opponent_pitcher": "Michael Wacha",
+      "game_time": "07:15 PM ET",
+      "confidence": 59,
+      "matchup": 65,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Limited recent data"
+      ]
+    },
+    {
+      "player": "Eugenio Su\u00e1rez",
+      "position": "3B",
+      "team": "CIN",
+      "opponent": "vs BOS",
+      "opponent_pitcher": "Sonny Gray",
+      "game_time": "04:10 PM ET",
+      "confidence": 55,
+      "matchup": 25,
+      "parkFactor": 100,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Hitter-friendly park (1.09)",
+        "Cold weather suppressing power",
+        "vs tough pitcher (Sonny Gray)"
+      ]
+    },
+    {
+      "player": "Mason Miller",
+      "position": "RP",
+      "team": "SD",
+      "opponent": "vs DET",
+      "opponent_pitcher": "Jack Flaherty",
+      "game_time": "08:40 PM ET",
+      "confidence": 54,
+      "matchup": 55,
+      "parkFactor": 50,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Pitcher-friendly park (0.94)"
+      ]
+    },
+    {
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B,3B",
+      "team": "NYY",
+      "opponent": "@ SF",
+      "opponent_pitcher": "Tyler Mahle",
+      "game_time": "07:15 PM ET",
+      "confidence": 53,
+      "matchup": 55,
+      "parkFactor": 60,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "Limited recent data"
+      ]
+    }
+  ],
+  "bench": [
+    {
+      "player": "Kyle Manzardo",
+      "position": "1B",
+      "team": "CLE",
+      "opponent": "@ SEA",
+      "opponent_pitcher": "Bryan Woo",
+      "game_time": "09:40 PM ET",
+      "confidence": 48,
+      "matchup": 15,
+      "parkFactor": 60,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "reasons": [
+        "vs tough pitcher (Bryan Woo)"
+      ]
+    }
+  ],
+  "not_playing": [
+    {
+      "player": "Lawrence Butler",
+      "position": "OF",
+      "team": "ATH",
+      "adp": 198.0
     }
   ],
   "summary": {
     "total_roster": 24,
-    "playing_today": 0,
-    "not_playing": 24,
+    "playing_today": 23,
+    "not_playing": 1,
     "must_start_count": 0,
-    "start_count": 0,
-    "flex_count": 0,
-    "bench_count": 0
+    "start_count": 4,
+    "flex_count": 18,
+    "bench_count": 1
   }
 }
