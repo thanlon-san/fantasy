@@ -24,12 +24,26 @@ class RecentStats:
     hr: Optional[int] = None
     rbi: Optional[int] = None
     sb: Optional[int] = None
+    obp: Optional[float] = None
+    slg: Optional[float] = None
+    ops: Optional[float] = None
+    bb: Optional[int] = None
+    hbp: Optional[int] = None
+    h: Optional[int] = None
+    ab: Optional[int] = None
+    r: Optional[int] = None
     
     # Pitching stats
     era: Optional[float] = None
     whip: Optional[float] = None
     k: Optional[int] = None
     w: Optional[int] = None
+    sv: Optional[int] = None
+    qs: Optional[int] = None
+    ip: Optional[float] = None
+    p_bb: Optional[int] = None
+    p_h: Optional[int] = None
+    holds: Optional[int] = None
     
     # Meta
     games: int = 0
@@ -41,11 +55,25 @@ class RecentStats:
             'hr': self.hr,
             'rbi': self.rbi,
             'sb': self.sb,
+            'obp': self.obp,
+            'slg': self.slg,
+            'ops': self.ops,
+            'bb': self.bb,
+            'hbp': self.hbp,
+            'h': self.h,
+            'ab': self.ab,
+            'r': self.r,
             'era': self.era,
             'whip': self.whip,
             'k': self.k,
             'w': self.w,
-            'games': self.games
+            'sv': self.sv,
+            'qs': self.qs,
+            'ip': self.ip,
+            'p_bb': self.p_bb,
+            'p_h': self.p_h,
+            'holds': self.holds,
+            'games': self.games,
         }
 
 
@@ -298,6 +326,12 @@ class StatsFetcher:
         total_hr = 0
         total_rbi = 0
         total_sb = 0
+        total_bb = 0
+        total_hbp = 0
+        total_r = 0
+        total_sf = 0
+        total_doubles = 0
+        total_triples = 0
         
         for game in games:
             ab = game.get('atBats', 0)
@@ -308,16 +342,38 @@ class StatsFetcher:
             total_hr += game.get('homeRuns', 0)
             total_rbi += game.get('rbi', 0)
             total_sb += game.get('stolenBases', 0)
+            total_bb += game.get('baseOnBalls', 0)
+            total_hbp += game.get('hitByPitch', 0)
+            total_r += game.get('runs', 0)
+            total_sf += game.get('sacFlies', 0)
+            total_doubles += game.get('doubles', 0)
+            total_triples += game.get('triples', 0)
         
-        # Calculate AVG
         avg = total_hits / total_ab if total_ab > 0 else 0.0
         
+        pa = total_ab + total_bb + total_hbp + total_sf
+        obp = (total_hits + total_bb + total_hbp) / pa if pa > 0 else 0.0
+        
+        singles = total_hits - total_doubles - total_triples - total_hr
+        total_bases = singles + 2 * total_doubles + 3 * total_triples + 4 * total_hr
+        slg = total_bases / total_ab if total_ab > 0 else 0.0
+        
+        ops = obp + slg
+        
         return RecentStats(
-            avg=avg,
+            avg=round(avg, 3),
             hr=total_hr,
             rbi=total_rbi,
             sb=total_sb,
-            games=len(games)
+            obp=round(obp, 3),
+            slg=round(slg, 3),
+            ops=round(ops, 3),
+            bb=total_bb,
+            hbp=total_hbp,
+            h=total_hits,
+            ab=total_ab,
+            r=total_r,
+            games=len(games),
         )
     
     def _aggregate_pitcher_stats(self, games: List[Dict]) -> RecentStats:
@@ -328,10 +384,13 @@ class StatsFetcher:
         total_bb = 0
         total_k = 0
         total_w = 0
+        total_sv = 0
+        total_holds = 0
+        total_qs = 0
         
         for game in games:
-            # Parse innings pitched (can be like "6.1" or "7.0")
             ip_str = game.get('inningsPitched', '0')
+            ip = 0.0
             try:
                 ip_parts = str(ip_str).split('.')
                 ip_whole = int(ip_parts[0])
@@ -341,25 +400,39 @@ class StatsFetcher:
             except (ValueError, IndexError):
                 pass
             
-            total_er += game.get('earnedRuns', 0)
+            er = game.get('earnedRuns', 0)
+            total_er += er
             total_h += game.get('hits', 0)
             total_bb += game.get('baseOnBalls', 0)
             total_k += game.get('strikeOuts', 0)
             
-            # Count wins (decision is "W")
-            if game.get('decision') == 'W':
+            decision = game.get('decision', '')
+            if decision == 'W':
                 total_w += 1
+            if decision == 'S' or game.get('saveOpportunity') or game.get('saves', 0) > 0:
+                total_sv += game.get('saves', 0) if game.get('saves') else (1 if decision == 'S' else 0)
+            
+            total_holds += game.get('holds', 0)
+            
+            # Quality start: >= 6.0 IP and <= 3 ER
+            if ip >= 6.0 and er <= 3:
+                total_qs += 1
         
-        # Calculate ERA and WHIP
-        era = (total_er * 9.0) / total_ip if total_ip > 0 else 0.0
-        whip = (total_h + total_bb) / total_ip if total_ip > 0 else 0.0
+        era = round((total_er * 9.0) / total_ip, 2) if total_ip > 0 else 0.0
+        whip = round((total_h + total_bb) / total_ip, 2) if total_ip > 0 else 0.0
         
         return RecentStats(
             era=era,
             whip=whip,
             k=total_k,
             w=total_w,
-            games=len(games)
+            sv=total_sv,
+            qs=total_qs,
+            ip=round(total_ip, 1),
+            p_bb=total_bb,
+            p_h=total_h,
+            holds=total_holds,
+            games=len(games),
         )
     
     def _load_from_cache(self, player_name: str, days: int) -> Optional[RecentStats]:

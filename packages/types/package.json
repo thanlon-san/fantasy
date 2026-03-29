@@ -1,0 +1,17 @@
+{
+  "name": "@fantasy/types",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared TypeScript types and Zod schemas matching Python dataclass shapes",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

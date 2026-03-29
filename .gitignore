@@ -102,3 +102,6 @@ apps/baseball-engine/data/breakout_tracking/
 # App-specific
 apps/baseball-api/.env
 apps/football-recap/.env
+
+# Yahoo OAuth credentials (never commit)
+apps/baseball-engine/config/oauth2.json

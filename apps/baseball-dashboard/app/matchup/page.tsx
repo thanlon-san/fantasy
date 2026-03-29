@@ -2,35 +2,23 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
-import { ArrowLeft, RefreshCw, TrendingUp, TrendingDown, AlertTriangle, Swords, Shield, Crosshair } from "lucide-react"
+import { ArrowLeft, RefreshCw, TrendingUp, TrendingDown, AlertTriangle, Swords, Shield, Crosshair, Target, Lightbulb } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
-const API_BASE = process.env.NEXT_PUBLIC_DRAFT_API_URL ?? "http://localhost:8001"
+import type { MatchupCategory, Matchup } from "@fantasy/types"
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+const API_BASE = process.env.NEXT_PUBLIC_DRAFT_API_URL ?? "http://localhost:8001"
 
 type CategoryStatus = "win" | "close_win" | "loss" | "close_loss" | "tied" | "unknown"
 
-type Category = {
-  stat_id:   string
-  name:      string
-  label:     string
-  group:     "batting" | "pitching"
-  better:    "high" | "low"
-  my_value:  number | null
-  opp_value: number | null
-  status:    CategoryStatus
-}
+type EnhancedCategory = Omit<MatchupCategory, "status"> & { status: CategoryStatus }
 
-type MatchupData = {
-  week:       number
-  week_start: string | null
-  week_end:   string | null
-  status:     string
-  my_team:    string | null
-  opp_team:   string | null
-  categories: Category[]
+type MatchupData = Omit<Matchup, "categories"> & {
+  categories: EnhancedCategory[]
+  days_elapsed: number
+  days_left: number
+  total_days: number
 }
 
 type ScoutingData = {
@@ -42,8 +30,6 @@ type ScoutingData = {
   game_plan: string
   week: number
 }
-
-// ─── Utilities ────────────────────────────────────────────────────────────────
 
 function statusConfig(s: CategoryStatus) {
   switch (s) {
@@ -62,7 +48,7 @@ function formatVal(val: number | null, name: string): string {
   return val.toString()
 }
 
-function scoreSummary(cats: Category[]): { wins: number; losses: number; close: number } {
+function scoreSummary(cats: EnhancedCategory[]): { wins: number; losses: number; close: number } {
   let wins = 0, losses = 0, close = 0
   for (const c of cats) {
     if (c.status === "win")        wins++
@@ -72,47 +58,66 @@ function scoreSummary(cats: Category[]): { wins: number; losses: number; close: 
   return { wins, losses, close }
 }
 
-// ─── Components ───────────────────────────────────────────────────────────────
-
-function CategoryRow({ cat, myName, oppName }: { cat: Category; myName: string; oppName: string }) {
+function CategoryRow({ cat, myName, oppName }: { cat: EnhancedCategory; myName: string; oppName: string }) {
   const cfg     = statusConfig(cat.status)
   const isSwing = cat.status === "close_win" || cat.status === "close_loss"
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-3 border rounded-lg ${cfg.bg} ${cfg.border} ${isSwing ? "ring-1 ring-amber-500/20" : ""}`}>
-      {/* Status dot */}
-      <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot}`} />
+    <div className={`border rounded-lg ${cfg.bg} ${cfg.border} ${isSwing ? "ring-1 ring-amber-500/20" : ""}`}>
+      <div className="flex items-center gap-3 px-4 py-3">
+        <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot}`} />
 
-      {/* Category name */}
-      <div className="w-24 shrink-0">
-        <div className="font-bold text-sm text-slate-100">{cat.name}</div>
-        <div className="text-[10px] text-slate-500">{cat.label}</div>
+        <div className="w-20 sm:w-24 shrink-0">
+          <div className="font-bold text-sm text-slate-100">{cat.name}</div>
+          <div className="text-[10px] text-slate-500 hidden sm:block">{cat.label}</div>
+        </div>
+
+        <div className="flex-1 text-right">
+          <div className="text-sm font-mono font-semibold text-slate-100">{formatVal(cat.my_value, cat.name)}</div>
+          <div className="text-[10px] text-slate-500 truncate hidden sm:block">{myName}</div>
+        </div>
+
+        <div className={`text-sm font-bold w-8 text-center ${cfg.text}`}>{cfg.icon}</div>
+
+        <div className="flex-1 text-left">
+          <div className="text-sm font-mono font-semibold text-slate-300">{formatVal(cat.opp_value, cat.name)}</div>
+          <div className="text-[10px] text-slate-500 truncate hidden sm:block">{oppName}</div>
+        </div>
+
+        <div className={`text-[10px] font-bold w-16 text-right shrink-0 ${cfg.text}`}>
+          {isSwing ? <span className="text-amber-400">⚠ SWING</span> : cfg.label}
+        </div>
       </div>
 
-      {/* My value */}
-      <div className="flex-1 text-right">
-        <div className="text-sm font-mono font-semibold text-slate-100">{formatVal(cat.my_value, cat.name)}</div>
-        <div className="text-[10px] text-slate-500 truncate">{myName}</div>
-      </div>
-
-      {/* vs */}
-      <div className={`text-sm font-bold w-8 text-center ${cfg.text}`}>{cfg.icon}</div>
-
-      {/* Their value */}
-      <div className="flex-1 text-left">
-        <div className="text-sm font-mono font-semibold text-slate-300">{formatVal(cat.opp_value, cat.name)}</div>
-        <div className="text-[10px] text-slate-500 truncate">{oppName}</div>
-      </div>
-
-      {/* Status badge */}
-      <div className={`text-[10px] font-bold w-16 text-right shrink-0 ${cfg.text}`}>
-        {isSwing ? <span className="text-amber-400">⚠ SWING</span> : cfg.label}
-      </div>
+      {/* Enhanced row: projections + gap + recommendation */}
+      {isSwing && (cat.projected_my != null || cat.recommendation) && (
+        <div className="border-t border-slate-700/40 px-4 py-2 bg-slate-900/40 space-y-1">
+          <div className="flex items-center gap-4 text-[11px] flex-wrap">
+            {cat.projected_my != null && cat.projected_opp != null && (
+              <div className="flex items-center gap-1 text-slate-400">
+                <Target className="h-3 w-3" />
+                <span>Projected: <span className="text-slate-200 font-mono">{formatVal(cat.projected_my, cat.name)}</span> vs <span className="font-mono">{formatVal(cat.projected_opp, cat.name)}</span></span>
+              </div>
+            )}
+            {cat.gap_to_flip != null && (
+              <div className="flex items-center gap-1 text-slate-400">
+                <span>Gap to flip: <span className={`font-mono font-semibold ${cat.status === "close_loss" ? "text-amber-300" : "text-emerald-300"}`}>{
+                  cat.better === "high" ? cat.gap_to_flip.toFixed(cat.name === "OPS" ? 3 : 0) : cat.gap_to_flip.toFixed(3)
+                }</span></span>
+              </div>
+            )}
+          </div>
+          {cat.recommendation && (
+            <div className="flex items-start gap-1.5 text-[11px] text-amber-300/80">
+              <Lightbulb className="h-3 w-3 mt-0.5 shrink-0 text-amber-400" />
+              {cat.recommendation}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function MatchupPage() {
   const [data,      setData]      = useState<MatchupData | null>(null)
@@ -124,9 +129,10 @@ export default function MatchupPage() {
   const fetch_ = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true)
     try {
-      const res = await fetch(`${API_BASE}/season/matchup`, { cache: "no-store" })
+      const res = await fetch(`${API_BASE}/season/matchup-enhanced`, { cache: "no-store" })
       if (!res.ok) throw new Error(`API ${res.status}`)
-      setData(await res.json())
+      const raw = await res.json()
+      setData(raw as MatchupData)
       setError(null)
     } catch (e) {
       setError(e instanceof Error ? e.message : "Cannot reach server")
@@ -142,7 +148,7 @@ export default function MatchupPage() {
       if (!res.ok) return
       setScouting(await res.json())
     } catch {
-      // Server not running — silently ignore
+      // silently ignore
     }
   }, [])
 
@@ -177,11 +183,13 @@ export default function MatchupPage() {
   const oppName  = data.opp_team ?? "Opponent"
   const isPre    = data.status === "preevent" || data.categories.every(c => c.status === "unknown" || c.status === "tied")
 
+  const swingCats = data.categories.filter(c => c.status === "close_win" || c.status === "close_loss")
+  const actionableMoves = swingCats.filter(c => c.recommendation)
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
 
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/"><Button variant="ghost" size="sm" className="text-slate-500 gap-1.5"><ArrowLeft className="h-4 w-4" />Dashboard</Button></Link>
@@ -196,7 +204,6 @@ export default function MatchupPage() {
           </Button>
         </div>
 
-        {/* Matchup header card */}
         <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="text-center flex-1">
@@ -211,6 +218,11 @@ export default function MatchupPage() {
               )}
               {summary.close > 0 && (
                 <div className="text-xs text-amber-400 mt-1 font-medium">{summary.close} swing cat{summary.close > 1 ? "s" : ""}</div>
+              )}
+              {data.enhanced && data.days_left > 0 && (
+                <div className="text-[10px] text-slate-500 mt-1">
+                  Day {data.days_elapsed}/{data.total_days} · {data.days_left} left
+                </div>
               )}
             </div>
             <div className="text-center flex-1">
@@ -227,13 +239,30 @@ export default function MatchupPage() {
           )}
         </div>
 
+        {/* Actionable roster moves panel */}
+        {actionableMoves.length > 0 && !isPre && (
+          <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 space-y-2">
+            <div className="flex items-center gap-2 mb-1">
+              <Lightbulb className="h-4 w-4 text-amber-400" />
+              <span className="text-xs font-bold text-amber-400 uppercase tracking-wide">Recommended Moves</span>
+            </div>
+            {actionableMoves.map(cat => (
+              <div key={cat.stat_id} className="flex items-start gap-2 text-sm">
+                <Badge variant="outline" className={`text-[10px] shrink-0 mt-0.5 ${cat.status === "close_loss" ? "border-amber-500/40 text-amber-300" : "border-emerald-500/40 text-emerald-300"}`}>
+                  {cat.name}
+                </Badge>
+                <span className="text-slate-300">{cat.recommendation}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Swing categories callout */}
         {summary.close > 0 && !isPre && (
           <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
             <div className="text-xs font-bold text-amber-400 uppercase tracking-wide mb-2">Focus here — swing categories</div>
             <div className="text-sm text-amber-200">
-              {data.categories.filter(c => c.status === "close_win" || c.status === "close_loss")
-                .map(c => c.label).join("  ·  ")}
+              {swingCats.map(c => c.label).join("  ·  ")}
             </div>
             <div className="text-xs text-amber-500/70 mt-1">
               These are within range — lineup and waiver decisions here matter most this week.
@@ -249,7 +278,7 @@ export default function MatchupPage() {
               <span className="text-sm font-bold text-slate-200">Opponent Scout: {scouting.opponent_name}</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               {scouting.their_strengths.length > 0 && (
                 <div>
                   <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
@@ -325,6 +354,7 @@ export default function MatchupPage() {
 
         <footer className="text-center text-xs text-slate-600 pb-4">
           Updated from Yahoo every 60s · Week {data.week}
+          {data.enhanced && <span> · Enhanced analysis with projections</span>}
         </footer>
       </div>
     </main>

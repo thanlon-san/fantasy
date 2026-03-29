@@ -4,11 +4,13 @@ Daily Lineup Optimizer
 Stat-backed daily roster recommendations based on matchups, park factors, and recent performance
 """
 
+import json
 import logging
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime, timedelta
+from pathlib import Path
 
 from .daily_matchups import MLBStatsAPI, Game, PlayerMatchup, get_park_factor
 from .models import Player, Roster
@@ -16,6 +18,10 @@ from .breakout_detector import BreakoutDetector, BreakoutSignal
 from .cache_manager import get_cache
 from .league_settings import load_league_settings
 from .adp_fetcher import ADPFetcher
+from .advanced_analytics import AdvancedAnalytics
+from .injury_tracker import InjuryTracker
+from .odds_fetcher import OddsFetcher
+from .catcher_framing import CatcherFraming
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +60,8 @@ class LineupRecommendation:
     career_vs_pitcher: Optional[Dict]
     
     # Default fields (must come last)
-    breakout_boost: float = 0  # Breakout signal bonus
+    breakout_boost: float = 0
+    vegas_total: Optional[float] = None
     reasons: List[str] = None
     
     def __post_init__(self):
@@ -83,11 +90,12 @@ class LineupOptimizer:
     
     # Default scoring weights (can be overridden by config)
     DEFAULT_WEIGHTS = {
-        'matchup': 0.30,
-        'park': 0.20,
+        'matchup': 0.25,
+        'park': 0.15,
         'form': 0.25,
-        'platoon': 0.15,
-        'breakout': 0.10
+        'platoon': 0.12,
+        'breakout': 0.08,
+        'vegas': 0.15,
     }
     
     # Platoon split advantages (OPS points)
@@ -123,15 +131,16 @@ class LineupOptimizer:
             self.FORM_WEIGHT = weights.get('form', self.DEFAULT_WEIGHTS['form'])
             self.PLATOON_WEIGHT = weights.get('platoon', self.DEFAULT_WEIGHTS['platoon'])
             self.BREAKOUT_WEIGHT = weights.get('breakout', self.DEFAULT_WEIGHTS['breakout'])
+            self.VEGAS_WEIGHT = weights.get('vegas', self.DEFAULT_WEIGHTS['vegas'])
             logger.debug(f"Loaded lineup weights from config")
         except Exception as e:
-            # Fallback to defaults
             logger.debug(f"Using default weights: {e}")
             self.MATCHUP_WEIGHT = self.DEFAULT_WEIGHTS['matchup']
             self.PARK_WEIGHT = self.DEFAULT_WEIGHTS['park']
             self.FORM_WEIGHT = self.DEFAULT_WEIGHTS['form']
             self.PLATOON_WEIGHT = self.DEFAULT_WEIGHTS['platoon']
             self.BREAKOUT_WEIGHT = self.DEFAULT_WEIGHTS['breakout']
+            self.VEGAS_WEIGHT = self.DEFAULT_WEIGHTS['vegas']
         
         # Optional: integrate breakout detector
         self.use_breakout_signals = use_breakout_signals
@@ -141,6 +150,44 @@ class LineupOptimizer:
         else:
             self.breakout_detector = None
             self._breakout_cache = {}
+        
+        # Advanced analytics (umpire zone, xBA regression, batted ball × park, fatigue)
+        try:
+            self.advanced = AdvancedAnalytics()
+        except Exception:
+            self.advanced = None
+        
+        # Injury awareness — filter out IL / DTD players
+        try:
+            self.injury_tracker = InjuryTracker()
+            self.injury_tracker.load()
+        except Exception:
+            self.injury_tracker = None
+
+        # Vegas implied run totals — boost/penalize based on game environment
+        try:
+            self.odds_fetcher = OddsFetcher()
+            self.odds_fetcher.load()
+        except Exception:
+            self.odds_fetcher = None
+        
+        # Catcher framing — boost/penalize pitcher matchups based on catcher quality
+        try:
+            self.catcher_framing = CatcherFraming()
+            self.catcher_framing.load()
+        except Exception:
+            self.catcher_framing = None
+
+        # Static handedness lookup (primary source — reliable even when API is down)
+        self._handedness_static: Dict[str, Dict] = {}
+        try:
+            handedness_path = Path(__file__).parent.parent / "data" / "player_handedness.json"
+            if handedness_path.exists():
+                with open(handedness_path) as f:
+                    self._handedness_static = json.load(f)
+                logger.debug(f"Loaded static handedness for {len(self._handedness_static)} players")
+        except Exception:
+            pass
     
     def get_daily_recommendations(
         self,
@@ -277,6 +324,25 @@ class LineupOptimizer:
         Returns:
             LineupRecommendation or None
         """
+        # Short-circuit: injured players should not be recommended
+        if self.injury_tracker:
+            injury = self.injury_tracker.get_injury(player.name)
+            if injury:
+                badge = injury.badge
+                return LineupRecommendation(
+                    player=player,
+                    recommendation=RecommendationType.AVOID,
+                    confidence_score=0,
+                    opponent=opponent,
+                    opponent_pitcher=opponent_pitcher,
+                    home_away=home_away,
+                    game_time=game.game_time,
+                    matchup_score=0, park_score=0, form_score=0, platoon_score=0,
+                    recent_stats=None, career_vs_pitcher=None,
+                    breakout_boost=0,
+                    reasons=[f"{badge}: {injury.injury}" if injury.injury else badge],
+                )
+
         reasons = []
         
         # 1. Park factor score (with weather adjustment)
@@ -341,12 +407,36 @@ class LineupOptimizer:
         elif history_adjustment < -5:
             reasons.append(f"Career struggles vs this pitcher")
         
+        # 7. Advanced analytics adjustments (gated — skipped when data unavailable)
+        advanced_adjustment = 0
+        if self.advanced:
+            advanced_adjustment = self._get_advanced_adjustments(
+                player, game, park_factor, reasons
+            )
+        
+        # 8. Vegas implied run total adjustment
+        vegas_score = 75  # neutral default
+        vegas_total = None
+        if self.odds_fetcher:
+            vegas_score, vegas_total = self._get_vegas_score(player, game, reasons)
+
+        # 9. Catcher framing adjustment (pitchers benefit from elite framing catchers)
+        framing_adjustment = 0.0
+        if self.catcher_framing:
+            is_pitcher = any(p in player.position for p in ['SP', 'RP', 'P'])
+            if is_pitcher:
+                adj, framing_reason = self.catcher_framing.get_my_pitcher_boost(player.team)
+                if adj and framing_reason:
+                    framing_adjustment = adj
+                    reasons.append(framing_reason)
+
         # Calculate total confidence score
         base_score = (
             self.MATCHUP_WEIGHT * matchup_score +
             self.PARK_WEIGHT * park_score +
             self.FORM_WEIGHT * form_score +
-            self.PLATOON_WEIGHT * platoon_score
+            self.PLATOON_WEIGHT * platoon_score +
+            self.VEGAS_WEIGHT * vegas_score
         )
         
         # Apply breakout boost
@@ -354,6 +444,12 @@ class LineupOptimizer:
         
         # Apply historical matchup adjustment (±5-10 points for significant history)
         confidence_score += history_adjustment
+        
+        # Apply advanced analytics adjustment (umpire, xBA regression, park×batted ball, fatigue)
+        confidence_score += advanced_adjustment
+        
+        # Apply catcher framing adjustment
+        confidence_score += framing_adjustment
         
         # Slightly reduce confidence when no recent data available
         if not has_recent_data:
@@ -388,11 +484,125 @@ class LineupOptimizer:
             form_score=form_score,
             platoon_score=platoon_score,
             breakout_boost=breakout_score if self.use_breakout_signals else 0,
+            vegas_total=vegas_total,
             recent_stats=None,
             career_vs_pitcher=None,
             reasons=reasons
         )
     
+    def _get_advanced_adjustments(
+        self,
+        player: Player,
+        game: Game,
+        park_factor: float,
+        reasons: List[str],
+    ) -> float:
+        """Aggregate adjustments from AdvancedAnalytics (umpire, xBA, park×batted ball, fatigue)."""
+        total = 0.0
+        try:
+            # Umpire strike zone adjustment
+            umpire_name = game.weather.get("umpire") if game.weather else None
+            if umpire_name:
+                adj, reason = self.advanced.get_umpire_adjustment(umpire_name, "hitter")
+                if adj and reason:
+                    total += adj
+                    reasons.append(reason)
+
+            # xBA regression detection
+            if self.breakout_detector:
+                parts = player.name.split()
+                if len(parts) >= 2:
+                    pid = self.breakout_detector.statcast.get_player_id(parts[0], " ".join(parts[1:]))
+                    if pid:
+                        cache_key = f"adv_xba_{player.name}"
+                        cached = self.cache.get(cache_key, max_age_hours=12)
+                        if cached is not None:
+                            adj_val, adj_reason = cached
+                        else:
+                            data = self.breakout_detector.statcast.get_hitter_stats(pid)
+                            if data is not None and not data.empty:
+                                metrics = self.breakout_detector.statcast.calculate_hitter_metrics(data)
+                                xba = metrics.get("xBA")
+                                if xba and "events" in data.columns:
+                                    pas = data["events"].notna().sum()
+                                    hits = data["events"].isin(["single", "double", "triple", "home_run"]).sum()
+                                    actual_avg = hits / pas if pas > 0 else 0
+                                    adj_val, adj_reason = self.advanced.calculate_expected_stats_boost(actual_avg, xba)
+                                else:
+                                    adj_val, adj_reason = 0, None
+
+                                # Batted ball × park factor
+                                bb_adj, bb_reason = self.advanced.analyze_batted_ball_profile(
+                                    metrics.get("ground_ball_percent"),
+                                    metrics.get("fly_ball_percent"),
+                                    park_factor,
+                                )
+                                adj_val += bb_adj
+                                if bb_reason:
+                                    adj_reason = f"{adj_reason}; {bb_reason}" if adj_reason else bb_reason
+                            else:
+                                adj_val, adj_reason = 0, None
+                            self.cache.set(cache_key, (adj_val, adj_reason))
+
+                        if adj_val and adj_reason:
+                            total += adj_val
+                            for r in adj_reason.split("; "):
+                                reasons.append(r)
+        except Exception as e:
+            logger.debug(f"Advanced analytics skipped for {player.name}: {e}")
+        return total
+
+    def _get_vegas_score(
+        self,
+        player: Player,
+        game: Game,
+        reasons: List[str],
+    ) -> tuple:
+        """Score based on Vegas implied run total for the game.
+        Returns (score 0-100, game_total or None)."""
+        if not self.odds_fetcher:
+            return 75, None
+
+        odds = self.odds_fetcher.get_game_odds(player.team)
+        if not odds or odds.total is None:
+            return 75, None
+
+        total = odds.total
+        is_pitcher = any(p in player.position for p in ['SP', 'RP', 'P'])
+
+        if is_pitcher:
+            # Pitchers benefit from low-scoring environments
+            if total <= 7.0:
+                score = 95
+                reasons.append(f"Vegas total {total:.1f} — pitcher-friendly game")
+            elif total <= 8.0:
+                score = 80
+            elif total <= 9.0:
+                score = 65
+            elif total <= 10.0:
+                score = 45
+                reasons.append(f"Vegas total {total:.1f} — risky for pitchers")
+            else:
+                score = 25
+                reasons.append(f"Vegas total {total:.1f} — avoid pitching in shootout")
+        else:
+            # Hitters benefit from high-scoring environments
+            if total >= 10.0:
+                score = 95
+                reasons.append(f"Vegas total {total:.1f} — projected slugfest")
+            elif total >= 9.0:
+                score = 85
+                reasons.append(f"Vegas total {total:.1f} — hitter-friendly game")
+            elif total >= 8.0:
+                score = 75
+            elif total >= 7.0:
+                score = 60
+            else:
+                score = 40
+                reasons.append(f"Vegas total {total:.1f} — low-scoring game")
+
+        return score, total
+
     def _calculate_platoon_score(
         self,
         player: Player,
@@ -427,72 +637,76 @@ class LineupOptimizer:
     
     def _get_player_handedness(self, player_name: str) -> str:
         """
-        Get player batting handedness from MLB API (with 30-day cache)
+        Get player batting handedness.
+        Priority: static JSON file → persistent cache → MLB API → default 'R'.
         
         Returns: 'R', 'L', or 'S' (switch)
         """
-        # Check persistent cache (30-day TTL since handedness never changes)
+        # 1. Static file (instant, reliable)
+        static = self._handedness_static.get(player_name)
+        if static and static.get("bat"):
+            return static["bat"]
+
+        # 2. Persistent cache (30-day TTL)
         cache_key = f"handedness_bat_{player_name}"
-        cached = self.cache.get(cache_key, max_age_hours=720)  # 30 days
+        cached = self.cache.get(cache_key, max_age_hours=720)
         if cached:
             return cached
         
-        # Try to get from MLB API
+        # 3. MLB API (fallback for players not in the static file)
         try:
             parts = player_name.split()
             if len(parts) >= 2:
                 first_name = parts[0]
                 last_name = ' '.join(parts[1:])
-                
-                # Get player ID from Statcast
                 if self.breakout_detector:
                     player_id = self.breakout_detector.statcast.get_player_id(first_name, last_name)
                     if player_id:
                         bat_side, _ = self.api.get_player_handedness(player_id)
                         if bat_side:
-                            # Cache for 30 days
                             self.cache.set(cache_key, bat_side)
                             return bat_side
         except Exception as e:
             logger.debug(f"Could not get handedness for {player_name}: {e}")
         
-        # Default to righty (70% of MLB)
         default = 'R'
         self.cache.set(cache_key, default)
         return default
     
     def _get_pitcher_handedness(self, pitcher_name: str) -> str:
         """
-        Get pitcher throwing handedness from MLB API (with 30-day cache)
+        Get pitcher throwing handedness.
+        Priority: static JSON file → persistent cache → MLB API → default 'R'.
         
         Returns: 'R' or 'L'
         """
-        # Check persistent cache (30-day TTL since handedness never changes)
+        # 1. Static file
+        static = self._handedness_static.get(pitcher_name)
+        if static and static.get("pitch"):
+            return static["pitch"]
+
+        # 2. Persistent cache (30-day TTL)
         cache_key = f"handedness_pitch_{pitcher_name}"
-        cached = self.cache.get(cache_key, max_age_hours=720)  # 30 days
+        cached = self.cache.get(cache_key, max_age_hours=720)
         if cached:
             return cached
         
-        # Try to get from MLB API
+        # 3. MLB API fallback
         try:
             parts = pitcher_name.split()
             if len(parts) >= 2:
                 first_name = parts[0]
                 last_name = ' '.join(parts[1:])
-                
-                # Get player ID from Statcast
                 if self.breakout_detector:
                     player_id = self.breakout_detector.statcast.get_player_id(first_name, last_name)
                     if player_id:
                         _, pitch_hand = self.api.get_player_handedness(player_id)
                         if pitch_hand:
-                            # Cache for 30 days
                             self.cache.set(cache_key, pitch_hand)
                             return pitch_hand
         except Exception as e:
             logger.debug(f"Could not get handedness for {pitcher_name}: {e}")
         
-        # Default to righty (70% of MLB)
         default = 'R'
         self.cache.set(cache_key, default)
         return default
@@ -687,83 +901,100 @@ class LineupOptimizer:
     
     def _get_pitcher_matchup_score(self, pitcher_name: Optional[str], team: str) -> float:
         """
-        Score the matchup difficulty based on pitcher quality
-        
-        Args:
-            pitcher_name: Opposing pitcher name
-            team: Opposing team
-            
-        Returns:
-            Matchup score (0-100, lower = tougher matchup)
+        Score matchup difficulty using live FIP + K-BB% + CSW%.
+        Falls back to ADP only when no recent stats exist (early season / off-season).
+
+        Returns 0-100 (lower = tougher matchup for hitters).
         """
         if not pitcher_name:
             return 75  # Neutral for TBD
-        
-        # Check persistent cache (12-hour TTL - refreshes daily)
+
         date_key = datetime.now().strftime('%Y-%m-%d')
-        cache_key = f"pitcher_{pitcher_name}_{date_key}"
+        cache_key = f"pitcher_fip_{pitcher_name}_{date_key}"
         cached = self.cache.get(cache_key, max_age_hours=12)
-        if cached:
+        if cached is not None:
             return cached
-        
-        score = 75  # Default neutral
-        
-        # Try to get pitcher ADP (lower ADP = better pitcher = tougher matchup)
-        # Pitchers have different ADP ranges than hitters
-        pitcher_adp = self.adp_fetcher.get_player_adp(pitcher_name)
-        if pitcher_adp:
-            if pitcher_adp < self.PITCHER_ADP_THRESHOLDS['elite']:  # Top-50 pitcher (ace)
-                score = 25  # Very tough matchup
-            elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['good']:  # Solid starter
-                score = 45  # Tough matchup
-            elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['average']:  # Back-end rotation
-                score = 65  # Moderate matchup
-            elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['streamer']:  # Replacement level
-                score = 80  # Favorable matchup
-            else:  # Waiver wire / spot start
-                score = 90  # Very favorable matchup
-        
-        # Try to get recent form from Statcast (during season)
+
+        score = None  # will be set by FIP path or ADP fallback
+
+        # --- Primary: FIP + K-BB% + CSW% from Statcast ---
         if self.breakout_detector:
             try:
                 parts = pitcher_name.split()
                 if len(parts) >= 2:
-                    first_name = parts[0]
-                    last_name = ' '.join(parts[1:])
-                    
-                    player_id = self.breakout_detector.statcast.get_player_id(first_name, last_name)
-                    if player_id:
-                        # Check recent performance
-                        data = self.breakout_detector.statcast.get_pitcher_stats(
-                            player_id,
-                            start_date=(datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d'),
-                            end_date=datetime.now().strftime('%Y-%m-%d')
-                        )
-                        if data is not None and not data.empty:
-                            metrics = self.breakout_detector.statcast.calculate_pitcher_metrics(data)
-                            
-                            # Adjust score based on recent performance
-                            k_pct = metrics.get('k_percent', 20)
-                            hard_hit = metrics.get('hard_hit_percent', 40)
-                            
-                            # Good K%, low hard hit% = tougher matchup
-                            if k_pct > 30:
-                                score -= 10
-                            if hard_hit < 35:
-                                score -= 10
-                            
-                            # Poor K%, high hard hit% = easier matchup
-                            if k_pct < 15:
-                                score += 10
-                            if hard_hit > 45:
-                                score += 10
+                    pid = self.breakout_detector.statcast.get_player_id(
+                        parts[0], " ".join(parts[1:])
+                    )
+                    if pid:
+                        fip_data = self.breakout_detector.statcast.calculate_pitcher_fip(pid, days_back=30)
+                        if fip_data:
+                            fip = fip_data["fip"]
+                            k_bb = fip_data["k_bb_pct"]
+                            csw = fip_data["csw_pct"]
+
+                            # FIP component (60% weight) — lower FIP = tougher
+                            if fip <= 2.50:
+                                fip_score = 10
+                            elif fip <= 3.20:
+                                fip_score = 25
+                            elif fip <= 3.80:
+                                fip_score = 45
+                            elif fip <= 4.50:
+                                fip_score = 65
+                            elif fip <= 5.50:
+                                fip_score = 80
+                            else:
+                                fip_score = 92
+
+                            # K-BB% component (25% weight) — higher = tougher
+                            if k_bb >= 20:
+                                kbb_score = 10
+                            elif k_bb >= 15:
+                                kbb_score = 25
+                            elif k_bb >= 10:
+                                kbb_score = 50
+                            elif k_bb >= 5:
+                                kbb_score = 70
+                            else:
+                                kbb_score = 90
+
+                            # CSW% component (15% weight) — higher = tougher
+                            if csw >= 32:
+                                csw_score = 10
+                            elif csw >= 30:
+                                csw_score = 25
+                            elif csw >= 27:
+                                csw_score = 50
+                            elif csw >= 24:
+                                csw_score = 70
+                            else:
+                                csw_score = 90
+
+                            score = 0.60 * fip_score + 0.25 * kbb_score + 0.15 * csw_score
+                            logger.debug(
+                                f"FIP matchup for {pitcher_name}: "
+                                f"FIP={fip} K-BB%={k_bb} CSW%={csw} → score={score:.0f}"
+                            )
             except Exception as e:
-                logger.debug(f"Could not get pitcher stats for {pitcher_name}: {e}")
-        
-        # Clamp to 0-100
+                logger.debug(f"FIP calc failed for {pitcher_name}: {e}")
+
+        # --- Fallback: ADP (pre-season / insufficient data) ---
+        if score is None:
+            score = 75
+            pitcher_adp = self.adp_fetcher.get_player_adp(pitcher_name)
+            if pitcher_adp:
+                if pitcher_adp < self.PITCHER_ADP_THRESHOLDS['elite']:
+                    score = 25
+                elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['good']:
+                    score = 45
+                elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['average']:
+                    score = 65
+                elif pitcher_adp < self.PITCHER_ADP_THRESHOLDS['streamer']:
+                    score = 80
+                else:
+                    score = 90
+
         score = max(0, min(100, score))
-        
-        # Cache the result (persistent cache for 12 hours)
         self.cache.set(cache_key, score)
         return score
     

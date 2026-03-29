@@ -16,13 +16,14 @@
  */
 
 import { useMemo, useState } from "react"
+import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { PlayerDetailDialog } from "@/components/player-detail-dialog"
 import {
   Swords, Home, Shield, TrendingUp, TrendingDown, Zap,
   Flame, Snowflake, Wind, CloudRain, Sun, Target, Activity,
-  AlertTriangle, BookOpen, ChevronDown, ExternalLink, Loader2,
+  AlertTriangle, BookOpen, ChevronDown, ExternalLink, Loader2, DollarSign,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -34,22 +35,9 @@ import { useToast } from "@/components/ui/use-toast"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Player = {
-  player: string
-  player_key?: string
-  position: string
-  team: string
-  opponent: string
-  opponent_pitcher?: string
-  game_time?: string
-  confidence: number
-  matchup: number
-  parkFactor: number
-  platoon: number
-  form: number
-  breakout: number
-  reasons: string[]
-}
+import type { Player as BasePlayer } from "@fantasy/types"
+
+type Player = BasePlayer & { player_key?: string }
 
 // Map our slot labels to Yahoo's accepted position values
 const YAHOO_SLOT: Record<string, string> = {
@@ -187,6 +175,7 @@ const REASON_RULES = [
   { pattern: /rain/i,              icon: CloudRain,    chipColor: "bg-blue-400/15 border-blue-400/25 text-blue-400",         label: "Rain risk" },
   { pattern: /platoon|handedness/i, icon: Zap,         chipColor: "bg-violet-400/15 border-violet-400/25 text-violet-400",  label: "Platoon" },
   { pattern: /breakout|statcast/i, icon: Activity,     chipColor: "bg-cyan-400/15 border-cyan-400/25 text-cyan-400",        label: "Breakout" },
+  { pattern: /vegas total/i,       icon: DollarSign,   chipColor: "bg-yellow-400/15 border-yellow-400/25 text-yellow-400",  label: "Vegas" },
 ]
 
 interface SignalChip { icon: React.ComponentType<{ className?: string }>; chipColor: string; label: string; detail: string }
@@ -199,6 +188,12 @@ function parseSignals(player: Player): SignalChip[] {
   else if (player.form < 40) chips.push({ icon: TrendingDown, chipColor: "bg-slate-400/15 border-slate-400/25 text-slate-400", label: "Form", detail: `Form ${player.form}/100` })
   if (player.platoon >= 80) chips.push({ icon: Zap, chipColor: "bg-violet-400/15 border-violet-400/25 text-violet-400", label: "Platoon", detail: `Platoon advantage ${player.platoon}/100` })
   if (player.breakout > 0) chips.push({ icon: Activity, chipColor: "bg-cyan-400/15 border-cyan-400/25 text-cyan-400", label: "Breakout", detail: `Breakout signal (+${player.breakout})` })
+  if (player.vegas_total) {
+    const env = player.vegas_total >= 10 ? "bg-emerald-500/15 border-emerald-500/25 text-emerald-400"
+      : player.vegas_total <= 7 ? "bg-rose-500/15 border-rose-500/25 text-rose-400"
+      : "bg-yellow-400/15 border-yellow-400/25 text-yellow-400"
+    chips.push({ icon: DollarSign, chipColor: env, label: "Vegas", detail: `Game total: ${player.vegas_total}` })
+  }
   const seen = new Set<string>()
   for (const r of player.reasons) {
     for (const rule of REASON_RULES) {
@@ -307,10 +302,19 @@ function PlayerRow({
 
       {/* Player name + team */}
       <td className="py-2 pl-2 min-w-[150px]">
-        <div className="flex flex-col leading-tight">
-          <span className="font-semibold text-sm">{player.player}</span>
-          <span className="text-xs text-muted-foreground">{player.team}</span>
-        </div>
+        <Link href={`/player/${encodeURIComponent(player.player)}`} className="hover:underline" onClick={e => e.stopPropagation()}>
+          <div className="flex flex-col leading-tight">
+            <span className="font-semibold text-sm">
+              {player.player}
+              {player.injury && (
+                <Badge variant="destructive" className="ml-1.5 text-[10px] px-1 py-0 align-middle">
+                  {player.injury}
+                </Badge>
+              )}
+            </span>
+            <span className="text-xs text-muted-foreground">{player.team}</span>
+          </div>
+        </Link>
       </td>
 
       {/* Eligible position (not the slot) */}
@@ -537,6 +541,7 @@ export function OptimalLineupView({
               { Icon: CloudRain,    color: "text-blue-400 bg-blue-400/15 border-blue-400/25",          label: "Rain",          desc: "Rain risk — monitor for postponement" },
               { Icon: Zap,          color: "text-violet-400 bg-violet-400/15 border-violet-400/25",    label: "Platoon",       desc: "Favourable handedness matchup" },
               { Icon: Activity,     color: "text-cyan-400 bg-cyan-400/15 border-cyan-400/25",          label: "Breakout",      desc: "Statcast signals an underlying breakout" },
+              { Icon: DollarSign,   color: "text-yellow-400 bg-yellow-400/15 border-yellow-400/25",    label: "Vegas line",    desc: "Vegas over/under implied run total for today's game" },
             ].map(({ Icon, color, label, desc }, i) => (
               <div key={i} className="flex items-start gap-2">
                 <span className={`inline-flex items-center justify-center w-6 h-6 rounded border shrink-0 ${color}`}>

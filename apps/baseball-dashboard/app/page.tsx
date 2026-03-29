@@ -4,7 +4,7 @@ import { useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star, Swords, Trophy, Shield, Zap, TrendingUp } from "lucide-react"
+import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star, Swords, Trophy, Shield, Zap, TrendingUp, BarChart3, DollarSign, Flame, Radio, ArrowRightLeft, CalendarRange, Sparkles, Target } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import { PlayerTable } from "@/components/player-table"
@@ -18,61 +18,14 @@ import { useToast } from "@/components/ui/use-toast"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { WaiverWireTable } from "@/components/waiver-wire-table"
 import { BreakoutDetectorTable } from "@/components/breakout-detector-table"
+import type { Player, WaiverTarget, LineupFocus, BullpenAlert } from "@fantasy/types"
+import { BullpenAlertSchema } from "@fantasy/types"
+import { z } from "zod"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-const DRAFT_API_BASE = process.env.NEXT_PUBLIC_DRAFT_API_URL ?? "http://localhost:8001"
+const API_BASE = process.env.NEXT_PUBLIC_DRAFT_API_URL ?? "http://localhost:8001"
+const DRAFT_API_BASE = API_BASE
 const BASE_PATH = process.env.NODE_ENV === 'production' ? '/fantasy/baseball' : ''
 const USE_API = process.env.NEXT_PUBLIC_USE_API === 'true'
-
-type Player = {
-  player: string
-  position: string
-  team: string
-  opponent: string
-  opponent_pitcher?: string
-  game_time?: string
-  confidence: number
-  matchup: number
-  parkFactor: number
-  platoon: number
-  form: number
-  breakout: number
-  reasons: string[]
-}
-
-type WaiverTarget = {
-  player: string
-  position: string
-  team: string
-  confidence: string
-  reason: string
-  drop_player: string
-  drop_player_position: string
-  adp?: number
-  value_gain?: number
-  drop_player_adp?: number
-  keeper_cost?: number
-  rostered_pct?: number
-  trending?: "HOT" | "COLD" | "STABLE"
-  last_7_days?: {
-    avg?: number; hr?: number; rbi?: number; sb?: number
-    era?: number; whip?: number; k?: number; w?: number; games?: number
-  }
-  last_14_days?: {
-    avg?: number; hr?: number; rbi?: number; sb?: number
-    era?: number; whip?: number; k?: number; w?: number; games?: number
-  }
-  last_30_days?: {
-    avg?: number; hr?: number; rbi?: number; sb?: number
-    era?: number; whip?: number; k?: number; w?: number; games?: number
-  }
-  statcast_changes?: {
-    exit_velo?: string; hard_hit_pct?: string; barrel_rate?: string
-    velo?: string; chase_rate?: string; whiff_rate?: string
-  }
-  role_change?: string
-  upcoming_schedule?: string
-}
 
 type Breakout = {
   player: string
@@ -93,22 +46,6 @@ type Keeper = {
   value: string
   years_remaining?: number
   reason?: string
-}
-
-type SwingCategory = {
-  stat_name: string
-  stat_id: string
-  status: "close_win" | "close_loss"
-  my_value: number | null
-  opp_value: number | null
-  focus_players: string[]
-  waiver_suggestion: string | null
-}
-
-type LineupFocus = {
-  week: number
-  swing_categories: SwingCategory[]
-  season_started: boolean
 }
 
 export default function Home() {
@@ -133,6 +70,9 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [dataTimestamp, setDataTimestamp] = useState<string | null>(null)
   const [lineupFocus, setLineupFocus] = useState<LineupFocus | null>(null)
+  const [bullpenAlerts, setBullpenAlerts] = useState<BullpenAlert[]>([])
+  const [seenBreakouts, setSeenBreakouts] = useState<Set<string>>(new Set())
+  const [seenBullpen, setSeenBullpen] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     async function fetchData() {
@@ -141,10 +81,10 @@ export default function Home() {
 
         if (USE_API) {
           const [lineupRes, waiverRes, breakoutRes, keeperRes] = await Promise.all([
-            fetch(`${API_BASE_URL}/api/lineup`),
-            fetch(`${API_BASE_URL}/api/waivers`),
-            fetch(`${API_BASE_URL}/api/breakouts`),
-            fetch(`${API_BASE_URL}/api/keepers`),
+            fetch(`${API_BASE}/api/lineup`),
+            fetch(`${API_BASE}/api/waivers`),
+            fetch(`${API_BASE}/api/breakouts`),
+            fetch(`${API_BASE}/api/keepers`),
           ])
           ;[lineupData, waiverData, breakoutData, keeperData] = await Promise.all([
             lineupRes.json(), waiverRes.json(), breakoutRes.json(), keeperRes.json(),
@@ -201,11 +141,56 @@ export default function Home() {
     }
   }, [])
 
+  const fetchBullpenAlerts = useCallback(async () => {
+    try {
+      const res = await fetch(`${DRAFT_API_BASE}/season/bullpen-alerts`, { cache: "no-store" })
+      if (!res.ok) return
+      const data = await res.json()
+      const newAlerts = z.array(BullpenAlertSchema).parse(data.alerts || [])
+      setBullpenAlerts(newAlerts)
+
+      for (const alert of newAlerts) {
+        if (!seenBullpen.has(alert.closer)) {
+          toast({
+            title: `Bullpen Alert: ${alert.closer}`,
+            description: `${alert.closer} (${alert.closer_team}) is fatigued — pickup ${alert.vulture_candidate}`,
+          })
+        }
+      }
+      if (newAlerts.length > 0) {
+        setSeenBullpen(new Set(newAlerts.map(a => a.closer)))
+      }
+    } catch {
+      // Server not running — silently ignore
+    }
+  }, [seenBullpen, toast])
+
   useEffect(() => {
     fetchLineupFocus()
-    const t = setInterval(() => fetchLineupFocus(), 60_000)
+    fetchBullpenAlerts()
+    const t = setInterval(() => { fetchLineupFocus(); fetchBullpenAlerts() }, 60_000)
     return () => clearInterval(t)
-  }, [fetchLineupFocus])
+  }, [fetchLineupFocus, fetchBullpenAlerts])
+
+  useEffect(() => {
+    if (breakouts.length === 0) return
+    const strongBreakouts = breakouts.filter(b => b.signal === "STRONG")
+    for (const b of strongBreakouts) {
+      if (!seenBreakouts.has(b.player)) {
+        toast({
+          title: `Breakout Alert: ${b.player}`,
+          description: `${b.player} showing STRONG breakout signals — ${b.stats.slice(0, 2).join(", ")}`,
+        })
+      }
+    }
+    if (strongBreakouts.length > 0) {
+      setSeenBreakouts(prev => {
+        const next = new Set(prev)
+        strongBreakouts.forEach(b => next.add(b.player))
+        return next
+      })
+    }
+  }, [breakouts, seenBreakouts, toast])
 
   const copyLineupToClipboard = () => {
     const mustStart = dailyLineup.must_start.map(p => `${p.player} (${p.confidence})`).join('\n')
@@ -268,7 +253,7 @@ export default function Home() {
         <header className="mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight mb-1">⚾ Baseball Dashboard</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">⚾ Baseball Dashboard</h1>
               <p className="text-muted-foreground text-sm">
                 Auto-updates daily at 8am ET • Press{" "}
                 <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground">
@@ -277,7 +262,7 @@ export default function Home() {
                 to search
               </p>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="hidden md:flex items-center gap-2 flex-wrap">
               <Link href="/draft">
                 <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                   <Star className="h-4 w-4" />
@@ -314,10 +299,61 @@ export default function Home() {
                   Trajectory
                 </Button>
               </Link>
+              <Link href="/regression">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <BarChart3 className="h-4 w-4" />
+                  Regression
+                </Button>
+              </Link>
+              <Link href="/projections">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <DollarSign className="h-4 w-4" />
+                  Projections
+                </Button>
+              </Link>
+              <Link href="/streamers">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Radio className="h-4 w-4" />
+                  Streamers
+                </Button>
+              </Link>
+              <Link href="/trade">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <ArrowRightLeft className="h-4 w-4" />
+                  Trade
+                </Button>
+              </Link>
+              <Link href="/planner">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <CalendarRange className="h-4 w-4" />
+                  Planner
+                </Button>
+              </Link>
+              <Link href="/prospects">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Sparkles className="h-4 w-4" />
+                  Prospects
+                </Button>
+              </Link>
+              <Link href="/accuracy">
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Target className="h-4 w-4" />
+                  Accuracy
+                </Button>
+              </Link>
               {formattedTimestamp && (
                 <div className="text-sm text-muted-foreground flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   <span className="hidden sm:inline">Data: {formattedTimestamp}</span>
+                </div>
+              )}
+              <ThemeToggle />
+            </div>
+            <div className="flex md:hidden items-center gap-2">
+              {formattedTimestamp && (
+                <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5" />
+                  {formattedTimestamp}
                 </div>
               )}
               <ThemeToggle />
@@ -357,6 +393,43 @@ export default function Home() {
                   {cat.focus_players.length > 0 && (
                     <span className="text-slate-400 text-xs">— {cat.focus_players.slice(0, 2).join(", ")}</span>
                   )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Bullpen Fatigue Alerts */}
+        {bullpenAlerts.length > 0 && (
+          <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Flame className="h-4 w-4 text-red-400" />
+              <span className="text-xs font-bold text-red-400 uppercase tracking-wide">
+                Bullpen Alerts — Vulture Save Opportunities
+              </span>
+            </div>
+            <div className="space-y-1.5">
+              {bullpenAlerts.slice(0, 4).map(alert => (
+                <div key={alert.closer} className="flex items-start gap-2 text-sm">
+                  <span className={`shrink-0 inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                    alert.fatigue_level === "HIGH"
+                      ? "bg-red-500/20 text-red-300"
+                      : "bg-amber-500/20 text-amber-300"
+                  }`}>
+                    {alert.fatigue_level}
+                  </span>
+                  <span className="text-slate-300">
+                    <span className="font-semibold text-slate-100">{alert.closer}</span>
+                    <span className="text-slate-500 mx-1">({alert.closer_team})</span>
+                    {alert.consecutive_days >= 2 && (
+                      <span className="text-slate-400">{alert.consecutive_days} straight days</span>
+                    )}
+                    {alert.pitches_last_3_days > 45 && (
+                      <span className="text-slate-400">, {alert.pitches_last_3_days}P last 3d</span>
+                    )}
+                    <span className="text-slate-500 mx-1">→</span>
+                    Add <span className="font-semibold text-emerald-400">{alert.vulture_candidate}</span>
+                  </span>
                 </div>
               ))}
             </div>

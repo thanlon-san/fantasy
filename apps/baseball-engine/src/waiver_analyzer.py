@@ -14,6 +14,8 @@ from .adp_fetcher import ADPFetcher
 from .breakout_detector import BreakoutDetector, BreakoutSignal
 from .league_settings import load_league_settings
 from .stats_fetcher import StatsFetcher
+from .speed_tracker import SpeedTracker
+from .projection_fetcher import ProjectionFetcher
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +76,20 @@ class WaiverAnalyzer:
             logger.info("Recent stats fetching enabled")
         else:
             self.stats_fetcher = None
+        
+        # Sprint speed / SB upside tracker
+        try:
+            self.speed_tracker = SpeedTracker()
+            self.speed_tracker.load()
+        except Exception:
+            self.speed_tracker = None
+
+        # ROS projections (Steamer via FanGraphs)
+        try:
+            self.projections = ProjectionFetcher()
+            self.projections.load()
+        except Exception:
+            self.projections = None
         
         # Load settings (use provided or load from file)
         if settings is None:
@@ -239,11 +255,15 @@ class WaiverAnalyzer:
         
         Returns None if not a good move
         """
-        # Calculate ADP value gain
+        # Calculate value gain: prefer ROS projected value when available, fall back to ADP
         add_adp = add_player.adp or 400
         drop_adp = drop_player.adp or 400
-        
-        value_gain = drop_adp - add_adp
+
+        projection_boost = self._get_projection_boost(add_player, drop_player)
+        if projection_boost is not None:
+            value_gain = projection_boost
+        else:
+            value_gain = drop_adp - add_adp
         
         # NEW: Apply breakout signal boost
         if self.use_breakout_signals and self.breakout_detector:
@@ -252,6 +272,13 @@ class WaiverAnalyzer:
                 logger.debug(f"{add_player.name}: Breakout boost = {breakout_boost:+.0f}")
                 value_gain += breakout_boost
         
+        # SB upside boost for hitters with elite speed
+        if self.speed_tracker and not any(p in add_player.position for p in ['SP', 'RP', 'P']):
+            sb_boost = self._get_sb_upside_boost(add_player)
+            if sb_boost > 0:
+                logger.debug(f"{add_player.name}: SB upside boost = {sb_boost:+.0f}")
+                value_gain += sb_boost
+
         # NEW: Apply position need boost
         position_boost = self._get_position_need_boost(add_player)
         if position_boost > 0:
@@ -318,6 +345,28 @@ class WaiverAnalyzer:
             elif alert and alert.signal == BreakoutSignal.EMERGING:
                 reasons.append("⚡ Emerging breakout")
         
+        # SB upside signal
+        if self.speed_tracker and not any(p in add_player.position for p in ['SP', 'RP', 'P']):
+            profile = self.speed_tracker.get_profile(add_player.name)
+            if profile.is_buy_low:
+                reasons.append(f"🏃 SB buy-low ({profile.sprint_speed:.1f} ft/s, only {profile.sb} SB)")
+            elif profile.tier in ("ELITE", "FAST"):
+                reasons.append(f"🏃 Elite speed ({profile.sprint_speed:.1f} ft/s)")
+
+        # ROS projection signal
+        if self.projections:
+            is_pitcher = any(p in add_player.position for p in ['SP', 'RP', 'P'])
+            proj = self.projections.get_projection(add_player.name, is_pitcher=is_pitcher)
+            if proj:
+                if hasattr(proj, 'wrc_plus') and proj.wrc_plus >= 120:
+                    reasons.append(f"📊 ROS wRC+ {proj.wrc_plus} (elite)")
+                elif hasattr(proj, 'wrc_plus') and proj.wrc_plus >= 110:
+                    reasons.append(f"📊 ROS wRC+ {proj.wrc_plus}")
+                if hasattr(proj, 'era') and proj.era <= 3.20:
+                    reasons.append(f"📊 ROS ERA {proj.era:.2f}")
+                elif hasattr(proj, 'k') and proj.k >= 150:
+                    reasons.append(f"📊 ROS {proj.k} K projected")
+
         # Check for position needs
         position_boost = self._get_position_need_boost(add_player)
         if position_boost >= 40:
@@ -424,6 +473,39 @@ class WaiverAnalyzer:
         
         return max_boost
     
+    def _get_projection_boost(self, add_player: Player, drop_player: Player) -> Optional[float]:
+        """Compare ROS projected value between add and drop candidates.
+        Returns a value_gain score (positive = add is better) or None if no data."""
+        if not self.projections:
+            return None
+
+        is_pitcher = any(p in add_player.position for p in ['SP', 'RP', 'P'])
+        add_proj = self.projections.get_projection(add_player.name, is_pitcher=is_pitcher)
+        if add_proj is None:
+            return None
+
+        drop_is_pitcher = any(p in drop_player.position for p in ['SP', 'RP', 'P'])
+        drop_proj = self.projections.get_projection(drop_player.name, is_pitcher=drop_is_pitcher)
+
+        add_val = add_proj.ros_value
+        drop_val = drop_proj.ros_value if drop_proj else 0
+
+        diff = add_val - drop_val
+        # Scale the projection delta into the same value_gain range as ADP diff
+        # A 20-point projection difference ≈ 100 ADP points of value
+        return diff * 5.0
+
+    def _get_sb_upside_boost(self, player: Player) -> float:
+        """Return a value boost for players with elite sprint speed + low SB totals."""
+        if not self.speed_tracker:
+            return 0
+        profile = self.speed_tracker.get_profile(player.name)
+        if profile.is_buy_low:
+            return min(80, profile.sb_upside_score)
+        if profile.tier in ("ELITE", "FAST") and profile.sb_upside_score >= 40:
+            return profile.sb_upside_score * 0.5
+        return 0
+
     def _check_breakout(self, player: Player):
         """Check for breakout signal (with caching to avoid redundant API calls)"""
         if not self.breakout_detector:

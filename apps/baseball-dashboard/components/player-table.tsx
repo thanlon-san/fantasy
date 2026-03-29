@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,29 +10,13 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { PlayerDetailDialog } from "@/components/player-detail-dialog"
-import { useToast } from "@/components/ui/use-toast"
 import {
   ArrowUpDown, ArrowUp, ArrowDown,
   Swords, Home, Shield, TrendingUp, TrendingDown, Zap,
   Flame, Snowflake, Wind, CloudRain, Sun, Target, Activity,
-  ChevronDown, BookOpen, Clock,
+  ChevronDown, BookOpen, Clock, DollarSign,
 } from "lucide-react"
-
-type Player = {
-  player: string
-  position: string
-  team: string
-  opponent: string
-  opponent_pitcher?: string
-  game_time?: string
-  confidence: number
-  matchup: number
-  parkFactor: number
-  platoon: number
-  form: number
-  breakout: number
-  reasons: string[]
-}
+import type { Player } from "@fantasy/types"
 
 type SortKey = "player" | "position" | "confidence" | "matchup" | "opponent"
 type SortDirection = "asc" | "desc" | null
@@ -63,6 +48,7 @@ const REASON_RULES: Array<{
   { pattern: /rain/i,                        icon: CloudRain,    chipColor: "bg-blue-400/15 border-blue-400/25 text-blue-400",           label: "Rain risk" },
   { pattern: /platoon|handedness|L vs R|R vs L/i, icon: Zap,   chipColor: "bg-violet-400/15 border-violet-400/25 text-violet-400",      label: "Platoon advantage" },
   { pattern: /breakout|statcast/i,           icon: Activity,     chipColor: "bg-cyan-400/15 border-cyan-400/25 text-cyan-400",           label: "Breakout signal" },
+  { pattern: /vegas total/i,                  icon: DollarSign,   chipColor: "bg-yellow-400/15 border-yellow-400/25 text-yellow-400",     label: "Vegas line" },
 ]
 
 const LEGEND_ITEMS: Array<{
@@ -85,6 +71,7 @@ const LEGEND_ITEMS: Array<{
   { icon: CloudRain,    chipColor: "bg-blue-400/15 border-blue-400/25 text-blue-400",           label: "Rain",           description: "Rain risk — potential postponement" },
   { icon: Zap,          chipColor: "bg-violet-400/15 border-violet-400/25 text-violet-400",     label: "Platoon",        description: "Favorable handedness matchup (e.g. LHH vs RHP)" },
   { icon: Activity,     chipColor: "bg-cyan-400/15 border-cyan-400/25 text-cyan-400",           label: "Breakout",       description: "Statcast metrics suggest a breakout or underlying improvement" },
+  { icon: DollarSign,   chipColor: "bg-yellow-400/15 border-yellow-400/25 text-yellow-400",     label: "Vegas line",     description: "Vegas implied run total for today's game (higher = more runs expected)" },
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -112,6 +99,14 @@ function parseSignals(player: Player): SignalChip[] {
   // Breakout boost
   if (player.breakout > 0) {
     chips.push({ icon: Activity, chipColor: "bg-cyan-400/15 border-cyan-400/25 text-cyan-400", label: "Breakout", detail: `Breakout signal (+${player.breakout})` })
+  }
+
+  // Vegas total
+  if (player.vegas_total) {
+    const env = player.vegas_total >= 10 ? "bg-emerald-500/15 border-emerald-500/25 text-emerald-400"
+      : player.vegas_total <= 7 ? "bg-rose-500/15 border-rose-500/25 text-rose-400"
+      : "bg-yellow-400/15 border-yellow-400/25 text-yellow-400"
+    chips.push({ icon: DollarSign, chipColor: env, label: "Vegas", detail: `Game total: ${player.vegas_total}` })
   }
 
   // Reason-string chips — dedup by label so the same signal doesn't appear twice
@@ -248,7 +243,6 @@ export function PlayerTable({ players, variant = "default" }: PlayerTableProps) 
   const [sortDir, setSortDir] = useState<SortDirection>(null)
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const { toast } = useToast()
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -337,10 +331,19 @@ export function PlayerTable({ players, variant = "default" }: PlayerTableProps) 
                 >
                   {/* Player */}
                   <TableCell className="py-2">
-                    <div className="flex flex-col leading-tight">
-                      <span className="font-semibold text-sm">{player.player}</span>
-                      <span className="text-xs text-muted-foreground">{player.team}</span>
-                    </div>
+                    <Link href={`/player/${encodeURIComponent(player.player)}`} className="hover:underline" onClick={e => e.stopPropagation()}>
+                      <div className="flex flex-col leading-tight">
+                        <span className="font-semibold text-sm">
+                          {player.player}
+                          {player.injury && (
+                            <Badge variant="destructive" className="ml-1.5 text-[10px] px-1 py-0 align-middle">
+                              {player.injury}
+                            </Badge>
+                          )}
+                        </span>
+                        <span className="text-xs text-muted-foreground">{player.team}</span>
+                      </div>
+                    </Link>
                   </TableCell>
 
                   {/* Position */}

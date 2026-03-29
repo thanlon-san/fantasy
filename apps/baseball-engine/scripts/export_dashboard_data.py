@@ -22,6 +22,7 @@ from src.waiver_analyzer import WaiverAnalyzer
 from src.analyzer import KeeperAnalyzer
 from src.breakout_detector import BreakoutDetector, BreakoutSignal
 from src.accuracy_tracker import AccuracyTracker
+from src.injury_tracker import InjuryTracker
 
 # Output directory
 dashboard_root = workspace_root / "apps" / "baseball-dashboard"
@@ -108,6 +109,20 @@ print("\n📋 Loading roster from Yahoo API...")
 roster, player_key_map = fetch_roster_from_yahoo()
 print(f"✅ Loaded {len(roster.players)} players from Yahoo API")
 
+# Load injuries (shared across lineup + waiver sections)
+print("\n🏥 Loading injury data...")
+_injury_tracker = InjuryTracker()
+try:
+    _injury_tracker.load(force=True)
+    print(f"✅ Loaded {len(_injury_tracker.get_all_injuries())} injuries")
+except Exception as e:
+    print(f"⚠️  Injury fetch failed: {e}")
+
+
+def _injury_badge(name: str) -> str | None:
+    return _injury_tracker.get_badge(name)
+
+
 # 1. Daily Lineup
 print("\n📊 Generating daily lineup recommendations...")
 try:
@@ -145,92 +160,41 @@ try:
     flex = [r for r in playing if 50 <= r.confidence_score < 65]
     bench = [r for r in playing if r.confidence_score < 50]
     
+    def _fmt(r):
+        return {
+            "player": r.player.name,
+            "player_key": player_key_map.get(r.player.name, ""),
+            "position": r.player.position,
+            "team": r.player.team,
+            "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
+            "opponent_pitcher": r.opponent_pitcher or "TBD",
+            "game_time": r.game_time or "TBD",
+            "confidence": int(r.confidence_score),
+            "matchup": r.matchup_score,
+            "parkFactor": r.park_score,
+            "platoon": r.platoon_score,
+            "form": r.form_score,
+            "breakout": r.breakout_boost,
+            "vegas_total": r.vegas_total,
+            "reasons": r.reasons,
+            "injury": _injury_badge(r.player.name),
+        }
+
     lineup_data = {
         "generated_at": datetime.now().isoformat(),
         "date": datetime.now().strftime("%Y-%m-%d"),
-        "must_start": [
-            {
-                "player": r.player.name,
-                "player_key": player_key_map.get(r.player.name, ""),
-                "position": r.player.position,
-                "team": r.player.team,
-                "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
-                "opponent_pitcher": r.opponent_pitcher or "TBD",
-                "game_time": r.game_time or "TBD",
-                "confidence": int(r.confidence_score),
-                "matchup": r.matchup_score,
-                "parkFactor": r.park_score,
-                "platoon": r.platoon_score,
-                "form": r.form_score,
-                "breakout": r.breakout_boost,
-                "reasons": r.reasons
-            }
-            for r in must_start
-        ],
-        "start": [
-            {
-                "player": r.player.name,
-                "player_key": player_key_map.get(r.player.name, ""),
-                "position": r.player.position,
-                "team": r.player.team,
-                "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
-                "opponent_pitcher": r.opponent_pitcher or "TBD",
-                "game_time": r.game_time or "TBD",
-                "confidence": int(r.confidence_score),
-                "matchup": r.matchup_score,
-                "parkFactor": r.park_score,
-                "platoon": r.platoon_score,
-                "form": r.form_score,
-                "breakout": r.breakout_boost,
-                "reasons": r.reasons
-            }
-            for r in start
-        ],
-        "flex": [
-            {
-                "player": r.player.name,
-                "player_key": player_key_map.get(r.player.name, ""),
-                "position": r.player.position,
-                "team": r.player.team,
-                "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
-                "opponent_pitcher": r.opponent_pitcher or "TBD",
-                "game_time": r.game_time or "TBD",
-                "confidence": int(r.confidence_score),
-                "matchup": r.matchup_score,
-                "parkFactor": r.park_score,
-                "platoon": r.platoon_score,
-                "form": r.form_score,
-                "breakout": r.breakout_boost,
-                "reasons": r.reasons
-            }
-            for r in flex
-        ],
-        "bench": [
-            {
-                "player": r.player.name,
-                "player_key": player_key_map.get(r.player.name, ""),
-                "position": r.player.position,
-                "team": r.player.team,
-                "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
-                "opponent_pitcher": r.opponent_pitcher or "TBD",
-                "game_time": r.game_time or "TBD",
-                "confidence": int(r.confidence_score),
-                "matchup": r.matchup_score,
-                "parkFactor": r.park_score,
-                "platoon": r.platoon_score,
-                "form": r.form_score,
-                "breakout": r.breakout_boost,
-                "reasons": r.reasons
-            }
-            for r in bench
-        ],
+        "must_start": [_fmt(r) for r in must_start],
+        "start": [_fmt(r) for r in start],
+        "flex": [_fmt(r) for r in flex],
+        "bench": [_fmt(r) for r in bench],
         "not_playing": [
             {
                 "player": r.player.name,
                 "player_key": player_key_map.get(r.player.name, ""),
                 "position": r.player.position,
                 "team": r.player.team,
-                "adp": r.player.adp
+                "adp": r.player.adp,
+                "injury": _injury_badge(r.player.name),
             }
             for r in not_playing
         ],

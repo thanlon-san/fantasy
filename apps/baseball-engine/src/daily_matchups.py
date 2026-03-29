@@ -463,6 +463,44 @@ def get_park_factor(venue_name: str) -> float:
     return PARK_FACTORS.get(venue_name, 1.0)
 
 
+def get_next_week_schedule(api: Optional[MLBStatsAPI] = None) -> List[Game]:
+    """
+    Fetch the full MLB schedule for next Monday–Sunday.
+    Returns a flat list of Game objects for the 7-day window.
+    """
+    if api is None:
+        api = MLBStatsAPI()
+
+    today = datetime.now()
+    days_until_monday = (7 - today.weekday()) % 7
+    if days_until_monday == 0:
+        days_until_monday = 7
+    next_monday = today + timedelta(days=days_until_monday)
+
+    all_games: List[Game] = []
+    for offset in range(7):
+        date = next_monday + timedelta(days=offset)
+        date_str = date.strftime("%Y-%m-%d")
+        games = api.get_todays_games(date=date_str)
+        all_games.extend(games)
+
+    return all_games
+
+
+def get_week_range() -> dict:
+    """Return the start/end dates of next week (Mon–Sun) as ISO strings."""
+    today = datetime.now()
+    days_until_monday = (7 - today.weekday()) % 7
+    if days_until_monday == 0:
+        days_until_monday = 7
+    monday = today + timedelta(days=days_until_monday)
+    sunday = monday + timedelta(days=6)
+    return {
+        "start": monday.strftime("%Y-%m-%d"),
+        "end": sunday.strftime("%Y-%m-%d"),
+    }
+
+
 if __name__ == "__main__":
     # Test the API
     logging.basicConfig(level=logging.INFO)

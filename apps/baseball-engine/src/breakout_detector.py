@@ -11,6 +11,21 @@ from enum import Enum
 
 from .statcast_client import StatcastClient
 
+try:
+    from .speed_tracker import SpeedTracker
+except ImportError:
+    SpeedTracker = None  # type: ignore[assignment,misc]
+
+try:
+    from .savant_leaderboards import SavantLeaderboards
+except ImportError:
+    SavantLeaderboards = None  # type: ignore[assignment,misc]
+
+try:
+    from .pitch_mix_tracker import PitchMixTracker
+except ImportError:
+    PitchMixTracker = None  # type: ignore[assignment,misc]
+
 logger = logging.getLogger(__name__)
 
 
@@ -153,6 +168,32 @@ class BreakoutDetector:
                 self.tracker = None
         else:
             self.tracker = None
+
+        # Speed tracker for SB-related breakout signals
+        self.speed_tracker: Optional[object] = None
+        if SpeedTracker is not None:
+            try:
+                self.speed_tracker = SpeedTracker()
+                self.speed_tracker.load()  # type: ignore[union-attr]
+            except Exception:
+                self.speed_tracker = None
+
+        # Savant leaderboards for percentile-based breakout signals
+        self.savant: Optional[object] = None
+        if SavantLeaderboards is not None:
+            try:
+                self.savant = SavantLeaderboards()
+                self.savant.load()  # type: ignore[union-attr]
+            except Exception:
+                self.savant = None
+
+        # Pitch mix tracker for arsenal evolution signals
+        self.pitch_mix: Optional[object] = None
+        if PitchMixTracker is not None:
+            try:
+                self.pitch_mix = PitchMixTracker()
+            except Exception:
+                self.pitch_mix = None
     
     def analyze_player(
         self,
@@ -246,6 +287,65 @@ class BreakoutDetector:
                 elif change > -threshold:
                     declining.append(f"{metric}: {baseline.get(metric, 0):.1f} → {recent.get(metric, 0):.1f} (+{change:.1f})")
         
+        # Boost hitters with elite sprint speed — speed breakouts are real
+        if player_type == "hitter" and self.speed_tracker is not None:
+            try:
+                profile = self.speed_tracker.get_profile(player_name)  # type: ignore[union-attr]
+                if profile.tier in ("ELITE", "FAST"):
+                    speed_boost = 0.5 if profile.tier == "ELITE" else 0.3
+                    confidence_points += speed_boost
+                    max_points += 1.0
+                    improving.append(
+                        f"sprint_speed: {profile.sprint_speed:.1f} ft/s ({profile.tier}, {profile.sb} SB)"
+                    )
+                    key_metrics["sprint_speed"] = (0.0, profile.sprint_speed or 0.0)
+            except Exception:
+                pass
+
+        # Boost from Savant pre-computed percentiles when quality metrics are elite
+        if self.savant is not None:
+            try:
+                pctiles = self.savant.get_percentiles(player_name, is_pitcher=(player_type == "pitcher"))  # type: ignore[union-attr]
+                if pctiles is not None:
+                    elite_metrics = []
+                    if player_type == "hitter":
+                        if (pctiles.barrel_pct or 0) >= 80:
+                            elite_metrics.append(f"barrel_pct: {pctiles.barrel_pct}th pctile")
+                        if (pctiles.hard_hit_pct or 0) >= 80:
+                            elite_metrics.append(f"hard_hit_pct: {pctiles.hard_hit_pct}th pctile")
+                        if (pctiles.xwoba or 0) >= 80:
+                            elite_metrics.append(f"xwOBA: {pctiles.xwoba}th pctile")
+                    else:
+                        if pctiles.stuff_plus is not None and pctiles.stuff_plus >= 110:
+                            elite_metrics.append(f"stuff_plus: {pctiles.stuff_plus}")
+                        if (pctiles.whiff_pct or 0) >= 80:
+                            elite_metrics.append(f"whiff_pct: {pctiles.whiff_pct}th pctile")
+                        if (pctiles.xwoba or 0) >= 80:
+                            elite_metrics.append(f"xwOBA_against: {pctiles.xwoba}th pctile")
+                    if elite_metrics:
+                        savant_boost = min(1.5, len(elite_metrics) * 0.5)
+                        confidence_points += savant_boost
+                        max_points += 2.0
+                        for m in elite_metrics:
+                            improving.append(f"savant_{m}")
+            except Exception:
+                pass
+
+        # Boost pitchers with pitch mix evolution (arsenal changes predict ERA drops)
+        if player_type == "pitcher" and self.pitch_mix is not None:
+            try:
+                evo = self.pitch_mix.analyze_pitcher(player_name)  # type: ignore[union-attr]
+                if evo and evo.total_changes > 0:
+                    pitch_mix_boost = min(2.0, evo.breakout_score / 25.0)
+                    confidence_points += pitch_mix_boost
+                    max_points += 2.5
+                    for change in evo.changes[:3]:
+                        if change.impact == "positive":
+                            improving.append(f"pitch_mix: {change.description}")
+                            key_metrics[f"pitch_mix_{change.pitch_type}"] = (0.0, change.magnitude)
+            except Exception:
+                pass
+
         # Calculate confidence score (0-100)
         confidence_score = min(100, (confidence_points / max_points * 100)) if max_points > 0 else 0
         

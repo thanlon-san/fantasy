@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Target, TrendingUp, Calendar, ArrowRight, Flame, MapPin } from "lucide-react"
 import {
@@ -10,56 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-type WaiverTarget = {
-  player: string
-  position: string
-  team: string
-  rostered_pct?: number
-  trending?: string
-  last_7_days?: {
-    avg?: number
-    hr?: number
-    rbi?: number
-    sb?: number
-    era?: number
-    whip?: number
-    k?: number
-    w?: number
-    games?: number
-  }
-  last_14_days?: {
-    avg?: number
-    hr?: number
-    rbi?: number
-    sb?: number
-    era?: number
-    whip?: number
-    k?: number
-    w?: number
-    games?: number
-  }
-  last_30_days?: {
-    avg?: number
-    hr?: number
-    rbi?: number
-    sb?: number
-    era?: number
-    whip?: number
-    k?: number
-    w?: number
-    games?: number
-  }
-  statcast_changes?: {
-    exit_velo?: string
-    hard_hit_pct?: string
-    barrel_rate?: string
-  }
-  role_change?: string
-  upcoming_schedule?: string
-  reason: string
-  confidence?: string
-}
+import type { WaiverTarget } from "@fantasy/types"
 
 interface WaiverWireTableProps {
   targets: WaiverTarget[]
@@ -96,7 +48,7 @@ export function WaiverWireTable({ targets }: WaiverWireTableProps) {
                     <div className="flex items-center gap-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-lg">{target.player}</span>
+                          <Link href={`/player/${encodeURIComponent(target.player)}`} className="font-bold text-lg hover:underline">{target.player}</Link>
                           {target.trending === "HOT" && (
                             <Badge variant="default" className="bg-orange-500 hover:bg-orange-600 border-none text-white gap-1">
                               <Flame className="h-3 w-3" /> Hot
@@ -159,6 +111,16 @@ export function WaiverWireTable({ targets }: WaiverWireTableProps) {
                                 </TableCell>
                                 <TableCell className="py-1 text-right text-muted-foreground">
                                   {target.last_30_days ? `.${Math.round((target.last_30_days.avg || 0) * 1000)}` : '-'}
+                                </TableCell>
+                              </TableRow>
+                              <TableRow className="hover:bg-transparent border-none">
+                                <TableCell className="py-1 pl-0 font-medium">OPS</TableCell>
+                                <TableCell className="py-1 text-right">{(target.last_7_days.ops || 0).toFixed(3)}</TableCell>
+                                <TableCell className="py-1 text-right text-muted-foreground">
+                                  {target.last_14_days?.ops != null ? target.last_14_days.ops.toFixed(3) : '-'}
+                                </TableCell>
+                                <TableCell className="py-1 text-right text-muted-foreground">
+                                  {target.last_30_days?.ops != null ? target.last_30_days.ops.toFixed(3) : '-'}
                                 </TableCell>
                               </TableRow>
                               <TableRow className="hover:bg-transparent border-none">
@@ -225,13 +187,23 @@ export function WaiverWireTable({ targets }: WaiverWireTableProps) {
                                 </TableCell>
                               </TableRow>
                               <TableRow className="hover:bg-transparent border-none">
-                                <TableCell className="py-1 pl-0 font-medium">Wins</TableCell>
-                                <TableCell className="py-1 text-right">{target.last_7_days.w || 0}</TableCell>
+                                <TableCell className="py-1 pl-0 font-medium">IP</TableCell>
+                                <TableCell className="py-1 text-right">{target.last_7_days.ip ?? '-'}</TableCell>
                                 <TableCell className="py-1 text-right text-muted-foreground">
-                                  {target.last_14_days ? target.last_14_days.w || 0 : '-'}
+                                  {target.last_14_days?.ip ?? '-'}
                                 </TableCell>
                                 <TableCell className="py-1 text-right text-muted-foreground">
-                                  {target.last_30_days ? target.last_30_days.w || 0 : '-'}
+                                  {target.last_30_days?.ip ?? '-'}
+                                </TableCell>
+                              </TableRow>
+                              <TableRow className="hover:bg-transparent border-none">
+                                <TableCell className="py-1 pl-0 font-medium">SV</TableCell>
+                                <TableCell className="py-1 text-right">{target.last_7_days.sv || 0}</TableCell>
+                                <TableCell className="py-1 text-right text-muted-foreground">
+                                  {target.last_14_days ? target.last_14_days.sv || 0 : '-'}
+                                </TableCell>
+                                <TableCell className="py-1 text-right text-muted-foreground">
+                                  {target.last_30_days ? target.last_30_days.sv || 0 : '-'}
                                 </TableCell>
                               </TableRow>
                             </>

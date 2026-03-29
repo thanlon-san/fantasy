@@ -1,0 +1,4994 @@
+{
+  "A.J. Minter": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "A.J. Puk": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "AJ Blubaugh": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "AJ Smith-Shawver": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Aaron Ashby": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Aaron Bummer": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Aaron Civale": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Aaron Judge": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Aaron Nola": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Abimelec Ortiz": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Abner Uribe": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Adael Amador": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Adam Frazier": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Adam Macko": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Adam Mazur": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Addison Barger": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Adley Rutschman": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Adolis Garc\u00eda": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Adrian Del Castillo": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Adrian Houser": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Adrian Morejon": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Agust\u00edn Ram\u00edrez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Akil Baddoo": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Alan Rangel": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alan Roden": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Alec Bohm": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alec Burleson": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Alec Marsh": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alejandro Kirk": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alejandro Osuna": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Alek Jacob": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Alek Manoah": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alek Thomas": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Alex Bregman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alex Call": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alex Carrillo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alex Cook": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alex Freeland": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Alex Hoppe": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alex Lange": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alex McFarlane": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Alex Vesia": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Amed Rosario": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andre Granillo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andre Pallante": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andrew Abbott": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Andrew Alvarez": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Andrew Benintendi": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Andrew Hoffmann": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andrew Kittredge": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andrew McCutchen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andrew Morris": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andrew Nardi": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Andrew Painter": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andrew Saalfrank": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Andrew Vaughn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andrew Walters": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andruw Monasterio": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andr\u00e9s Chaparro": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andr\u00e9s Gim\u00e9nez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Andr\u00e9s Mu\u00f1oz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andy Ib\u00e1\u00f1ez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Andy Pages": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Angel Chivilli": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Angel Genao": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Angel Mart\u00ednez": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Angel Zerpa": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Anthony Banda": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Anthony Bender": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Anthony Kay": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Anthony Nunez": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Anthony Rendon": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Anthony Santander": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Anthony Seigler": {
+    "bat": "L",
+    "pitch": "S"
+  },
+  "Anthony Volpe": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Antonio Senzatela": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Antwone Kelly": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Aroldis Chapman": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Austin Hays": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Austin Hedges": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Austin Martin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Austin Peterson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Austin Riley": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Austin Slater": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Austin Warren": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Austin Wells": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Austin Wynns": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bailey Falter": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Bailey Horn": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Bailey Ober": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Beau Brieske": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ben Brown": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ben Casparius": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ben Cowles": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ben Joyce": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ben Kudrna": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ben Rice": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Ben Williamson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bennett Sousa": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Billy Cook": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Blade Tidwell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Blaine Crim": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Blake Dunn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Blake Perkins": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Blake Snell": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Blake Treinen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Blake Walston": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Blas Casta\u00f1o": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Blaze Alexander": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bo Bichette": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bo Naylor": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Bobby Miller": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Bobby Witt Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bowden Francis": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brad Keller": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brad Lord": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Braden Nett": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bradgley Rodriguez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bradley Blalock": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brady Basso": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Brady House": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brady Singer": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brandan Bidois": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brandon Eisert": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brandon Lockridge": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brandon Lowe": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brandon Marsh": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brandon Nimmo": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brandon Pfaadt": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brandon Sproat": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brandon Valenzuela": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Brandon Walter": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brandon Williamson": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Brandon Woodruff": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brandon Young": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brandyn Garcia": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brant Hurter": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Braxton Ashcraft": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Braxton Fulford": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Braxton Garrett": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Brayan Bello": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brayan Rocchio": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Braydon Fisher": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brenan Hanifee": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brendan Donovan": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brendon Little": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brennan Bernardino": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brent Headrick": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brent Rooker": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brent Suter": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brenton Doyle": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brett Baty": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brett Harris": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brett Sullivan": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brice Matthews": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Brice Turang": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brock Burke": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brock Stewart": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Brooks Baldwin": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Brooks Lee": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Brooks Raley": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Brusdar Graterol": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bryan Abreu": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bryan Baker": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bryan Hoeing": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bryan Hudson": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Bryan King": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Bryan Reynolds": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Bryan Torres": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Bryan Woo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bryce Elder": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bryce Eldridge": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Bryce Harper": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Bryce Johnson": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Bryce Miller": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Bryce Teodosio": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Brycen Mautz": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Bryson Stott": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Bubba Chandler": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Byron Buxton": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "CJ Abrams": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "CJ Kayfus": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Cade Cavalli": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cade Gibson": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Cade Horton": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cade Povich": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Cade Smith": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cade Winquest": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Caden Dana": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Cal Raleigh": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Caleb Durbin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Caleb Ferguson": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Caleb Kilian": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Caleb Thielbar": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Calvin Faucher": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cam Booser": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Cam Sanders": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cam Schlittler": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cam Smith": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cameron Foster": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Camilo Doval": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carlos Correa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carlos Cortes": {
+    "bat": "L",
+    "pitch": "S"
+  },
+  "Carlos Est\u00e9vez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carlos Narv\u00e1ez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carlos Rodriguez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carlos Rod\u00f3n": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Carlos Santana": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Carlos Vargas": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carmen Mlodzinski": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carson Benge": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Carson Kelly": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carson Palmquist": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Carson Seymour": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carson Whisenhunt": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Carson Williams": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carter Baumler": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Carter Jensen": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Casey Legumina": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Casey Mize": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Casey Schmitt": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ceddanne Rafaela": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cedric Mullins": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Chad Patrick": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chandler Simpson": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Chase Burns": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chase DeLauter": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Chase Dollander": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chase Hampton": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chase Lee": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chase Meidroth": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chase Petty": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chase Shugart": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Chase Silseth": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chayce McDermott": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Chen Zhong-Ao Zhuang": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chris Bassitt": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chris Martin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chris Murphy": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Chris Paddack": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chris Roycroft": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Chris Sale": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Christian Cairo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian Encarnacion-Strand": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian Franklin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian Koss": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian Moore": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian Roa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian Scott": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian V\u00e1zquez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian Walker": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Christian Yelich": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Christopher Morel": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cionel P\u00e9rez": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Clarke Schmidt": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Clay Holmes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Clayton Beeter": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Coby Mayo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Codi Heuer": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cody Bellinger": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Cody Bradford": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Cody Freeman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cody Laweryson": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Cody Ponce": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Colby Thomas": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cole Henry": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cole Ragans": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Cole Sands": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cole Sulser": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cole Wilcox": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cole Winn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cole Young": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Coleman Crow": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Colin Holderman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Colin Rea": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Colin Selby": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Colson Montgomery": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Colt Keith": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Colton Cowser": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Colton Gordon": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Connelly Early": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Connor Brogdon": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Connor Norby": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Connor Phillips": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Connor Prielipp": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Connor Seabold": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Connor Wong": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cooper Criswell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cooper Hjerpe": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Corbin Burnes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Corbin Carroll": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Corey Seager": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Craig Yoho": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cristian Javier": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cristian Mena": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Cristopher S\u00e1nchez": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Curtis Mead": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "C\u00e9sar Prieto": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "DJ Herz": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "DL Hall": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Dalton Rushing": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Dane Myers": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Daniel Espino": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Daniel Lynch IV": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Daniel Palencia": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Daniel Schneemann": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Daniel Susac": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Danny Coulombe": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Danny Jansen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Danny Young": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Dansby Swanson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Darell Hernaiz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Daulton Varsho": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "David Bednar": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "David Davalillo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "David Festa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "David Fry": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "David Hamilton": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "David Morgan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "David Peterson": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "David Sandlin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Davis Martin": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Davis Schneider": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dax Fulton": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Daylen Lile": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Daysbel Hern\u00e1ndez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dean Kremer": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dedniel N\u00fa\u00f1ez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dennis Santana": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Denzel Clarke": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Denzer Guzman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Derek Hill": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Devin Williams": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Deyvison De Los Santos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Didier Fuentes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dietrich Enns": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Dillon Dingler": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dom Keegan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Domingo Gonzalez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dominic Canzone": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Dominic Smith": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Doug Nikhazy": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Drake Baldwin": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Drew Anderson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Drew Gilbert": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Drew Millas": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Drew Pomeranz": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Drew Rasmussen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Drew Sommers": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Drew Thorpe": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Drey Jameson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Duncan Davitt": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dustin May": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dylan Beavers": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Dylan Carlson": {
+    "bat": "S",
+    "pitch": "L"
+  },
+  "Dylan Cease": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dylan Crews": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dylan Dodd": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Dylan Lee": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Dylan Moore": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dylan Ray": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Dylan Ross": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Easton McGee": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Edgar Quero": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Edgardo Henriquez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Edmundo Sosa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Edouard Julien": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Eduard Bazardo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eduardo Rodriguez": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Eduardo Valencia": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eduarniel N\u00fa\u00f1ez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Edward Cabrera": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Edwin Arroyo": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Edwin D\u00edaz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Edwin Uceta": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eli Morgan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eli White": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Elly De La Cruz": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Elmer Rodr\u00edguez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Elvis Alvarado": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Emerson Hancock": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Emiliano Teodo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Emilio Pag\u00e1n": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Emmanuel Rodriguez": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Emmet Sheehan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Endy Rodr\u00edguez": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Enmanuel De Jesus": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Enmanuel Valdez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Enrique Hern\u00e1ndez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Enyel De Los Santos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eric Cerantola": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eric Lauer": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Eric Orze": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eric Wagaman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Erick Fedde": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Erik Miller": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Erik Sabrowski": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Ernie Clement": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Esmerlyn Valdez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Esteury Ruiz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ethan Roberts": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eugenio Su\u00e1rez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Eury P\u00e9rez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Evan Carter": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Evan Phillips": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Evan Sisk": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Everson Pereira": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ezequiel Duran": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ezequiel Tovar": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Fernando Cruz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Fernando Tatis Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Foster Griffin": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Framber Valdez": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Francisco Alvarez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Francisco Lindor": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Franco Aleman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Freddie Freeman": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Freddy Fermin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Freddy Peralta": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "F\u00e9lix Bautista": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gabe Speier": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Gabriel Arias": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gabriel Gonzalez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gabriel Hughes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gabriel Moreno": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gabriel Rincones Jr.": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Garrett Acton": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Garrett Cleavinger": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Garrett Crochet": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Garrett Hawkins": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Garrett Mitchell": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Garrett Whitlock": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gary S\u00e1nchez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gavin Hollowell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gavin Lux": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Gavin Sheets": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Gavin Stone": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gavin Williams": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "George Kirby": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "George Soriano": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "George Springer": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "George Valera": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Geraldo Perdomo": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Germ\u00e1n M\u00e1rquez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gerrit Cole": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Giancarlo Stanton": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gleyber Torres": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gordon Graceffo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Graham Ashcraft": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Graham Pauley": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Grant Anderson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Grant Holmes": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Grant McCray": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Grant Taylor": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Grant Wolfram": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Grayson Rodriguez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Greg Weissert": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gregory Soto": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Griffin Canning": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Griffin Conine": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Griffin Jax": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Gunnar Henderson": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Gunnar Hoglund": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Gus Varland": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Ha-Seong Kim": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hao-Yu  Lee": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Harrison Bader": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Harry Ford": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hayden Birdsong": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hayden Harris": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Hayden Senger": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hayden Wesneski": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Heliot Ramos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hendry Mendez": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Henry Baez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Henry Davis": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Heriberto Hern\u00e1ndez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Heston Kjerstad": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Hoby Milner": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Hogan Harris": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Huascar Brazob\u00e1n": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hunter Barco": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Hunter Bigge": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hunter Brown": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hunter Dobbins": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hunter Feduccia": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Hunter Gaddis": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hunter Goodman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hunter Greene": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hunter Harvey": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hunter Stratton": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hurston Waldrep": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Hyeseong Kim": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "H\u00e9ctor Rodr\u00edguez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Ian Happ": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Ian Seymour": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Ildemaro Vargas": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Isaac Collins": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Isaac Mattson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Isaac Paredes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Isiah Kiner-Falefa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Iv\u00e1n Herrera": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "J.C. Escarra": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "J.P. Crawford": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "J.T. Ginn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "J.T. Realmuto": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "JJ Bleday": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "JJ Wetherholt": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "JP Sears": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "JT Brubaker": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jac Caglianone": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jace Jung": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jack Brannigan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jack Dreyer": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Jack Flaherty": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jack Kochanowicz": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jack Leiter": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jack Perkins": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jackson Chourio": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jackson Holliday": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jackson Jobe": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jackson Merrill": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jackson Rutledge": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jacob Latz": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Jacob Lopez": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jacob Melton": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jacob Misiorowski": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jacob Webb": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jacob Wilson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jacob Young": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jacob deGrom": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jaden Hill": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jadher Areinamo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jahmai Jones": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jake Bauers": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jake Bennett": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jake Bird": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jake Bloss": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jake Burger": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jake Cousins": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jake Cronenworth": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jake Fraley": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jake Irvin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jake Mangum": {
+    "bat": "S",
+    "pitch": "L"
+  },
+  "Jake McCarthy": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jake Meyers": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Jake Miller": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jake Rogers": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jake Woodford": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jakob Junis": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jakob Marsee": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jalen Beeks": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "James McArthur": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "James McCann": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "James Outman": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "James Triantos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "James Wood": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jameson Taillon": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Janson Junk": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jared Jones": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jared Koenig": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Jared Oliva": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jared Serna": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jared Triolo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jared Young": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jarren Duran": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jason Adam": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jason Alexander": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jason Foley": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jasson Dom\u00ednguez": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Javier Assad": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Javier B\u00e1ez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Javier Sanoja": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jayden Murray": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jazz Chisholm Jr.": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jean Cabrera": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jedixson Paez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jeferson Quero": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jeff Criswell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jeff Hoffman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jeff McNeil": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jeffrey Springs": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jeimer Candelario": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Jerar Encarnacion": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jeremiah Estrada": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Jeremiah Jackson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jeremy Pe\u00f1a": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jesse Scholtens": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jesus Rodriguez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jes\u00fas Luzardo": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jes\u00fas S\u00e1nchez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jhancarlos Lara": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jhoan Duran": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jhonny Pereda": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jhony Brito": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jhostynxon Garcia": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jimmy Crooks": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jimmy Herget": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jo Adell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "JoJo Romero": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Joc Pederson": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Joe Boyle": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joe Jim\u00e9nez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joe Mack": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Joe Musgrove": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joe Rock": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Joe Ross": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joe Ryan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joel Payamps": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joel Peguero": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joey Bart": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joey Cantillo": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Joey Estes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joey Gerber": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joey Loperfido": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Joey Lucchesi": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Joey Ortiz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joey Wentz": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Joey Wiemer": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Johan Oviedo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "John King": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "John Klein": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "John Rave": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "John Schreiber": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jonah Heim": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Jonah Tong": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jonatan Clase": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Jonathan Aranda": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jonathan Bowlan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jonathan Cannon": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jonathan India": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jonathan Lo\u00e1isiga": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jonathan Pintaro": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jonny DeLuca": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jorbit Vivas": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jordan Beck": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jordan Hicks": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jordan Lawlar": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jordan Leasure": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jordan Montgomery": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jordan Romano": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jordan Walker": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jordan Westburg": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jordan Wicks": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jorge Barrosa": {
+    "bat": "S",
+    "pitch": "L"
+  },
+  "Jorge Mateo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jorge Polanco": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Jorge Soler": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jose A. Ferrer": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jose Altuve": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jose Corniell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jose Espada": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jose Fernandez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jose Franco": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jose Quintana": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Jose Trevino": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Josh Bell": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Josh Hader": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Josh Jung": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Josh Lowe": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Josh Naylor": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Josh Simpson": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Josh Smith": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Josh White": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Joshua B\u00e1ez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Josiah Gray": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Alvarado": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jos\u00e9 Berr\u00edos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Butt\u00f3": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Caballero": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Fermin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Ferm\u00edn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Ram\u00edrez": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Soriano": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Suarez": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Jos\u00e9 Tena": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Jos\u00e9 Urquidy": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jovani Mor\u00e1n": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Juan Brito": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Juan Burgos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Juan Mejia": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Juan Morillo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Juan Soto": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Julian Aguiar": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Julian Fern\u00e1ndez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Julio Rodr\u00edguez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Jung Hoo Lee": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Junior Caminero": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Junior Perez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Bruihl": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Justin Crawford": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Justin Dean": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Foscue": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Hagenman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Lawrence": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Martinez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Slaten": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Steele": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Justin Sterner": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Topa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Verlander": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Justin Wrobleski": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Justyn-Henry Malloy": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kade Strowd": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kahlil Watson": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kai-Wei Teng": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kameron Misner": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kazuma Okamoto": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ke'Bryan Hayes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Keaton Winn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Keegan Akin": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Keibert Ruiz": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Keider Montero": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ken Waldichuk": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kendry Rojas": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kenley Jansen": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Kerry Carpenter": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kervin Castro": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ketel Marte": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Kevin Alc\u00e1ntara": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kevin Gausman": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kevin Ginkel": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kevin Kelly": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kevin McGonigle": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kirby Yates": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kodai Senga": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kody Clemens": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kody Funderburk": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kohl Drake": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kris Bryant": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kris Bubic": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kristian Campbell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kumar Rocker": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kutter Crawford": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ky Bush": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kyle Backhus": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kyle Bradish": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kyle Farmer": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kyle Finnegan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kyle Freeland": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kyle Harrison": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Kyle Hart": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kyle Higashioka": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kyle Hurt": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kyle Isbel": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kyle Karros": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kyle Leahy": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Kyle Manzardo": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kyle Nicolas": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Kyle Schwarber": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kyle Stowers": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Kyle Teel": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kyle Tucker": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Kyren Paris": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Lake Bachar": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Lance McCullers Jr.": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Landen Roupp": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Landon Knack": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Lane Thomas": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Lars Nootbaar": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Lawrence Butler": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Lazaro Estrada": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Leandro Lopez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Lenyn Sosa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Leo Balcazar": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Leo Bernal": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Leo Rivas": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Leody Taveras": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Liam Hicks": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Logan Allen": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Logan Evans": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Logan Gilbert": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Logan Henderson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Logan O'Hoppe": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Logan Webb": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Louis Varland": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Lourdes Gurriel Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Lucas Erceg": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Luinder Avila": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Arraez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Luis Campusano": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Castillo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Curvelo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Garc\u00eda": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Garc\u00eda Jr.": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Luis Gil": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Medina": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Mey": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Morales": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Perales": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Peralta": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Luis Rengifo": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Luis Robert Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Severino": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luis Torrens": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luisangel Acu\u00f1a": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luke Keaschall": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Luke Little": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Luke Raley": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Luke Weaver": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "MJ Melendez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "MacKenzie Gore": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Maikel Garcia": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Manny Machado": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Manuel Rodr\u00edguez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Marc Church": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Marcell Ozuna": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Marcelo Mayer": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Marco Raya": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Marcus Semien": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mark Leiter Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mark Vientos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Masataka Yoshida": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Mason Barnett": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mason Black": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mason Englert": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Mason Fluharty": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Mason McCoy": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mason Miller": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mason Montgomery": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Masyn Winn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Brash": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Chapman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Festa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Gage": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Matt McLain": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Olson": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Matt Pushard": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Shaw": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Strahm": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Matt Svanson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Vierling": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Waldron": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Matt Wallner": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Matthew Boyd": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Matthew Liberatore": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Matthew Lugo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mauricio Dub\u00f3n": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Max Fried": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Max Lazar": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Max Meyer": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Max Muncy": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Max Scherzer": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Max Schuemann": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Maximo Acosta": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "McCade Brown": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Merrill Kelly": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Michael Busch": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Michael Conforto": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Michael Harris II": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Michael Helman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Michael Kelly": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Michael King": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Michael Lorenzen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Michael Massey": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Michael McGreevy": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Michael Petersen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Michael Siani": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Michael Soroka": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Michael Wacha": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Michel Ota\u00f1ez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mick Abel": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mickey Gasper": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Mickey Moniak": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Miguel Amaya": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Miguel Andujar": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Miguel Mendez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Miguel Rojas": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Miguel Ullola": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Miguel Vargas": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mike Burrows": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mike Trout": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mike Vasil": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Mike Yastrzemski": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Miles Mastrobuoni": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Miles Mikolas": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mitch Bratt": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Mitch Farris": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Mitch Garver": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mitch Keller": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mitch Spence": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mitchell Parker": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Mois\u00e9s Ballesteros": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Mois\u00e9s Chace": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Mookie Betts": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Munetaka Murakami": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Myles Straw": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nacho Alvarez Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nasim Nu\u00f1ez": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Nate Eaton": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nate Pearson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nathan Church": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Nathan Eovaldi": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nathan Lukes": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Nathaniel Lowe": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Nick Allen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nick Castellanos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nick Fortes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nick Gonzales": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nick Kurtz": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Nick Lodolo": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Nick Loftin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nick Martinez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Nick Mears": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nick Morabito": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nick Pivetta": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nick Raquet": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Nick Sogard": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Nick Yorke": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nico Hoerner": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Noah Cameron": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Noelvi Marte": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nolan Arenado": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nolan Gorman": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Nolan Hoffman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nolan McLean": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Nolan Schanuel": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Oneil Cruz": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Orion Kerkering": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Orlando Ribalta": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Osvaldo Bido": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Oswald Peraza": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Oswaldo Cabrera": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Otto Kemp": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Otto Lopez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Owen Caissie": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Ozzie Albies": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "PJ Poulin": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Pablo L\u00f3pez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Parker Meadows": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Parker Messick": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Patrick Bailey": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Patrick Sandoval": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Paul Blackburn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Paul Gervase": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Paul Goldschmidt": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Paul Sewald": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Paul Skenes": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Pavin Smith": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Paxton Schultz": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Payton Tolle": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Pedro Le\u00f3n": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Pedro Pag\u00e9s": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Pedro Ram\u00edrez": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Pete Alonso": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Pete Crow-Armstrong": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Pete Fairbanks": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Petey Halpin": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Peyton Pallette": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Phil Maton": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Philip Abner": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Pierce Johnson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Pierson Ohl": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Porter Hodge": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Prelander Berroa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Quinn Priester": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "RJ Petit": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Rafael Devers": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Rafael Flores Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Rafael March\u00e1n": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Raisel Iglesias": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ram\u00f3n Laureano": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ram\u00f3n Ur\u00edas": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Randal Grichuk": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Randy Arozarena": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Randy Rodr\u00edguez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Randy V\u00e1squez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ranger Suarez": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Rece Hinds": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Reed Garrett": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Reed Trimble": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Reese McGuire": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Reese Olson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Reid Detmers": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Reiver Sanmartin": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Reynaldo L\u00f3pez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Rhett Lowder": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Rhylan Thomas": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Rhys Hoskins": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Richard Fitts": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Richard Lovelady": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Richie Palacios": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Ricky Tiedemann": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Rico Garcia": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Riley Cornelio": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Riley Greene": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Riley Martin": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Riley O'Brien": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "River Ryan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Rob Refsnyder": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Rob Zastryzny": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Robbie Ray": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Robert Garcia": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Robert Gasser": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Robert Hassell III": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Robert Stephenson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Robert Suarez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Robinson Ortiz": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Roddery Mu\u00f1oz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Roki Sasaki": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Rolddy Mu\u00f1oz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Roman Anthony": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Romy Gonzalez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ron Marinaccio": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ronald Acu\u00f1a Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ronan Kopp": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Ronel Blanco": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ronny Henriquez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ronny Mauricio": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Rowan Wick": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Royce Lewis": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Bergert": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Bliss": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Borucki": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Ryan Feltner": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Fernandez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Gusto": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Harbin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Helsley": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Jeffers": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Johnson": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Ryan Kreidler": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Loutos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan McMahon": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Ryan Mountcastle": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan O'Hearn": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Ryan Pepiot": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Ritter": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Rolison": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Ryan Thompson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Vilade": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Walker": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Ward": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Ryan Watson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Weathers": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Ryan Weiss": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryan Yarbrough": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Ryan Zeferjahn": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryne Nelson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ryne Stanek": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sal Frelick": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Sal Stewart": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Salvador Perez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sam Aldegheri": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Sam Bachman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sam Haggerty": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Sam Hentges": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Sam Moll": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Sammy Peralta": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Samuel Basallo": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Sandy Alcantara": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Santiago Espinal": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sawyer Gipson-Long": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Scott Barlow": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Scott Kingery": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sean Burke": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sean Manaea": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Sean Murphy": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sean Newcomb": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Seiya Suzuki": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Seranthony Dom\u00ednguez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Seth Halvorsen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Seth Johnson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Seth Lugo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Shane Baz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Shane Bieber": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Shane Drohan": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Shane McClanahan": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Shane Smith": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Shawn Armstrong": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Shay Whitcomb": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Shea Langeliers": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Shelby Miller": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Shohei Ohtani": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Shota Imanaga": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Simeon Woods Richardson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Slade Cecconi": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sonny Gray": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Spencer Arrighetti": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Spencer Bivens": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Spencer Horwitz": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Spencer Jones": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Spencer Miles": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Spencer Schwellenbach": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Spencer Steer": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Spencer Strider": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Spencer Torkelson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Starling Marte": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Stephen Kolek": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Sterlin Thompson": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Steven Cruz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Steven Kwan": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Steven Matz": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Steven Okert": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Steven Wilson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Steven Zobac": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Steward Berroa": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Sung-Mun Song": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "TJ Friedl": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "TJ Rumfield": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Taijuan Walker": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Taj Bradley": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tanner Banks": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Tanner Bibee": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tanner Gordon": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Tanner Houck": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tanner McDougal": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tanner Murray": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tanner Scott": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Tarik Skubal": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Tatsuya Imai": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Taylor Clarke": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Taylor Rogers": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Taylor Walls": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Taylor Ward": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tekoah Roby": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Teoscar Hern\u00e1ndez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Thayron Liranzo": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Thomas Harrington": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Thomas Saggese": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tim Herrin": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Tim Hill": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Tim Mayza": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Tim Tawa": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tink Hence": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tobias Myers": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tommy Edman": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Tommy Nance": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tomoyuki Sugano": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tony Santillan": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Travis Adams": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Travis d'Arnaud": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Trea Turner": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Trei Cruz": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Trent Grisham": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Trevor Larnach": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Trevor McDonald": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Trevor Megill": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Trevor Rogers": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Trevor Story": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Trevor Williams": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Trey Sweeney": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Trey Yesavage": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tristan Beck": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tristan Gray": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Tristan Peters": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Triston Casas": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Troy Johnston": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Troy Melton": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Troy Taylor": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tsung-Che Cheng": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Ty Adcock": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ty France": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Ty Madden": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Alexander": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Tyler Austin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Black": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Tyler Callihan": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Tyler Ferguson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Fitzgerald": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Freeman": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Gilbert": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Tyler Glasnow": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Tyler Heineman": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Tyler Holton": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Tyler Kinley": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Locklear": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Mahle": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler O'Neill": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Phillips": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Rogers": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Samaniego": {
+    "bat": "R",
+    "pitch": "L"
+  },
+  "Tyler Soderstrom": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Tyler Stephenson": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Tolbert": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Uberstine": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyler Wells": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tylor Megill": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Tyrone Taylor": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Valente Bellozo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Vaughn Grissom": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Victor Caratini": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Victor Mederos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Victor Mesa Jr.": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Victor Robles": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Victor Scott II": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Victor Vodnik": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Vinnie Pasquantino": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Vladimir Guerrero Jr.": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Walbert Urena": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Walker Buehler": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Wandy Peralta": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Welinton Herrera": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Wenceel P\u00e9rez": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Wikelman Gonz\u00e1lez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Wilber Dotel": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Will Benson": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Will Brennan": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Will Klein": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Will Smith": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Will Vest": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Will Wagner": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Will Warren": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Willi Castro": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "William Contreras": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "William Kempner": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Willie MacIver": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Willson Contreras": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Willy Adames": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Wilyer Abreu": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Winston Santos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Wyatt Langford": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Xander Bogaerts": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Xavier Edwards": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Yainer Diaz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yandy D\u00edaz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yaramil Hiraldo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yennier Cano": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yerry De los Santos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yilber D\u00edaz": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yimi Garc\u00eda": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yoendrys G\u00f3mez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yohan Ram\u00edrez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yohel Pozo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yoniel Curet": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yordan Alvarez": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Yorman G\u00f3mez": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yoshinobu Yamamoto": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yosver Zulueta": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Yo\u00e1n Moncada": {
+    "bat": "S",
+    "pitch": "R"
+  },
+  "Yuki Matsui": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Yusei Kikuchi": {
+    "bat": "L",
+    "pitch": "L"
+  },
+  "Zac Gallen": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zac Veen": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Zach Agnos": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zach Cole": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Zach Dezenzo": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zach Eflin": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zach Maxwell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zach McKinstry": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Zach Neto": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zach Pop": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zack Gelof": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zack Kelly": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zack Littell": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zack Wheeler": {
+    "bat": "L",
+    "pitch": "R"
+  },
+  "Zak Kent": {
+    "bat": "R",
+    "pitch": "R"
+  },
+  "Zebby Matthews": {
+    "bat": "R",
+    "pitch": "R"
+  }
+}

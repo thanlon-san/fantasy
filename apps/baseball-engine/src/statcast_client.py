@@ -399,6 +399,78 @@ class StatcastClient:
         
         return metrics
     
+    # FIP constant varies by year; this is a reasonable approximation
+    FIP_CONSTANT = 3.10
+
+    def calculate_pitcher_fip(
+        self,
+        player_id: int,
+        days_back: int = 30,
+    ) -> Optional[Dict[str, float]]:
+        """
+        Compute FIP, K-BB%, and CSW% from recent Statcast data.
+
+        FIP = ((13*HR) + (3*BB) - (2*K)) / IP + FIP_constant
+
+        Returns dict with keys: fip, k_bb_pct, csw_pct, ip, k_pct, bb_pct
+        or None if insufficient data.
+        """
+        start, end = self._get_analysis_dates(days_back)
+        data = self.get_pitcher_stats(player_id, start, end)
+        if data is None or data.empty:
+            return None
+
+        events = data[data["events"].notna()] if "events" in data.columns else pd.DataFrame()
+        if events.empty:
+            return None
+
+        batters_faced = len(events)
+        if batters_faced < 15:
+            return None
+
+        strikeouts = (events["events"] == "strikeout").sum()
+        walks = (events["events"] == "walk").sum()
+        hbp = (events["events"] == "hit_by_pitch").sum()
+        home_runs = (events["events"] == "home_run").sum()
+
+        # Estimate IP from outs recorded (strikeouts + field_out + etc.)
+        out_events = events["events"].isin([
+            "strikeout", "field_out", "grounded_into_double_play",
+            "force_out", "double_play", "fielders_choice_out",
+            "strikeout_double_play", "sac_fly", "sac_bunt",
+            "triple_play", "caught_stealing_2b", "caught_stealing_3b",
+            "caught_stealing_home",
+        ])
+        outs = out_events.sum()
+        ip = outs / 3.0
+
+        if ip < 3.0:
+            return None
+
+        fip = ((13 * home_runs) + (3 * (walks + hbp)) - (2 * strikeouts)) / ip + self.FIP_CONSTANT
+
+        k_pct = (strikeouts / batters_faced) * 100
+        bb_pct = (walks / batters_faced) * 100
+        k_bb_pct = k_pct - bb_pct
+
+        # CSW%: called strikes + whiffs / total pitches
+        csw_pct = 0.0
+        if "description" in data.columns:
+            called_strikes = data["description"].str.contains("called_strike", case=False, na=False).sum()
+            whiffs = data["description"].str.contains("swinging_strike", case=False, na=False).sum()
+            total_pitches = len(data)
+            if total_pitches > 0:
+                csw_pct = ((called_strikes + whiffs) / total_pitches) * 100
+
+        return {
+            "fip": round(fip, 2),
+            "k_bb_pct": round(k_bb_pct, 1),
+            "csw_pct": round(csw_pct, 1),
+            "k_pct": round(k_pct, 1),
+            "bb_pct": round(bb_pct, 1),
+            "ip": round(ip, 1),
+        }
+
     def compare_time_periods(
         self,
         player_id: int,

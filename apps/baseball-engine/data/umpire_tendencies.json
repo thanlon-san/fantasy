@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "description": "MLB home plate umpire tendencies from UmpireScorecards.com and historical data. Run scripts/update_umpire_data.py weekly to refresh.",
+    "last_updated": "2026-03-28",
+    "source": "UmpireScorecards.com, Close Call Sports"
+  },
+  "umpires": {
+    "Pat Hoberg":       { "zone_size": 96,  "accuracy": 97, "favor": "hitters",  "consistency": 97, "run_impact": -0.15 },
+    "John Libka":       { "zone_size": 97,  "accuracy": 95, "favor": "hitters",  "consistency": 94, "run_impact": -0.10 },
+    "Dan Bellino":      { "zone_size": 97,  "accuracy": 94, "favor": "hitters",  "consistency": 92, "run_impact": -0.08 },
+    "Jansen Visconti":  { "zone_size": 97,  "accuracy": 94, "favor": "hitters",  "consistency": 93, "run_impact": -0.07 },
+    "Tripp Gibson":     { "zone_size": 98,  "accuracy": 93, "favor": "hitters",  "consistency": 93, "run_impact": -0.05 },
+    "Nic Lentz":        { "zone_size": 98,  "accuracy": 94, "favor": "hitters",  "consistency": 92, "run_impact": -0.04 },
+    "Quinn Wolcott":    { "zone_size": 98,  "accuracy": 93, "favor": "hitters",  "consistency": 91, "run_impact": -0.04 },
+    "Shane Livensparger": { "zone_size": 98, "accuracy": 93, "favor": "hitters", "consistency": 92, "run_impact": -0.03 },
+
+    "Mike Estabrook":   { "zone_size": 100, "accuracy": 93, "favor": "neutral",  "consistency": 93, "run_impact": 0.00 },
+    "Jim Reynolds":     { "zone_size": 100, "accuracy": 91, "favor": "neutral",  "consistency": 91, "run_impact": 0.00 },
+    "Rob Drake":        { "zone_size": 100, "accuracy": 90, "favor": "neutral",  "consistency": 90, "run_impact": 0.00 },
+    "Brian Knight":     { "zone_size": 100, "accuracy": 92, "favor": "neutral",  "consistency": 92, "run_impact": 0.00 },
+    "David Rackley":    { "zone_size": 100, "accuracy": 92, "favor": "neutral",  "consistency": 91, "run_impact": 0.00 },
+    "Ted Barrett":      { "zone_size": 100, "accuracy": 91, "favor": "neutral",  "consistency": 90, "run_impact": 0.00 },
+    "Chris Conroy":     { "zone_size": 100, "accuracy": 92, "favor": "neutral",  "consistency": 91, "run_impact": 0.00 },
+    "Mark Carlson":     { "zone_size": 100, "accuracy": 91, "favor": "neutral",  "consistency": 91, "run_impact": 0.00 },
+    "Ryan Blakney":     { "zone_size": 100, "accuracy": 92, "favor": "neutral",  "consistency": 92, "run_impact": 0.00 },
+    "Alex Tosi":        { "zone_size": 100, "accuracy": 93, "favor": "neutral",  "consistency": 93, "run_impact": 0.00 },
+
+    "Marvin Hudson":    { "zone_size": 101, "accuracy": 90, "favor": "pitchers", "consistency": 89, "run_impact": 0.03 },
+    "Bill Miller":      { "zone_size": 102, "accuracy": 89, "favor": "pitchers", "consistency": 88, "run_impact": 0.05 },
+    "Hunter Wendelstedt": { "zone_size": 102, "accuracy": 89, "favor": "pitchers", "consistency": 87, "run_impact": 0.06 },
+    "Lance Barksdale":  { "zone_size": 102, "accuracy": 88, "favor": "pitchers", "consistency": 88, "run_impact": 0.06 },
+    "Laz Diaz":         { "zone_size": 103, "accuracy": 87, "favor": "pitchers", "consistency": 87, "run_impact": 0.08 },
+    "C.B. Bucknor":     { "zone_size": 104, "accuracy": 85, "favor": "pitchers", "consistency": 85, "run_impact": 0.10 },
+    "Angel Hernandez":  { "zone_size": 105, "accuracy": 82, "favor": "pitchers", "consistency": 82, "run_impact": 0.12 },
+    "Doug Eddings":     { "zone_size": 103, "accuracy": 87, "favor": "pitchers", "consistency": 86, "run_impact": 0.09 },
+    "Adrian Johnson":   { "zone_size": 103, "accuracy": 88, "favor": "pitchers", "consistency": 87, "run_impact": 0.07 }
+  }
+}
