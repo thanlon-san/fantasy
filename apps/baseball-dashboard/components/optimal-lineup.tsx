@@ -67,15 +67,16 @@ const ROSTER_SLOTS: RosterSlot[] = [
   { id: "OF2",  label: "OF",   positions: ["OF"],                             group: "hitter" },
   { id: "OF3",  label: "OF",   positions: ["OF"],                             group: "hitter" },
   { id: "UTIL", label: "UTIL", positions: ["C","1B","2B","3B","SS","OF"],     group: "hitter", isUtil: true },
-  // ── Pitchers (6 active slots: 3 SP + 3 RP) ──
-  // SP slots accept SP or SP,RP eligible players
+  // ── Pitchers (8 active slots: 2 SP + 2 RP + 4 P) ──
   { id: "SP1",  label: "SP",   positions: ["SP"],                             group: "pitcher" },
   { id: "SP2",  label: "SP",   positions: ["SP"],                             group: "pitcher" },
-  { id: "SP3",  label: "SP",   positions: ["SP"],                             group: "pitcher" },
-  // RP slots accept RP or SP,RP eligible players
   { id: "RP1",  label: "RP",   positions: ["RP"],                             group: "pitcher" },
   { id: "RP2",  label: "RP",   positions: ["RP"],                             group: "pitcher" },
-  { id: "RP3",  label: "RP",   positions: ["RP"],                             group: "pitcher" },
+  // P slots accept any pitcher (SP, RP, or SP,RP eligible)
+  { id: "P1",   label: "P",    positions: ["SP", "RP"],                       group: "pitcher" },
+  { id: "P2",   label: "P",    positions: ["SP", "RP"],                       group: "pitcher" },
+  { id: "P3",   label: "P",    positions: ["SP", "RP"],                       group: "pitcher" },
+  { id: "P4",   label: "P",    positions: ["SP", "RP"],                       group: "pitcher" },
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
