@@ -8,6 +8,7 @@ import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star, Swords, Trophy, 
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import { PlayerTable } from "@/components/player-table"
+import { OptimalLineupView } from "@/components/optimal-lineup"
 import { NotPlayingTable } from "@/components/not-playing-table"
 import { DashboardSkeleton } from "@/components/loading-skeleton"
 import { CommandPalette } from "@/components/command-palette"
@@ -473,52 +474,46 @@ export default function Home() {
                   </Button>
                 </div>
 
-                <Tabs defaultValue="all" className="w-full">
+                <Tabs defaultValue="lineup" className="w-full">
                   <TabsList className="mb-4">
-                    <TabsTrigger value="all">All ({filteredCount})</TabsTrigger>
-                    <TabsTrigger value="must-start">Must Start ({filteredMustStart.length})</TabsTrigger>
-                    <TabsTrigger value="start">Start ({filteredStart.length})</TabsTrigger>
-                    <TabsTrigger value="flex">Flex ({filteredFlex.length})</TabsTrigger>
+                    <TabsTrigger value="lineup">Lineup</TabsTrigger>
+                    <TabsTrigger value="analysis">Analysis ({filteredCount})</TabsTrigger>
                     <TabsTrigger value="bench">Bench ({filteredBench.length})</TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value="all" className="space-y-4">
+                  {/* Optimal position-slot view */}
+                  <TabsContent value="lineup">
+                    <OptimalLineupView players={activeRosterPlayers} />
+                  </TabsContent>
+
+                  {/* Flat confidence-sorted list with filter bar */}
+                  <TabsContent value="analysis" className="space-y-4">
                     {filteredMustStart.length > 0 && (
                       <div className="space-y-2">
-                        <h3 className="text-sm font-semibold text-green-700 dark:text-green-400">Must Start</h3>
+                        <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Must Start</h3>
                         <PlayerTable players={filteredMustStart} variant="must-start" />
                       </div>
                     )}
                     {filteredStart.length > 0 && (
                       <div className="space-y-2">
-                        <h3 className="text-sm font-semibold">Start</h3>
+                        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Start</h3>
                         <PlayerTable players={filteredStart} variant="start" />
                       </div>
                     )}
                     {filteredFlex.length > 0 && (
                       <div className="space-y-2">
-                        <h3 className="text-sm font-semibold">Flex</h3>
+                        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Flex</h3>
                         <PlayerTable players={filteredFlex} variant="flex" />
                       </div>
                     )}
-                    {filteredBench.length > 0 && (
-                      <div className="space-y-2">
-                        <h3 className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">Consider Benching</h3>
-                        <PlayerTable players={filteredBench} variant="bench" />
-                      </div>
-                    )}
                   </TabsContent>
-                  <TabsContent value="must-start">
-                    <PlayerTable players={filteredMustStart} variant="must-start" />
-                  </TabsContent>
-                  <TabsContent value="start">
-                    <PlayerTable players={filteredStart} variant="start" />
-                  </TabsContent>
-                  <TabsContent value="flex">
-                    <PlayerTable players={filteredFlex} variant="flex" />
-                  </TabsContent>
+
+                  {/* Bench — players below confidence threshold */}
                   <TabsContent value="bench">
-                    <PlayerTable players={filteredBench} variant="bench" />
+                    {filteredBench.length > 0
+                      ? <PlayerTable players={filteredBench} variant="bench" />
+                      : <p className="py-8 text-center text-sm text-muted-foreground">No bench players today</p>
+                    }
                   </TabsContent>
                 </Tabs>
 
