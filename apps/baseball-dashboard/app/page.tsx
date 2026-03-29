@@ -12,7 +12,6 @@ import { OptimalLineupView } from "@/components/optimal-lineup"
 import { NotPlayingTable } from "@/components/not-playing-table"
 import { DashboardSkeleton } from "@/components/loading-skeleton"
 import { CommandPalette } from "@/components/command-palette"
-import { FilterBar } from "@/components/filter-bar"
 import { PlayerDetailDialog } from "@/components/player-detail-dialog"
 import { KeeperAnalyzerTable } from "@/components/keeper-analyzer-table"
 import { useToast } from "@/components/ui/use-toast"
@@ -115,10 +114,6 @@ type LineupFocus = {
 export default function Home() {
   const { toast } = useToast()
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [positionFilter, setPositionFilter] = useState("all")
-  const [confidenceThreshold, setConfidenceThreshold] = useState(0)
-
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
 
@@ -220,26 +215,7 @@ export default function Home() {
     toast({ title: "Lineup Copied!", description: "Your lineup has been copied to clipboard." })
   }
 
-  const filterPlayers = useCallback((players: Player[]) => {
-    return players.filter(p => {
-      const matchesSearch =
-        p.player.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.team.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesPosition =
-        positionFilter === "all" ||
-        p.position.split(',').map(s => s.trim()).includes(positionFilter)
-      const matchesConfidence = p.confidence >= confidenceThreshold
-      return matchesSearch && matchesPosition && matchesConfidence
-    })
-  }, [searchTerm, positionFilter, confidenceThreshold])
-
-  const filteredMustStart = useMemo(() => filterPlayers(dailyLineup.must_start), [dailyLineup.must_start, filterPlayers])
-  const filteredStart = useMemo(() => filterPlayers(dailyLineup.start), [dailyLineup.start, filterPlayers])
-  const filteredFlex = useMemo(() => filterPlayers(dailyLineup.flex), [dailyLineup.flex, filterPlayers])
-  const filteredBench = useMemo(() => filterPlayers(dailyLineup.bench), [dailyLineup.bench, filterPlayers])
-
   const totalPlayingCount = dailyLineup.must_start.length + dailyLineup.start.length + dailyLineup.flex.length
-  const filteredCount = filteredMustStart.length + filteredStart.length + filteredFlex.length + filteredBench.length
   const activeRosterPlayers = [...dailyLineup.must_start, ...dailyLineup.start, ...dailyLineup.flex, ...dailyLineup.bench]
 
   const formattedTimestamp = useMemo(() => {
@@ -387,24 +363,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Filter Bar */}
-        {totalPlayingCount > 0 && (
-          <FilterBar
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            positionFilter={positionFilter}
-            onPositionFilterChange={setPositionFilter}
-            confidenceThreshold={confidenceThreshold}
-            onConfidenceThresholdChange={setConfidenceThreshold}
-            onClearFilters={() => {
-              setSearchTerm("")
-              setPositionFilter("all")
-              setConfidenceThreshold(0)
-            }}
-            playerCount={filteredCount}
-          />
-        )}
-
         {/* Main Content */}
         {totalPlayingCount === 0 && !error ? (
           <>
@@ -477,8 +435,8 @@ export default function Home() {
                 <Tabs defaultValue="lineup" className="w-full">
                   <TabsList className="mb-4">
                     <TabsTrigger value="lineup">Lineup</TabsTrigger>
-                    <TabsTrigger value="analysis">Analysis ({filteredCount})</TabsTrigger>
-                    <TabsTrigger value="bench">Bench ({filteredBench.length})</TabsTrigger>
+                    <TabsTrigger value="analysis">Analysis ({totalPlayingCount})</TabsTrigger>
+                    <TabsTrigger value="bench">Bench ({dailyLineup.bench.length})</TabsTrigger>
                   </TabsList>
 
                   {/* Optimal position-slot view */}
@@ -491,32 +449,32 @@ export default function Home() {
                     />
                   </TabsContent>
 
-                  {/* Flat confidence-sorted list with filter bar */}
+                  {/* Flat confidence-sorted list */}
                   <TabsContent value="analysis" className="space-y-4">
-                    {filteredMustStart.length > 0 && (
+                    {dailyLineup.must_start.length > 0 && (
                       <div className="space-y-2">
                         <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Must Start</h3>
-                        <PlayerTable players={filteredMustStart} variant="must-start" />
+                        <PlayerTable players={dailyLineup.must_start} variant="must-start" />
                       </div>
                     )}
-                    {filteredStart.length > 0 && (
+                    {dailyLineup.start.length > 0 && (
                       <div className="space-y-2">
                         <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Start</h3>
-                        <PlayerTable players={filteredStart} variant="start" />
+                        <PlayerTable players={dailyLineup.start} variant="start" />
                       </div>
                     )}
-                    {filteredFlex.length > 0 && (
+                    {dailyLineup.flex.length > 0 && (
                       <div className="space-y-2">
                         <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Flex</h3>
-                        <PlayerTable players={filteredFlex} variant="flex" />
+                        <PlayerTable players={dailyLineup.flex} variant="flex" />
                       </div>
                     )}
                   </TabsContent>
 
-                  {/* Bench — players below confidence threshold */}
+                  {/* Bench */}
                   <TabsContent value="bench">
-                    {filteredBench.length > 0
-                      ? <PlayerTable players={filteredBench} variant="bench" />
+                    {dailyLineup.bench.length > 0
+                      ? <PlayerTable players={dailyLineup.bench} variant="bench" />
                       : <p className="py-8 text-center text-sm text-muted-foreground">No bench players today</p>
                     }
                   </TabsContent>
