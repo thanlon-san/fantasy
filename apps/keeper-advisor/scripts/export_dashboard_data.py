@@ -52,8 +52,10 @@ def _get_yahoo_client() -> YahooFantasyClient:
     return _yahoo_client
 
 
-def fetch_roster_from_yahoo() -> Roster:
-    """Fetch current roster from Yahoo Fantasy API."""
+def fetch_roster_from_yahoo() -> tuple:
+    """Fetch current roster from Yahoo Fantasy API.
+    Returns (roster, player_key_map) where player_key_map is {player_name: yahoo_player_key}.
+    """
     client = _get_yahoo_client()
 
     adp_fetcher = None
@@ -66,6 +68,7 @@ def fetch_roster_from_yahoo() -> Roster:
     raw_players = client.get_team_roster(MY_TEAM_KEY)
 
     roster = Roster(team_name="2balls", league_name="California Palm League", year=2026)
+    player_key_map = {}
     for p in raw_players:
         name = p.get("name", "")
         if not name:
@@ -76,6 +79,7 @@ def fetch_roster_from_yahoo() -> Roster:
             if p.get("eligible_positions") else "UTIL"
         )
         team = p.get("editorial_team_abbr", "FA")
+        player_key_map[name] = p.get("player_key", "")
 
         adp = 300.0
         if adp_fetcher:
@@ -96,12 +100,12 @@ def fetch_roster_from_yahoo() -> Roster:
         )
         roster.add_player(player)
 
-    return roster
+    return roster, player_key_map
 
 
 # Load roster
 print("\n📋 Loading roster from Yahoo API...")
-roster = fetch_roster_from_yahoo()
+roster, player_key_map = fetch_roster_from_yahoo()
 print(f"✅ Loaded {len(roster.players)} players from Yahoo API")
 
 # 1. Daily Lineup
@@ -147,6 +151,7 @@ try:
         "must_start": [
             {
                 "player": r.player.name,
+                "player_key": player_key_map.get(r.player.name, ""),
                 "position": r.player.position,
                 "team": r.player.team,
                 "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
@@ -165,6 +170,7 @@ try:
         "start": [
             {
                 "player": r.player.name,
+                "player_key": player_key_map.get(r.player.name, ""),
                 "position": r.player.position,
                 "team": r.player.team,
                 "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
@@ -183,6 +189,7 @@ try:
         "flex": [
             {
                 "player": r.player.name,
+                "player_key": player_key_map.get(r.player.name, ""),
                 "position": r.player.position,
                 "team": r.player.team,
                 "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
@@ -201,6 +208,7 @@ try:
         "bench": [
             {
                 "player": r.player.name,
+                "player_key": player_key_map.get(r.player.name, ""),
                 "position": r.player.position,
                 "team": r.player.team,
                 "opponent": f"{'@' if r.home_away == 'away' else 'vs'} {r.opponent}",
@@ -219,6 +227,7 @@ try:
         "not_playing": [
             {
                 "player": r.player.name,
+                "player_key": player_key_map.get(r.player.name, ""),
                 "position": r.player.position,
                 "team": r.player.team,
                 "adp": r.player.adp

@@ -5,8 +5,10 @@ FastAPI service that wraps the keeper-advisor Python tools
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List
 from datetime import datetime
-import sys
+import sys, os, json, tempfile
 from pathlib import Path
 
 # Add keeper-advisor to path
@@ -18,6 +20,8 @@ from src.importers import CSVImporter
 from src.lineup_optimizer import LineupOptimizer
 from src.waiver_analyzer import WaiverAnalyzer
 from src.analyzer import KeeperAnalyzer
+from src.yahoo_oauth_manual import YahooOAuth2
+from src.yahoo_client import YahooFantasyClient
 
 app = FastAPI(title="Fantasy Baseball API", version="1.0.0")
 
@@ -180,6 +184,66 @@ async def get_breakouts():
         "note": "Breakout scanning requires free agent data",
         "alerts": []
     }
+
+
+# ─── Lineup write ─────────────────────────────────────────────────────────────
+
+class SlotAssignment(BaseModel):
+    player_key: str
+    position: str  # Yahoo slot: C 1B 2B 3B SS OF Util SP RP P BN
+
+class SetLineupRequest(BaseModel):
+    team_key: str
+    date: str          # YYYY-MM-DD
+    assignments: List[SlotAssignment]
+
+
+def _yahoo_client_from_env() -> YahooFantasyClient:
+    """Build a YahooFantasyClient from the YAHOO_OAUTH_JSON env variable."""
+    oauth_json = os.environ.get("YAHOO_OAUTH_JSON")
+    if not oauth_json:
+        # Fall back to the config file if running locally
+        config_file = advisor_path / "config" / "oauth2.json"
+        if config_file.exists():
+            oauth = YahooOAuth2.load_from_file(str(config_file))
+        else:
+            raise HTTPException(status_code=500, detail="Yahoo OAuth credentials not found")
+    else:
+        data = json.loads(oauth_json)
+        oauth = YahooOAuth2(data["consumer_key"], data["consumer_secret"])
+        oauth.access_token = data.get("access_token")
+        oauth.refresh_token = data.get("refresh_token")
+        oauth.token_type = data.get("token_type", "bearer")
+
+    oauth.refresh_access_token()
+    return YahooFantasyClient(oauth)
+
+
+@app.post("/api/set-lineup")
+async def set_lineup(request: SetLineupRequest):
+    """
+    Push an optimal lineup to Yahoo Fantasy Baseball.
+    Accepts slot assignments and writes them via Yahoo's roster PUT endpoint.
+    """
+    try:
+        client = _yahoo_client_from_env()
+        result = client.set_lineup(
+            team_key=request.team_key,
+            date=request.date,
+            assignments=[a.dict() for a in request.assignments],
+        )
+        if result.get("success"):
+            return {"success": True, "message": f"Lineup set for {request.date}"}
+        else:
+            status = result.get("status_code", 500)
+            detail = result.get("error", "Unknown error from Yahoo API")
+            if status == 401:
+                detail = "Yahoo API returned 401 — check that your OAuth app has read+write (fspt-w) permissions"
+            raise HTTPException(status_code=status or 500, detail=detail)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":

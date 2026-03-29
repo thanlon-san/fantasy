@@ -322,6 +322,59 @@ class YahooFantasyClient:
             logger.error(f"Error fetching league teams: {e}", exc_info=True)
             return []
     
+    def set_lineup(self, team_key: str, date: str, assignments: List[Dict]) -> Dict:
+        """
+        Set the lineup for a team on a specific date via Yahoo Fantasy API.
+
+        Args:
+            team_key: Yahoo team key, e.g. '469.l.25136.t.2'
+            date:     Date string YYYY-MM-DD
+            assignments: List of {"player_key": str, "position": str}
+                         Position values: C 1B 2B 3B SS OF Util SP RP P BN
+
+        Returns:
+            {"success": True} or {"success": False, "error": str, "status_code": int}
+        """
+        url = f"{self.BASE_URL}/team/{team_key}/roster"
+
+        players_xml = "\n".join(
+            f"      <player>\n"
+            f"        <player_key>{a['player_key']}</player_key>\n"
+            f"        <position>{a['position']}</position>\n"
+            f"      </player>"
+            for a in assignments
+            if a.get("player_key")
+        )
+
+        xml_body = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<fantasy_content>\n'
+            '  <roster>\n'
+            '    <coverage_type>date</coverage_type>\n'
+            f'    <date>{date}</date>\n'
+            '    <players>\n'
+            f'{players_xml}\n'
+            '    </players>\n'
+            '  </roster>\n'
+            '</fantasy_content>'
+        )
+
+        try:
+            response = self.session.put(
+                url,
+                data=xml_body.encode("utf-8"),
+                headers={"Content-Type": "application/xml"},
+            )
+            if response.status_code == 200:
+                return {"success": True}
+            else:
+                snippet = response.text[:400] if response.text else f"HTTP {response.status_code}"
+                logger.error(f"Yahoo set_lineup failed {response.status_code}: {snippet}")
+                return {"success": False, "error": snippet, "status_code": response.status_code}
+        except Exception as e:
+            logger.error(f"set_lineup exception: {e}")
+            return {"success": False, "error": str(e), "status_code": 0}
+
     @classmethod
     def from_config(cls, config_path: Path):
         """Load client from saved OAuth config"""

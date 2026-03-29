@@ -483,7 +483,12 @@ export default function Home() {
 
                   {/* Optimal position-slot view */}
                   <TabsContent value="lineup">
-                    <OptimalLineupView players={activeRosterPlayers} />
+                    <OptimalLineupView
+                      players={activeRosterPlayers}
+                      notPlayingPlayers={dailyLineup.not_playing}
+                      apiBase={DRAFT_API_BASE}
+                      teamKey="469.l.25136.t.2"
+                    />
                   </TabsContent>
 
                   {/* Flat confidence-sorted list with filter bar */}
