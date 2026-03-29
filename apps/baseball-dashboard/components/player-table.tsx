@@ -3,36 +3,19 @@
 import { useState, useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table"
-import { 
-  ArrowUpDown, 
-  ArrowUp, 
-  ArrowDown, 
-  MoreHorizontal, 
-  ClipboardCopy, 
-  BarChart2, 
-  Eye
-} from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { PlayerDetailDialog } from "@/components/player-detail-dialog"
 import { useToast } from "@/components/ui/use-toast"
-
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  ArrowUpDown, ArrowUp, ArrowDown,
+  Swords, Home, Shield, TrendingUp, TrendingDown, Zap,
+  Flame, Snowflake, Wind, CloudRain, Sun, Target, Activity,
+  ChevronDown, BookOpen, Clock,
+} from "lucide-react"
 
 type Player = {
   player: string
@@ -53,307 +36,373 @@ type Player = {
 type SortKey = "player" | "position" | "confidence" | "matchup" | "opponent"
 type SortDirection = "asc" | "desc" | null
 
+interface SignalChip {
+  icon: React.ComponentType<{ className?: string }>
+  chipColor: string   // Tailwind classes for bg + border + text on the pill
+  label: string
+  detail: string
+}
+
+// ─── Signal definitions ───────────────────────────────────────────────────────
+
+const REASON_RULES: Array<{
+  pattern: RegExp
+  icon: React.ComponentType<{ className?: string }>
+  chipColor: string
+  label: string
+}> = [
+  { pattern: /hitter.friendly/i,            icon: Home,         chipColor: "bg-emerald-500/15 border-emerald-500/25 text-emerald-400",  label: "Hitter-friendly park" },
+  { pattern: /pitcher.friendly/i,            icon: Shield,       chipColor: "bg-rose-500/15 border-rose-500/25 text-rose-400",           label: "Pitcher-friendly park" },
+  { pattern: /weak pitcher|easy matchup/i,   icon: Target,       chipColor: "bg-emerald-500/15 border-emerald-500/25 text-emerald-400",  label: "Weak pitcher" },
+  { pattern: /strong pitcher|elite pitcher|tough pitcher/i, icon: Target, chipColor: "bg-rose-500/15 border-rose-500/25 text-rose-400", label: "Tough pitcher" },
+  { pattern: /hot streak|on fire/i,          icon: Flame,        chipColor: "bg-orange-500/15 border-orange-500/25 text-orange-400",     label: "Hot streak" },
+  { pattern: /cold spell|slump/i,            icon: TrendingDown, chipColor: "bg-slate-400/15 border-slate-400/25 text-slate-400",        label: "Cold spell" },
+  { pattern: /cold weather|cold temp|freezing|cold/i, icon: Snowflake, chipColor: "bg-sky-400/15 border-sky-400/25 text-sky-400",      label: "Cold weather" },
+  { pattern: /hot weather|warm/i,            icon: Sun,          chipColor: "bg-amber-400/15 border-amber-400/25 text-amber-400",        label: "Warm weather" },
+  { pattern: /wind/i,                        icon: Wind,         chipColor: "bg-slate-300/10 border-slate-400/20 text-slate-400",        label: "Wind factor" },
+  { pattern: /rain/i,                        icon: CloudRain,    chipColor: "bg-blue-400/15 border-blue-400/25 text-blue-400",           label: "Rain risk" },
+  { pattern: /platoon|handedness|L vs R|R vs L/i, icon: Zap,   chipColor: "bg-violet-400/15 border-violet-400/25 text-violet-400",      label: "Platoon advantage" },
+  { pattern: /breakout|statcast/i,           icon: Activity,     chipColor: "bg-cyan-400/15 border-cyan-400/25 text-cyan-400",           label: "Breakout signal" },
+]
+
+const LEGEND_ITEMS: Array<{
+  icon: React.ComponentType<{ className?: string }>
+  chipColor: string
+  label: string
+  description: string
+}> = [
+  { icon: Swords,       chipColor: "bg-emerald-500/15 border-emerald-500/25 text-emerald-400",  label: "Matchup",        description: "Quality of the hitter vs. pitcher matchup (score 0–100)" },
+  { icon: TrendingUp,   chipColor: "bg-emerald-500/15 border-emerald-500/25 text-emerald-400",  label: "Form",           description: "Recent performance trend (score 0–100)" },
+  { icon: Home,         chipColor: "bg-emerald-500/15 border-emerald-500/25 text-emerald-400",  label: "Park (hitter)",  description: "Ballpark favors hitters (factor > 1.0)" },
+  { icon: Shield,       chipColor: "bg-rose-500/15 border-rose-500/25 text-rose-400",           label: "Park (pitcher)", description: "Ballpark favors pitchers (factor < 1.0)" },
+  { icon: Target,       chipColor: "bg-emerald-500/15 border-emerald-500/25 text-emerald-400",  label: "Weak pitcher",   description: "Favorable matchup against a weak or struggling pitcher" },
+  { icon: Target,       chipColor: "bg-rose-500/15 border-rose-500/25 text-rose-400",           label: "Tough pitcher",  description: "Difficult matchup against an elite or hot pitcher" },
+  { icon: Flame,        chipColor: "bg-orange-500/15 border-orange-500/25 text-orange-400",     label: "Hot streak",     description: "Player is on a hot streak recently" },
+  { icon: TrendingDown, chipColor: "bg-slate-400/15 border-slate-400/25 text-slate-400",        label: "Cold spell",     description: "Player is in a cold stretch" },
+  { icon: Snowflake,    chipColor: "bg-sky-400/15 border-sky-400/25 text-sky-400",              label: "Cold weather",   description: "Cold temperatures may suppress offense" },
+  { icon: Sun,          chipColor: "bg-amber-400/15 border-amber-400/25 text-amber-400",        label: "Warm weather",   description: "Warm conditions — good for offense" },
+  { icon: Wind,         chipColor: "bg-slate-300/10 border-slate-400/20 text-slate-400",        label: "Wind",           description: "Wind may suppress power numbers" },
+  { icon: CloudRain,    chipColor: "bg-blue-400/15 border-blue-400/25 text-blue-400",           label: "Rain",           description: "Rain risk — potential postponement" },
+  { icon: Zap,          chipColor: "bg-violet-400/15 border-violet-400/25 text-violet-400",     label: "Platoon",        description: "Favorable handedness matchup (e.g. LHH vs RHP)" },
+  { icon: Activity,     chipColor: "bg-cyan-400/15 border-cyan-400/25 text-cyan-400",           label: "Breakout",       description: "Statcast metrics suggest a breakout or underlying improvement" },
+]
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function parseSignals(player: Player): SignalChip[] {
+  const chips: SignalChip[] = []
+
+  // Score-based chips — only surface when notable (avoids noise)
+  if (player.matchup >= 80) {
+    chips.push({ icon: Swords, chipColor: "bg-emerald-500/15 border-emerald-500/25 text-emerald-400", label: "Matchup", detail: `Matchup ${player.matchup}/100` })
+  } else if (player.matchup < 45) {
+    chips.push({ icon: Swords, chipColor: "bg-rose-500/15 border-rose-500/25 text-rose-400", label: "Matchup", detail: `Tough matchup ${player.matchup}/100` })
+  }
+
+  if (player.form >= 80) {
+    chips.push({ icon: TrendingUp, chipColor: "bg-emerald-500/15 border-emerald-500/25 text-emerald-400", label: "Form", detail: `Form ${player.form}/100 — on a roll` })
+  } else if (player.form < 40) {
+    chips.push({ icon: TrendingDown, chipColor: "bg-slate-400/15 border-slate-400/25 text-slate-400", label: "Form", detail: `Form ${player.form}/100 — struggling` })
+  }
+
+  if (player.platoon >= 80) {
+    chips.push({ icon: Zap, chipColor: "bg-violet-400/15 border-violet-400/25 text-violet-400", label: "Platoon", detail: `Platoon advantage ${player.platoon}/100` })
+  }
+
+  // Breakout boost
+  if (player.breakout > 0) {
+    chips.push({ icon: Activity, chipColor: "bg-cyan-400/15 border-cyan-400/25 text-cyan-400", label: "Breakout", detail: `Breakout signal (+${player.breakout})` })
+  }
+
+  // Reason-string chips — dedup by label so the same signal doesn't appear twice
+  const seen = new Set<string>()
+  for (const reason of player.reasons) {
+    for (const rule of REASON_RULES) {
+      if (rule.pattern.test(reason) && !seen.has(rule.label)) {
+        seen.add(rule.label)
+        chips.push({ icon: rule.icon, chipColor: rule.chipColor, label: rule.label, detail: reason })
+      }
+    }
+  }
+
+  return chips
+}
+
+function scoreColor(score: number): string {
+  if (score >= 80) return "text-emerald-400"
+  if (score >= 60) return "text-amber-400"
+  return "text-rose-400"
+}
+
+function confidenceBadge(confidence: number): string {
+  if (confidence >= 80) return "bg-emerald-600 hover:bg-emerald-700 text-white"
+  if (confidence >= 65) return "bg-amber-600 hover:bg-amber-700 text-white"
+  return "bg-slate-600 hover:bg-slate-700 text-white"
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function SignalPill({ chip }: { chip: SignalChip }) {
+  const Icon = chip.icon
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className={`inline-flex items-center justify-center w-6 h-6 rounded border ${chip.chipColor} cursor-default shrink-0`}>
+          <Icon className="h-3 w-3" />
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="max-w-56 text-xs">
+        <span className="font-semibold">{chip.label}</span>
+        {chip.detail !== chip.label && <span className="block text-muted-foreground mt-0.5">{chip.detail}</span>}
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+function MiniScoreBar({ matchup, park, form, platoon }: { matchup: number; park: number; form: number; platoon: number }) {
+  const segs = [
+    { val: matchup, label: "Matchup" },
+    { val: park, label: "Park" },
+    { val: form, label: "Form" },
+    { val: platoon, label: "Platoon" },
+  ]
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="inline-flex items-end gap-px cursor-default h-4 shrink-0">
+          {segs.map((s, i) => (
+            <span
+              key={i}
+              className={`w-1.5 rounded-sm ${s.val >= 75 ? "bg-emerald-500" : s.val >= 50 ? "bg-amber-500" : "bg-rose-500"}`}
+              style={{ height: `${Math.max(3, Math.round((s.val / 100) * 16))}px` }}
+            />
+          ))}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="text-xs space-y-1">
+        {segs.map((s, i) => (
+          <div key={i} className="flex justify-between gap-4">
+            <span className="text-muted-foreground">{s.label}</span>
+            <span className={`font-semibold ${scoreColor(s.val)}`}>{s.val}</span>
+          </div>
+        ))}
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+function LineupLegend() {
+  const [open, setOpen] = useState(false)
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <CollapsibleTrigger asChild>
+        <Button variant="ghost" size="sm" className="gap-1.5 text-xs text-muted-foreground hover:text-foreground mt-2">
+          <BookOpen className="h-3.5 w-3.5" />
+          Signal legend
+          <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="mt-2 p-3 rounded-lg border bg-muted/30 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+          {LEGEND_ITEMS.map((item, i) => {
+            const Icon = item.icon
+            return (
+              <div key={i} className="flex items-start gap-2 text-xs">
+                <span className={`inline-flex items-center justify-center w-6 h-6 rounded border shrink-0 ${item.chipColor}`}>
+                  <Icon className="h-3 w-3" />
+                </span>
+                <div>
+                  <div className="font-medium leading-tight">{item.label}</div>
+                  <div className="text-muted-foreground leading-tight mt-0.5">{item.description}</div>
+                </div>
+              </div>
+            )
+          })}
+          <div className="flex items-start gap-2 text-xs col-span-full mt-1 pt-2 border-t">
+            <span className="inline-flex items-end gap-px h-4 shrink-0 mt-1">
+              <span className="w-1.5 rounded-sm bg-emerald-500" style={{ height: "16px" }} />
+              <span className="w-1.5 rounded-sm bg-amber-500" style={{ height: "10px" }} />
+              <span className="w-1.5 rounded-sm bg-rose-500" style={{ height: "5px" }} />
+              <span className="w-1.5 rounded-sm bg-emerald-500" style={{ height: "13px" }} />
+            </span>
+            <div>
+              <div className="font-medium leading-tight">Mini-bar</div>
+              <div className="text-muted-foreground leading-tight mt-0.5">4-segment sparkline showing Matchup · Park · Form · Platoon scores. Taller & greener = better.</div>
+            </div>
+          </div>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
 interface PlayerTableProps {
   players: Player[]
   variant?: "must-start" | "start" | "flex" | "bench" | "default"
-  showAllColumns?: boolean
 }
 
-export function PlayerTable({ players, variant = "default", showAllColumns = true }: PlayerTableProps) {
+export function PlayerTable({ players, variant = "default" }: PlayerTableProps) {
   const [sortKey, setSortKey] = useState<SortKey | null>(null)
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null)
+  const [sortDir, setSortDir] = useState<SortDirection>(null)
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const { toast } = useToast()
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
-      if (sortDirection === "asc") {
-        setSortDirection("desc")
-      } else if (sortDirection === "desc") {
-        setSortKey(null)
-        setSortDirection(null)
-      } else {
-        setSortDirection("asc")
-      }
+      if (sortDir === "asc") setSortDir("desc")
+      else { setSortKey(null); setSortDir(null) }
     } else {
-      setSortKey(key)
-      setSortDirection("asc")
+      setSortKey(key); setSortDir("asc")
     }
   }
 
-  const sortedPlayers = useMemo(() => {
-    if (!sortKey || !sortDirection) return players
-
+  const sorted = useMemo(() => {
+    if (!sortKey || !sortDir) return players
     return [...players].sort((a, b) => {
-      let aVal: string | number = a[sortKey]
-      let bVal: string | number = b[sortKey]
-
-      if (typeof aVal === "string") {
-        aVal = aVal.toLowerCase()
-        bVal = (bVal as string).toLowerCase()
-      }
-
-      if (sortDirection === "asc") {
-        return aVal > bVal ? 1 : -1
-      } else {
-        return aVal < bVal ? 1 : -1
-      }
+      const av: string | number = a[sortKey]
+      const bv: string | number = b[sortKey]
+      const cmp = typeof av === "string"
+        ? (av as string).toLowerCase().localeCompare((bv as string).toLowerCase())
+        : (av as number) - (bv as number)
+      return sortDir === "asc" ? cmp : -cmp
     })
-  }, [players, sortKey, sortDirection])
+  }, [players, sortKey, sortDir])
 
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 80) return "bg-green-600 hover:bg-green-700"
-    if (confidence >= 60) return "bg-yellow-600 hover:bg-yellow-700"
-    return "bg-red-600 hover:bg-red-700"
+  const SortIcon = ({ col }: { col: SortKey }) => {
+    if (sortKey !== col) return <ArrowUpDown className="ml-1 h-3 w-3 opacity-40" />
+    return sortDir === "asc"
+      ? <ArrowUp className="ml-1 h-3 w-3" />
+      : <ArrowDown className="ml-1 h-3 w-3" />
   }
 
-  const getRowVariant = () => {
-    switch (variant) {
-      case "must-start":
-        return "bg-green-50/50 dark:bg-green-950/20 hover:bg-green-100/50 dark:hover:bg-green-950/30"
-      case "bench":
-        return "bg-yellow-50/50 dark:bg-yellow-950/20 hover:bg-yellow-100/50 dark:hover:bg-yellow-950/30"
-      default:
-        return "hover:bg-muted/50"
-    }
-  }
-
-  const SortIcon = ({ columnKey }: { columnKey: SortKey }) => {
-    if (sortKey !== columnKey) {
-      return <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />
-    }
-    if (sortDirection === "asc") {
-      return <ArrowUp className="ml-1 h-3 w-3" />
-    }
-    return <ArrowDown className="ml-1 h-3 w-3" />
-  }
-
-  const handleCopyPlayer = (player: Player) => {
-    navigator.clipboard.writeText(`${player.player} (${player.position}) - ${player.confidence}% Confidence`)
-    toast({
-      title: "Copied to clipboard",
-      description: `${player.player} details copied.`,
-    })
+  const rowBg = () => {
+    if (variant === "must-start") return "bg-emerald-950/20 hover:bg-emerald-950/30"
+    if (variant === "bench") return "hover:bg-muted/40 opacity-75"
+    return "hover:bg-muted/50"
   }
 
   if (players.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
-        <p>No players in this category</p>
-      </div>
-    )
+    return <p className="py-6 text-center text-sm text-muted-foreground">No players in this category</p>
   }
 
   return (
-    <div className="rounded-md border bg-card shadow-sm">
-      <TooltipProvider>
-      <Table>
-        <TableHeader>
-          <TableRow className="border-b bg-muted/50">
-            <TableHead className="w-[180px]">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2 font-medium"
-                onClick={() => handleSort("player")}
-              >
-                Player
-                <SortIcon columnKey="player" />
-              </Button>
-            </TableHead>
-            <TableHead className="w-[100px]">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2 font-medium"
-                onClick={() => handleSort("position")}
-              >
-                Position
-                <SortIcon columnKey="position" />
-              </Button>
-            </TableHead>
-            <TableHead className="w-[120px]">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2 font-medium"
-                onClick={() => handleSort("opponent")}
-              >
-                Matchup
-                <SortIcon columnKey="opponent" />
-              </Button>
-            </TableHead>
-            <TableHead className="w-[150px] hidden md:table-cell">Pitcher</TableHead>
-            <TableHead className="w-[120px]">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2 font-medium"
-                onClick={() => handleSort("confidence")}
-              >
-                Confidence
-                <SortIcon columnKey="confidence" />
-              </Button>
-            </TableHead>
-            {showAllColumns && (
-              <>
-                <TableHead className="w-[100px] hidden lg:table-cell">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-2 font-medium"
-                        onClick={() => handleSort("matchup")}
-                      >
-                        Matchup
-                        <SortIcon columnKey="matchup" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Hitter vs Pitcher historical & projected performance</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TableHead>
-                <TableHead className="w-[80px] hidden lg:table-cell">
-                  <Tooltip>
-                    <TooltipTrigger className="cursor-help">Park</TooltipTrigger>
-                    <TooltipContent><p>Park Factor (100 = Neutral)</p></TooltipContent>
-                  </Tooltip>
-                </TableHead>
-                <TableHead className="w-[80px] hidden xl:table-cell">
-                  <Tooltip>
-                    <TooltipTrigger className="cursor-help">Form</TooltipTrigger>
-                    <TooltipContent><p>Recent performance rating</p></TooltipContent>
-                  </Tooltip>
-                </TableHead>
-                <TableHead className="w-[80px] hidden xl:table-cell">
-                  <Tooltip>
-                    <TooltipTrigger className="cursor-help">Platoon</TooltipTrigger>
-                    <TooltipContent><p>Handedness Advantage</p></TooltipContent>
-                  </Tooltip>
-                </TableHead>
-              </>
-            )}
-            <TableHead className="min-w-[200px]">Reasons</TableHead>
-            <TableHead className="w-[50px]"></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sortedPlayers.map((player, i) => (
-            <TableRow 
-              key={i} 
-              className={`cursor-pointer group ${getRowVariant()}`}
-              onClick={() => {
-                setSelectedPlayer(player)
-                setDialogOpen(true)
-              }}
-            >
-              <TableCell className="font-semibold">
-                <div className="flex flex-col">
-                  <span>{player.player}</span>
-                  <span className="text-xs text-muted-foreground md:hidden">{player.team}</span>
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline" className="text-xs">
-                  {player.position}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-sm">
-                <div className="flex flex-col">
-                  <span className="font-medium">{player.opponent}</span>
-                  <span className="text-xs text-muted-foreground">{player.team}</span>
-                </div>
-              </TableCell>
-              <TableCell className="text-sm text-muted-foreground hidden md:table-cell">
-                {player.opponent_pitcher || "TBD"}
-              </TableCell>
-              <TableCell onClick={(e) => e.stopPropagation()}>
-                <div className="flex flex-col gap-1 group/badge">
-                  <Badge className={`${getConfidenceColor(player.confidence)} w-12 justify-center transition-transform group-hover/badge:scale-105`}>
-                    {player.confidence}
-                  </Badge>
-                </div>
-              </TableCell>
-              {showAllColumns && (
-                <>
-                  <TableCell className="hidden lg:table-cell">
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm font-medium">{player.matchup}</span>
-                      <Progress value={player.matchup} className="h-1 w-12" />
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden lg:table-cell">
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm">{player.parkFactor}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-cell">
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm">{player.form}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-cell">
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm">{player.platoon}</span>
-                    </div>
-                  </TableCell>
-                </>
-              )}
-              <TableCell className="text-sm text-muted-foreground">
-                <div className="flex flex-wrap gap-1.5 max-w-md">
-                  {player.reasons.map((reason, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-block bg-muted px-2 py-1 rounded text-sm"
-                    >
-                      {reason}
-                    </span>
-                  ))}
-                </div>
-              </TableCell>
-              <TableCell onClick={(e) => e.stopPropagation()}>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => {
-                      setSelectedPlayer(player)
-                      setDialogOpen(true)
-                    }}>
-                      <Eye className="mr-2 h-4 w-4" /> View Details
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleCopyPlayer(player)}>
-                      <ClipboardCopy className="mr-2 h-4 w-4" /> Copy Name
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => {
-                      // Placeholder for future feature
-                      toast({ title: "Compare", description: "Comparison feature coming soon" })
-                    }}>
-                      <BarChart2 className="mr-2 h-4 w-4" /> Compare
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
+    <TooltipProvider delayDuration={200}>
+      <div className="rounded-md border bg-card shadow-sm">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b bg-muted/40 text-xs">
+              <TableHead className="w-[170px]">
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-medium" onClick={() => handleSort("player")}>
+                  Player <SortIcon col="player" />
+                </Button>
+              </TableHead>
+              <TableHead className="w-[52px]">
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-medium" onClick={() => handleSort("position")}>
+                  Pos <SortIcon col="position" />
+                </Button>
+              </TableHead>
+              <TableHead className="w-[130px]">
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-medium" onClick={() => handleSort("opponent")}>
+                  vs. <SortIcon col="opponent" />
+                </Button>
+              </TableHead>
+              <TableHead className="w-[130px] hidden md:table-cell text-xs font-medium pl-3">Pitcher</TableHead>
+              <TableHead className="w-[44px] hidden sm:table-cell text-xs font-medium pl-2">
+                <Tooltip>
+                  <TooltipTrigger className="flex items-center gap-1 cursor-help">
+                    <Clock className="h-3 w-3" />
+                  </TooltipTrigger>
+                  <TooltipContent>Game time (ET)</TooltipContent>
+                </Tooltip>
+              </TableHead>
+              <TableHead className="w-[52px]">
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-medium" onClick={() => handleSort("confidence")}>
+                  Conf <SortIcon col="confidence" />
+                </Button>
+              </TableHead>
+              <TableHead className="text-xs font-medium pl-3">Signals</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      </TooltipProvider>
-      
-      <PlayerDetailDialog 
-        player={selectedPlayer} 
-        open={dialogOpen} 
-        onOpenChange={setDialogOpen} 
+          </TableHeader>
+          <TableBody>
+            {sorted.map((player, i) => {
+              const signals = parseSignals(player)
+              return (
+                <TableRow
+                  key={i}
+                  className={`cursor-pointer group ${rowBg()}`}
+                  onClick={() => { setSelectedPlayer(player); setDialogOpen(true) }}
+                >
+                  {/* Player */}
+                  <TableCell className="py-2">
+                    <div className="flex flex-col leading-tight">
+                      <span className="font-semibold text-sm">{player.player}</span>
+                      <span className="text-xs text-muted-foreground">{player.team}</span>
+                    </div>
+                  </TableCell>
+
+                  {/* Position */}
+                  <TableCell className="py-2">
+                    <Badge variant="outline" className="text-xs px-1.5 py-0 font-mono">
+                      {player.position}
+                    </Badge>
+                  </TableCell>
+
+                  {/* Matchup */}
+                  <TableCell className="py-2 text-sm">
+                    <div className="flex flex-col leading-tight">
+                      <span className="font-medium">{player.opponent}</span>
+                      <span className="text-xs text-muted-foreground">{player.team}</span>
+                    </div>
+                  </TableCell>
+
+                  {/* Pitcher */}
+                  <TableCell className="py-2 text-xs text-muted-foreground hidden md:table-cell">
+                    {player.opponent_pitcher || "TBD"}
+                  </TableCell>
+
+                  {/* Time */}
+                  <TableCell className="py-2 text-xs text-muted-foreground hidden sm:table-cell whitespace-nowrap">
+                    {player.game_time?.replace(' ET', '') ?? '—'}
+                  </TableCell>
+
+                  {/* Confidence */}
+                  <TableCell className="py-2" onClick={e => e.stopPropagation()}>
+                    <Badge className={`${confidenceBadge(player.confidence)} text-xs w-10 justify-center font-bold tabular-nums`}>
+                      {player.confidence}
+                    </Badge>
+                  </TableCell>
+
+                  {/* Signals */}
+                  <TableCell className="py-2">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <MiniScoreBar
+                        matchup={player.matchup}
+                        park={player.parkFactor}
+                        form={player.form}
+                        platoon={player.platoon}
+                      />
+                      {signals.map((chip, idx) => (
+                        <SignalPill key={idx} chip={chip} />
+                      ))}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      <LineupLegend />
+
+      <PlayerDetailDialog
+        player={selectedPlayer}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
       />
-    </div>
+    </TooltipProvider>
   )
 }
