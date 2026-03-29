@@ -67,10 +67,10 @@ pnpm dev:hub
 # Opens at http://localhost:3000
 ```
 
-### Keeper API (FastAPI)
+### Baseball API (FastAPI)
 
 ```bash
-cd apps/keeper-api
+cd apps/baseball-api
 
 # Make sure venv is activated
 source ../../.venv/bin/activate
@@ -82,10 +82,10 @@ python main.py
 # API docs: http://localhost:8000/docs
 ```
 
-### ESPN Fantasy Recap (Python)
+### Football Recap (Python)
 
 ```bash
-cd apps/espn-fantasy-recap
+cd apps/football-recap
 
 # Start the server
 pnpm dev
@@ -102,10 +102,10 @@ pnpm stop
 
 Access at http://localhost:8000
 
-### Keeper Advisor (Python CLI)
+### Baseball Engine (Python CLI)
 
 ```bash
-cd apps/keeper-advisor
+cd apps/baseball-engine
 
 # Make sure venv is activated
 source ../../.venv/bin/activate
@@ -139,9 +139,9 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 NEXT_PUBLIC_USE_API=false
 ```
 
-### ESPN Fantasy Recap
+### Football Recap
 
-Create `apps/espn-fantasy-recap/.env`:
+Create `apps/football-recap/.env`:
 ```bash
 # ESPN credentials
 ESPN_S2=your_espn_s2_cookie
@@ -159,7 +159,7 @@ LEAGUE_ID=your_league_id
 SEASON=2024
 ```
 
-### Keeper Advisor (Yahoo Integration)
+### Baseball Engine (Yahoo Integration)
 
 Create `.env` in project root:
 ```bash
@@ -187,17 +187,17 @@ fantasy/
 │   │   ├── app/                 # App router
 │   │   └── public/              # Assets
 │   │
-│   ├── keeper-advisor/          # Python analytics
+│   ├── baseball-engine/         # Python analytics
 │   │   ├── src/                 # Core modules
 │   │   ├── scripts/             # CLI tools
 │   │   ├── data/                # CSV data files
 │   │   └── config/              # Configuration
 │   │
-│   ├── keeper-api/              # FastAPI backend
+│   ├── baseball-api/            # FastAPI backend
 │   │   ├── main.py              # API endpoints
 │   │   └── requirements.txt     # Dependencies
 │   │
-│   └── espn-fantasy-recap/      # ESPN recap generator
+│   └── football-recap/          # ESPN recap generator
 │       ├── src/                 # Core application
 │       ├── scripts/             # Utilities
 │       ├── static/              # Web UI assets
@@ -279,7 +279,7 @@ pnpm test:build
 
 ### API Issues
 
-**Keeper API not responding:**
+**Baseball API not responding:**
 ```bash
 # Check if it's running
 curl http://localhost:8000/
@@ -288,14 +288,14 @@ curl http://localhost:8000/
 lsof -i :8000
 
 # Restart with fresh data
-cd apps/keeper-api
+cd apps/baseball-api
 python main.py
 ```
 
-**ESPN Recap API:**
+**Football Recap API:**
 ```bash
 # Check server status
-cd apps/espn-fantasy-recap
+cd apps/football-recap
 pnpm status
 
 # View real-time logs
@@ -312,20 +312,20 @@ pnpm restart
 ### Export Dashboard Data
 
 ```bash
-cd apps/keeper-advisor
+cd apps/baseball-engine
 
 # Export all data to JSON
 python scripts/export_dashboard_data.py
 
 # Files are created in:
 # - apps/baseball-dashboard/public/api/*.json
-# - apps/keeper-advisor/data/dashboard/*.json
+# - apps/baseball-engine/data/dashboard/*.json
 ```
 
 ### Update ADP Data
 
 ```bash
-cd apps/keeper-advisor
+cd apps/baseball-engine
 
 # Auto-update ADP from FantasyPros
 pnpm update:adp
@@ -334,7 +334,7 @@ pnpm update:adp
 ### Fetch Yahoo Roster
 
 ```bash
-cd apps/keeper-advisor
+cd apps/baseball-engine
 
 # Setup Yahoo OAuth (first time)
 pnpm setup:yahoo
@@ -357,7 +357,7 @@ pnpm fetch:roster
 - [ ] Keeper analysis displays
 - [ ] Mobile responsive
 
-**Keeper API:**
+**Baseball API:**
 - [ ] Health check: `curl http://localhost:8000/`
 - [ ] Lineup endpoint: `curl http://localhost:8000/api/lineup`
 - [ ] Keepers endpoint: `curl http://localhost:8000/api/keepers`
@@ -421,7 +421,7 @@ git push origin main
 ### Documentation
 - [Deployment Guide](./DEPLOYMENT.md)
 - [Baseball Dashboard Docs](./apps/baseball-dashboard.md)
-- [Keeper Advisor Docs](./apps/keeper-advisor.md)
+- [Baseball Engine Docs](./apps/baseball-engine.md)
 - [ESPN Recap Docs](./apps/espn-recap.md)
 
 ### API References

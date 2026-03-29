@@ -27,7 +27,7 @@ For detailed guides, see the `docs/` directory:
 ### 1. Try it with Sample Data
 
 ```bash
-cd apps/keeper-advisor
+cd apps/baseball-engine
 npm run analyze
 ```
 

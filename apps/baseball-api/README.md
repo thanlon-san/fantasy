@@ -19,7 +19,7 @@ FastAPI service that powers the baseball dashboard with live data from your Pyth
 
 ```bash
 # From project root
-cd apps/keeper-api
+cd apps/baseball-api
 
 # Create virtual environment (if not exists)
 python3 -m venv ../../.venv
@@ -64,7 +64,7 @@ Once running, visit:
 2. **Deploy from GitHub**
    - Click "New Project" → "Deploy from GitHub repo"
    - Select this repository
-   - Set root directory: `apps/keeper-api`
+   - Set root directory: `apps/baseball-api`
    - Railway auto-detects Python and uses `railway.json` config
 
 3. **Get your API URL**
@@ -86,7 +86,7 @@ Once running, visit:
 2. Create new "Web Service"
 3. Connect GitHub repo
 4. Configure:
-   - Root directory: `apps/keeper-api`
+   - Root directory: `apps/baseball-api`
    - Build command: `pip install -r requirements.txt`
    - Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
 
@@ -95,7 +95,7 @@ Note: Free tier sleeps after 15min inactivity (first request takes ~30s to wake 
 ## Environment Variables
 
 None required for basic operation. The API reads roster data from:
-- `../keeper-advisor/data/my_roster_from_yahoo.csv`
+- `../baseball-engine/data/my_roster_from_yahoo.csv`
 
 For future Yahoo API integration, you'll need:
 - `YAHOO_CLIENT_ID`
@@ -126,14 +126,14 @@ Breakout candidate detection (placeholder - needs free agent data)
 ## Architecture
 
 ```
-apps/keeper-api/
+apps/baseball-api/
 ├── main.py              # FastAPI app and endpoints
 ├── requirements.txt     # Python dependencies
 ├── railway.json         # Railway deployment config
 └── README.md           # This file
 
 Uses shared code from:
-└── apps/keeper-advisor/src/   # All your Python tools
+└── apps/baseball-engine/src/   # All your Python tools
 ```
 
 ## Performance
@@ -150,7 +150,7 @@ Make sure you're running from the project root and the venv is activated:
 ```bash
 cd /path/to/fantasy
 source .venv/bin/activate
-cd apps/keeper-api
+cd apps/baseball-api
 python main.py
 ```
 

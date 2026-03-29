@@ -7,7 +7,6 @@ on:
     paths:
       - 'apps/fantasy-hub/**'
       - 'apps/baseball-dashboard/**'
-      - 'apps/espn-recap-web/**'
       - '.github/workflows/deploy-dashboard.yml'
   workflow_dispatch:
 
@@ -67,8 +66,6 @@ jobs:
           cp -r apps/fantasy-hub/out/* _site/
           mkdir -p _site/baseball
           cp -r apps/baseball-dashboard/out/* _site/baseball/
-          mkdir -p _site/recap
-          cp -r apps/espn-recap-web/* _site/recap/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

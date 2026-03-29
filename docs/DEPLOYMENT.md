@@ -9,8 +9,8 @@ Complete guide for deploying all Fantasy Sports Hub apps to production.
 ```
 Landing Page:  https://thanlon-san.github.io/fantasy/
 Baseball:      https://thanlon-san.github.io/fantasy/baseball/
-Recap:         https://thanlon-san.github.io/fantasy/recap/
-API:           https://your-app.railway.app/
+Baseball API:  https://your-baseball-api.railway.app/
+Football API:  https://your-football-recap.railway.app/
 ```
 
 ---
@@ -55,8 +55,7 @@ GitHub Actions workflow (`.github/workflows/deploy-dashboard.yml`):
 1. Installs dependencies
 2. Builds fantasy-hub (landing page)
 3. Builds baseball-dashboard
-4. Copies espn-recap-web (static)
-5. Combines all into `_site/`
+4. Combines all into `_site/`
 6. Deploys to GitHub Pages
 
 **Build time:** ~3-4 minutes
@@ -154,7 +153,7 @@ Common schedules:
 
 ## 🚂 Railway Deployment (API Backend)
 
-### Deploy Keeper API to Railway (5 minutes)
+### Deploy Baseball API to Railway (5 minutes)
 
 #### 1. Sign Up for Railway
 - Go to https://railway.app
@@ -170,14 +169,14 @@ Common schedules:
 #### 3. Configure Service
 1. Click on your service
 2. Go to "Settings" tab
-3. Set **Root Directory**: `apps/keeper-api`
+3. Set **Root Directory**: `apps/baseball-api`
 4. Set **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
 5. Click "Deploy"
 
 #### 4. Get Your API URL
 1. Go to "Settings" tab
 2. Click "Generate Domain"
-3. Copy the URL (e.g., `https://keeper-api-production.up.railway.app`)
+3. Copy the URL (e.g., `https://baseball-api-production.up.railway.app`)
 
 **✅ Your API is now live!**
 
@@ -204,7 +203,7 @@ curl https://your-api.railway.app/api/keepers
 
 **"Application failed to respond":**
 - Check Railway logs: Click service → "Deployments" → Latest deploy → "View Logs"
-- Common issue: Wrong root directory (should be `apps/keeper-api`)
+- Common issue: Wrong root directory (should be `apps/baseball-api`)
 
 **"Module not found":**
 - Check Railway is using correct root directory
@@ -342,8 +341,8 @@ The dashboard checks this flag and fetches from either static JSON files or the 
 |---------|----------|------|-----|
 | Landing Page | GitHub Pages | FREE | `thanlon-san.github.io/fantasy/` |
 | Baseball Dashboard | GitHub Pages | FREE | `thanlon-san.github.io/fantasy/baseball/` |
-| Keeper API | Railway | FREE | `your-app.railway.app` |
-| ESPN Recap | Self-hosted | FREE | Local only |
+| Baseball API | Railway | FREE | `your-app.railway.app` |
+| Football Recap | Railway | FREE | `your-app.railway.app` |
 
 **Total Cost: $0/month** 🎉
 

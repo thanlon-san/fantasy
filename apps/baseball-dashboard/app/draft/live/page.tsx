@@ -406,7 +406,7 @@ export default function LiveDraftPage() {
           <div className="text-slate-500 text-sm">{apiError}</div>
           <div className="rounded-lg border border-slate-700 bg-slate-900 px-4 py-3 text-left text-xs font-mono text-slate-400 space-y-1">
             <div className="text-slate-300 font-semibold mb-2">Start the server:</div>
-            <div>cd apps/keeper-advisor</div>
+            <div>cd apps/baseball-engine</div>
             <div>python scripts/draft_server.py</div>
           </div>
           <Button variant="outline" size="sm" onClick={() => fetchState(true)}>

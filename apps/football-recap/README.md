@@ -64,7 +64,7 @@ See the `docs/` directory for detailed documentation:
 ## Project Structure
 
 ```
-espn-fantasy-recap/
+football-recap/
 ├── src/           # Core application code
 ├── scripts/       # Utility scripts
 ├── static/        # Web UI assets

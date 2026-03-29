@@ -9,21 +9,21 @@ Modern web interface for keeper league analysis, daily lineups, waiver wire, and
 - **Live**: https://thanlon-san.github.io/fantasy/baseball/
 - **Tech**: Next.js 15, React 19, Tailwind CSS
 
-### [Keeper Advisor](./apps/keeper-advisor/)
+### [Baseball Engine](./apps/baseball-engine/)
 Python-powered analytics tools for fantasy baseball keeper leagues.
 - Daily lineup optimization
 - Keeper value analysis
 - Breakout player detection
 - Waiver wire recommendations
 
-### [ESPN Fantasy Recap](./apps/espn-fantasy-recap/)
+### [Football Recap](./apps/football-recap/)
 AI-powered weekly recap generator for ESPN Fantasy Football.
 - Claude/GPT-powered recaps
 - Power rankings with advanced metrics
 - Slack integration
 - REST API + Web UI
 
-### [Keeper API](./apps/keeper-api/)
+### [Baseball API](./apps/baseball-api/)
 FastAPI service that powers the baseball dashboard with live data.
 - Daily lineup API
 - Keeper analysis API
@@ -52,14 +52,14 @@ pip install -r requirements.txt
 # Run baseball dashboard
 pnpm dev:baseball    # http://localhost:3001
 
-# Run keeper advisor tools
-cd apps/keeper-advisor
+# Run baseball engine tools
+cd apps/baseball-engine
 pnpm lineup          # Daily lineup optimizer
 pnpm waivers         # Waiver wire scanner
 pnpm breakouts       # Breakout detector
 
-# Run ESPN recap server
-cd apps/espn-fantasy-recap
+# Run football recap server
+cd apps/football-recap
 pnpm dev            # http://localhost:8000
 ```
 
@@ -90,9 +90,9 @@ fantasy/
 ├── apps/
 │   ├── baseball-dashboard/    # Next.js dashboard
 │   ├── fantasy-hub/           # Landing page
-│   ├── keeper-advisor/        # Python analytics
-│   ├── keeper-api/            # FastAPI backend
-│   └── espn-fantasy-recap/    # ESPN recap generator
+│   ├── baseball-engine/       # Python analytics
+│   ├── baseball-api/          # FastAPI backend
+│   └── football-recap/        # ESPN recap generator
 ├── packages/
 │   └── shared/                # Shared Python utilities
 ├── docs/                      # Documentation
@@ -108,16 +108,16 @@ NEXT_PUBLIC_USE_API=true
 NEXT_PUBLIC_API_URL=https://your-api.railway.app
 ```
 
-### ESPN Recap
+### Football Recap
 ```bash
-# apps/espn-fantasy-recap/.env
+# apps/football-recap/.env
 ESPN_S2=your_espn_s2_cookie
 ESPN_SWID=your_espn_swid
 ANTHROPIC_API_KEY=your_claude_key
 SLACK_WEBHOOK_URL=your_slack_webhook
 ```
 
-### Keeper Advisor (Yahoo Integration)
+### Baseball Engine (Yahoo Integration)
 ```bash
 # Root .env
 YAHOO_CLIENT_ID=your_client_id

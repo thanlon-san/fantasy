@@ -1,6 +1,6 @@
 """
 Fantasy Baseball API
-FastAPI service that wraps the keeper-advisor Python tools
+FastAPI service that wraps the baseball-engine Python tools
 """
 
 from fastapi import FastAPI, HTTPException
@@ -11,8 +11,8 @@ from datetime import datetime
 import sys, os, json, tempfile
 from pathlib import Path
 
-# Add keeper-advisor to path
-advisor_path = Path(__file__).parent.parent / "keeper-advisor"
+# Add baseball-engine to path
+advisor_path = Path(__file__).parent.parent / "baseball-engine"
 sys.path.insert(0, str(advisor_path))
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "packages"))
 

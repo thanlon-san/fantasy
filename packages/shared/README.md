@@ -48,10 +48,10 @@ pip install -r requirements.txt
 Import from any Python app in the monorepo:
 
 ```python
-# From keeper-advisor
+# From baseball-engine
 from packages.shared.llm_client import LLMClient
 
-# From espn-fantasy-recap
+# From football-recap
 from packages.shared.slack_notifier import SlackNotifier
 ```
 
@@ -80,6 +80,6 @@ When adding new shared utilities:
 
 ## Apps Using These Utilities
 
-- `apps/keeper-advisor` - Keeper analysis CLI
-- `apps/espn-fantasy-recap` - ESPN recap generator
-- `apps/keeper-api` - FastAPI backend
+- `apps/baseball-engine` - Baseball analytics CLI
+- `apps/football-recap` - ESPN recap generator
+- `apps/baseball-api` - FastAPI backend

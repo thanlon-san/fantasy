@@ -10,7 +10,7 @@ requests>=2.32.0
 python-dotenv>=1.0.0
 
 # ============================================================================
-# Keeper Advisor (apps/keeper-advisor)
+# Baseball Engine (apps/baseball-engine)
 # ============================================================================
 # Yahoo Fantasy API
 yahoo-fantasy-api>=2.12.0
@@ -35,7 +35,7 @@ flask==3.0.0
 flask-cors==4.0.0
 
 # ============================================================================
-# Keeper API (apps/keeper-api)
+# Baseball API (apps/baseball-api)
 # ============================================================================
 fastapi==0.115.12
 uvicorn[standard]==0.34.0
@@ -43,7 +43,7 @@ pydantic==2.10.6
 python-multipart==0.0.20
 
 # ============================================================================
-# ESPN Fantasy Recap (apps/espn-fantasy-recap)
+# Football Recap (apps/football-recap)
 # ============================================================================
 espn_api>=0.34.0
 python-dateutil>=2.8.2

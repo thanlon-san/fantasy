@@ -88,8 +88,8 @@ trend_history.json
 .cache/
 
 # Accuracy tracking data (runtime generated)
-apps/keeper-advisor/data/accuracy/
-apps/keeper-advisor/data/breakout_tracking/
+apps/baseball-engine/data/accuracy/
+apps/baseball-engine/data/breakout_tracking/
 
 # Next.js local env
 **/.env.local
@@ -100,5 +100,5 @@ apps/keeper-advisor/data/breakout_tracking/
 **/.next/
 
 # App-specific
-apps/keeper-api/.env
-apps/espn-fantasy-recap/.env
+apps/baseball-api/.env
+apps/football-recap/.env
