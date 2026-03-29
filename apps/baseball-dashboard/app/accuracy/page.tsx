@@ -226,7 +226,7 @@ export default function AccuracyPage() {
                     <tr key={`${p.player_name}-${p.date}-${i}`} className="text-slate-300">
                       <td className="py-2 pr-4 text-slate-500">{p.date}</td>
                       <td className="py-2 pr-4 font-medium">
-                        <Link href={`/player/${encodeURIComponent(p.player_name)}`} className="hover:text-emerald-400">
+                        <Link href={`/player?name=${encodeURIComponent(p.player_name)}`} className="hover:text-emerald-400">
                           {p.player_name}
                         </Link>
                       </td>

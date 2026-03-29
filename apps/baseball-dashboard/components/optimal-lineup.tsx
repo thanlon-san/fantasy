@@ -302,7 +302,7 @@ function PlayerRow({
 
       {/* Player name + team */}
       <td className="py-2 pl-2 min-w-[150px]">
-        <Link href={`/player/${encodeURIComponent(player.player)}`} className="hover:underline" onClick={e => e.stopPropagation()}>
+        <Link href={`/player?name=${encodeURIComponent(player.player)}`} className="hover:underline" onClick={e => e.stopPropagation()}>
           <div className="flex flex-col leading-tight">
             <span className="font-semibold text-sm">
               {player.player}

@@ -160,7 +160,7 @@ function CandidateTable({ candidates, type }: { candidates: Candidate[]; type: "
                 {hitters.map((c, i) => (
                   <TableRow key={i} className="hover:bg-muted/40">
                     <TableCell>
-                      <Link href={`/player/${encodeURIComponent(c.name)}`} className="hover:underline">
+                      <Link href={`/player?name=${encodeURIComponent(c.name)}`} className="hover:underline">
                         <div className="flex flex-col leading-tight">
                           <span className="font-semibold text-sm">{c.name}</span>
                           <span className="text-xs text-muted-foreground">{c.position} · {c.team}</span>
@@ -209,7 +209,7 @@ function CandidateTable({ candidates, type }: { candidates: Candidate[]; type: "
                 {pitchers.map((c, i) => (
                   <TableRow key={i} className="hover:bg-muted/40">
                     <TableCell>
-                      <Link href={`/player/${encodeURIComponent(c.name)}`} className="hover:underline">
+                      <Link href={`/player?name=${encodeURIComponent(c.name)}`} className="hover:underline">
                         <div className="flex flex-col leading-tight">
                           <span className="font-semibold text-sm">{c.name}</span>
                           <span className="text-xs text-muted-foreground">{c.position} · {c.team}</span>

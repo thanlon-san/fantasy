@@ -331,7 +331,7 @@ export function PlayerTable({ players, variant = "default" }: PlayerTableProps) 
                 >
                   {/* Player */}
                   <TableCell className="py-2">
-                    <Link href={`/player/${encodeURIComponent(player.player)}`} className="hover:underline" onClick={e => e.stopPropagation()}>
+                    <Link href={`/player?name=${encodeURIComponent(player.player)}`} className="hover:underline" onClick={e => e.stopPropagation()}>
                       <div className="flex flex-col leading-tight">
                         <span className="font-semibold text-sm">
                           {player.player}

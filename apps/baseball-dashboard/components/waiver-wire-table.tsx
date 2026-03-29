@@ -48,7 +48,7 @@ export function WaiverWireTable({ targets }: WaiverWireTableProps) {
                     <div className="flex items-center gap-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <Link href={`/player/${encodeURIComponent(target.player)}`} className="font-bold text-lg hover:underline">{target.player}</Link>
+                          <Link href={`/player?name=${encodeURIComponent(target.player)}`} className="font-bold text-lg hover:underline">{target.player}</Link>
                           {target.trending === "HOT" && (
                             <Badge variant="default" className="bg-orange-500 hover:bg-orange-600 border-none text-white gap-1">
                               <Flame className="h-3 w-3" /> Hot

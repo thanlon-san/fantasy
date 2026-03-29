@@ -1,7 +1,8 @@
 "use client"
 
+import { Suspense } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { useParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -406,9 +407,9 @@ function SavantPercentileCard({ pctiles, isPitcher }: {
   )
 }
 
-export default function PlayerProfilePage() {
-  const params = useParams()
-  const playerName = decodeURIComponent(String(params.name ?? ""))
+function PlayerProfileInner() {
+  const searchParams = useSearchParams()
+  const playerName = searchParams.get("name") ?? ""
 
   const { data: profile, isLoading, error, refetch } = useQuery<PlayerProfile>({
     queryKey: ["player-profile", playerName],
@@ -643,5 +644,17 @@ export default function PlayerProfilePage() {
         )}
       </div>
     </main>
+  )
+}
+
+export default function PlayerProfilePage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <div className="container mx-auto px-4 py-8 max-w-5xl text-center text-muted-foreground">Loading player...</div>
+      </main>
+    }>
+      <PlayerProfileInner />
+    </Suspense>
   )
 }

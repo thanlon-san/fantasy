@@ -114,7 +114,7 @@ export default function ProjectionsPage() {
                     {data.hitters.map((h, i) => (
                       <TableRow key={i} className="hover:bg-muted/40">
                         <TableCell className="py-2">
-                          <Link href={`/player/${encodeURIComponent(h.name)}`} className="hover:underline">
+                          <Link href={`/player?name=${encodeURIComponent(h.name)}`} className="hover:underline">
                             <div className="flex flex-col leading-tight">
                               <span className="font-semibold text-sm">{h.name}</span>
                               <span className="text-xs text-muted-foreground">{h.team} &middot; {h.position}</span>
@@ -168,7 +168,7 @@ export default function ProjectionsPage() {
                     {data.pitchers.map((p, i) => (
                       <TableRow key={i} className="hover:bg-muted/40">
                         <TableCell className="py-2">
-                          <Link href={`/player/${encodeURIComponent(p.name)}`} className="hover:underline">
+                          <Link href={`/player?name=${encodeURIComponent(p.name)}`} className="hover:underline">
                             <div className="flex flex-col leading-tight">
                               <span className="font-semibold text-sm">{p.name}</span>
                               <span className="text-xs text-muted-foreground">{p.team} &middot; {p.position}</span>
