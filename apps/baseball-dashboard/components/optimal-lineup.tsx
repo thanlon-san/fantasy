@@ -579,7 +579,7 @@ export function OptimalLineupView({
             <DialogTitle>Set lineup in Yahoo?</DialogTitle>
             <DialogDescription>
               This will push the following assignments to Yahoo Fantasy Baseball for <strong>{today}</strong>.
-              Yahoo will reject any invalid slot for a player's eligibility.
+              Yahoo will reject any invalid slot for a player&apos;s eligibility.
             </DialogDescription>
           </DialogHeader>
           <div className="max-h-64 overflow-y-auto text-sm space-y-1 my-2">
