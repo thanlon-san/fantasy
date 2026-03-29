@@ -69,6 +69,81 @@ YAHOO_POLL_INTERVAL = 25              # seconds between Yahoo API calls
 MY_TEAM_ID          = 2                # 2balls = team 2 in California Palm League
 MY_TEAM_KEY         = f"{LEAGUE_KEY}.t.{MY_TEAM_ID}"
 
+# ─── League ownership lookup ──────────────────────────────────────────────────
+
+_rostered_players: dict[str, str] = {}   # player_name -> owner_team_name
+_rostered_cache_time: float = 0.0
+ROSTERED_CACHE_TTL = 1800                # 30 minutes
+
+
+def _refresh_rostered_players() -> dict[str, str]:
+    """Fetch all rostered players across the league. Returns {name: owner_team}."""
+    global _rostered_players, _rostered_cache_time
+
+    if _rostered_players and (time.time() - _rostered_cache_time) < ROSTERED_CACHE_TTL:
+        return _rostered_players
+
+    if _yahoo is None:
+        return _rostered_players
+
+    try:
+        data = _yahoo_get(f"/league/{LEAGUE_KEY}/teams;out=roster")
+        if not data:
+            return _rostered_players
+
+        lookup: dict[str, str] = {}
+        league = data.get("league", [])
+        if len(league) < 2:
+            return _rostered_players
+
+        teams_obj = league[1].get("teams", {})
+        for k, v in teams_obj.items():
+            if k == "count":
+                continue
+            team_arr = v.get("team", [])
+            if len(team_arr) < 2:
+                continue
+
+            team_props = team_arr[0]
+            team_name = "Unknown"
+            for prop in team_props:
+                if isinstance(prop, dict) and "name" in prop:
+                    team_name = prop["name"]
+                    break
+
+            roster_data = team_arr[1].get("roster", {}).get("0", {}).get("players", {})
+            if isinstance(roster_data, dict):
+                for pk, pv in roster_data.items():
+                    if pk == "count":
+                        continue
+                    try:
+                        player_info = pv["player"][0]
+                        name = next(
+                            (p["name"]["full"] for p in player_info if isinstance(p, dict) and "name" in p),
+                            None
+                        )
+                        if name:
+                            lookup[name.lower()] = team_name
+                    except (KeyError, StopIteration, TypeError):
+                        continue
+
+        _rostered_players = lookup
+        _rostered_cache_time = time.time()
+        logger.info(f"Refreshed league rosters: {len(lookup)} players owned")
+    except Exception as e:
+        logger.warning(f"Could not refresh rostered players: {e}")
+
+    return _rostered_players
+
+
+def _get_ownership(name: str) -> dict:
+    """Return ownership info for a player. Call _refresh_rostered_players() first."""
+    owner = _rostered_players.get(name.lower())
+    if owner:
+        is_mine = owner.lower() in ("2balls",)
+        return {"status": "mine" if is_mine else "owned", "owner": owner}
+    return {"status": "fa", "owner": None}
+
 
 # ─── Startup ──────────────────────────────────────────────────────────────────
 
@@ -1449,6 +1524,7 @@ def get_regression():
             pass
 
     results = analyzer.scan_players(players)
+    _refresh_rostered_players()
 
     def _serialize(c):
         return {
@@ -1470,6 +1546,7 @@ def get_regression():
             "confidence": c.confidence,
             "summary": c.summary,
             "improving_metrics": c.improving_metrics,
+            "ownership": _get_ownership(c.name),
         }
 
     result = {
@@ -1585,6 +1662,7 @@ def get_weekly_plan():
 
     planner = WeeklyPlanner()
     plan = planner.build_plan()
+    _refresh_rostered_players()
 
     result = {
         "week_start": plan.week_start,
@@ -1597,6 +1675,7 @@ def get_weekly_plan():
                     "opp_k_pct": s.opp_k_pct, "opp_wrc_plus": s.opp_wrc_plus,
                     "park_factor": s.park_factor, "game_total": s.game_total,
                     "score": s.score, "reason": s.reason,
+                    "ownership": _get_ownership(s.pitcher),
                 }
                 for s in streams
             ]
@@ -1607,6 +1686,7 @@ def get_weekly_plan():
                 "date": s.date, "pitcher": s.pitcher, "team": s.team,
                 "opponent": s.opponent, "home_away": s.home_away,
                 "score": s.score, "reason": s.reason,
+                "ownership": _get_ownership(s.pitcher),
             }
             for s in plan.optimal_streams
         ],
@@ -1704,6 +1784,7 @@ def get_streamers():
 
     planner = StreamerPlanner()
     streamers = planner.find_two_start_streamers()
+    _refresh_rostered_players()
 
     result = {
         "streamers": [
@@ -1723,6 +1804,7 @@ def get_streamers():
                 "composite_score": s.composite_score,
                 "pitcher_fip": s.pitcher_fip,
                 "reason": s.reason,
+                "ownership": _get_ownership(s.pitcher),
             }
             for s in streamers
         ],
@@ -1872,10 +1954,16 @@ def get_prospects():
     tracker = ProspectTracker()
     all_profiles = tracker.scan_all()
     hot = [p for p in all_profiles if p.is_hot or p.alert_reasons]
+    _refresh_rostered_players()
+
+    def _prospect_dict(p):
+        d = p.to_dict()
+        d["ownership"] = _get_ownership(p.name)
+        return d
 
     result = {
-        "prospects": [p.to_dict() for p in all_profiles],
-        "hot_prospects": [p.to_dict() for p in hot],
+        "prospects": [_prospect_dict(p) for p in all_profiles],
+        "hot_prospects": [_prospect_dict(p) for p in hot],
         "total": len(all_profiles),
         "hot_count": len(hot),
         "generated_at": datetime.now().isoformat(),
