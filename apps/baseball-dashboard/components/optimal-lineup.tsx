@@ -23,15 +23,12 @@ import { PlayerDetailDialog } from "@/components/player-detail-dialog"
 import {
   Swords, Home, Shield, TrendingUp, TrendingDown, Zap,
   Flame, Snowflake, Wind, CloudRain, Sun, Target, Activity,
-  AlertTriangle, BookOpen, ChevronDown, ExternalLink, Loader2, DollarSign,
+  AlertTriangle, BookOpen, ChevronDown, ExternalLink, DollarSign,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-  DialogDescription, DialogFooter,
 } from "@/components/ui/dialog"
-import { useToast } from "@/components/ui/use-toast"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -40,11 +37,6 @@ import type { Player as BasePlayer } from "@fantasy/types"
 type Player = BasePlayer & { player_key?: string }
 
 // Map our slot labels to Yahoo's accepted position values
-const YAHOO_SLOT: Record<string, string> = {
-  C: "C", "1B": "1B", "2B": "2B", "3B": "3B", SS: "SS",
-  OF: "OF", UTIL: "Util", SP: "SP", RP: "RP", P: "P", BN: "BN",
-}
-
 interface RosterSlot {
   id: string
   label: string
@@ -378,60 +370,11 @@ export function OptimalLineupView({
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [legendOpen, setLegendOpen] = useState(false)
-  const [confirmOpen, setConfirmOpen] = useState(false)
-  const [sending, setSending] = useState(false)
-  const { toast } = useToast()
+
 
   const { slots, bench } = useMemo(() => buildOptimalLineup(players), [players])
 
   // Build the full assignment list for the Yahoo API call
-  const buildAssignments = () => {
-    const out: { player_key: string; position: string; name: string }[] = []
-    for (const { slot, player } of slots) {
-      if (player?.player_key) {
-        out.push({ player_key: player.player_key, position: YAHOO_SLOT[slot.label] ?? slot.label, name: player.player })
-      }
-    }
-    for (const p of bench) {
-      if (p.player_key) out.push({ player_key: p.player_key, position: "BN", name: p.player })
-    }
-    for (const p of notPlayingPlayers) {
-      if (p.player_key) out.push({ player_key: p.player_key, position: "BN", name: p.player })
-    }
-    return out
-  }
-
-  const assignments = useMemo(buildAssignments, [slots, bench, notPlayingPlayers])
-  const hasKeys = assignments.length > 0
-  const today = new Date().toISOString().split("T")[0]
-
-  const handleSetLineup = async () => {
-    if (!apiBase || !teamKey) return
-    setSending(true)
-    setConfirmOpen(false)
-    try {
-      const res = await fetch(`${apiBase}/api/set-lineup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          team_key: teamKey,
-          date: today,
-          assignments: assignments.map(({ player_key, position }) => ({ player_key, position })),
-        }),
-      })
-      const data = await res.json()
-      if (res.ok && data.success) {
-        toast({ title: "✅ Lineup set in Yahoo!", description: `${assignments.filter(a => a.position !== "BN").length} active slots updated for ${today}.` })
-      } else {
-        toast({ title: "Yahoo API error", description: data.detail ?? data.error ?? "Unknown error", variant: "destructive" })
-      }
-    } catch (e) {
-      toast({ title: "Network error", description: String(e), variant: "destructive" })
-    } finally {
-      setSending(false)
-    }
-  }
-
   const hitterSlots = slots.filter((s) => s.slot.group === "hitter")
   const pitcherSlots = slots.filter((s) => s.slot.group === "pitcher")
 
@@ -557,58 +500,19 @@ export function OptimalLineupView({
         </CollapsibleContent>
       </Collapsible>
 
-      {/* Set Lineup button */}
-      {apiBase && teamKey && (
-        <div className="mt-3 flex items-center gap-3">
-          <Button
-            size="sm"
-            disabled={!hasKeys || sending}
-            onClick={() => setConfirmOpen(true)}
-            className="gap-2"
-          >
-            {sending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ExternalLink className="h-3.5 w-3.5" />}
-            {sending ? "Setting lineup…" : "Set Lineup in Yahoo"}
+      {/* Open Yahoo roster */}
+      <div className="mt-3">
+        <a
+          href="https://baseball.fantasysports.yahoo.com/b1/25136/2"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button size="sm" className="gap-2">
+            <ExternalLink className="h-3.5 w-3.5" />
+            Set Lineup in Yahoo
           </Button>
-          {!hasKeys && (
-            <span className="text-xs text-muted-foreground">
-              Player keys load after the next data refresh (8am ET)
-            </span>
-          )}
-        </div>
-      )}
-
-      {/* Confirmation dialog */}
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Set lineup in Yahoo?</DialogTitle>
-            <DialogDescription>
-              This will push the following assignments to Yahoo Fantasy Baseball for <strong>{today}</strong>.
-              Yahoo will reject any invalid slot for a player&apos;s eligibility.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="max-h-64 overflow-y-auto text-sm space-y-1 my-2">
-            {assignments.filter(a => a.position !== "BN").map((a, i) => (
-              <div key={i} className="flex justify-between gap-4">
-                <span className="font-mono text-xs text-muted-foreground w-10 shrink-0">{a.position}</span>
-                <span className="flex-1">{a.name}</span>
-              </div>
-            ))}
-            {assignments.filter(a => a.position === "BN").length > 0 && (
-              <p className="text-xs text-muted-foreground pt-1 border-t mt-1">
-                + {assignments.filter(a => a.position === "BN").length} players set to bench
-              </p>
-            )}
-          </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setConfirmOpen(false)}>Cancel</Button>
-            <Button onClick={handleSetLineup} className="gap-2">
-              <ExternalLink className="h-3.5 w-3.5" />
-              Confirm & Set
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </a>
+      </div>
 
       <PlayerDetailDialog player={selectedPlayer} open={dialogOpen} onOpenChange={setDialogOpen} />
     </TooltipProvider>
