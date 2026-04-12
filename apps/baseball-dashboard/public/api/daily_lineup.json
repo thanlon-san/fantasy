@@ -1,7 +1,28 @@
 {
-  "generated_at": "2026-04-12T05:31:02.509328",
+  "generated_at": "2026-04-12T05:50:43.409500",
   "date": "2026-04-12",
   "must_start": [
+    {
+      "player": "Ryan O'Hearn",
+      "player_key": "469.p.10485",
+      "position": "1B,OF",
+      "team": "PIT",
+      "opponent": "@ CHC",
+      "opponent_pitcher": "Jameson Taillon",
+      "game_time": "02:20 PM ET",
+      "confidence": 97,
+      "matchup": 83.19999999999999,
+      "parkFactor": 70,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 100,
+      "vegas_total": null,
+      "reasons": [
+        "vs weak pitcher (Jameson Taillon)",
+        "Due for positive regression (xBA: 0.401)"
+      ],
+      "injury": null
+    },
     {
       "player": "Dennis Santana",
       "player_key": "469.p.10901",
@@ -144,27 +165,6 @@
       "vegas_total": null,
       "reasons": [
         "Due for positive regression (xBA: 0.275)"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Ryan O'Hearn",
-      "player_key": "469.p.10485",
-      "position": "1B,OF",
-      "team": "PIT",
-      "opponent": "@ CHC",
-      "opponent_pitcher": "Jameson Taillon",
-      "game_time": "02:20 PM ET",
-      "confidence": 87,
-      "matchup": 83.19999999999999,
-      "parkFactor": 70,
-      "platoon": 90,
-      "form": 75,
-      "breakout": 0,
-      "vegas_total": null,
-      "reasons": [
-        "vs weak pitcher (Jameson Taillon)",
-        "Due for positive regression (xBA: 0.401)"
       ],
       "injury": null
     },

@@ -1,6 +1,62 @@
 {
-  "generated_at": "2026-04-12T05:31:23.277486",
+  "generated_at": "2026-04-12T05:51:54.074452",
   "alerts": [
+    {
+      "player": "Paul Goldschmidt",
+      "position": "1B",
+      "team": "NYY",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -5.1",
+        "hard_hit_percent: -21.4",
+        "sweet_spot_percent: -7.1"
+      ],
+      "category": "Hitter",
+      "confidence": 100,
+      "is_free_agent": true
+    },
+    {
+      "player": "Nick Castellanos",
+      "position": "OF",
+      "team": "SD",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -1.9",
+        "hard_hit_percent: +8.3",
+        "sweet_spot_percent: +28.2"
+      ],
+      "category": "Hitter",
+      "confidence": 100,
+      "is_free_agent": true
+    },
+    {
+      "player": "Starling Marte",
+      "position": "OF",
+      "team": "KC",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -2.8",
+        "hard_hit_percent: +9.4",
+        "sweet_spot_percent: +26.0"
+      ],
+      "category": "Hitter",
+      "confidence": 100,
+      "is_free_agent": true
+    },
+    {
+      "player": "Nolan Arenado",
+      "position": "3B",
+      "team": "AZ",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: +3.0",
+        "hard_hit_percent: +4.7",
+        "sweet_spot_percent: +7.0"
+      ],
+      "category": "Hitter",
+      "confidence": 77,
+      "is_free_agent": true
+    },
     {
       "player": "Ryan O'Hearn",
       "position": "1B,OF",
@@ -12,7 +68,8 @@
         "sweet_spot_percent: -2.6"
       ],
       "category": "Hitter",
-      "confidence": 100
+      "confidence": 100,
+      "is_free_agent": false
     },
     {
       "player": "Jo Adell",
@@ -25,7 +82,8 @@
         "sweet_spot_percent: -9.5"
       ],
       "category": "Hitter",
-      "confidence": 100
+      "confidence": 100,
+      "is_free_agent": false
     },
     {
       "player": "Carlos Correa",
@@ -38,7 +96,8 @@
         "sweet_spot_percent: +3.6"
       ],
       "category": "Hitter",
-      "confidence": 100
+      "confidence": 100,
+      "is_free_agent": false
     },
     {
       "player": "Lawrence Butler",
@@ -51,7 +110,8 @@
         "sweet_spot_percent: +11.9"
       ],
       "category": "Hitter",
-      "confidence": 100
+      "confidence": 100,
+      "is_free_agent": false
     },
     {
       "player": "Zach Neto",
@@ -64,7 +124,8 @@
         "sweet_spot_percent: -4.1"
       ],
       "category": "Hitter",
-      "confidence": 89
+      "confidence": 89,
+      "is_free_agent": false
     },
     {
       "player": "Cody Bellinger",
@@ -77,12 +138,14 @@
         "sweet_spot_percent: +2.0"
       ],
       "category": "Hitter",
-      "confidence": 40
+      "confidence": 40,
+      "is_free_agent": false
     }
   ],
   "summary": {
-    "total_scanned": 25,
-    "signals_found": 6,
-    "strong_signals": 5
+    "total_scanned": 50,
+    "signals_found": 10,
+    "fa_signals": 4,
+    "strong_signals": 9
   }
 }

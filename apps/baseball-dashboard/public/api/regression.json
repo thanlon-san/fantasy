@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-12T05:31:52.542936",
+  "generated_at": "2026-04-12T05:52:23.714530",
   "buy_low": [
     {
       "name": "Agust\u00edn Ram\u00edrez",
@@ -23,7 +23,8 @@
         "xBA 0.276 vs BA 0.159 (\u0394+0.117)",
         "xSLG 0.376 vs SLG 0.282",
         "xwOBA 0.275"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Ryan O'Hearn",
@@ -47,7 +48,8 @@
         "xBA 0.401 vs BA 0.245 (\u0394+0.156)",
         "xSLG 0.683 vs SLG 0.524",
         "xwOBA 0.428"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Eugenio Su\u00e1rez",
@@ -71,7 +73,8 @@
         "xBA 0.320 vs BA 0.193 (\u0394+0.127)",
         "xSLG 0.609 vs SLG 0.361",
         "xwOBA 0.291"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Zach Neto",
@@ -95,7 +98,8 @@
         "xBA 0.307 vs BA 0.195 (\u0394+0.113)",
         "xSLG 0.628 vs SLG 0.505",
         "xwOBA 0.324"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Cody Bellinger",
@@ -119,7 +123,8 @@
         "xBA 0.275 vs BA 0.196 (\u0394+0.080)",
         "xSLG 0.494 vs SLG 0.337",
         "xwOBA 0.332"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Carlos Correa",
@@ -143,7 +148,8 @@
         "xBA 0.363 vs BA 0.237 (\u0394+0.126)",
         "xSLG 0.608 vs SLG 0.386",
         "xwOBA 0.387"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "CJ Abrams",
@@ -167,7 +173,8 @@
         "xBA 0.357 vs BA 0.233 (\u0394+0.124)",
         "xSLG 0.597 vs SLG 0.472",
         "xwOBA 0.385"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Brandon Lowe",
@@ -191,7 +198,8 @@
         "xBA 0.310 vs BA 0.179 (\u0394+0.132)",
         "xSLG 0.487 vs SLG 0.380",
         "xwOBA 0.324"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Ezequiel Tovar",
@@ -215,7 +223,8 @@
         "xBA 0.427 vs BA 0.244 (\u0394+0.182)",
         "xSLG 0.719 vs SLG 0.476",
         "xwOBA 0.353"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Lawrence Butler",
@@ -239,31 +248,8 @@
         "xBA 0.353 vs BA 0.185 (\u0394+0.168)",
         "xSLG 0.502 vs SLG 0.354",
         "xwOBA 0.322"
-      ]
-    },
-    {
-      "name": "Jake Burger",
-      "player_type": "hitter",
-      "team": "TEX",
-      "position": "1B",
-      "direction": "BUY_LOW",
-      "ba": 0.264,
-      "xba": 0.361,
-      "slg": 0.52,
-      "xslg": 0.643,
-      "xwoba": 0.311,
-      "ba_delta": 0.097,
-      "era": null,
-      "xera": null,
-      "fip": null,
-      "era_fip_delta": null,
-      "confidence": 110,
-      "summary": "Jake Burger is underperforming expected stats. xBA 0.361 vs actual BA 0.264.",
-      "improving_metrics": [
-        "xBA 0.361 vs BA 0.264 (\u0394+0.097)",
-        "xSLG 0.643 vs SLG 0.520",
-        "xwOBA 0.311"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Carlos Santana",
@@ -287,7 +273,8 @@
         "xBA 0.212 vs BA 0.115 (\u0394+0.097)",
         "xSLG 0.288 vs SLG 0.146",
         "xwOBA 0.188"
-      ]
+      ],
+      "is_free_agent": true
     },
     {
       "name": "Gary S\u00e1nchez",
@@ -311,7 +298,8 @@
         "xBA 0.418 vs BA 0.233 (\u0394+0.185)",
         "xSLG 1.193 vs SLG 0.516",
         "xwOBA 0.454"
-      ]
+      ],
+      "is_free_agent": true
     },
     {
       "name": "Nick Castellanos",
@@ -335,7 +323,8 @@
         "xBA 0.456 vs BA 0.183 (\u0394+0.273)",
         "xSLG 0.624 vs SLG 0.356",
         "xwOBA 0.390"
-      ]
+      ],
+      "is_free_agent": true
     },
     {
       "name": "Nolan Arenado",
@@ -359,31 +348,8 @@
         "xBA 0.281 vs BA 0.214 (\u0394+0.067)",
         "xSLG 0.334 vs SLG 0.406",
         "xwOBA 0.213"
-      ]
-    },
-    {
-      "name": "Robert Garcia",
-      "player_type": "pitcher",
-      "team": "TEX",
-      "position": "RP",
-      "direction": "BUY_LOW",
-      "ba": null,
-      "xba": null,
-      "slg": null,
-      "xslg": null,
-      "xwoba": null,
-      "ba_delta": null,
-      "era": 3.49,
-      "xera": 5.91,
-      "fip": 3.49,
-      "era_fip_delta": 2.42,
-      "confidence": 100,
-      "summary": "Robert Garcia FIP ({fip:.2f}) much lower than expected ERA \u2014 buy low",
-      "improving_metrics": [
-        "FIP 3.49 vs xERA ~5.91 (unlucky, \u0394+2.42)",
-        "xwOBA against: 0.375",
-        "K-BB%: 15.2%"
-      ]
+      ],
+      "is_free_agent": true
     },
     {
       "name": "Jeremiah Estrada",
@@ -407,7 +373,8 @@
         "FIP 2.35 vs xERA ~6.39 (unlucky, \u0394+4.04)",
         "xwOBA against: 0.389",
         "K-BB%: 17.6%"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Wyatt Langford",
@@ -431,7 +398,8 @@
         "xBA 0.312 vs BA 0.255 (\u0394+0.057)",
         "xSLG 0.493 vs SLG 0.564",
         "xwOBA 0.268"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Mason Miller",
@@ -455,7 +423,8 @@
         "FIP -0.72 vs xERA ~1.00 (unlucky, \u0394+1.72)",
         "xwOBA against: 0.073",
         "K-BB%: 55.0%"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Justin Verlander",
@@ -479,7 +448,8 @@
         "FIP 7.90 vs xERA ~9.57 (unlucky, \u0394+1.67)",
         "xwOBA against: 0.475",
         "K-BB%: 15.1%"
-      ]
+      ],
+      "is_free_agent": true
     }
   ],
   "sell_high": [
@@ -505,7 +475,8 @@
         "FIP 5.31 vs xERA ~2.88 (lucky, \u0394-2.43)",
         "xwOBA against: 0.293",
         "K-BB%: 25.2%"
-      ]
+      ],
+      "is_free_agent": false
     },
     {
       "name": "Jameson Taillon",
@@ -529,7 +500,8 @@
         "FIP 9.61 vs xERA ~4.69 (lucky, \u0394-4.92)",
         "xwOBA against: 0.342",
         "K-BB%: 5.9%"
-      ]
+      ],
+      "is_free_agent": true
     },
     {
       "name": "Dennis Santana",
@@ -553,7 +525,8 @@
         "FIP 2.00 vs xERA ~1.09 (lucky, \u0394-0.91)",
         "xwOBA against: 0.245",
         "K-BB%: 17.9%"
-      ]
+      ],
+      "is_free_agent": false
     }
   ],
   "scanned": 50
