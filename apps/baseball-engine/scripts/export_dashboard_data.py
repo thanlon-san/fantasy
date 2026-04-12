@@ -501,6 +501,88 @@ except Exception as e:
     with open(output_dir / "keepers.json", "w") as f:
         json.dump(keeper_data, f, indent=2)
 
+# 5. Regression Candidates (roster + free agents)
+print("\n📉 Generating regression candidates...")
+try:
+    from src.regression_analyzer import RegressionAnalyzer
+
+    reg_analyzer = RegressionAnalyzer()
+
+    # Build combined player list: roster + top free agents
+    reg_players: list[dict] = [
+        {"name": p.name, "position": p.position, "team": p.team}
+        for p in roster.players
+    ]
+
+    try:
+        client = _get_yahoo_client()
+        free_agents_raw = client.get_free_agents(LEAGUE_KEY, count=50)
+        for fa in free_agents_raw:
+            if fa.get("name"):
+                reg_players.append({
+                    "name": fa["name"],
+                    "position": fa.get("display_position") or (
+                        fa.get("eligible_positions", ["UTIL"])[0]
+                        if fa.get("eligible_positions") else "UTIL"
+                    ),
+                    "team": fa.get("editorial_team_abbr", "FA"),
+                    "is_free_agent": True,
+                })
+        print(f"  Added {len(free_agents_raw)} free agents to regression scan")
+    except Exception as e:
+        print(f"  ⚠️  FA fetch skipped: {e}")
+
+    reg_results = reg_analyzer.scan_players(reg_players, max_results=20)
+
+    def _reg_serialize(c):
+        return {
+            "name": c.name,
+            "player_type": c.player_type,
+            "team": c.team,
+            "position": c.position,
+            "direction": c.direction,
+            "ba": c.ba,
+            "xba": c.xba,
+            "slg": c.slg,
+            "xslg": c.xslg,
+            "xwoba": c.xwoba,
+            "ba_delta": c.ba_delta,
+            "era": c.era,
+            "xera": c.xera,
+            "fip": c.fip,
+            "era_fip_delta": c.era_fip_delta,
+            "confidence": c.confidence,
+            "summary": c.summary,
+            "improving_metrics": c.improving_metrics,
+        }
+
+    regression_data = {
+        "generated_at": datetime.now().isoformat(),
+        "buy_low": [_reg_serialize(c) for c in reg_results["buy_low"]],
+        "sell_high": [_reg_serialize(c) for c in reg_results["sell_high"]],
+        "scanned": len(reg_players),
+    }
+
+    with open(output_dir / "regression.json", "w") as f:
+        json.dump(regression_data, f, indent=2)
+
+    print(f"✅ Exported regression: {len(reg_results['buy_low'])} buy-low, "
+          f"{len(reg_results['sell_high'])} sell-high from {len(reg_players)} scanned")
+
+except Exception as e:
+    print(f"⚠️  Error generating regression data: {e}")
+    import traceback
+    traceback.print_exc()
+    regression_data = {
+        "generated_at": datetime.now().isoformat(),
+        "error": str(e),
+        "buy_low": [],
+        "sell_high": [],
+        "scanned": 0,
+    }
+    with open(output_dir / "regression.json", "w") as f:
+        json.dump(regression_data, f, indent=2)
+
 print("\n" + "="*70)
 print("✅ Dashboard data export complete!")
 print(f"📁 Output: {output_dir}")
