@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-12T05:50:43.409500",
+  "generated_at": "2026-04-12T12:37:49.059227",
   "date": "2026-04-12",
   "must_start": [
     {
@@ -19,49 +19,7 @@
       "vegas_total": null,
       "reasons": [
         "vs weak pitcher (Jameson Taillon)",
-        "Due for positive regression (xBA: 0.401)"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Dennis Santana",
-      "player_key": "469.p.10901",
-      "position": "RP",
-      "team": "PIT",
-      "opponent": "@ CHC",
-      "opponent_pitcher": "Jameson Taillon",
-      "game_time": "02:20 PM ET",
-      "confidence": 94,
-      "matchup": 83.19999999999999,
-      "parkFactor": 70,
-      "platoon": 60,
-      "form": 100,
-      "breakout": 100,
-      "vegas_total": null,
-      "reasons": [
-        "vs weak pitcher (Jameson Taillon)",
-        "Hot streak"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Jo Adell",
-      "player_key": "469.p.10893",
-      "position": "OF",
-      "team": "LAA",
-      "opponent": "@ CIN",
-      "opponent_pitcher": "Andrew Abbott",
-      "game_time": "01:40 PM ET",
-      "confidence": 93,
-      "matchup": 67.0,
-      "parkFactor": 85,
-      "platoon": 90,
-      "form": 75,
-      "breakout": 100,
-      "vegas_total": null,
-      "reasons": [
-        "At hitter-friendly park (1.15)",
-        "Hitting ball better than results show"
+        "Due for positive regression (xBA: 0.386)"
       ],
       "injury": null
     },
@@ -73,16 +31,37 @@
       "opponent": "@ CIN",
       "opponent_pitcher": "Andrew Abbott",
       "game_time": "01:40 PM ET",
-      "confidence": 93,
+      "confidence": 95,
       "matchup": 67.0,
       "parkFactor": 85,
       "platoon": 90,
       "form": 75,
-      "breakout": 75,
+      "breakout": 100,
       "vegas_total": null,
       "reasons": [
         "At hitter-friendly park (1.15)",
-        "Due for positive regression (xBA: 0.307)"
+        "Due for positive regression (xBA: 0.329)"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Jo Adell",
+      "player_key": "469.p.10893",
+      "position": "OF",
+      "team": "LAA",
+      "opponent": "@ CIN",
+      "opponent_pitcher": "Andrew Abbott",
+      "game_time": "01:40 PM ET",
+      "confidence": 95,
+      "matchup": 67.0,
+      "parkFactor": 85,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 100,
+      "vegas_total": null,
+      "reasons": [
+        "At hitter-friendly park (1.15)",
+        "Due for positive regression (xBA: 0.326)"
       ],
       "injury": null
     },
@@ -123,7 +102,7 @@
       "breakout": 75,
       "vegas_total": null,
       "reasons": [
-        "Due for positive regression (xBA: 0.357)"
+        "Due for positive regression (xBA: 0.376)"
       ],
       "injury": null
     },
@@ -144,7 +123,7 @@
       "vegas_total": null,
       "reasons": [
         "vs weak pitcher (Jameson Taillon)",
-        "Due for positive regression (xBA: 0.310)"
+        "Due for positive regression (xBA: 0.308)"
       ],
       "injury": null
     },
@@ -164,7 +143,7 @@
       "breakout": 25,
       "vegas_total": null,
       "reasons": [
-        "Due for positive regression (xBA: 0.275)"
+        "Due for positive regression (xBA: 0.290)"
       ],
       "injury": null
     },
@@ -185,27 +164,7 @@
       "vegas_total": null,
       "reasons": [
         "vs weak pitcher (Roki Sasaki)",
-        "Due for positive regression (xBA: 0.361)"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Kyle Harrison",
-      "player_key": "469.p.12175",
-      "position": "SP,RP",
-      "team": "MIL",
-      "opponent": "vs WSH",
-      "opponent_pitcher": "Zack Littell",
-      "game_time": "02:10 PM ET",
-      "confidence": 86,
-      "matchup": 78.0,
-      "parkFactor": 75,
-      "platoon": 60,
-      "form": 100,
-      "breakout": 25,
-      "vegas_total": null,
-      "reasons": [
-        "Hot streak"
+        "Due for positive regression (xBA: 0.335)"
       ],
       "injury": null
     },
@@ -223,6 +182,47 @@
       "platoon": 90,
       "form": 95,
       "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Hot streak"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Dennis Santana",
+      "player_key": "469.p.10901",
+      "position": "RP",
+      "team": "PIT",
+      "opponent": "@ CHC",
+      "opponent_pitcher": "Jameson Taillon",
+      "game_time": "02:20 PM ET",
+      "confidence": 82,
+      "matchup": 83.19999999999999,
+      "parkFactor": 70,
+      "platoon": 60,
+      "form": 85,
+      "breakout": 25,
+      "vegas_total": null,
+      "reasons": [
+        "vs weak pitcher (Jameson Taillon)",
+        "Hot streak"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Kyle Harrison",
+      "player_key": "469.p.12175",
+      "position": "SP,RP",
+      "team": "MIL",
+      "opponent": "vs WSH",
+      "opponent_pitcher": "Zack Littell",
+      "game_time": "02:10 PM ET",
+      "confidence": 82,
+      "matchup": 78.0,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 85,
+      "breakout": 25,
       "vegas_total": null,
       "reasons": [
         "Hot streak"
@@ -310,7 +310,7 @@
       "reasons": [
         "Hitter-friendly park (1.15)",
         "vs tough pitcher (Jos\u00e9 Soriano)",
-        "Due for positive regression (xBA: 0.320)"
+        "Due for positive regression (xBA: 0.329)"
       ],
       "injury": null
     },
@@ -354,27 +354,6 @@
         "Pitcher-friendly park (0.94)",
         "vs tough pitcher (Kyle Freeland)",
         "Hot streak"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Ezequiel Tovar",
-      "player_key": "469.p.12322",
-      "position": "SS",
-      "team": "COL",
-      "opponent": "@ SD",
-      "opponent_pitcher": "Nick Pivetta",
-      "game_time": "04:10 PM ET",
-      "confidence": 72,
-      "matchup": 37.0,
-      "parkFactor": 60,
-      "platoon": 60,
-      "form": 75,
-      "breakout": 50,
-      "vegas_total": null,
-      "reasons": [
-        "vs tough pitcher (Nick Pivetta)",
-        "Due for positive regression (xBA: 0.427)"
       ],
       "injury": null
     },
@@ -435,7 +414,28 @@
       "vegas_total": null,
       "reasons": [
         "vs tough pitcher (Logan Gilbert)",
-        "Due for positive regression (xBA: 0.363)"
+        "Due for positive regression (xBA: 0.365)"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Ezequiel Tovar",
+      "player_key": "469.p.12322",
+      "position": "SS",
+      "team": "COL",
+      "opponent": "@ SD",
+      "opponent_pitcher": "Nick Pivetta",
+      "game_time": "04:10 PM ET",
+      "confidence": 69,
+      "matchup": 37.0,
+      "parkFactor": 60,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 25,
+      "vegas_total": null,
+      "reasons": [
+        "vs tough pitcher (Nick Pivetta)",
+        "Due for positive regression (xBA: 0.406)"
       ],
       "injury": null
     },
@@ -456,7 +456,7 @@
       "vegas_total": null,
       "reasons": [
         "vs tough pitcher (Tarik Skubal)",
-        "Due for positive regression (xBA: 0.276)"
+        "Due for positive regression (xBA: 0.284)"
       ],
       "injury": null
     },

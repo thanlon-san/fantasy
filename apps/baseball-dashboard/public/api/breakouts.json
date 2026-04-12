@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-12T05:51:54.074452",
+  "generated_at": "2026-04-12T12:39:45.980029",
   "alerts": [
     {
       "player": "Paul Goldschmidt",
@@ -21,9 +21,9 @@
       "team": "SD",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -1.9",
-        "hard_hit_percent: +8.3",
-        "sweet_spot_percent: +28.2"
+        "exit_velocity_avg: -1.4",
+        "hard_hit_percent: +9.6",
+        "sweet_spot_percent: +27.5"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -49,23 +49,23 @@
       "team": "AZ",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +3.0",
-        "hard_hit_percent: +4.7",
-        "sweet_spot_percent: +7.0"
+        "exit_velocity_avg: +2.6",
+        "hard_hit_percent: +2.7",
+        "sweet_spot_percent: +4.6"
       ],
       "category": "Hitter",
-      "confidence": 77,
+      "confidence": 63,
       "is_free_agent": true
     },
     {
-      "player": "Ryan O'Hearn",
-      "position": "1B,OF",
-      "team": "PIT",
+      "player": "Zach Neto",
+      "position": "SS",
+      "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.4",
-        "hard_hit_percent: -0.6",
-        "sweet_spot_percent: -2.6"
+        "exit_velocity_avg: +0.3",
+        "hard_hit_percent: +2.3",
+        "sweet_spot_percent: -2.9"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -77,9 +77,9 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -0.3",
-        "hard_hit_percent: +3.8",
-        "sweet_spot_percent: -9.5"
+        "exit_velocity_avg: -1.1",
+        "hard_hit_percent: +2.9",
+        "sweet_spot_percent: -10.2"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -91,9 +91,9 @@
       "team": "HOU",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.5",
-        "hard_hit_percent: +3.4",
-        "sweet_spot_percent: +3.6"
+        "exit_velocity_avg: +1.0",
+        "hard_hit_percent: +5.9",
+        "sweet_spot_percent: +3.1"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -105,46 +105,32 @@
       "team": "ATH",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +2.4",
-        "hard_hit_percent: +16.8",
-        "sweet_spot_percent: +11.9"
+        "exit_velocity_avg: +0.8",
+        "hard_hit_percent: +13.0",
+        "sweet_spot_percent: +13.0"
       ],
       "category": "Hitter",
       "confidence": 100,
       "is_free_agent": false
     },
     {
-      "player": "Zach Neto",
-      "position": "SS",
-      "team": "LAA",
+      "player": "Ryan O'Hearn",
+      "position": "1B,OF",
+      "team": "PIT",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -0.1",
-        "hard_hit_percent: +1.3",
-        "sweet_spot_percent: -4.1"
+        "exit_velocity_avg: +1.0",
+        "hard_hit_percent: +0.0",
+        "sweet_spot_percent: -1.0"
       ],
       "category": "Hitter",
-      "confidence": 89,
-      "is_free_agent": false
-    },
-    {
-      "player": "Cody Bellinger",
-      "position": "OF",
-      "team": "NYY",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: -7.4",
-        "hard_hit_percent: -13.7",
-        "sweet_spot_percent: +2.0"
-      ],
-      "category": "Hitter",
-      "confidence": 40,
+      "confidence": 99,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 10,
+    "signals_found": 9,
     "fa_signals": 4,
     "strong_signals": 9
   }
