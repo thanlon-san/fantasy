@@ -263,13 +263,17 @@ class RegressionAnalyzer:
             else f"{player_name} over-performing peripherals — sell high"
         )
 
+        # era_fip_delta is xera - fip (positive = pitcher is unlucky / buy-low)
+        # We set `era` to fip (the peripheral-based ERA stand-in we actually use)
+        # and `xera` to the xwOBA-derived expected ERA proxy, so the UI delta
+        # reflects a real gap rather than comparing a value to itself.
         candidate = RegressionCandidate(
             name=player_name,
             player_type="pitcher",
             team=team,
             position=position,
             direction=direction,
-            era=round(xera, 2) if xera else None,
+            era=round(fip, 2),
             xera=round(xera, 2) if xera else None,
             fip=round(fip, 2),
             era_fip_delta=round(era_fip_delta, 2) if era_fip_delta else None,

@@ -394,8 +394,8 @@ try:
             first_name = name_parts[0]
             last_name = ' '.join(name_parts[1:])
             
-            # Determine player type from position
-            is_pitcher = player.position in ['SP', 'RP']
+            # Determine player type from position (handles compound positions like "SP,RP")
+            is_pitcher = any(p in player.position for p in ('SP', 'RP'))
             player_type = 'pitcher' if is_pitcher else 'hitter'
             
             # Analyze for breakout signals

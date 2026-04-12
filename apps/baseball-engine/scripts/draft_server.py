@@ -1492,36 +1492,71 @@ def get_regression():
         except Exception:
             pass
 
-    # Also scan top free agents for buy-low targets
-    if _yahoo:
-        try:
-            from src.yahoo_client import YahooFantasyClient
-            # Reuse the existing yahoo connection's oauth
-            fa_data = _yahoo._get(
-                f"https://fantasysports.yahooapis.com/fantasy/v2/league/{LEAGUE_KEY}/players;status=FA;count=30"
-            )
-            if fa_data:
-                fa_players_raw = fa_data.get("league", [None, {}])[1].get("players", {})
-                if isinstance(fa_players_raw, dict):
-                    for fk, fv in fa_players_raw.items():
-                        if fk == "count":
-                            continue
-                        fa_arr = fv.get("player", [[]])[0]
-                        finfo: dict = {}
-                        for prop in fa_arr:
-                            if not isinstance(prop, dict):
-                                continue
-                            if "name" in prop:
-                                finfo["name"] = prop["name"].get("full", "")
-                            if "display_position" in prop:
-                                finfo["position"] = prop["display_position"]
-                            if "editorial_team_abbr" in prop:
-                                finfo["team"] = prop["editorial_team_abbr"]
-                        if finfo.get("name"):
-                            finfo["is_free_agent"] = True
-                            players.append(finfo)
-        except Exception:
-            pass
+    # Also scan top free agents for buy-low targets.
+    # Prefer reusing the existing YahooDraft connection; fall back to
+    # YahooFantasyClient (same OAuth file used by export_dashboard_data.py)
+    # so free agents appear even when _yahoo failed to initialize.
+    def _fetch_fa_players(count: int = 50) -> list[dict]:
+        fa_raw = None
+        if _yahoo:
+            try:
+                fa_raw = _yahoo._get(
+                    f"https://fantasysports.yahooapis.com/fantasy/v2/league/{LEAGUE_KEY}/players;status=FA;count={count}"
+                )
+            except Exception:
+                pass
+
+        if not fa_raw:
+            try:
+                from src.yahoo_oauth_manual import YahooOAuth2
+                from src.yahoo_client import YahooFantasyClient
+                oauth_path = APP_ROOT / "config" / "oauth2.json"
+                if oauth_path.exists():
+                    oauth = YahooOAuth2.load_from_file(str(oauth_path))
+                    oauth.refresh_access_token()
+                    client = YahooFantasyClient(oauth)
+                    raw_fas = client.get_free_agents(LEAGUE_KEY, count=count)
+                    return [
+                        {
+                            "name": fa["name"],
+                            "position": fa.get("display_position") or (
+                                fa.get("eligible_positions", ["UTIL"])[0]
+                                if fa.get("eligible_positions") else "UTIL"
+                            ),
+                            "team": fa.get("editorial_team_abbr", "FA"),
+                            "is_free_agent": True,
+                        }
+                        for fa in raw_fas
+                        if fa.get("name")
+                    ]
+            except Exception:
+                pass
+            return []
+
+        result: list[dict] = []
+        fa_players_raw = fa_raw.get("league", [None, {}])[1].get("players", {})
+        if isinstance(fa_players_raw, dict):
+            for fk, fv in fa_players_raw.items():
+                if fk == "count":
+                    continue
+                fa_arr = fv.get("player", [[]])[0]
+                finfo: dict = {}
+                for prop in fa_arr:
+                    if not isinstance(prop, dict):
+                        continue
+                    if "name" in prop:
+                        finfo["name"] = prop["name"].get("full", "")
+                    if "display_position" in prop:
+                        finfo["position"] = prop["display_position"]
+                    if "editorial_team_abbr" in prop:
+                        finfo["team"] = prop["editorial_team_abbr"]
+                if finfo.get("name"):
+                    finfo["is_free_agent"] = True
+                    result.append(finfo)
+        return result
+
+    for fa in _fetch_fa_players(count=50):
+        players.append(fa)
 
     results = analyzer.scan_players(players)
     _refresh_rostered_players()

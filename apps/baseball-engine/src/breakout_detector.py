@@ -5,6 +5,7 @@ Identify players showing signs of breaking out based on Statcast metrics
 """
 
 import logging
+from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
@@ -238,11 +239,16 @@ class BreakoutDetector:
             logger.info(f"No data available for {player_name} (likely off-season)")
             return None
 
-        # Require a minimum sample size in the recent window to avoid spring
-        # training noise.  recent_pa / recent_bf is stored as 'pa' / 'bf' if
-        # the statcast client returns it; fall back to checking recent dict size.
+        # Require a minimum sample size in the recent window to avoid noise.
+        # Use a lower bar for pitchers (batters faced) vs hitters (plate appearances)
+        # and lower the floor in the first 3 weeks of the season (pre-May) when
+        # even starters have limited innings.
         recent_pa = recent.get("pa") or recent.get("bf") or len(recent)
-        MIN_RECENT_PA = 30
+        is_early_season = datetime.now().month <= 4
+        if player_type == "pitcher":
+            MIN_RECENT_PA = 10 if is_early_season else 20
+        else:
+            MIN_RECENT_PA = 15 if is_early_season else 30
         if recent_pa < MIN_RECENT_PA:
             logger.info(
                 f"Skipping {player_name}: only {recent_pa} recent PA/BF (min {MIN_RECENT_PA})"
