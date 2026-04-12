@@ -74,7 +74,7 @@ function fatigueBadge(level: string) {
 }
 
 export default function StreamersPage() {
-  const { data: streamers, isLoading: sLoading } = useQuery<StreamerData>({
+  const { data: streamers, isLoading: sLoading, error: sError, refetch } = useQuery<StreamerData>({
     queryKey: ["streamers"],
     queryFn: async () => {
       const res = await fetch(`${API_BASE}/season/streamers`, { cache: "no-store" })
@@ -83,7 +83,7 @@ export default function StreamersPage() {
     },
   })
 
-  const { data: bullpen, isLoading: bLoading } = useQuery<BullpenData>({
+  const { data: bullpen, isLoading: bLoading, refetch: refetchBullpen } = useQuery<BullpenData>({
     queryKey: ["bullpen-alerts"],
     queryFn: async () => {
       const res = await fetch(`${API_BASE}/season/bullpen-alerts`, { cache: "no-store" })
@@ -93,7 +93,7 @@ export default function StreamersPage() {
   })
 
   const loading = sLoading || bLoading
-  const error = !streamers && !sLoading ? "Failed to load streamer data" : null
+  const error = sError ? (sError instanceof Error ? sError.message : "Failed to load streamer data") : null
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -108,7 +108,7 @@ export default function StreamersPage() {
               Streamers &amp; Bullpen
             </h1>
           </div>
-          <Button variant="outline" size="sm" disabled={loading}>
+          <Button variant="outline" size="sm" disabled={loading} onClick={() => { refetch(); refetchBullpen() }}>
             <RefreshCw className={`h-4 w-4 mr-1 ${loading ? "animate-spin" : ""}`} />
             Refresh
           </Button>

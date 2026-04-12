@@ -359,6 +359,9 @@ export default function DraftPage() {
           fetch(`${BASE_PATH}/api/league_keepers.json`),
         ])
 
+        if (!keepersRes.ok) throw new Error(`keepers.json ${keepersRes.status}`)
+        if (!leagueRes.ok) throw new Error(`league_keepers.json ${leagueRes.status}`)
+
         const [keepersData, leagueJson] = await Promise.all([
           keepersRes.json(),
           leagueRes.json(),
