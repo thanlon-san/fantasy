@@ -137,10 +137,49 @@ function RegressionScatter({ buyLow, sellHigh }: { buyLow: Candidate[]; sellHigh
   )
 }
 
+function OwnershipBadge({ c, type }: { c: Candidate; type: "buy_low" | "sell_high" }) {
+  const isMine = c.ownership?.status === "mine" || c.is_free_agent === false
+  const isFa = c.is_free_agent === true || (c.ownership && c.ownership.status !== "mine")
+
+  if (type === "buy_low") {
+    if (isFa) return (
+      <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-emerald-500/50 text-emerald-500 bg-emerald-500/10">
+        + Add
+      </Badge>
+    )
+    if (isMine) return (
+      <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-muted-foreground">
+        On Roster
+      </Badge>
+    )
+  } else {
+    if (isMine) return (
+      <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-rose-500/50 text-rose-500 bg-rose-500/10">
+        Trade/Drop
+      </Badge>
+    )
+    if (isFa) return (
+      <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-muted-foreground">
+        Avoid Adding
+      </Badge>
+    )
+  }
+  return null
+}
+
 function CandidateTable({ candidates, type }: { candidates: Candidate[]; type: "buy_low" | "sell_high" }) {
   const isBuyLow = type === "buy_low"
-  const hitters = candidates.filter(c => c.player_type === "hitter")
-  const pitchers = candidates.filter(c => c.player_type === "pitcher")
+
+  // Sort: for buy-low show FAs first (add targets); for sell-high show roster first (trade targets)
+  const sorted = [...candidates].sort((a, b) => {
+    const aFa = a.is_free_agent === true || (a.ownership && a.ownership.status !== "mine")
+    const bFa = b.is_free_agent === true || (b.ownership && b.ownership.status !== "mine")
+    if (isBuyLow) return (aFa ? 0 : 1) - (bFa ? 0 : 1)
+    return (aFa ? 1 : 0) - (bFa ? 1 : 0)
+  })
+
+  const hitters = sorted.filter(c => c.player_type === "hitter")
+  const pitchers = sorted.filter(c => c.player_type === "pitcher")
 
   if (candidates.length === 0) {
     return (
@@ -177,7 +216,10 @@ function CandidateTable({ candidates, type }: { candidates: Candidate[]; type: "
                     <TableCell>
                       <Link href={`/player?name=${encodeURIComponent(c.name)}`} className="hover:underline">
                         <div className="flex flex-col leading-tight">
-                          <span className="font-semibold text-sm">{c.name}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-semibold text-sm">{c.name}</span>
+                            <OwnershipBadge c={c} type={type} />
+                          </div>
                           <span className="text-xs text-muted-foreground">{c.position} · {c.team}</span>
                         </div>
                       </Link>
@@ -226,7 +268,10 @@ function CandidateTable({ candidates, type }: { candidates: Candidate[]; type: "
                     <TableCell>
                       <Link href={`/player?name=${encodeURIComponent(c.name)}`} className="hover:underline">
                         <div className="flex flex-col leading-tight">
-                          <span className="font-semibold text-sm">{c.name}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-semibold text-sm">{c.name}</span>
+                            <OwnershipBadge c={c} type={type} />
+                          </div>
                           <span className="text-xs text-muted-foreground">{c.position} · {c.team}</span>
                         </div>
                       </Link>

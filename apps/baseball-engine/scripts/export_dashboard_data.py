@@ -379,77 +379,96 @@ except Exception as e:
 # 3. Breakout Detection
 print("\n🔬 Generating breakout data...")
 try:
-    # Use the breakout detector already initialized in lineup optimizer
     if optimizer.breakout_detector:
         detector = optimizer.breakout_detector
-        
-        # Scan roster players for breakout signals
-        breakout_alerts = []
-        for player in roster.players:
-            # Parse player name
-            name_parts = player.name.split()
+        roster_names = {p.name for p in roster.players}
+
+        # Build candidate list: roster players + free agents
+        # Each entry: (name, position, team, is_free_agent)
+        candidates: list[tuple[str, str, str, bool]] = [
+            (p.name, p.position, p.team, False) for p in roster.players
+        ]
+        try:
+            client = _get_yahoo_client()
+            fa_raw = client.get_free_agents(LEAGUE_KEY, count=75)
+            for fa in fa_raw:
+                if fa.get("name"):
+                    pos = fa.get("display_position") or (
+                        fa.get("eligible_positions", ["UTIL"])[0]
+                        if fa.get("eligible_positions") else "UTIL"
+                    )
+                    candidates.append((fa["name"], pos, fa.get("editorial_team_abbr", "FA"), True))
+            print(f"  Added {len(fa_raw)} free agents to breakout scan")
+        except Exception as e:
+            print(f"  ⚠️  FA fetch skipped for breakouts: {e}")
+
+        def _analyze_candidate(name, position, team, is_fa):
+            name_parts = name.split()
             if len(name_parts) < 2:
-                continue
-            
+                return None
             first_name = name_parts[0]
             last_name = ' '.join(name_parts[1:])
-            
-            # Determine player type from position (handles compound positions like "SP,RP")
-            is_pitcher = any(p in player.position for p in ('SP', 'RP'))
+            is_pitcher = any(p in position for p in ('SP', 'RP'))
             player_type = 'pitcher' if is_pitcher else 'hitter'
-            
-            # Analyze for breakout signals
             alert = detector.analyze_player(
-                first_name,
-                last_name,
-                player_type,
-                recent_days=14,
-                baseline_days=30
+                first_name, last_name, player_type,
+                recent_days=14, baseline_days=30
             )
-            
-            if alert and alert.signal in [BreakoutSignal.STRONG, BreakoutSignal.EMERGING]:
-                # Format improving metrics for display
-                metric_changes = []
-                for metric_name, (baseline, recent) in list(alert.key_metrics.items())[:3]:
-                    change = recent - baseline
-                    metric_changes.append(f"{metric_name}: {change:+.1f}")
-                
-                breakout_alerts.append({
-                    "player": player.name,
-                    "position": player.position,
-                    "team": player.team,
-                    "signal": alert.signal.value,
-                    "stats": metric_changes,
-                    "category": player_type.title(),
-                    "confidence": int(alert.confidence_score)
-                })
-        
-        # Sort by signal strength and confidence
+            if not alert or alert.signal not in [BreakoutSignal.STRONG, BreakoutSignal.EMERGING]:
+                return None
+            metric_changes = []
+            for metric_name, (baseline_val, recent_val) in list(alert.key_metrics.items())[:3]:
+                change = recent_val - baseline_val
+                metric_changes.append(f"{metric_name}: {change:+.1f}")
+            return {
+                "player": name,
+                "position": position,
+                "team": team,
+                "signal": alert.signal.value,
+                "stats": metric_changes,
+                "category": player_type.title(),
+                "confidence": int(alert.confidence_score),
+                "is_free_agent": is_fa,
+            }
+
+        breakout_alerts = []
+        for (name, position, team, is_fa) in candidates:
+            result = _analyze_candidate(name, position, team, is_fa)
+            if result:
+                breakout_alerts.append(result)
+
+        # Sort: FAs first (actionable adds), then by signal strength and confidence
         signal_order = {"STRONG": 0, "EMERGING": 1}
-        breakout_alerts.sort(key=lambda x: (signal_order.get(x["signal"], 2), -x["confidence"]))
-        
+        breakout_alerts.sort(key=lambda x: (
+            0 if x["is_free_agent"] else 1,
+            signal_order.get(x["signal"], 2),
+            -x["confidence"]
+        ))
+
         breakout_data = {
             "generated_at": datetime.now().isoformat(),
-            "alerts": breakout_alerts[:10],  # Top 10 signals
+            "alerts": breakout_alerts[:15],  # Up to 15: FAs first, then roster
             "summary": {
-                "total_scanned": len(roster.players),
+                "total_scanned": len(candidates),
                 "signals_found": len(breakout_alerts),
+                "fa_signals": len([a for a in breakout_alerts if a["is_free_agent"]]),
                 "strong_signals": len([a for a in breakout_alerts if a["signal"] == "STRONG"])
             }
         }
-        
+
         with open(output_dir / "breakouts.json", "w") as f:
             json.dump(breakout_data, f, indent=2)
-        
-        print(f"✅ Exported breakout data: {len(breakout_alerts)} signals found")
+
+        fa_count = len([a for a in breakout_alerts if a["is_free_agent"]])
+        print(f"✅ Exported breakout data: {len(breakout_alerts)} signals "
+              f"({fa_count} free agents, {len(breakout_alerts) - fa_count} roster)")
     else:
         raise Exception("Breakout detector not available")
-    
+
 except Exception as e:
     print(f"⚠️  Error generating breakout data: {e}")
     import traceback
     traceback.print_exc()
-    # Fallback to placeholder
     breakout_data = {
         "generated_at": datetime.now().isoformat(),
         "error": str(e),
@@ -510,7 +529,7 @@ try:
 
     # Build combined player list: roster + top free agents
     reg_players: list[dict] = [
-        {"name": p.name, "position": p.position, "team": p.team}
+        {"name": p.name, "position": p.position, "team": p.team, "is_free_agent": False}
         for p in roster.players
     ]
 
@@ -534,6 +553,8 @@ try:
 
     reg_results = reg_analyzer.scan_players(reg_players, max_results=20)
 
+    roster_names = {p.name for p in roster.players}
+
     def _reg_serialize(c):
         return {
             "name": c.name,
@@ -554,6 +575,7 @@ try:
             "confidence": c.confidence,
             "summary": c.summary,
             "improving_metrics": c.improving_metrics,
+            "is_free_agent": c.name not in roster_names,
         }
 
     regression_data = {

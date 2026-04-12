@@ -53,6 +53,8 @@ export const RegressionCandidateSchema = z.object({
   confidence: z.number(),
   summary: z.string(),
   improving_metrics: z.array(z.string()),
+  is_free_agent: z.boolean().optional(),
+  ownership: z.object({ status: z.string(), owner: z.string().optional() }).optional(),
 });
 
 export type RegressionCandidate = z.infer<typeof RegressionCandidateSchema>;
