@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown, Users, Calendar, Copy, AlertCircle, Star, Swords, Trophy, Shield, Zap, TrendingUp, BarChart3, DollarSign, Flame, Radio, ArrowRightLeft, CalendarRange, Sparkles, Target } from "lucide-react"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import Link from "next/link"
 import { PlayerTable } from "@/components/player-table"
 import { OptimalLineupView } from "@/components/optimal-lineup"
@@ -71,8 +71,8 @@ export default function Home() {
   const [dataTimestamp, setDataTimestamp] = useState<string | null>(null)
   const [lineupFocus, setLineupFocus] = useState<LineupFocus | null>(null)
   const [bullpenAlerts, setBullpenAlerts] = useState<BullpenAlert[]>([])
-  const [seenBreakouts, setSeenBreakouts] = useState<Set<string>>(new Set())
-  const [seenBullpen, setSeenBullpen] = useState<Set<string>>(new Set())
+  const seenBreakouts = useRef<Set<string>>(new Set())
+  const seenBullpen = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     async function fetchData() {
@@ -150,20 +150,18 @@ export default function Home() {
       setBullpenAlerts(newAlerts)
 
       for (const alert of newAlerts) {
-        if (!seenBullpen.has(alert.closer)) {
+        if (!seenBullpen.current.has(alert.closer)) {
           toast({
             title: `Bullpen Alert: ${alert.closer}`,
             description: `${alert.closer} (${alert.closer_team}) is fatigued — pickup ${alert.vulture_candidate}`,
           })
+          seenBullpen.current.add(alert.closer)
         }
-      }
-      if (newAlerts.length > 0) {
-        setSeenBullpen(new Set(newAlerts.map(a => a.closer)))
       }
     } catch {
       // Server not running — silently ignore
     }
-  }, [seenBullpen, toast])
+  }, [toast])
 
   useEffect(() => {
     fetchLineupFocus()
@@ -176,21 +174,15 @@ export default function Home() {
     if (breakouts.length === 0) return
     const strongBreakouts = breakouts.filter(b => b.signal === "STRONG")
     for (const b of strongBreakouts) {
-      if (!seenBreakouts.has(b.player)) {
+      if (!seenBreakouts.current.has(b.player)) {
         toast({
           title: `Breakout Alert: ${b.player}`,
           description: `${b.player} showing STRONG breakout signals — ${b.stats.slice(0, 2).join(", ")}`,
         })
+        seenBreakouts.current.add(b.player)
       }
     }
-    if (strongBreakouts.length > 0) {
-      setSeenBreakouts(prev => {
-        const next = new Set(prev)
-        strongBreakouts.forEach(b => next.add(b.player))
-        return next
-      })
-    }
-  }, [breakouts, seenBreakouts, toast])
+  }, [breakouts, toast])
 
   const copyLineupToClipboard = () => {
     const mustStart = dailyLineup.must_start.map(p => `${p.player} (${p.confidence})`).join('\n')
