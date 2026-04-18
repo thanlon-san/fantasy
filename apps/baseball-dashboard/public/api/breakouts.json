@@ -1,61 +1,75 @@
 {
-  "generated_at": "2026-04-17T12:57:34.367432",
+  "generated_at": "2026-04-18T12:40:37.368935",
   "alerts": [
-    {
-      "player": "Paul Goldschmidt",
-      "position": "1B",
-      "team": "NYY",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -10.4",
-        "hard_hit_percent: -26.3",
-        "sweet_spot_percent: +34.4"
-      ],
-      "category": "Hitter",
-      "confidence": 100,
-      "is_free_agent": true
-    },
-    {
-      "player": "Starling Marte",
-      "position": "OF",
-      "team": "KC",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -1.3",
-        "hard_hit_percent: +10.0",
-        "sweet_spot_percent: +15.7"
-      ],
-      "category": "Hitter",
-      "confidence": 100,
-      "is_free_agent": true
-    },
     {
       "player": "Carlos Santana",
       "position": "1B",
       "team": "AZ",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -1.8",
+        "exit_velocity_avg: -14.7",
         "hard_hit_percent: -19.2",
-        "sweet_spot_percent: +22.2"
-      ],
-      "category": "Hitter",
-      "confidence": 78,
-      "is_free_agent": true
-    },
-    {
-      "player": "CJ Abrams",
-      "position": "SS",
-      "team": "WSH",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +0.9",
-        "hard_hit_percent: +4.4",
-        "sweet_spot_percent: -3.9"
+        "sweet_spot_percent: +88.9"
       ],
       "category": "Hitter",
       "confidence": 100,
-      "is_free_agent": false
+      "is_free_agent": true
+    },
+    {
+      "player": "Paul Goldschmidt",
+      "position": "1B",
+      "team": "NYY",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -10.3",
+        "hard_hit_percent: -26.9",
+        "sweet_spot_percent: +29.4"
+      ],
+      "category": "Hitter",
+      "confidence": 100,
+      "is_free_agent": true
+    },
+    {
+      "player": "Nolan Arenado",
+      "position": "3B",
+      "team": "AZ",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -0.4",
+        "hard_hit_percent: -4.2",
+        "sweet_spot_percent: +12.4"
+      ],
+      "category": "Hitter",
+      "confidence": 89,
+      "is_free_agent": true
+    },
+    {
+      "player": "Starling Marte",
+      "position": "OF",
+      "team": "KC",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -1.6",
+        "hard_hit_percent: +7.9",
+        "sweet_spot_percent: +13.3"
+      ],
+      "category": "Hitter",
+      "confidence": 44,
+      "is_free_agent": true
+    },
+    {
+      "player": "Andrew McCutchen",
+      "position": "OF",
+      "team": "TEX",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -7.1",
+        "hard_hit_percent: -25.8",
+        "sweet_spot_percent: -6.5"
+      ],
+      "category": "Hitter",
+      "confidence": 43,
+      "is_free_agent": true
     },
     {
       "player": "Jo Adell",
@@ -63,9 +77,9 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.5",
-        "hard_hit_percent: +3.3",
-        "sweet_spot_percent: -3.1"
+        "exit_velocity_avg: +0.1",
+        "hard_hit_percent: +2.5",
+        "sweet_spot_percent: -1.6"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -77,26 +91,26 @@
       "team": "ATH",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +2.6",
-        "hard_hit_percent: +18.0",
-        "sweet_spot_percent: +15.1"
+        "exit_velocity_avg: +3.7",
+        "hard_hit_percent: +15.2",
+        "sweet_spot_percent: +13.3"
       ],
       "category": "Hitter",
-      "confidence": 85,
+      "confidence": 80,
       "is_free_agent": false
     },
     {
-      "player": "Zach Neto",
+      "player": "CJ Abrams",
       "position": "SS",
-      "team": "LAA",
+      "team": "WSH",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -0.3",
-        "hard_hit_percent: -4.7",
-        "sweet_spot_percent: -6.5"
+        "exit_velocity_avg: -0.4",
+        "hard_hit_percent: +2.3",
+        "sweet_spot_percent: -6.3"
       ],
       "category": "Hitter",
-      "confidence": 78,
+      "confidence": 70,
       "is_free_agent": false
     },
     {
@@ -105,12 +119,12 @@
       "team": "SD",
       "signal": "EMERGING",
       "stats": [
-        "hard_hit_percent: -29.4",
+        "hard_hit_percent: -26.3",
         "whiff_percent: +0.0",
-        "k_percent: +50.0"
+        "k_percent: +38.7"
       ],
       "category": "Pitcher",
-      "confidence": 55,
+      "confidence": 49,
       "is_free_agent": false
     },
     {
@@ -119,19 +133,33 @@
       "team": "MIA",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: -1.0",
-        "hard_hit_percent: -2.9",
-        "sweet_spot_percent: +5.7"
+        "exit_velocity_avg: +0.5",
+        "hard_hit_percent: -1.5",
+        "sweet_spot_percent: +7.4"
       ],
       "category": "Hitter",
-      "confidence": 53,
+      "confidence": 48,
+      "is_free_agent": false
+    },
+    {
+      "player": "Carlos Correa",
+      "position": "3B,SS",
+      "team": "HOU",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -3.6",
+        "hard_hit_percent: -1.2",
+        "sweet_spot_percent: -5.6"
+      ],
+      "category": "Hitter",
+      "confidence": 41,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 9,
-    "fa_signals": 3,
-    "strong_signals": 7
+    "signals_found": 11,
+    "fa_signals": 5,
+    "strong_signals": 6
   }
 }
