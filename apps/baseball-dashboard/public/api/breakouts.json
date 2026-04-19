@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-18T12:40:37.368935",
+  "generated_at": "2026-04-19T12:38:37.511565",
   "alerts": [
     {
       "player": "Carlos Santana",
@@ -7,9 +7,9 @@
       "team": "AZ",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -14.7",
-        "hard_hit_percent: -19.2",
-        "sweet_spot_percent: +88.9"
+        "exit_velocity_avg: -14.5",
+        "hard_hit_percent: -18.9",
+        "sweet_spot_percent: +87.3"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -21,9 +21,9 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -10.3",
-        "hard_hit_percent: -26.9",
-        "sweet_spot_percent: +29.4"
+        "exit_velocity_avg: -11.7",
+        "hard_hit_percent: -32.8",
+        "sweet_spot_percent: +21.1"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -35,26 +35,12 @@
       "team": "AZ",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -0.4",
-        "hard_hit_percent: -4.2",
-        "sweet_spot_percent: +12.4"
+        "exit_velocity_avg: -0.6",
+        "hard_hit_percent: -7.8",
+        "sweet_spot_percent: +13.4"
       ],
       "category": "Hitter",
-      "confidence": 89,
-      "is_free_agent": true
-    },
-    {
-      "player": "Starling Marte",
-      "position": "OF",
-      "team": "KC",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: -1.6",
-        "hard_hit_percent: +7.9",
-        "sweet_spot_percent: +13.3"
-      ],
-      "category": "Hitter",
-      "confidence": 44,
+      "confidence": 70,
       "is_free_agent": true
     },
     {
@@ -63,9 +49,9 @@
       "team": "TEX",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: -7.1",
-        "hard_hit_percent: -25.8",
-        "sweet_spot_percent: -6.5"
+        "exit_velocity_avg: -6.8",
+        "hard_hit_percent: -24.7",
+        "sweet_spot_percent: -5.1"
       ],
       "category": "Hitter",
       "confidence": 43,
@@ -77,9 +63,9 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.1",
-        "hard_hit_percent: +2.5",
-        "sweet_spot_percent: -1.6"
+        "exit_velocity_avg: +0.6",
+        "hard_hit_percent: +4.5",
+        "sweet_spot_percent: -2.4"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -89,77 +75,35 @@
       "player": "Lawrence Butler",
       "position": "OF",
       "team": "ATH",
-      "signal": "STRONG",
+      "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +3.7",
-        "hard_hit_percent: +15.2",
-        "sweet_spot_percent: +13.3"
+        "exit_velocity_avg: +3.0",
+        "hard_hit_percent: +11.2",
+        "sweet_spot_percent: +9.3"
       ],
       "category": "Hitter",
-      "confidence": 80,
+      "confidence": 58,
       "is_free_agent": false
     },
     {
       "player": "CJ Abrams",
       "position": "SS",
       "team": "WSH",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -0.4",
-        "hard_hit_percent: +2.3",
-        "sweet_spot_percent: -6.3"
-      ],
-      "category": "Hitter",
-      "confidence": 70,
-      "is_free_agent": false
-    },
-    {
-      "player": "Mason Miller",
-      "position": "RP",
-      "team": "SD",
       "signal": "EMERGING",
       "stats": [
-        "hard_hit_percent: -26.3",
-        "whiff_percent: +0.0",
-        "k_percent: +38.7"
-      ],
-      "category": "Pitcher",
-      "confidence": 49,
-      "is_free_agent": false
-    },
-    {
-      "player": "Agust\u00edn Ram\u00edrez",
-      "position": "C",
-      "team": "MIA",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: +0.5",
-        "hard_hit_percent: -1.5",
-        "sweet_spot_percent: +7.4"
+        "exit_velocity_avg: -0.2",
+        "hard_hit_percent: +3.6",
+        "sweet_spot_percent: -2.8"
       ],
       "category": "Hitter",
-      "confidence": 48,
-      "is_free_agent": false
-    },
-    {
-      "player": "Carlos Correa",
-      "position": "3B,SS",
-      "team": "HOU",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: -3.6",
-        "hard_hit_percent: -1.2",
-        "sweet_spot_percent: -5.6"
-      ],
-      "category": "Hitter",
-      "confidence": 41,
+      "confidence": 54,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 11,
-    "fa_signals": 5,
-    "strong_signals": 6
+    "signals_found": 7,
+    "fa_signals": 4,
+    "strong_signals": 4
   }
 }

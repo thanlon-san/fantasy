@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-18T12:38:52.523167",
+  "generated_at": "2026-04-19T12:37:11.580755",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -9,18 +9,18 @@
       "rostered_pct": 25,
       "trending": "HOT",
       "last_7_days": {
-        "avg": 0.368,
+        "avg": 0.3,
         "hr": 3,
-        "rbi": 9,
+        "rbi": 8,
         "sb": 0,
-        "obp": 0.35,
-        "slg": 0.842,
-        "ops": 1.192,
+        "obp": 0.3,
+        "slg": 0.75,
+        "ops": 1.05,
         "bb": 0,
         "hbp": 0,
-        "h": 7,
-        "ab": 19,
-        "r": 4,
+        "h": 6,
+        "ab": 20,
+        "r": 3,
         "era": null,
         "whip": null,
         "k": null,
@@ -34,18 +34,18 @@
         "games": 5
       },
       "last_14_days": {
-        "avg": 0.25,
+        "avg": 0.225,
         "hr": 3,
-        "rbi": 11,
+        "rbi": 10,
         "sb": 0,
-        "obp": 0.262,
-        "slg": 0.5,
-        "ops": 0.762,
-        "bb": 1,
+        "obp": 0.22,
+        "slg": 0.475,
+        "ops": 0.695,
+        "bb": 0,
         "hbp": 0,
-        "h": 10,
+        "h": 9,
         "ab": 40,
-        "r": 5,
+        "r": 4,
         "era": null,
         "whip": null,
         "k": null,
@@ -59,17 +59,17 @@
         "games": 10
       },
       "last_30_days": {
-        "avg": 0.224,
+        "avg": 0.214,
         "hr": 3,
         "rbi": 11,
         "sb": 0,
-        "obp": 0.232,
-        "slg": 0.373,
-        "ops": 0.605,
+        "obp": 0.222,
+        "slg": 0.357,
+        "ops": 0.579,
         "bb": 1,
         "hbp": 0,
         "h": 15,
-        "ab": 67,
+        "ab": 70,
         "r": 7,
         "era": null,
         "whip": null,
@@ -81,11 +81,11 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 18
+        "games": 19
       },
       "statcast_changes": {
-        "exit_velo": "-0.4 mph",
-        "hard_hit_pct": "-4.2%"
+        "exit_velo": "-0.6 mph",
+        "hard_hit_pct": "-7.8%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -176,8 +176,8 @@
         "games": 7
       },
       "statcast_changes": {
-        "exit_velo": "-10.3 mph",
-        "hard_hit_pct": "-26.9%"
+        "exit_velo": "-11.7 mph",
+        "hard_hit_pct": "-32.8%"
       },
       "role_change": null,
       "upcoming_schedule": null,
