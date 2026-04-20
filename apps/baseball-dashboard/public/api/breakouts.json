@@ -1,46 +1,18 @@
 {
-  "generated_at": "2026-04-19T12:38:37.511565",
+  "generated_at": "2026-04-20T13:06:54.143890",
   "alerts": [
-    {
-      "player": "Carlos Santana",
-      "position": "1B",
-      "team": "AZ",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -14.5",
-        "hard_hit_percent: -18.9",
-        "sweet_spot_percent: +87.3"
-      ],
-      "category": "Hitter",
-      "confidence": 100,
-      "is_free_agent": true
-    },
     {
       "player": "Paul Goldschmidt",
       "position": "1B",
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -11.7",
-        "hard_hit_percent: -32.8",
-        "sweet_spot_percent: +21.1"
+        "exit_velocity_avg: -6.5",
+        "hard_hit_percent: -20.1",
+        "sweet_spot_percent: +16.3"
       ],
       "category": "Hitter",
       "confidence": 100,
-      "is_free_agent": true
-    },
-    {
-      "player": "Nolan Arenado",
-      "position": "3B",
-      "team": "AZ",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -0.6",
-        "hard_hit_percent: -7.8",
-        "sweet_spot_percent: +13.4"
-      ],
-      "category": "Hitter",
-      "confidence": 70,
       "is_free_agent": true
     },
     {
@@ -49,12 +21,26 @@
       "team": "TEX",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: -6.8",
-        "hard_hit_percent: -24.7",
-        "sweet_spot_percent: -5.1"
+        "exit_velocity_avg: -6.5",
+        "hard_hit_percent: -23.8",
+        "sweet_spot_percent: -0.6"
       ],
       "category": "Hitter",
       "confidence": 43,
+      "is_free_agent": true
+    },
+    {
+      "player": "Nolan Arenado",
+      "position": "3B",
+      "team": "AZ",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -1.7",
+        "hard_hit_percent: -10.2",
+        "sweet_spot_percent: +8.3"
+      ],
+      "category": "Hitter",
+      "confidence": 42,
       "is_free_agent": true
     },
     {
@@ -63,26 +49,12 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.6",
-        "hard_hit_percent: +4.5",
-        "sweet_spot_percent: -2.4"
+        "exit_velocity_avg: +2.3",
+        "hard_hit_percent: +9.9",
+        "sweet_spot_percent: -4.8"
       ],
       "category": "Hitter",
       "confidence": 100,
-      "is_free_agent": false
-    },
-    {
-      "player": "Lawrence Butler",
-      "position": "OF",
-      "team": "ATH",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: +3.0",
-        "hard_hit_percent: +11.2",
-        "sweet_spot_percent: +9.3"
-      ],
-      "category": "Hitter",
-      "confidence": 58,
       "is_free_agent": false
     },
     {
@@ -91,19 +63,33 @@
       "team": "WSH",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: -0.2",
-        "hard_hit_percent: +3.6",
-        "sweet_spot_percent: -2.8"
+        "exit_velocity_avg: +0.2",
+        "hard_hit_percent: +3.2",
+        "sweet_spot_percent: -1.9"
       ],
       "category": "Hitter",
-      "confidence": 54,
+      "confidence": 47,
+      "is_free_agent": false
+    },
+    {
+      "player": "Brandon Lowe",
+      "position": "2B",
+      "team": "PIT",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: +2.3",
+        "hard_hit_percent: +6.0",
+        "sweet_spot_percent: +0.5"
+      ],
+      "category": "Hitter",
+      "confidence": 41,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 7,
-    "fa_signals": 4,
-    "strong_signals": 4
+    "signals_found": 6,
+    "fa_signals": 3,
+    "strong_signals": 2
   }
 }
