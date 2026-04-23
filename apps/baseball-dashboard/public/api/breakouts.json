@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-22T13:03:10.847570",
+  "generated_at": "2026-04-23T13:03:11.268853",
   "alerts": [
     {
       "player": "Paul Goldschmidt",
@@ -7,12 +7,40 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -6.5",
-        "hard_hit_percent: -20.1",
-        "sweet_spot_percent: +16.3"
+        "exit_velocity_avg: -9.0",
+        "hard_hit_percent: -21.9",
+        "sweet_spot_percent: +21.7"
       ],
       "category": "Hitter",
       "confidence": 100,
+      "is_free_agent": true
+    },
+    {
+      "player": "Nolan Arenado",
+      "position": "3B",
+      "team": "AZ",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -0.5",
+        "hard_hit_percent: -4.9",
+        "sweet_spot_percent: +8.0"
+      ],
+      "category": "Hitter",
+      "confidence": 87,
+      "is_free_agent": true
+    },
+    {
+      "player": "Andrew McCutchen",
+      "position": "OF",
+      "team": "TEX",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -4.1",
+        "hard_hit_percent: -21.3",
+        "sweet_spot_percent: +6.0"
+      ],
+      "category": "Hitter",
+      "confidence": 83,
       "is_free_agent": true
     },
     {
@@ -21,26 +49,26 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +2.4",
-        "hard_hit_percent: -5.0",
-        "sweet_spot_percent: +5.0"
+        "exit_velocity_avg: +2.2",
+        "hard_hit_percent: -7.6",
+        "sweet_spot_percent: +0.6"
       ],
       "category": "Hitter",
-      "confidence": 76,
+      "confidence": 61,
       "is_free_agent": true
     },
     {
-      "player": "Andrew McCutchen",
+      "player": "Starling Marte",
       "position": "OF",
-      "team": "TEX",
+      "team": "KC",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: -6.2",
-        "hard_hit_percent: -23.2",
-        "sweet_spot_percent: +0.0"
+        "exit_velocity_avg: -1.4",
+        "hard_hit_percent: -3.8",
+        "sweet_spot_percent: -14.2"
       ],
       "category": "Hitter",
-      "confidence": 50,
+      "confidence": 53,
       "is_free_agent": true
     },
     {
@@ -49,12 +77,54 @@
       "team": "PIT",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +3.1",
-        "hard_hit_percent: +5.6",
-        "sweet_spot_percent: +2.4"
+        "exit_velocity_avg: +1.6",
+        "hard_hit_percent: +2.2",
+        "sweet_spot_percent: -0.4"
       ],
       "category": "Hitter",
       "confidence": 78,
+      "is_free_agent": false
+    },
+    {
+      "player": "Cody Bellinger",
+      "position": "OF",
+      "team": "NYY",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -0.6",
+        "hard_hit_percent: -0.6",
+        "sweet_spot_percent: +13.7"
+      ],
+      "category": "Hitter",
+      "confidence": 60,
+      "is_free_agent": false
+    },
+    {
+      "player": "Ernie Clement",
+      "position": "1B,2B,3B,SS",
+      "team": "TOR",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: +4.0",
+        "hard_hit_percent: +1.8",
+        "sweet_spot_percent: +7.6"
+      ],
+      "category": "Hitter",
+      "confidence": 49,
+      "is_free_agent": false
+    },
+    {
+      "player": "Zach Neto",
+      "position": "SS",
+      "team": "LAA",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -2.8",
+        "hard_hit_percent: -7.0",
+        "sweet_spot_percent: -2.9"
+      ],
+      "category": "Hitter",
+      "confidence": 44,
       "is_free_agent": false
     },
     {
@@ -63,33 +133,19 @@
       "team": "LAA",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +1.9",
-        "hard_hit_percent: +9.8",
-        "sweet_spot_percent: -6.0"
+        "exit_velocity_avg: +1.5",
+        "hard_hit_percent: +8.1",
+        "sweet_spot_percent: -6.3"
       ],
       "category": "Hitter",
-      "confidence": 59,
-      "is_free_agent": false
-    },
-    {
-      "player": "CJ Abrams",
-      "position": "SS",
-      "team": "WSH",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: +0.4",
-        "hard_hit_percent: +6.0",
-        "sweet_spot_percent: -0.8"
-      ],
-      "category": "Hitter",
-      "confidence": 47,
+      "confidence": 40,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 6,
-    "fa_signals": 3,
-    "strong_signals": 3
+    "signals_found": 10,
+    "fa_signals": 5,
+    "strong_signals": 6
   }
 }
