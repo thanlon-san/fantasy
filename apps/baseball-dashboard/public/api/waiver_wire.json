@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-23T12:59:11.143141",
+  "generated_at": "2026-04-24T12:58:12.049328",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -9,18 +9,18 @@
       "rostered_pct": 25,
       "trending": "HOT",
       "last_7_days": {
-        "avg": 0.471,
-        "hr": 2,
-        "rbi": 5,
+        "avg": 0.412,
+        "hr": 1,
+        "rbi": 3,
         "sb": 0,
-        "obp": 0.526,
-        "slg": 0.882,
-        "ops": 1.409,
+        "obp": 0.474,
+        "slg": 0.647,
+        "ops": 1.121,
         "bb": 2,
         "hbp": 0,
-        "h": 8,
+        "h": 7,
         "ab": 17,
-        "r": 5,
+        "r": 4,
         "era": null,
         "whip": null,
         "k": null,
@@ -34,16 +34,16 @@
         "games": 5
       },
       "last_14_days": {
-        "avg": 0.325,
+        "avg": 0.35,
         "hr": 4,
         "rbi": 12,
         "sb": 0,
-        "obp": 0.349,
-        "slg": 0.65,
-        "ops": 0.999,
+        "obp": 0.372,
+        "slg": 0.675,
+        "ops": 1.047,
         "bb": 2,
         "hbp": 0,
-        "h": 13,
+        "h": 14,
         "ab": 40,
         "r": 8,
         "era": null,
@@ -59,17 +59,17 @@
         "games": 11
       },
       "last_30_days": {
-        "avg": 0.263,
+        "avg": 0.262,
         "hr": 4,
         "rbi": 14,
         "sb": 0,
-        "obp": 0.286,
-        "slg": 0.438,
-        "ops": 0.723,
+        "obp": 0.284,
+        "slg": 0.429,
+        "ops": 0.713,
         "bb": 3,
         "hbp": 0,
-        "h": 21,
-        "ab": 80,
+        "h": 22,
+        "ab": 84,
         "r": 11,
         "era": null,
         "whip": null,
@@ -81,15 +81,15 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 22
+        "games": 23
       },
       "statcast_changes": {
-        "exit_velo": "-0.5 mph",
-        "hard_hit_pct": "-4.9%"
+        "exit_velo": "+0.2 mph",
+        "hard_hit_pct": "-1.5%"
       },
       "role_change": null,
       "upcoming_schedule": null,
-      "drop_player": "Dennis Santana",
+      "drop_player": "Robert Garcia",
       "drop_player_position": "RP",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, \ud83c\udfaf Critical position need, Round 12 keeper cost"
@@ -126,17 +126,17 @@
         "games": 2
       },
       "last_14_days": {
-        "avg": 0.067,
+        "avg": 0.071,
         "hr": 0,
         "rbi": 0,
         "sb": 0,
-        "obp": 0.263,
-        "slg": 0.133,
-        "ops": 0.396,
-        "bb": 3,
-        "hbp": 1,
+        "obp": 0.188,
+        "slg": 0.143,
+        "ops": 0.33,
+        "bb": 2,
+        "hbp": 0,
         "h": 1,
-        "ab": 15,
+        "ab": 14,
         "r": 2,
         "era": null,
         "whip": null,
@@ -148,7 +148,7 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 6
+        "games": 5
       },
       "last_30_days": {
         "avg": 0.125,
@@ -176,12 +176,12 @@
         "games": 9
       },
       "statcast_changes": {
-        "exit_velo": "-9.0 mph",
-        "hard_hit_pct": "-21.9%"
+        "exit_velo": "-7.1 mph",
+        "hard_hit_pct": "-16.7%"
       },
       "role_change": null,
       "upcoming_schedule": null,
-      "drop_player": "Dennis Santana",
+      "drop_player": "Robert Garcia",
       "drop_player_position": "RP",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83d\udd25 STRONG BREAKOUT, \ud83c\udfaf Critical position need, Round 12 keeper cost"
@@ -222,7 +222,7 @@
       "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
-      "drop_player": "Dennis Santana",
+      "drop_player": "Robert Garcia",
       "drop_player_position": "RP",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"

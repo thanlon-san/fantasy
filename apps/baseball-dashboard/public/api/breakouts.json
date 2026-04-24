@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-23T13:03:11.268853",
+  "generated_at": "2026-04-24T12:59:47.663972",
   "alerts": [
     {
       "player": "Paul Goldschmidt",
@@ -7,9 +7,9 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -9.0",
-        "hard_hit_percent: -21.9",
-        "sweet_spot_percent: +21.7"
+        "exit_velocity_avg: -7.1",
+        "hard_hit_percent: -16.7",
+        "sweet_spot_percent: +24.4"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -21,26 +21,12 @@
       "team": "AZ",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -0.5",
-        "hard_hit_percent: -4.9",
-        "sweet_spot_percent: +8.0"
+        "exit_velocity_avg: +0.2",
+        "hard_hit_percent: -1.5",
+        "sweet_spot_percent: +9.2"
       ],
       "category": "Hitter",
-      "confidence": 87,
-      "is_free_agent": true
-    },
-    {
-      "player": "Andrew McCutchen",
-      "position": "OF",
-      "team": "TEX",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -4.1",
-        "hard_hit_percent: -21.3",
-        "sweet_spot_percent: +6.0"
-      ],
-      "category": "Hitter",
-      "confidence": 83,
+      "confidence": 95,
       "is_free_agent": true
     },
     {
@@ -72,80 +58,52 @@
       "is_free_agent": true
     },
     {
-      "player": "Brandon Lowe",
-      "position": "2B",
-      "team": "PIT",
+      "player": "Cody Bellinger",
+      "position": "OF",
+      "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +1.6",
-        "hard_hit_percent: +2.2",
-        "sweet_spot_percent: -0.4"
+        "exit_velocity_avg: +0.9",
+        "hard_hit_percent: +2.9",
+        "sweet_spot_percent: +14.9"
       ],
       "category": "Hitter",
       "confidence": 78,
       "is_free_agent": false
     },
     {
-      "player": "Cody Bellinger",
-      "position": "OF",
-      "team": "NYY",
+      "player": "Brandon Lowe",
+      "position": "2B",
+      "team": "PIT",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -0.6",
-        "hard_hit_percent: -0.6",
-        "sweet_spot_percent: +13.7"
+        "exit_velocity_avg: +2.2",
+        "hard_hit_percent: +3.6",
+        "sweet_spot_percent: -0.3"
       ],
       "category": "Hitter",
-      "confidence": 60,
+      "confidence": 71,
       "is_free_agent": false
     },
     {
-      "player": "Ernie Clement",
-      "position": "1B,2B,3B,SS",
-      "team": "TOR",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: +4.0",
-        "hard_hit_percent: +1.8",
-        "sweet_spot_percent: +7.6"
-      ],
-      "category": "Hitter",
-      "confidence": 49,
-      "is_free_agent": false
-    },
-    {
-      "player": "Zach Neto",
+      "player": "CJ Abrams",
       "position": "SS",
-      "team": "LAA",
+      "team": "WSH",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: -2.8",
-        "hard_hit_percent: -7.0",
-        "sweet_spot_percent: -2.9"
+        "exit_velocity_avg: -0.6",
+        "hard_hit_percent: +2.4",
+        "sweet_spot_percent: -2.6"
       ],
       "category": "Hitter",
-      "confidence": 44,
-      "is_free_agent": false
-    },
-    {
-      "player": "Jo Adell",
-      "position": "OF",
-      "team": "LAA",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: +1.5",
-        "hard_hit_percent: +8.1",
-        "sweet_spot_percent: -6.3"
-      ],
-      "category": "Hitter",
-      "confidence": 40,
+      "confidence": 42,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 10,
-    "fa_signals": 5,
-    "strong_signals": 6
+    "signals_found": 7,
+    "fa_signals": 4,
+    "strong_signals": 5
   }
 }
