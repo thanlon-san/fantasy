@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-24T12:59:47.663972",
+  "generated_at": "2026-04-25T12:40:31.079045",
   "alerts": [
     {
       "player": "Paul Goldschmidt",
@@ -7,9 +7,9 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -7.1",
-        "hard_hit_percent: -16.7",
-        "sweet_spot_percent: +24.4"
+        "exit_velocity_avg: -5.8",
+        "hard_hit_percent: -12.1",
+        "sweet_spot_percent: +34.4"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -21,12 +21,12 @@
       "team": "AZ",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.2",
-        "hard_hit_percent: -1.5",
-        "sweet_spot_percent: +9.2"
+        "exit_velocity_avg: +0.5",
+        "hard_hit_percent: +0.9",
+        "sweet_spot_percent: +11.0"
       ],
       "category": "Hitter",
-      "confidence": 95,
+      "confidence": 100,
       "is_free_agent": true
     },
     {
@@ -40,7 +40,7 @@
         "sweet_spot_percent: +0.6"
       ],
       "category": "Hitter",
-      "confidence": 61,
+      "confidence": 60,
       "is_free_agent": true
     },
     {
@@ -49,12 +49,12 @@
       "team": "KC",
       "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: -1.4",
-        "hard_hit_percent: -3.8",
-        "sweet_spot_percent: -14.2"
+        "exit_velocity_avg: -5.9",
+        "hard_hit_percent: -12.3",
+        "sweet_spot_percent: -17.9"
       ],
       "category": "Hitter",
-      "confidence": 53,
+      "confidence": 59,
       "is_free_agent": true
     },
     {
@@ -63,12 +63,12 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.9",
-        "hard_hit_percent: +2.9",
-        "sweet_spot_percent: +14.9"
+        "exit_velocity_avg: +1.2",
+        "hard_hit_percent: +2.3",
+        "sweet_spot_percent: +11.5"
       ],
       "category": "Hitter",
-      "confidence": 78,
+      "confidence": 70,
       "is_free_agent": false
     },
     {
@@ -77,32 +77,18 @@
       "team": "PIT",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +2.2",
-        "hard_hit_percent: +3.6",
-        "sweet_spot_percent: -0.3"
+        "exit_velocity_avg: +2.4",
+        "hard_hit_percent: +2.5",
+        "sweet_spot_percent: +1.2"
       ],
       "category": "Hitter",
-      "confidence": 71,
-      "is_free_agent": false
-    },
-    {
-      "player": "CJ Abrams",
-      "position": "SS",
-      "team": "WSH",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: -0.6",
-        "hard_hit_percent: +2.4",
-        "sweet_spot_percent: -2.6"
-      ],
-      "category": "Hitter",
-      "confidence": 42,
+      "confidence": 62,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 7,
+    "signals_found": 6,
     "fa_signals": 4,
     "strong_signals": 5
   }
