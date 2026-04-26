@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-25T12:40:31.079045",
+  "generated_at": "2026-04-26T12:44:04.748075",
   "alerts": [
     {
       "player": "Paul Goldschmidt",
@@ -16,31 +16,31 @@
       "is_free_agent": true
     },
     {
-      "player": "Nolan Arenado",
-      "position": "3B",
-      "team": "AZ",
+      "player": "Travis d'Arnaud",
+      "position": "C",
+      "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.5",
-        "hard_hit_percent: +0.9",
-        "sweet_spot_percent: +11.0"
+        "exit_velocity_avg: +4.1",
+        "hard_hit_percent: +0.5",
+        "sweet_spot_percent: +7.0"
       ],
       "category": "Hitter",
       "confidence": 100,
       "is_free_agent": true
     },
     {
-      "player": "Travis d'Arnaud",
-      "position": "C",
-      "team": "LAA",
+      "player": "Nolan Arenado",
+      "position": "3B",
+      "team": "AZ",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +2.2",
-        "hard_hit_percent: -7.6",
-        "sweet_spot_percent: +0.6"
+        "exit_velocity_avg: +0.1",
+        "hard_hit_percent: +0.4",
+        "sweet_spot_percent: +11.4"
       ],
       "category": "Hitter",
-      "confidence": 60,
+      "confidence": 100,
       "is_free_agent": true
     },
     {
@@ -63,33 +63,61 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +1.2",
-        "hard_hit_percent: +2.3",
-        "sweet_spot_percent: +11.5"
+        "exit_velocity_avg: +0.3",
+        "hard_hit_percent: -2.3",
+        "sweet_spot_percent: +12.9"
       ],
       "category": "Hitter",
-      "confidence": 70,
+      "confidence": 78,
+      "is_free_agent": false
+    },
+    {
+      "player": "Jo Adell",
+      "position": "OF",
+      "team": "LAA",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: +2.2",
+        "hard_hit_percent: +7.7",
+        "sweet_spot_percent: -0.2"
+      ],
+      "category": "Hitter",
+      "confidence": 53,
       "is_free_agent": false
     },
     {
       "player": "Brandon Lowe",
       "position": "2B",
       "team": "PIT",
-      "signal": "STRONG",
+      "signal": "EMERGING",
       "stats": [
-        "exit_velocity_avg: +2.4",
-        "hard_hit_percent: +2.5",
-        "sweet_spot_percent: +1.2"
+        "exit_velocity_avg: +2.3",
+        "hard_hit_percent: +1.4",
+        "sweet_spot_percent: +2.2"
       ],
       "category": "Hitter",
-      "confidence": 62,
+      "confidence": 45,
+      "is_free_agent": false
+    },
+    {
+      "player": "Agust\u00edn Ram\u00edrez",
+      "position": "C",
+      "team": "MIA",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -0.1",
+        "hard_hit_percent: -0.0",
+        "sweet_spot_percent: +8.0"
+      ],
+      "category": "Hitter",
+      "confidence": 42,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 6,
+    "signals_found": 8,
     "fa_signals": 4,
-    "strong_signals": 5
+    "strong_signals": 4
   }
 }
