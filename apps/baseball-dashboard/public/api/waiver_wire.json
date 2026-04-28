@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-27T13:16:34.907165",
+  "generated_at": "2026-04-28T13:28:24.892050",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -9,18 +9,18 @@
       "rostered_pct": 25,
       "trending": "HOT",
       "last_7_days": {
-        "avg": 0.611,
+        "avg": 0.6,
         "hr": 1,
         "rbi": 3,
         "sb": 0,
-        "obp": 0.667,
-        "slg": 0.833,
-        "ops": 1.5,
-        "bb": 3,
+        "obp": 0.647,
+        "slg": 0.8,
+        "ops": 1.447,
+        "bb": 2,
         "hbp": 0,
-        "h": 11,
-        "ab": 18,
-        "r": 7,
+        "h": 9,
+        "ab": 15,
+        "r": 6,
         "era": null,
         "whip": null,
         "k": null,
@@ -31,20 +31,20 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 5
+        "games": 4
       },
       "last_14_days": {
-        "avg": 0.405,
+        "avg": 0.455,
         "hr": 2,
         "rbi": 6,
         "sb": 0,
-        "obp": 0.45,
-        "slg": 0.595,
-        "ops": 1.045,
+        "obp": 0.5,
+        "slg": 0.667,
+        "ops": 1.167,
         "bb": 3,
         "hbp": 0,
         "h": 15,
-        "ab": 37,
+        "ab": 33,
         "r": 8,
         "era": null,
         "whip": null,
@@ -56,7 +56,7 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 10
+        "games": 9
       },
       "last_30_days": {
         "avg": 0.312,
@@ -84,8 +84,8 @@
         "games": 22
       },
       "statcast_changes": {
-        "exit_velo": "-1.4 mph",
-        "hard_hit_pct": "-0.3%"
+        "exit_velo": "-2.0 mph",
+        "hard_hit_pct": "-2.1%"
       },
       "role_change": null,
       "upcoming_schedule": null,
@@ -126,17 +126,17 @@
         "games": 2
       },
       "last_14_days": {
-        "avg": 0.125,
+        "avg": 0.154,
         "hr": 0,
         "rbi": 1,
         "sb": 0,
-        "obp": 0.176,
-        "slg": 0.25,
-        "ops": 0.426,
+        "obp": 0.214,
+        "slg": 0.308,
+        "ops": 0.522,
         "bb": 1,
         "hbp": 0,
         "h": 2,
-        "ab": 16,
+        "ab": 13,
         "r": 2,
         "era": null,
         "whip": null,
@@ -148,7 +148,7 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 5
+        "games": 4
       },
       "last_30_days": {
         "avg": 0.174,
@@ -176,8 +176,8 @@
         "games": 9
       },
       "statcast_changes": {
-        "exit_velo": "-5.6 mph",
-        "hard_hit_pct": "-9.0%"
+        "exit_velo": "-4.8 mph",
+        "hard_hit_pct": "-7.4%"
       },
       "role_change": null,
       "upcoming_schedule": null,

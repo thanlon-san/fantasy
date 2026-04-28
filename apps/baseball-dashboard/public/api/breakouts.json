@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-27T13:18:41.894767",
+  "generated_at": "2026-04-28T13:30:16.661033",
   "alerts": [
     {
       "player": "Paul Goldschmidt",
@@ -7,23 +7,9 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -5.6",
-        "hard_hit_percent: -9.0",
-        "sweet_spot_percent: +32.9"
-      ],
-      "category": "Hitter",
-      "confidence": 100,
-      "is_free_agent": true
-    },
-    {
-      "player": "Nolan Arenado",
-      "position": "3B",
-      "team": "AZ",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -1.4",
-        "hard_hit_percent: -0.3",
-        "sweet_spot_percent: +9.8"
+        "exit_velocity_avg: -4.8",
+        "hard_hit_percent: -7.4",
+        "sweet_spot_percent: +27.4"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -35,12 +21,26 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +4.5",
-        "hard_hit_percent: -1.0",
-        "sweet_spot_percent: +3.9"
+        "exit_velocity_avg: +5.6",
+        "hard_hit_percent: +0.5",
+        "sweet_spot_percent: +11.5"
       ],
       "category": "Hitter",
-      "confidence": 92,
+      "confidence": 100,
+      "is_free_agent": true
+    },
+    {
+      "player": "Nolan Arenado",
+      "position": "3B",
+      "team": "AZ",
+      "signal": "STRONG",
+      "stats": [
+        "exit_velocity_avg: -2.0",
+        "hard_hit_percent: -2.1",
+        "sweet_spot_percent: +9.7"
+      ],
+      "category": "Hitter",
+      "confidence": 100,
       "is_free_agent": true
     },
     {
@@ -49,12 +49,12 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +0.8",
-        "hard_hit_percent: -0.9",
-        "sweet_spot_percent: +13.9"
+        "exit_velocity_avg: +1.6",
+        "hard_hit_percent: +2.8",
+        "sweet_spot_percent: +15.3"
       ],
       "category": "Hitter",
-      "confidence": 87,
+      "confidence": 89,
       "is_free_agent": false
     }
   ],
