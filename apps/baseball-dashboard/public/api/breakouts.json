@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-29T13:25:17.383250",
+  "generated_at": "2026-04-30T13:22:50.792926",
   "alerts": [
     {
       "player": "Paul Goldschmidt",
@@ -7,9 +7,9 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: -3.4",
-        "hard_hit_percent: -3.4",
-        "sweet_spot_percent: +28.1"
+        "exit_velocity_avg: -3.9",
+        "hard_hit_percent: -2.2",
+        "sweet_spot_percent: +26.1"
       ],
       "category": "Hitter",
       "confidence": 100,
@@ -21,12 +21,12 @@
       "team": "LAA",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +6.8",
-        "hard_hit_percent: +5.7",
-        "sweet_spot_percent: +15.9"
+        "exit_velocity_avg: +4.1",
+        "hard_hit_percent: +6.5",
+        "sweet_spot_percent: +7.4"
       ],
       "category": "Hitter",
-      "confidence": 100,
+      "confidence": 95,
       "is_free_agent": true
     },
     {
@@ -35,18 +35,46 @@
       "team": "NYY",
       "signal": "STRONG",
       "stats": [
-        "exit_velocity_avg: +1.3",
-        "hard_hit_percent: +1.8",
-        "sweet_spot_percent: +14.5"
+        "exit_velocity_avg: +2.1",
+        "hard_hit_percent: +6.3",
+        "sweet_spot_percent: +16.0"
       ],
       "category": "Hitter",
-      "confidence": 72,
+      "confidence": 94,
+      "is_free_agent": false
+    },
+    {
+      "player": "Wyatt Langford",
+      "position": "OF",
+      "team": "TEX",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -3.0",
+        "hard_hit_percent: -13.6",
+        "sweet_spot_percent: +2.4"
+      ],
+      "category": "Hitter",
+      "confidence": 52,
+      "is_free_agent": false
+    },
+    {
+      "player": "Liam Hicks",
+      "position": "C,1B",
+      "team": "MIA",
+      "signal": "EMERGING",
+      "stats": [
+        "exit_velocity_avg: -1.5",
+        "hard_hit_percent: -4.4",
+        "sweet_spot_percent: +6.8"
+      ],
+      "category": "Hitter",
+      "confidence": 41,
       "is_free_agent": false
     }
   ],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 3,
+    "signals_found": 5,
     "fa_signals": 2,
     "strong_signals": 3
   }
