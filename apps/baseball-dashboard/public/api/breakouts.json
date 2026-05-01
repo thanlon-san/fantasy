@@ -1,81 +1,10 @@
 {
-  "generated_at": "2026-04-30T13:22:50.792926",
-  "alerts": [
-    {
-      "player": "Paul Goldschmidt",
-      "position": "1B",
-      "team": "NYY",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: -3.9",
-        "hard_hit_percent: -2.2",
-        "sweet_spot_percent: +26.1"
-      ],
-      "category": "Hitter",
-      "confidence": 100,
-      "is_free_agent": true
-    },
-    {
-      "player": "Travis d'Arnaud",
-      "position": "C",
-      "team": "LAA",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +4.1",
-        "hard_hit_percent: +6.5",
-        "sweet_spot_percent: +7.4"
-      ],
-      "category": "Hitter",
-      "confidence": 95,
-      "is_free_agent": true
-    },
-    {
-      "player": "Cody Bellinger",
-      "position": "OF",
-      "team": "NYY",
-      "signal": "STRONG",
-      "stats": [
-        "exit_velocity_avg: +2.1",
-        "hard_hit_percent: +6.3",
-        "sweet_spot_percent: +16.0"
-      ],
-      "category": "Hitter",
-      "confidence": 94,
-      "is_free_agent": false
-    },
-    {
-      "player": "Wyatt Langford",
-      "position": "OF",
-      "team": "TEX",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: -3.0",
-        "hard_hit_percent: -13.6",
-        "sweet_spot_percent: +2.4"
-      ],
-      "category": "Hitter",
-      "confidence": 52,
-      "is_free_agent": false
-    },
-    {
-      "player": "Liam Hicks",
-      "position": "C,1B",
-      "team": "MIA",
-      "signal": "EMERGING",
-      "stats": [
-        "exit_velocity_avg: -1.5",
-        "hard_hit_percent: -4.4",
-        "sweet_spot_percent: +6.8"
-      ],
-      "category": "Hitter",
-      "confidence": 41,
-      "is_free_agent": false
-    }
-  ],
+  "generated_at": "2026-05-01T12:56:51.455764",
+  "alerts": [],
   "summary": {
     "total_scanned": 50,
-    "signals_found": 5,
-    "fa_signals": 2,
-    "strong_signals": 3
+    "signals_found": 0,
+    "fa_signals": 0,
+    "strong_signals": 0
   }
 }

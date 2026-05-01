@@ -1,7 +1,24 @@
 {
-  "generated_at": "2026-04-30T13:20:15.059840",
+  "generated_at": "2026-05-01T12:55:03.471620",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
+    {
+      "player": "Justin Verlander",
+      "position": "SP, P, IL",
+      "team": "DET",
+      "rostered_pct": 10,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": null,
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Dennis Santana",
+      "drop_player_position": "RP",
+      "confidence": "STRONG",
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
     {
       "player": "Paul Goldschmidt",
       "position": "1B, Util",
@@ -59,18 +76,18 @@
         "games": 3
       },
       "last_30_days": {
-        "avg": 0.174,
-        "hr": 1,
-        "rbi": 4,
+        "avg": 0.158,
+        "hr": 0,
+        "rbi": 1,
         "sb": 0,
-        "obp": 0.321,
-        "slg": 0.435,
-        "ops": 0.756,
+        "obp": 0.333,
+        "slg": 0.316,
+        "ops": 0.649,
         "bb": 4,
         "hbp": 1,
-        "h": 4,
-        "ab": 23,
-        "r": 5,
+        "h": 3,
+        "ab": 19,
+        "r": 4,
         "era": null,
         "whip": null,
         "k": null,
@@ -81,35 +98,15 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 9
+        "games": 8
       },
-      "statcast_changes": {
-        "exit_velo": "-3.9 mph",
-        "hard_hit_pct": "-2.2%"
-      },
-      "role_change": null,
-      "upcoming_schedule": null,
-      "drop_player": "Dennis Santana",
-      "drop_player_position": "RP",
-      "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \u26a1 Emerging breakout, \ud83c\udfaf Critical position need, Round 12 keeper cost"
-    },
-    {
-      "player": "Justin Verlander",
-      "position": "SP, P, IL",
-      "team": "DET",
-      "rostered_pct": 10,
-      "trending": "STABLE",
-      "last_7_days": null,
-      "last_14_days": null,
-      "last_30_days": null,
       "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Dennis Santana",
       "drop_player_position": "RP",
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, Round 12 keeper cost"
     },
     {
       "player": "Nick Castellanos",
@@ -143,17 +140,17 @@
         "games": 3
       },
       "last_14_days": {
-        "avg": 0.125,
+        "avg": 0.167,
         "hr": 1,
         "rbi": 4,
         "sb": 0,
-        "obp": 0.176,
-        "slg": 0.312,
-        "ops": 0.489,
+        "obp": 0.231,
+        "slg": 0.417,
+        "ops": 0.647,
         "bb": 1,
         "hbp": 0,
         "h": 2,
-        "ab": 16,
+        "ab": 12,
         "r": 2,
         "era": null,
         "whip": null,
@@ -165,7 +162,7 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 6
+        "games": 5
       },
       "last_30_days": {
         "avg": 0.163,
@@ -192,16 +189,13 @@
         "holds": null,
         "games": 14
       },
-      "statcast_changes": {
-        "exit_velo": "-5.9 mph",
-        "hard_hit_pct": "-16.4%"
-      },
+      "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
       "drop_player": "Dennis Santana",
       "drop_player_position": "RP",
-      "confidence": "STRONG",
-      "reason": "Significant upgrade, \ud83c\udfaf Critical position need, Round 12 keeper cost"
+      "confidence": "GOOD",
+      "reason": "Solid value gain, \ud83c\udfaf Critical position need, Round 12 keeper cost"
     }
   ],
   "summary": {
