@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-15T13:28:06.320131",
+  "generated_at": "2026-05-16T12:57:09.513648",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -9,18 +9,18 @@
       "rostered_pct": 10,
       "trending": "HOT",
       "last_7_days": {
-        "avg": 0.545,
-        "hr": 2,
-        "rbi": 3,
+        "avg": 0.5,
+        "hr": 1,
+        "rbi": 1,
         "sb": 0,
-        "obp": 0.583,
-        "slg": 1.091,
-        "ops": 1.674,
+        "obp": 0.571,
+        "slg": 1.0,
+        "ops": 1.571,
         "bb": 1,
         "hbp": 0,
-        "h": 6,
-        "ab": 11,
-        "r": 2,
+        "h": 3,
+        "ab": 6,
+        "r": 1,
         "era": null,
         "whip": null,
         "k": null,
@@ -31,7 +31,7 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 3
+        "games": 2
       },
       "last_14_days": {
         "avg": 0.379,
@@ -86,8 +86,8 @@
       "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
-      "drop_player": "Dennis Santana",
-      "drop_player_position": "RP",
+      "drop_player": "Jacob Latz",
+      "drop_player_position": "SP,RP",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, Round 12 keeper cost"
     },
@@ -103,8 +103,8 @@
       "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
-      "drop_player": "Dennis Santana",
-      "drop_player_position": "RP",
+      "drop_player": "Jacob Latz",
+      "drop_player_position": "SP,RP",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
     },
@@ -117,18 +117,18 @@
       "last_7_days": null,
       "last_14_days": null,
       "last_30_days": {
-        "avg": 0.214,
-        "hr": 2,
-        "rbi": 6,
+        "avg": 0.208,
+        "hr": 1,
+        "rbi": 4,
         "sb": 0,
-        "obp": 0.214,
-        "slg": 0.536,
-        "ops": 0.75,
+        "obp": 0.208,
+        "slg": 0.458,
+        "ops": 0.667,
         "bb": 0,
         "hbp": 0,
-        "h": 6,
-        "ab": 28,
-        "r": 3,
+        "h": 5,
+        "ab": 24,
+        "r": 2,
         "era": null,
         "whip": null,
         "k": null,
@@ -139,13 +139,13 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 7
+        "games": 6
       },
       "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
-      "drop_player": "Dennis Santana",
-      "drop_player_position": "RP",
+      "drop_player": "Jacob Latz",
+      "drop_player_position": "SP,RP",
       "confidence": "STRONG",
       "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, Round 12 keeper cost"
     },
@@ -233,10 +233,10 @@
       "statcast_changes": null,
       "role_change": null,
       "upcoming_schedule": null,
-      "drop_player": "Dennis Santana",
-      "drop_player_position": "RP",
-      "confidence": "STRONG",
-      "reason": "Significant upgrade, \ud83c\udfaf Critical position need, Round 12 keeper cost"
+      "drop_player": "Jacob Latz",
+      "drop_player_position": "SP,RP",
+      "confidence": "GOOD",
+      "reason": "Solid value gain, \ud83c\udfaf Critical position need, Round 12 keeper cost"
     }
   ],
   "summary": {
