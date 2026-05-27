@@ -1,35 +1,35 @@
 {
-  "generated_at": "2026-05-26T14:40:05.988709",
+  "generated_at": "2026-05-27T14:55:12.038873",
   "keepers": [
     {
       "player": "Ronald Acu\u00f1a Jr.",
       "position": "OF",
       "round": 12,
-      "adp": 8,
+      "adp": 7,
       "surplus": "+99",
       "value": "Keep",
       "years_remaining": 3,
-      "reason": "Excellent value: 99.3 surplus points, cost: round 11"
+      "reason": "Excellent value: 99.4 surplus points, cost: round 11"
     },
     {
       "player": "Garrett Crochet",
       "position": "SP",
       "round": 11,
-      "adp": 9,
+      "adp": 11,
       "surplus": "+99",
       "value": "Keep",
       "years_remaining": 3,
-      "reason": "Excellent value: 99.2 surplus points, cost: round 11"
+      "reason": "Excellent value: 99.0 surplus points, cost: round 11"
     },
     {
-      "player": "Mason Miller",
-      "position": "RP",
+      "player": "Jazz Chisholm Jr.",
+      "position": "2B,3B",
       "round": 10,
-      "adp": 36,
-      "surplus": "+77",
+      "adp": 25,
+      "surplus": "+86",
       "value": "Keep",
       "years_remaining": 3,
-      "reason": "Excellent value: 77.0 surplus points, cost: round 11"
+      "reason": "Excellent value: 86.3 surplus points, cost: round 11"
     }
   ],
   "summary": {
