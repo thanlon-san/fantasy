@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T14:53:39.404752",
+  "generated_at": "2026-05-28T15:25:16.581651",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -24,7 +24,7 @@
       "position": "SP, P",
       "team": "CHC",
       "rostered_pct": 10,
-      "trending": "COLD",
+      "trending": "STABLE",
       "last_7_days": {
         "avg": null,
         "hr": null,
@@ -38,17 +38,17 @@
         "h": null,
         "ab": null,
         "r": null,
-        "era": 7.71,
-        "whip": 1.93,
-        "k": 5,
+        "era": 7.45,
+        "whip": 1.66,
+        "k": 9,
         "w": 0,
         "sv": 0,
         "qs": 0,
-        "ip": 4.7,
-        "p_bb": 1,
-        "p_h": 8,
+        "ip": 9.7,
+        "p_bb": 3,
+        "p_h": 13,
         "holds": 0,
-        "games": 1
+        "games": 2
       },
       "last_14_days": {
         "avg": null,
@@ -63,17 +63,17 @@
         "h": null,
         "ab": null,
         "r": null,
-        "era": 11.17,
-        "whip": 1.86,
-        "k": 7,
+        "era": 9.82,
+        "whip": 1.7,
+        "k": 11,
         "w": 0,
         "sv": 0,
         "qs": 0,
-        "ip": 9.7,
-        "p_bb": 2,
-        "p_h": 16,
+        "ip": 14.7,
+        "p_bb": 4,
+        "p_h": 21,
         "holds": 0,
-        "games": 2
+        "games": 3
       },
       "last_30_days": {
         "avg": null,
@@ -88,17 +88,17 @@
         "h": null,
         "ab": null,
         "r": null,
-        "era": 5.86,
-        "whip": 1.23,
-        "k": 22,
+        "era": 6.06,
+        "whip": 1.26,
+        "k": 26,
         "w": 0,
         "sv": 0,
         "qs": 1,
-        "ip": 27.7,
-        "p_bb": 6,
-        "p_h": 28,
+        "ip": 32.7,
+        "p_bb": 8,
+        "p_h": 33,
         "holds": 0,
-        "games": 5
+        "games": 6
       },
       "statcast_changes": null,
       "role_change": null,
@@ -123,7 +123,7 @@
       "drop_player": "Jacob Latz",
       "drop_player_position": "SP,RP",
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, Round 12 keeper cost"
+      "reason": "Significant upgrade, \ud83c\udfaf Critical position need, Round 12 keeper cost"
     },
     {
       "player": "Justin Verlander",
