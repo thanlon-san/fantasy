@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-06-10T14:52:34.682371",
+  "generated_at": "2026-06-11T15:33:56.882229",
   "alerts": [],
   "summary": {
-    "total_scanned": 49,
+    "total_scanned": 50,
     "signals_found": 0,
     "fa_signals": 0,
     "strong_signals": 0
