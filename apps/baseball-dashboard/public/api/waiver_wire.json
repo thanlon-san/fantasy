@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-21T13:47:10.980395",
+  "generated_at": "2026-06-22T16:26:22.295647",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -45,18 +45,18 @@
       "last_7_days": null,
       "last_14_days": null,
       "last_30_days": {
-        "avg": 0.143,
+        "avg": 0.182,
         "hr": 0,
         "rbi": 1,
         "sb": 1,
-        "obp": 0.188,
-        "slg": 0.143,
-        "ops": 0.33,
-        "bb": 1,
+        "obp": 0.167,
+        "slg": 0.182,
+        "ops": 0.348,
+        "bb": 0,
         "hbp": 0,
         "h": 2,
-        "ab": 14,
-        "r": 1,
+        "ab": 11,
+        "r": 0,
         "era": null,
         "whip": null,
         "k": null,
@@ -67,7 +67,7 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 6
+        "games": 5
       },
       "statcast_changes": null,
       "role_change": null,
