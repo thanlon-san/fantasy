@@ -1,46 +1,24 @@
 {
-  "generated_at": "2026-06-25T14:00:17.489880",
-  "date": "2026-06-25",
+  "generated_at": "2026-06-26T13:59:30.039257",
+  "date": "2026-06-26",
   "must_start": [
-    {
-      "player": "Cody Bellinger",
-      "player_key": "469.p.10504",
-      "position": "OF",
-      "team": "NYY",
-      "opponent": "@ BOS",
-      "opponent_pitcher": "Connelly Early",
-      "game_time": "07:10 PM ET",
-      "confidence": 82,
-      "matchup": 71.0,
-      "parkFactor": 85,
-      "platoon": 60,
-      "form": 75,
-      "breakout": 0,
-      "vegas_total": null,
-      "reasons": [
-        "At hitter-friendly park (1.10)",
-        "Due for positive regression (xBA: 0.324)"
-      ],
-      "injury": null
-    }
-  ],
-  "start": [
     {
       "player": "Jacob Latz",
       "player_key": "469.p.12086",
       "position": "SP,RP",
       "team": "TEX",
       "opponent": "@ TOR",
-      "opponent_pitcher": "Kevin Gausman",
+      "opponent_pitcher": "Patrick Corbin",
       "game_time": "07:07 PM ET",
-      "confidence": 78,
-      "matchup": 64.75,
+      "confidence": 89,
+      "matchup": 86.19999999999999,
       "parkFactor": 70,
-      "platoon": 60,
+      "platoon": 90,
       "form": 100,
       "breakout": 0,
       "vegas_total": null,
       "reasons": [
+        "vs weak pitcher (Patrick Corbin)",
         "Hot streak"
       ],
       "injury": null
@@ -51,11 +29,320 @@
       "position": "OF",
       "team": "TEX",
       "opponent": "@ TOR",
-      "opponent_pitcher": "Kevin Gausman",
+      "opponent_pitcher": "Patrick Corbin",
+      "game_time": "07:07 PM ET",
+      "confidence": 86,
+      "matchup": 86.19999999999999,
+      "parkFactor": 70,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "vs weak pitcher (Patrick Corbin)",
+        "Hitting ball better than results show"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Abner Uribe",
+      "player_key": "469.p.12746",
+      "position": "RP",
+      "team": "MIL",
+      "opponent": "vs CHC",
+      "opponent_pitcher": "Colin Rea",
+      "game_time": "07:45 PM ET",
+      "confidence": 85,
+      "matchup": 88.19999999999999,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 95,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "vs weak pitcher (Colin Rea)",
+        "Hot streak"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Reid Detmers",
+      "player_key": "469.p.11926",
+      "position": "SP,RP",
+      "team": "LAA",
+      "opponent": "vs OAK",
+      "opponent_pitcher": "J.T. Ginn",
+      "game_time": "09:38 PM ET",
+      "confidence": 83,
+      "matchup": 75,
+      "parkFactor": 75,
+      "platoon": 90,
+      "form": 85,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Hot streak"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Davis Martin",
+      "player_key": "469.p.12617",
+      "position": "SP",
+      "team": "CWS",
+      "opponent": "vs KC",
+      "opponent_pitcher": "TBD",
+      "game_time": "07:40 PM ET",
+      "confidence": 83,
+      "matchup": 75,
+      "parkFactor": 75,
+      "platoon": 90,
+      "form": 85,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Pitcher TBD",
+        "Hot streak"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Payton Tolle",
+      "player_key": "469.p.64394",
+      "position": "SP,RP",
+      "team": "BOS",
+      "opponent": "vs NYY",
+      "opponent_pitcher": "Will Warren",
+      "game_time": "07:10 PM ET",
+      "confidence": 82,
+      "matchup": 55.0,
+      "parkFactor": 100,
+      "platoon": 90,
+      "form": 85,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Hitter-friendly park (1.10)",
+        "Hot streak"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Zach Neto",
+      "player_key": "469.p.60214",
+      "position": "SS",
+      "team": "LAA",
+      "opponent": "vs OAK",
+      "opponent_pitcher": "J.T. Ginn",
+      "game_time": "09:38 PM ET",
+      "confidence": 81,
+      "matchup": 75,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Due for positive regression (xBA: 0.310)"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Jo Adell",
+      "player_key": "469.p.10893",
+      "position": "OF",
+      "team": "LAA",
+      "opponent": "vs OAK",
+      "opponent_pitcher": "J.T. Ginn",
+      "game_time": "09:38 PM ET",
+      "confidence": 81,
+      "matchup": 75,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Due for positive regression (xBA: 0.309)"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Liam Hicks",
+      "player_key": "469.p.63648",
+      "position": "C,1B",
+      "team": "MIA",
+      "opponent": "@ STL",
+      "opponent_pitcher": "Michael McGreevy",
+      "game_time": "08:15 PM ET",
+      "confidence": 81,
+      "matchup": 79.0,
+      "parkFactor": 70,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Standard matchup"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Cody Bellinger",
+      "player_key": "469.p.10504",
+      "position": "OF",
+      "team": "NYY",
+      "opponent": "@ BOS",
+      "opponent_pitcher": "Payton Tolle",
+      "game_time": "07:10 PM ET",
+      "confidence": 80,
+      "matchup": 65.0,
+      "parkFactor": 85,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "At hitter-friendly park (1.10)",
+        "Due for positive regression (xBA: 0.318)"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Ryan O'Hearn",
+      "player_key": "469.p.10485",
+      "position": "1B,OF",
+      "team": "PIT",
+      "opponent": "vs CIN",
+      "opponent_pitcher": "Andrew Abbott",
+      "game_time": "06:40 PM ET",
+      "confidence": 80,
+      "matchup": 71.0,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Due for positive regression (xBA: 0.331)"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Brandon Lowe",
+      "player_key": "469.p.11125",
+      "position": "2B",
+      "team": "PIT",
+      "opponent": "vs CIN",
+      "opponent_pitcher": "Andrew Abbott",
+      "game_time": "06:40 PM ET",
+      "confidence": 80,
+      "matchup": 71.0,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Due for positive regression (xBA: 0.325)"
+      ],
+      "injury": null
+    }
+  ],
+  "start": [
+    {
+      "player": "CJ Abrams",
+      "player_key": "469.p.11822",
+      "position": "SS",
+      "team": "WSH",
+      "opponent": "@ BAL",
+      "opponent_pitcher": "Trevor Rogers",
+      "game_time": "07:05 PM ET",
+      "confidence": 79,
+      "matchup": 62.0,
+      "parkFactor": 85,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "At hitter-friendly park (1.07)",
+        "Due for positive regression (xBA: 0.300)"
+      ],
+      "injury": null
+    },
+    {
+      "player": "TJ Rumfield",
+      "player_key": "469.p.61787",
+      "position": "1B",
+      "team": "COL",
+      "opponent": "@ MIN",
+      "opponent_pitcher": "Taj Bradley",
+      "game_time": "08:10 PM ET",
+      "confidence": 77,
+      "matchup": 78.19999999999999,
+      "parkFactor": 70,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Results outpacing contact quality"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Grant Taylor",
+      "player_key": "469.p.63027",
+      "position": "SP,RP",
+      "team": "CWS",
+      "opponent": "vs KC",
+      "opponent_pitcher": "TBD",
+      "game_time": "07:40 PM ET",
+      "confidence": 76,
+      "matchup": 75,
+      "parkFactor": 75,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Pitcher TBD"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Garrett Crochet",
+      "player_key": "469.p.12046",
+      "position": "SP",
+      "team": "BOS",
+      "opponent": "vs NYY",
+      "opponent_pitcher": "Will Warren",
+      "game_time": "07:10 PM ET",
+      "confidence": 76,
+      "matchup": 55.0,
+      "parkFactor": 100,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Hitter-friendly park (1.10)",
+        "Limited recent data"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Alejandro Kirk",
+      "player_key": "469.p.11853",
+      "position": "C",
+      "team": "TOR",
+      "opponent": "vs TEX",
+      "opponent_pitcher": "Nathan Eovaldi",
       "game_time": "07:07 PM ET",
       "confidence": 75,
-      "matchup": 64.75,
-      "parkFactor": 70,
+      "matchup": 61.75,
+      "parkFactor": 75,
       "platoon": 60,
       "form": 75,
       "breakout": 0,
@@ -66,23 +353,21 @@
       "injury": null
     },
     {
-      "player": "Payton Tolle",
-      "player_key": "469.p.64394",
-      "position": "SP,RP",
-      "team": "BOS",
-      "opponent": "vs NYY",
-      "opponent_pitcher": "Cam Schlittler",
+      "player": "Erik Sabrowski",
+      "player_key": "469.p.63091",
+      "position": "RP",
+      "team": "CLE",
+      "opponent": "vs SEA",
+      "opponent_pitcher": "Luis Castillo",
       "game_time": "07:10 PM ET",
-      "confidence": 74,
-      "matchup": 28.0,
-      "parkFactor": 100,
-      "platoon": 90,
+      "confidence": 72,
+      "matchup": 53.0,
+      "parkFactor": 75,
+      "platoon": 60,
       "form": 85,
       "breakout": 0,
       "vegas_total": null,
       "reasons": [
-        "Hitter-friendly park (1.10)",
-        "vs tough pitcher (Cam Schlittler)",
         "Hot streak"
       ],
       "injury": null
@@ -93,10 +378,10 @@
       "position": "2B,3B",
       "team": "NYY",
       "opponent": "@ BOS",
-      "opponent_pitcher": "Connelly Early",
+      "opponent_pitcher": "Payton Tolle",
       "game_time": "07:10 PM ET",
-      "confidence": 73,
-      "matchup": 71.0,
+      "confidence": 71,
+      "matchup": 65.0,
       "parkFactor": 85,
       "platoon": 60,
       "form": 75,
@@ -109,201 +394,24 @@
       "injury": null
     },
     {
-      "player": "Alejandro Kirk",
-      "player_key": "469.p.11853",
-      "position": "C",
-      "team": "TOR",
-      "opponent": "vs TEX",
-      "opponent_pitcher": "MacKenzie Gore",
-      "game_time": "07:07 PM ET",
-      "confidence": 72,
-      "matchup": 28.75,
-      "parkFactor": 75,
-      "platoon": 90,
-      "form": 75,
-      "breakout": 0,
-      "vegas_total": null,
-      "reasons": [
-        "vs tough pitcher (MacKenzie Gore)",
-        "Due for positive regression (xBA: 0.236)"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Brandon Lowe",
-      "player_key": "469.p.11125",
-      "position": "2B",
-      "team": "PIT",
-      "opponent": "vs SEA",
-      "opponent_pitcher": "Bryce Miller",
-      "game_time": "12:35 PM ET",
-      "confidence": 71,
-      "matchup": 28.0,
-      "parkFactor": 75,
-      "platoon": 90,
-      "form": 75,
-      "breakout": 0,
-      "vegas_total": null,
-      "reasons": [
-        "Wind helping hitters",
-        "vs tough pitcher (Bryce Miller)",
-        "Due for positive regression (xBA: 0.326)"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Ryan O'Hearn",
-      "player_key": "469.p.10485",
-      "position": "1B,OF",
-      "team": "PIT",
-      "opponent": "vs SEA",
-      "opponent_pitcher": "Bryce Miller",
-      "game_time": "12:35 PM ET",
-      "confidence": 71,
-      "matchup": 28.0,
-      "parkFactor": 75,
-      "platoon": 90,
-      "form": 75,
-      "breakout": 0,
-      "vegas_total": null,
-      "reasons": [
-        "Wind helping hitters",
-        "vs tough pitcher (Bryce Miller)",
-        "Due for positive regression (xBA: 0.327)"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Jung Hoo Lee",
-      "player_key": "469.p.63494",
-      "position": "OF",
-      "team": "SF",
-      "opponent": "vs OAK",
-      "opponent_pitcher": "Jeffrey Springs",
-      "game_time": "03:45 PM ET",
-      "confidence": 69,
-      "matchup": 81.19999999999999,
-      "parkFactor": 50,
-      "platoon": 60,
-      "form": 75,
-      "breakout": 0,
-      "vegas_total": null,
-      "reasons": [
-        "Pitcher-friendly park (0.92)",
-        "vs weak pitcher (Jeffrey Springs)",
-        "Limited recent data"
-      ],
-      "injury": null
-    },
-    {
-      "player": "Garrett Crochet",
-      "player_key": "469.p.12046",
-      "position": "SP",
-      "team": "BOS",
-      "opponent": "vs NYY",
-      "opponent_pitcher": "Cam Schlittler",
-      "game_time": "07:10 PM ET",
-      "confidence": 68,
-      "matchup": 28.0,
-      "parkFactor": 100,
-      "platoon": 90,
-      "form": 75,
-      "breakout": 0,
-      "vegas_total": null,
-      "reasons": [
-        "Hitter-friendly park (1.10)",
-        "vs tough pitcher (Cam Schlittler)",
-        "Limited recent data"
-      ],
-      "injury": null
-    },
-    {
-      "player": "CJ Abrams",
-      "player_key": "469.p.11822",
-      "position": "SS",
-      "team": "WSH",
-      "opponent": "vs PHI",
-      "opponent_pitcher": "Cristopher S\u00e1nchez",
-      "game_time": "06:45 PM ET",
-      "confidence": 66,
-      "matchup": 25.0,
-      "parkFactor": 75,
-      "platoon": 60,
-      "form": 75,
-      "breakout": 0,
-      "vegas_total": null,
-      "reasons": [
-        "vs tough pitcher (Cristopher S\u00e1nchez)",
-        "Due for positive regression (xBA: 0.303)"
-      ],
-      "injury": null
-    }
-  ],
-  "flex": [],
-  "bench": [],
-  "not_playing": [
-    {
-      "player": "TJ Rumfield",
-      "player_key": "469.p.61787",
-      "position": "1B",
-      "team": "COL",
-      "adp": 300.0,
-      "injury": null
-    },
-    {
-      "player": "Spencer Steer",
-      "player_key": "469.p.12688",
-      "position": "1B,2B,OF",
-      "team": "CIN",
-      "adp": 285.0,
-      "injury": null
-    },
-    {
       "player": "JJ Bleday",
       "player_key": "469.p.11782",
       "position": "OF",
       "team": "CIN",
-      "adp": 300.0,
-      "injury": null
-    },
-    {
-      "player": "Zach Neto",
-      "player_key": "469.p.60214",
-      "position": "SS",
-      "team": "LAA",
-      "adp": 134.0,
-      "injury": null
-    },
-    {
-      "player": "Eugenio Su\u00e1rez",
-      "player_key": "469.p.9724",
-      "position": "3B",
-      "team": "CIN",
-      "adp": 86.0,
-      "injury": null
-    },
-    {
-      "player": "Jo Adell",
-      "player_key": "469.p.10893",
-      "position": "OF",
-      "team": "LAA",
-      "adp": 188.0,
-      "injury": null
-    },
-    {
-      "player": "Liam Hicks",
-      "player_key": "469.p.63648",
-      "position": "C,1B",
-      "team": "MIA",
-      "adp": 413.0,
-      "injury": null
-    },
-    {
-      "player": "Grant Taylor",
-      "player_key": "469.p.63027",
-      "position": "SP,RP",
-      "team": "CWS",
-      "adp": 348.0,
+      "opponent": "@ PIT",
+      "opponent_pitcher": "Paul Skenes",
+      "game_time": "06:40 PM ET",
+      "confidence": 70,
+      "matchup": 25.0,
+      "parkFactor": 70,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "vs tough pitcher (Paul Skenes)",
+        "Due for positive regression (xBA: 0.306)"
+      ],
       "injury": null
     },
     {
@@ -311,39 +419,21 @@
       "player_key": "469.p.12505",
       "position": "RP",
       "team": "SD",
-      "adp": 36.0,
-      "injury": null
-    },
-    {
-      "player": "Abner Uribe",
-      "player_key": "469.p.12746",
-      "position": "RP",
-      "team": "MIL",
-      "adp": 156.0,
-      "injury": null
-    },
-    {
-      "player": "Reid Detmers",
-      "player_key": "469.p.11926",
-      "position": "SP,RP",
-      "team": "LAA",
-      "adp": 291.0,
-      "injury": null
-    },
-    {
-      "player": "Davis Martin",
-      "player_key": "469.p.12617",
-      "position": "SP",
-      "team": "CWS",
-      "adp": 300.0,
-      "injury": null
-    },
-    {
-      "player": "Erik Sabrowski",
-      "player_key": "469.p.63091",
-      "position": "RP",
-      "team": "CLE",
-      "adp": 300.0,
+      "opponent": "vs LAD",
+      "opponent_pitcher": "Roki Sasaki",
+      "game_time": "09:45 PM ET",
+      "confidence": 69,
+      "matchup": 49.0,
+      "parkFactor": 50,
+      "platoon": 60,
+      "form": 100,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Pitcher-friendly park (0.94)",
+        "vs tough pitcher (Roki Sasaki)",
+        "Hot streak"
+      ],
       "injury": null
     },
     {
@@ -351,17 +441,98 @@
       "player_key": "469.p.10646",
       "position": "OF",
       "team": "ATL",
-      "adp": 8.0,
+      "opponent": "@ SF",
+      "opponent_pitcher": "TBD",
+      "game_time": "10:15 PM ET",
+      "confidence": 69,
+      "matchup": 75,
+      "parkFactor": 60,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Pitcher TBD",
+        "Limited recent data"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Spencer Steer",
+      "player_key": "469.p.12688",
+      "position": "1B,2B,OF",
+      "team": "CIN",
+      "opponent": "@ PIT",
+      "opponent_pitcher": "Paul Skenes",
+      "game_time": "06:40 PM ET",
+      "confidence": 65,
+      "matchup": 25.0,
+      "parkFactor": 70,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "vs tough pitcher (Paul Skenes)",
+        "Due for positive regression (xBA: 0.284)"
+      ],
+      "injury": null
+    },
+    {
+      "player": "Eugenio Su\u00e1rez",
+      "player_key": "469.p.9724",
+      "position": "3B",
+      "team": "CIN",
+      "opponent": "@ PIT",
+      "opponent_pitcher": "Paul Skenes",
+      "game_time": "06:40 PM ET",
+      "confidence": 65,
+      "matchup": 25.0,
+      "parkFactor": 70,
+      "platoon": 60,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "vs tough pitcher (Paul Skenes)",
+        "Due for positive regression (xBA: 0.317)"
+      ],
       "injury": null
     }
   ],
+  "flex": [
+    {
+      "player": "Jung Hoo Lee",
+      "player_key": "469.p.63494",
+      "position": "OF",
+      "team": "SF",
+      "opponent": "vs ATL",
+      "opponent_pitcher": "Reynaldo L\u00f3pez",
+      "game_time": "10:15 PM ET",
+      "confidence": 60,
+      "matchup": 35.0,
+      "parkFactor": 50,
+      "platoon": 90,
+      "form": 75,
+      "breakout": 0,
+      "vegas_total": null,
+      "reasons": [
+        "Pitcher-friendly park (0.92)",
+        "vs tough pitcher (Reynaldo L\u00f3pez)",
+        "Limited recent data"
+      ],
+      "injury": null
+    }
+  ],
+  "bench": [],
+  "not_playing": [],
   "summary": {
     "total_roster": 25,
-    "playing_today": 11,
-    "not_playing": 14,
-    "must_start_count": 1,
-    "start_count": 10,
-    "flex_count": 0,
+    "playing_today": 25,
+    "not_playing": 0,
+    "must_start_count": 12,
+    "start_count": 12,
+    "flex_count": 1,
     "bench_count": 0
   }
 }
