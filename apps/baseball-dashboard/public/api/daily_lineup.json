@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-13T13:59:48.366187",
-  "date": "2026-07-13",
+  "generated_at": "2026-07-14T13:02:52.135231",
+  "date": "2026-07-14",
   "must_start": [],
   "start": [],
   "flex": [],
@@ -15,11 +15,11 @@
       "injury": null
     },
     {
-      "player": "TJ Rumfield",
-      "player_key": "469.p.61787",
-      "position": "1B",
-      "team": "COL",
-      "adp": 300.0,
+      "player": "Ryan O'Hearn",
+      "player_key": "469.p.10485",
+      "position": "1B,OF",
+      "team": "PIT",
+      "adp": 201.0,
       "injury": null
     },
     {
@@ -31,11 +31,11 @@
       "injury": null
     },
     {
-      "player": "Jazz Chisholm Jr.",
-      "player_key": "469.p.10839",
-      "position": "2B,3B",
-      "team": "NYY",
-      "adp": 44.0,
+      "player": "Eugenio Su\u00e1rez",
+      "player_key": "469.p.9724",
+      "position": "3B",
+      "team": "CIN",
+      "adp": 86.0,
       "injury": null
     },
     {
@@ -63,11 +63,11 @@
       "injury": null
     },
     {
-      "player": "Ryan O'Hearn",
-      "player_key": "469.p.10485",
-      "position": "1B,OF",
-      "team": "PIT",
-      "adp": 201.0,
+      "player": "Cody Bellinger",
+      "player_key": "469.p.10504",
+      "position": "OF",
+      "team": "NYY",
+      "adp": 43.0,
       "injury": null
     },
     {
@@ -79,19 +79,35 @@
       "injury": null
     },
     {
-      "player": "Cole Carrigg",
-      "player_key": "469.p.63002",
-      "position": "OF",
+      "player": "Kyle Teel",
+      "player_key": "469.p.62979",
+      "position": "C",
+      "team": "CWS",
+      "adp": 292.0,
+      "injury": null
+    },
+    {
+      "player": "TJ Rumfield",
+      "player_key": "469.p.61787",
+      "position": "1B",
       "team": "COL",
       "adp": 300.0,
       "injury": null
     },
     {
-      "player": "Cody Bellinger",
-      "player_key": "469.p.10504",
-      "position": "OF",
+      "player": "Jazz Chisholm Jr.",
+      "player_key": "469.p.10839",
+      "position": "2B,3B",
       "team": "NYY",
-      "adp": 43.0,
+      "adp": 44.0,
+      "injury": null
+    },
+    {
+      "player": "Cole Carrigg",
+      "player_key": "469.p.63002",
+      "position": "OF",
+      "team": "COL",
+      "adp": 300.0,
       "injury": null
     },
     {
@@ -103,27 +119,19 @@
       "injury": null
     },
     {
-      "player": "Kyle Teel",
-      "player_key": "469.p.62979",
-      "position": "C",
-      "team": "CWS",
-      "adp": 292.0,
-      "injury": null
-    },
-    {
-      "player": "Eugenio Su\u00e1rez",
-      "player_key": "469.p.9724",
-      "position": "3B",
-      "team": "CIN",
-      "adp": 86.0,
-      "injury": null
-    },
-    {
       "player": "Jo Adell",
       "player_key": "469.p.10893",
       "position": "OF",
       "team": "LAA",
       "adp": 188.0,
+      "injury": null
+    },
+    {
+      "player": "Ronald Acu\u00f1a Jr.",
+      "player_key": "469.p.10646",
+      "position": "OF",
+      "team": "ATL",
+      "adp": 8.0,
       "injury": null
     },
     {
@@ -188,14 +196,6 @@
       "position": "RP",
       "team": "HOU",
       "adp": 300.0,
-      "injury": null
-    },
-    {
-      "player": "Ronald Acu\u00f1a Jr.",
-      "player_key": "469.p.10646",
-      "position": "OF",
-      "team": "ATL",
-      "adp": 8.0,
       "injury": null
     },
     {
