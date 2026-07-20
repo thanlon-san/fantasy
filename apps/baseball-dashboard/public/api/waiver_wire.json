@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T12:50:17.690246",
+  "generated_at": "2026-07-20T13:46:48.122167",
   "data_source": "MLB Stats API + Baseball Savant Statcast",
   "targets": [
     {
@@ -9,18 +9,18 @@
       "rostered_pct": 25,
       "trending": "STABLE",
       "last_7_days": {
-        "avg": 0.286,
-        "hr": 0,
-        "rbi": 2,
+        "avg": 0.273,
+        "hr": 1,
+        "rbi": 4,
         "sb": 0,
-        "obp": 0.375,
-        "slg": 0.429,
-        "ops": 0.804,
+        "obp": 0.333,
+        "slg": 0.636,
+        "ops": 0.97,
         "bb": 1,
         "hbp": 0,
-        "h": 2,
-        "ab": 7,
-        "r": 0,
+        "h": 3,
+        "ab": 11,
+        "r": 1,
         "era": null,
         "whip": null,
         "k": null,
@@ -31,12 +31,12 @@
         "p_bb": null,
         "p_h": null,
         "holds": null,
-        "games": 2
+        "games": 3
       },
       "last_14_days": {
         "avg": 0.281,
         "hr": 3,
-        "rbi": 6,
+        "rbi": 7,
         "sb": 0,
         "obp": 0.378,
         "slg": 0.625,
@@ -59,18 +59,18 @@
         "games": 9
       },
       "last_30_days": {
-        "avg": 0.256,
-        "hr": 4,
-        "rbi": 11,
+        "avg": 0.263,
+        "hr": 5,
+        "rbi": 13,
         "sb": 0,
-        "obp": 0.326,
-        "slg": 0.487,
-        "ops": 0.813,
+        "obp": 0.33,
+        "slg": 0.525,
+        "ops": 0.855,
         "bb": 8,
         "hbp": 0,
-        "h": 20,
-        "ab": 78,
-        "r": 14,
+        "h": 21,
+        "ab": 80,
+        "r": 15,
         "era": null,
         "whip": null,
         "k": null,
@@ -89,7 +89,7 @@
       "drop_player": "Steven Okert",
       "drop_player_position": "RP",
       "confidence": "STRONG",
-      "reason": "Massive ADP advantage, \ud83c\udfaf Critical position need, Round 12 keeper cost"
+      "reason": "Significant upgrade, \ud83c\udfaf Critical position need, Round 12 keeper cost"
     },
     {
       "player": "Nick Castellanos",
@@ -141,11 +141,28 @@
       "drop_player_position": "RP",
       "confidence": "GOOD",
       "reason": "Solid value gain, \ud83c\udfaf Critical position need, pitcher upgrade, Round 12 keeper cost"
+    },
+    {
+      "player": "Giancarlo Stanton",
+      "position": "OF, Util, IL",
+      "team": "NYY",
+      "rostered_pct": 25,
+      "trending": "STABLE",
+      "last_7_days": null,
+      "last_14_days": null,
+      "last_30_days": null,
+      "statcast_changes": null,
+      "role_change": null,
+      "upcoming_schedule": null,
+      "drop_player": "Steven Okert",
+      "drop_player_position": "RP",
+      "confidence": "GOOD",
+      "reason": "Solid value gain, \ud83c\udfaf Critical position need, Round 12 keeper cost"
     }
   ],
   "summary": {
     "scanned": 25,
-    "recommended": 4,
+    "recommended": 5,
     "criteria": "ADP value, breakout signals, recent performance trends",
     "source": "Yahoo Fantasy API (live free agents)"
   }
