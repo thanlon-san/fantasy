@@ -1,39 +1,8 @@
 {
-  "generated_at": "2026-07-27T14:10:46.979123",
-  "keepers": [
-    {
-      "player": "Ronald Acu\u00f1a Jr.",
-      "position": "OF",
-      "round": 12,
-      "adp": 8,
-      "surplus": "+99",
-      "value": "Keep",
-      "years_remaining": 3,
-      "reason": "Excellent value: 99.3 surplus points, cost: round 11"
-    },
-    {
-      "player": "Garrett Crochet",
-      "position": "SP",
-      "round": 11,
-      "adp": 9,
-      "surplus": "+99",
-      "value": "Keep",
-      "years_remaining": 3,
-      "reason": "Excellent value: 99.2 surplus points, cost: round 11"
-    },
-    {
-      "player": "Mason Miller",
-      "position": "RP",
-      "round": 10,
-      "adp": 36,
-      "surplus": "+77",
-      "value": "Keep",
-      "years_remaining": 3,
-      "reason": "Excellent value: 77.0 surplus points, cost: round 11"
-    }
-  ],
+  "generated_at": "2026-07-28T13:26:54.937733",
+  "keepers": [],
   "summary": {
-    "total_eligible": 25,
-    "recommended": 25
+    "total_eligible": 0,
+    "recommended": 0
   }
 }
