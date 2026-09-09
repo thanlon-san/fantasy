@@ -1,11 +1,19 @@
+# The scheduled Yahoo recap pipeline (prepare_recap_context.py,
+# prepare_league_hq_canvas.py, prepare_preseason_canvas.py,
+# prepare_draft_context.py, finalize_recap.py, validate_pipeline.py) needs
+# ONLY requests. Nothing below it is required to run or test that path.
+requests>=2.31.0
+
+# Legacy ESPN path: src/api.py serves league data over HTTP and
+# src/context_builder.py reads it back. Needs a running local server, so it
+# cannot be used by a scheduled cloud run.
 espn_api>=0.34.0
 python-dateutil>=2.8.2
-requests>=2.31.0
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
 python-dotenv>=1.0.0
 slowapi>=0.1.9  # Rate limiting for FastAPI
 
-# Optional: For AI recap generation
-openai>=1.0.0      # For GPT-4o recaps (default)
+# Optional: only for generating recaps via an API instead of the Cursor agent.
+openai>=1.0.0      # For GPT-4o recaps
 anthropic>=0.69.0  # For Claude Sonnet 4.5 recaps
