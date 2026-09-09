@@ -27,7 +27,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.constants import (  # noqa: E402
     LEAGUE_SIZE_2026,
+    NFL_SEASON_START_DATE,
     YAHOO_OAUTH_ENV_VAR,
+    get_completed_nfl_week,
     get_current_nfl_week,
     has_season_started,
 )
@@ -250,14 +252,32 @@ def validate_canvases(fixture: Dict[str, Any], week: int) -> None:
     populated = build_preseason(
         [{"manager": "A", "team_name": "T", "draft_slot": 1}], "Test"
     )
-    check("preseason canvas renders a configured roster", "| 1 | A | T |" in populated)
+    check("preseason canvas renders a configured roster", "| 1 | T | A |" in populated)
+
+    # Managers are optional -- the shipped config carries draft order only.
+    slots_only = build_preseason([{"team_name": "T", "draft_slot": 1}], "Test")
+    check(
+        "preseason canvas renders draft order without manager names",
+        "| Pick | Team |" in slots_only and "| 1 | T |" in slots_only,
+    )
 
 
 def validate_environment(check_yahoo: bool) -> None:
     print("\nEnvironment")
     week = get_current_nfl_week()
-    check("season start date is configured", True, f"season started: {has_season_started()}")
+    completed = get_completed_nfl_week()
+    check(
+        "season start date is configured",
+        True,
+        f"kickoff {NFL_SEASON_START_DATE:%b %d %Y}, started: {has_season_started()}",
+    )
     check("current week resolves", 1 <= week <= 18, f"week {week}")
+    check(
+        "completed week resolves",
+        0 <= completed <= 18,
+        f"last finished week: {completed}"
+        + (" (nothing to recap yet)" if completed == 0 else ""),
+    )
 
     has_creds = bool(os.environ.get(YAHOO_OAUTH_ENV_VAR, "").strip())
     check(f"{YAHOO_OAUTH_ENV_VAR} is set", has_creds)

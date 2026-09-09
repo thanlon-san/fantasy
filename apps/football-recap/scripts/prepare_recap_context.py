@@ -25,9 +25,9 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.constants import (  # noqa: E402
+    NFL_SEASON_START_DATE,
     OUTPUT_DIR,
-    get_current_nfl_week,
-    has_season_started,
+    get_completed_nfl_week,
 )
 from src.recap_context import build_context  # noqa: E402
 from src.yahoo_nfl_client import YahooError, YahooNFLClient  # noqa: E402
@@ -56,16 +56,31 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    week = args.week or get_current_nfl_week()
+    completed = get_completed_nfl_week()
+
+    if args.week is None and completed == 0:
+        # The Tuesday cron fires before kickoff too. There is no finished week,
+        # so there is nothing to recap and nothing to guess at.
+        message = (
+            "No NFL week has finished yet. The 2026 season kicks off "
+            f"{NFL_SEASON_START_DATE.strftime('%b %d, %Y')} and Week 1 ends "
+            "the following Monday night."
+        )
+        print(message, file=sys.stderr)
+        write_failure_meta(1, "preseason", message)
+        return 1
+
+    week = args.week or completed
     if not 1 <= week <= 18:
         print(f"Invalid week: {week}", file=sys.stderr)
         return 2
 
-    if not has_season_started():
-        message = "The 2026 season has not kicked off yet."
-        print(message, file=sys.stderr)
-        write_failure_meta(week, "preseason", message)
-        return 1
+    if args.week is not None and completed < args.week:
+        print(
+            f"Warning: week {args.week} is not finished yet "
+            f"(last completed week: {completed}). Scores may be partial.",
+            file=sys.stderr,
+        )
 
     print(f"Preparing context for week {week}...")
 

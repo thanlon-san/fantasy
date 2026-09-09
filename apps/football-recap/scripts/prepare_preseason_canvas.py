@@ -65,24 +65,26 @@ def build_canvas(managers: List[Dict[str, Any]], status_note: str) -> str:
     parts.append(f"\n## Managers ({LEAGUE_SIZE_2026}-team league)")
     if managers:
         has_slots = any(m.get("draft_slot") for m in managers)
-        if has_slots:
-            parts.append("| Slot | Manager | Team |")
-            parts.append("| --- | --- | --- |")
-            ordered = sorted(managers, key=lambda m: m.get("draft_slot") or 99)
-            for manager in ordered:
-                parts.append(
-                    f"| {manager.get('draft_slot', '—')} "
-                    f"| {manager.get('manager', '?')} "
-                    f"| {manager.get('team_name', '—')} |"
-                )
-        else:
-            parts.append("| Manager | Team |")
-            parts.append("| --- | --- |")
-            for manager in managers:
-                parts.append(
-                    f"| {manager.get('manager', '?')} "
-                    f"| {manager.get('team_name', '—')} |"
-                )
+        has_names = any(m.get("manager") for m in managers)
+
+        header = (["Pick"] if has_slots else []) + ["Team"]
+        if has_names:
+            header.append("Manager")
+        parts.append("| " + " | ".join(header) + " |")
+        parts.append("| " + " | ".join("---" for _ in header) + " |")
+
+        ordered = (
+            sorted(managers, key=lambda m: m.get("draft_slot") or 99)
+            if has_slots
+            else managers
+        )
+        for manager in ordered:
+            row = ([str(manager.get("draft_slot", "—"))] if has_slots else []) + [
+                str(manager.get("team_name", "—"))
+            ]
+            if has_names:
+                row.append(str(manager.get("manager", "—")))
+            parts.append("| " + " | ".join(row) + " |")
     else:
         parts.append(
             "_The 2026 roster has not been read from Yahoo yet, so there is "

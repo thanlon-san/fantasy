@@ -3,7 +3,7 @@ Configuration constants for fantasy football project
 Centralized constants to avoid magic numbers throughout the codebase
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # ============================================================================
 # Team Owner Mapping
@@ -112,9 +112,14 @@ MEDIUM_CONSISTENCY_RANGE = 20.0  # Point spread for "medium consistency"
 # ============================================================================
 # NFL Season Configuration
 # ============================================================================
-# 2026 NFL Season
+# 2026 NFL Season.
+# Kickoff is Wed Sep 9 2026 (Seahawks/Patriots, 8:20pm ET) -- a Wednesday, not
+# the usual Thursday, because Labor Day fell late and Thursday is the Melbourne
+# game. Week 1 ends with Monday Night Football on Sep 14.
 NFL_SEASON_YEAR = 2026
-NFL_SEASON_START_DATE = datetime(2026, 9, 3)  # First game of 2026 season
+NFL_SEASON_START_DATE = datetime(2026, 9, 9)
+# Days from a week's first game to its last (Wed kickoff -> Mon night finish).
+NFL_WEEK_SPAN_DAYS = 5
 NFL_REGULAR_SEASON_WEEKS = 18
 NFL_PLAYOFF_START_WEEK = 15  # Fantasy playoffs typically start week 15
 
@@ -186,11 +191,11 @@ def has_season_started() -> bool:
 
 def get_current_nfl_week() -> int:
     """
-    Auto-detect current NFL week based on date
+    Auto-detect the week currently in progress.
 
     Returns 1 before kickoff as well as during week 1 -- use has_season_started()
-    to tell those apart. Run on a Tuesday this returns the week that just
-    finished, which is the week to recap.
+    to tell those apart. To pick a week to RECAP, use get_completed_nfl_week()
+    instead: a week in progress has no final scores.
 
     Returns:
         Current week number (1-18)
@@ -203,6 +208,24 @@ def get_current_nfl_week() -> int:
 
     # Cap at regular season weeks
     return min(max(1, current_week), NFL_REGULAR_SEASON_WEEKS)
+
+
+def get_completed_nfl_week(now: datetime = None) -> int:
+    """Return the most recent week whose games have all finished.
+
+    This is the week to recap. Returns 0 when no week is complete yet, which is
+    the signal that there is nothing to write about -- the Tuesday cron fires
+    before kickoff too.
+
+    A week runs Wednesday through Monday night, so week N is done once the day
+    after its Monday has arrived.
+    """
+    now = now or datetime.now()
+    last_game_of_week_one = NFL_SEASON_START_DATE + timedelta(days=NFL_WEEK_SPAN_DAYS)
+    days_past = (now - last_game_of_week_one).days
+    if days_past <= 0:
+        return 0
+    return min((days_past - 1) // 7 + 1, NFL_REGULAR_SEASON_WEEKS)
 
 
 def is_playoff_week(week: int) -> bool:
