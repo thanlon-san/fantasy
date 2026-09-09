@@ -262,6 +262,56 @@ def validate_canvases(fixture: Dict[str, Any], week: int) -> None:
     )
 
 
+def validate_draft_board() -> None:
+    print("\nDraft board")
+    from prepare_draft_context import DEFAULT_BOARD, analyze_team, build_markdown, load_board
+
+    if not os.path.exists(DEFAULT_BOARD):
+        check("draft board exists", False, DEFAULT_BOARD)
+        return
+    check("draft board exists", True)
+
+    board = load_board(DEFAULT_BOARD)
+    teams = board["teams"]
+    check(
+        "board has every manager",
+        len(teams) == LEAGUE_SIZE_2026,
+        f"{len(teams)} of {LEAGUE_SIZE_2026}",
+    )
+    check(
+        "every team drafted a full bench",
+        all(len(t["picks"]) == board["rounds"] for t in teams),
+        f"expected {board['rounds']} picks each",
+    )
+    check(
+        "draft slots are unique and contiguous",
+        sorted(t["draft_slot"] for t in teams) == list(range(1, len(teams) + 1)),
+    )
+    check(
+        "each team's picks cover rounds 1..N once",
+        all(
+            sorted(p[0] for p in t["picks"]) == list(range(1, board["rounds"] + 1))
+            for t in teams
+        ),
+    )
+    check(
+        "every pick has a known position",
+        all(
+            p[3] in ("QB", "RB", "WR", "TE", "K", "DST")
+            for t in teams
+            for p in t["picks"]
+        ),
+    )
+
+    analyzed = [analyze_team(t, board["rounds"]) for t in teams]
+    markdown = build_markdown(board, analyzed)
+    check(
+        "context names every team",
+        all(t["team_name"] in markdown for t in teams),
+    )
+    check("context forbids invention", "Do not invent picks" in markdown)
+
+
 def validate_environment(check_yahoo: bool) -> None:
     print("\nEnvironment")
     week = get_current_nfl_week()
@@ -325,6 +375,7 @@ def main() -> int:
     validate_power_rankings(fixture, args.week)
     built = validate_context(fixture, args.week)
     validate_canvases(fixture, args.week)
+    validate_draft_board()
     validate_environment(args.check_yahoo)
 
     if args.dump:
