@@ -1,0 +1,22 @@
+{
+  "_comment": "Fallback roster for the preseason / Yahoo-unavailable canvas. Draft order is the randomized Yahoo snake order for the 2026 season. Manager names are deliberately omitted -- the League HQ canvas identifies managers by Slack mention, and those IDs belong in Slack rather than in the repo. Once the Yahoo Fantasy API is readable, live team_name and manager data replace this entirely.",
+  "season": 2026,
+  "league_size": 14,
+  "draft_date": "2026-09-08",
+  "managers": [
+    { "draft_slot": 1, "team_name": "Scott's Tots" },
+    { "draft_slot": 2, "team_name": "Goal Line Stand Jesse" },
+    { "draft_slot": 3, "team_name": "Stiff Arm tim" },
+    { "draft_slot": 4, "team_name": "High Quality TD Rate" },
+    { "draft_slot": 5, "team_name": "Purdy Boys" },
+    { "draft_slot": 6, "team_name": "Penalty Flag Sachin" },
+    { "draft_slot": 7, "team_name": "Blitz Squad Joseph" },
+    { "draft_slot": 8, "team_name": "The Blackberries" },
+    { "draft_slot": 9, "team_name": "big d's fantasy" },
+    { "draft_slot": 10, "team_name": "Dasher Mafia" },
+    { "draft_slot": 11, "team_name": "Hut Hut Eich" },
+    { "draft_slot": 12, "team_name": "Game of Throws" },
+    { "draft_slot": 13, "team_name": "Monster of the Midway" },
+    { "draft_slot": 14, "team_name": "Morgan's Team!" }
+  ]
+}

@@ -15,14 +15,15 @@ Your output MUST include ALL of these sections in this order:
 1. **Header** with `:football:` emoji and tagline
 2. **League Pulse** with `:heart-8bit:` emoji
 3. **Stat of the Week** with `:confused-math-lady:` emoji - ONE specific stat with NUMBERS
-4. **Matchups** with `:right-facing_fist:` emoji - ALL 8 matchups
-5. **Power Rankings** with `:power-up:` emoji - **ALL 16 TEAMS ranked 1-16** (not "highlights")
+4. **Matchups** with `:right-facing_fist:` emoji - EVERY matchup in the data
+5. **Power Rankings** with `:power-up:` emoji - **EVERY team in the data, ranked** (not "highlights")
 6. **Week Preview** with `:disappointed-guy:` emoji - use ACTUAL matchups from data
 7. **Closing** with `:person_in_lotus_position:` emoji - use the EXACT closing line provided
 
 **FAILURE MODES TO AVOID:**
 
-- ❌ "Power Rankings Highlights" (wrong - list ALL 16)
+- ❌ "Power Rankings Highlights" (wrong - list every team)
+- ❌ Assuming a team or matchup count - the league is 14 teams / 7 matchups as of 2026, and the prepared context is the source of truth
 - ❌ Skipping Stat of the Week
 - ❌ Making up next week matchups instead of using provided data
 - ❌ Generic closing instead of the provided closing line
@@ -147,8 +148,8 @@ ONE specific, verifiable stat with numbers. Not a vague conditional.
 (Playoffs: Championship bracket first, then consolation with brief coverage)
 
 **:power-up: Power Rankings**
-⚠️ MANDATORY: List ALL 16 teams, 1-16. One punchy line each.
-Do NOT abbreviate to "highlights" or "top 5". ALL 16 TEAMS REQUIRED.
+⚠️ MANDATORY: List EVERY team in the prepared context, in that exact order. One punchy line each.
+Do NOT abbreviate to "highlights" or "top 5". Do NOT reorder or invent ranks.
 Format: `1. **@Owner** (Record, PF) [movement] — [one-liner]` (NO team names, just @Owner)
 
 **MOVEMENT EMOJIS (REQUIRED):**

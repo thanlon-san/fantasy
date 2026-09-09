@@ -1,0 +1,303 @@
+{
+  "_comment": "2026 draft board, 14-team snake, 15 rounds. Transcribed from the Yahoo draft board because the Fantasy API is not readable yet; replace with a live fetch once it is. Each pick is [round, player, nfl_team, position] and positions are recorded exactly as the board rendered them.",
+  "season": 2026,
+  "league_id": "1324751",
+  "draft_date": "2026-09-08",
+  "rounds": 15,
+  "teams": [
+    {
+      "draft_slot": 1,
+      "team_name": "Scott's Tots",
+      "picks": [
+        [1, "Jahmyr Gibbs", "DET", "RB"],
+        [2, "Jeremiyah Love", "ARI", "RB"],
+        [3, "Javonte Williams", "DAL", "RB"],
+        [4, "Joe Burrow", "CIN", "QB"],
+        [5, "Tyler Warren", "IND", "TE"],
+        [6, "DK Metcalf", "PIT", "WR"],
+        [7, "De'Zhaun Stribling", "SF", "WR"],
+        [8, "KC Concepcion", "CLE", "WR"],
+        [9, "Philadelphia Eagles", "PHI", "DST"],
+        [10, "Josh Jacobs", "GB", "RB"],
+        [11, "Cam Little", "JAC", "K"],
+        [12, "Cairo Santos", "CHI", "K"],
+        [13, "Eddy Pineiro", "SF", "K"],
+        [14, "Harrison Mevis", "LAR", "K"],
+        [15, "Daniel Jones", "IND", "QB"]
+      ]
+    },
+    {
+      "draft_slot": 2,
+      "team_name": "Goal Line Stand Jesse",
+      "picks": [
+        [1, "Bijan Robinson", "ATL", "RB"],
+        [2, "Malik Nabers", "NYG", "WR"],
+        [3, "Breece Hall", "NYJ", "RB"],
+        [4, "DJ Moore", "BUF", "WR"],
+        [5, "Quinshon Judkins", "CLE", "RB"],
+        [6, "Kyle Pitts Sr.", "ATL", "TE"],
+        [7, "Trevor Lawrence", "JAC", "QB"],
+        [8, "Jordan Addison", "MIN", "WR"],
+        [9, "Matthew Golden", "GB", "WR"],
+        [10, "Jordan Love", "GB", "QB"],
+        [11, "Mike Washington", "LV", "RB"],
+        [12, "Dalton Schultz", "HOU", "TE"],
+        [13, "Adonai Mitchell", "NYJ", "WR"],
+        [14, "Wil Lutz", "DEN", "K"],
+        [15, "Detroit Lions", "DET", "DST"]
+      ]
+    },
+    {
+      "draft_slot": 3,
+      "team_name": "Stiff Arm tim",
+      "picks": [
+        [1, "Ja'Marr Chase", "CIN", "WR"],
+        [2, "DeVonta Smith", "PHI", "WR"],
+        [3, "Zay Flowers", "BAL", "WR"],
+        [4, "Jaylen Warren", "PIT", "RB"],
+        [5, "MarShawn Lloyd", "GB", "RB"],
+        [6, "Justin Herbert", "LAC", "QB"],
+        [7, "Kenny Gainwell", "TB", "RB"],
+        [8, "Denver Broncos", "DEN", "DST"],
+        [9, "Mark Andrews", "BAL", "TE"],
+        [10, "Cameron Dicker", "LAC", "K"],
+        [11, "Xavier Worthy", "KC", "WR"],
+        [12, "Chig Okonkwo", "WAS", "TE"],
+        [13, "Bryce Young", "CAR", "QB"],
+        [14, "Jake Bates", "DET", "K"],
+        [15, "Jalen Nailor", "LV", "WR"]
+      ]
+    },
+    {
+      "draft_slot": 4,
+      "team_name": "High Quality TD Rate",
+      "picks": [
+        [1, "Puka Nacua", "LAR", "WR"],
+        [2, "Kyren Williams", "LAR", "RB"],
+        [3, "Tee Higgins", "CIN", "WR"],
+        [4, "Bucky Irving", "TB", "RB"],
+        [5, "Christian Watson", "GB", "WR"],
+        [6, "Jayden Daniels", "WAS", "QB"],
+        [7, "Dalton Kincaid", "BUF", "TE"],
+        [8, "Jayden Reed", "GB", "WR"],
+        [9, "Wan'Dale Robinson", "TEN", "WR"],
+        [10, "Patrick Mahomes", "KC", "QB"],
+        [11, "Juwan Johnson", "NO", "TE"],
+        [12, "Zach Charbonnet", "SEA", "TE"],
+        [13, "Keenan Allen", "IND", "WR"],
+        [14, "Dallas Cowboys", "DAL", "DST"],
+        [15, "Trey Smack", "GB", "K"]
+      ]
+    },
+    {
+      "draft_slot": 5,
+      "team_name": "Purdy Boys",
+      "picks": [
+        [1, "Jonathan Taylor", "IND", "RB"],
+        [2, "Chris Olave", "NO", "WR"],
+        [3, "Trey McBride", "ARI", "TE"],
+        [4, "Terry McLaurin", "WAS", "WR"],
+        [5, "Bhayshul Tuten", "JAC", "RB"],
+        [6, "Chris Godwin Jr.", "TB", "WR"],
+        [7, "Blake Corum", "LAR", "RB"],
+        [8, "Stefon Diggs", "WAS", "WR"],
+        [9, "Matthew Stafford", "LAR", "QB"],
+        [10, "Jakobi Meyers", "JAC", "WR"],
+        [11, "Tyler Allgeier", "ARI", "RB"],
+        [12, "Deebo Samuel Sr.", "WAS", "WR"],
+        [13, "Emmett Johnson", "KC", "RB"],
+        [14, "Kansas City Chiefs", "KC", "DST"],
+        [15, "Chase McLaughlin", "TB", "K"]
+      ]
+    },
+    {
+      "draft_slot": 6,
+      "team_name": "Penalty Flag Sachin",
+      "picks": [
+        [1, "Amon-Ra St. Brown", "DET", "WR"],
+        [2, "George Pickens", "DAL", "WR"],
+        [3, "Josh Allen", "BUF", "QB"],
+        [4, "Rome Odunze", "CHI", "WR"],
+        [5, "Rhamondre Stevenson", "NE", "RB"],
+        [6, "Rico Dowdle", "CAR", "RB"],
+        [7, "Chuba Hubbard", "CAR", "RB"],
+        [8, "Alec Pierce", "IND", "WR"],
+        [9, "Seattle Seahawks", "SEA", "DST"],
+        [10, "Woody Marks", "HOU", "RB"],
+        [11, "Jason Myers", "SEA", "K"],
+        [12, "Brian Robinson Jr.", "ATL", "RB"],
+        [13, "Kayshon Boutte", "HOU", "WR"],
+        [14, "AJ Barner", "SEA", "TE"],
+        [15, "Malik Washington", "MIA", "WR"]
+      ]
+    },
+    {
+      "draft_slot": 7,
+      "team_name": "Blitz Squad Joseph",
+      "picks": [
+        [1, "Christian McCaffrey", "SF", "RB"],
+        [2, "Drake London", "ATL", "WR"],
+        [3, "Tetairoa McMillan", "CAR", "WR"],
+        [4, "Cam Skattebo", "NYG", "RB"],
+        [5, "Parker Washington", "JAC", "WR"],
+        [6, "Sam LaPorta", "DET", "TE"],
+        [7, "RJ Harvey", "DEN", "RB"],
+        [8, "Bo Nix", "DEN", "QB"],
+        [9, "Rachaad White", "WAS", "RB"],
+        [10, "New England Patriots", "NE", "DST"],
+        [11, "Rashid Shaheed", "SEA", "WR"],
+        [12, "Will Reichard", "MIN", "K"],
+        [13, "Sam Darnold", "SEA", "QB"],
+        [14, "Ryan Flournoy", "DAL", "WR"],
+        [15, "Travis Hunter", "JAC", "WR"]
+      ]
+    },
+    {
+      "draft_slot": 8,
+      "team_name": "The Blackberries",
+      "picks": [
+        [1, "Jaxon Smith-Njigba", "SEA", "WR"],
+        [2, "Brock Bowers", "LV", "TE"],
+        [3, "David Montgomery", "HOU", "RB"],
+        [4, "Jameson Williams", "DET", "WR"],
+        [5, "Davante Adams", "LAR", "WR"],
+        [6, "J.K. Dobbins", "DEN", "RB"],
+        [7, "Dak Prescott", "DAL", "QB"],
+        [8, "Houston Texans", "HOU", "DST"],
+        [9, "Brandon Aubrey", "DAL", "K"],
+        [10, "Romeo Doubs", "NE", "WR"],
+        [11, "Jordyn Tyson", "NO", "WR"],
+        [12, "Baker Mayfield", "TB", "QB"],
+        [13, "Terrance Ferguson", "LAR", "TE"],
+        [14, "Kaelon Black", "SF", "RB"],
+        [15, "C.J. Stroud", "HOU", "QB"]
+      ]
+    },
+    {
+      "draft_slot": 9,
+      "team_name": "big d's fantasy",
+      "picks": [
+        [1, "James Cook III", "BUF", "RB"],
+        [2, "Nico Collins", "HOU", "WR"],
+        [3, "Jalen Hurts", "PHI", "QB"],
+        [4, "Jaylen Waddle", "MIA", "WR"],
+        [5, "Tucker Kraft", "GB", "TE"],
+        [6, "Tony Pollard", "CAR", "RB"],
+        [7, "Brock Purdy", "SF", "QB"],
+        [8, "Quentin Johnston", "LAC", "WR"],
+        [9, "Kyle Monangai", "CHI", "RB"],
+        [10, "Minnesota Vikings", "MIN", "DST"],
+        [11, "Tyler Loop", "BAL", "K"],
+        [12, "Jake Ferguson", "DAL", "TE"],
+        [13, "Jacksonville Jaguars", "JAC", "DST"],
+        [14, "Pat Bryant", "DEN", "WR"],
+        [15, "Caleb Douglas", "MIA", "WR"]
+      ]
+    },
+    {
+      "draft_slot": 10,
+      "team_name": "Dasher Mafia",
+      "picks": [
+        [1, "Saquon Barkley", "PHI", "RB"],
+        [2, "Ashton Jeanty", "LV", "RB"],
+        [3, "Colston Loveland", "CHI", "TE"],
+        [4, "Luther Burden III", "CHI", "WR"],
+        [5, "Jadarian Price", "SEA", "RB"],
+        [6, "Jonathon Brooks", "CAR", "RB"],
+        [7, "Michael Wilson", "ARI", "WR"],
+        [8, "Makai Lemon", "PHI", "WR"],
+        [9, "Jared Goff", "DET", "QB"],
+        [10, "Baltimore Ravens", "BAL", "DST"],
+        [11, "Keon Coleman", "BUF", "WR"],
+        [12, "Tyler Shough", "NO", "QB"],
+        [13, "Ray Davis", "BUF", "RB"],
+        [14, "Hunter Henry", "NE", "TE"],
+        [15, "Chris Boswell", "PIT", "K"]
+      ]
+    },
+    {
+      "draft_slot": 11,
+      "team_name": "Hut Hut Eich",
+      "picks": [
+        [1, "CeeDee Lamb", "DAL", "WR"],
+        [2, "De'Von Achane", "MIA", "RB"],
+        [3, "Lamar Jackson", "BAL", "QB"],
+        [4, "D'Andre Swift", "CHI", "RB"],
+        [5, "Mike Evans", "SF", "WR"],
+        [6, "Harold Fannin Jr.", "CLE", "TE"],
+        [7, "Los Angeles Rams", "LAR", "DST"],
+        [8, "Josh Downs", "IND", "WR"],
+        [9, "Chris Rodriguez Jr.", "JAC", "RB"],
+        [10, "Ka'imi Fairbairn", "HOU", "K"],
+        [11, "Khalil Shakir", "BUF", "WR"],
+        [12, "Malik Willis", "MIA", "QB"],
+        [13, "Ja'Kobi Lane", "BAL", "WR"],
+        [14, "Braelon Allen", "NYJ", "RB"],
+        [15, "Greg Dulcich", "MIA", "TE"]
+      ]
+    },
+    {
+      "draft_slot": 12,
+      "team_name": "Game of Throws",
+      "picks": [
+        [1, "Kenneth Walker III", "KC", "RB"],
+        [2, "A.J. Brown", "NE", "WR"],
+        [3, "Rashee Rice", "KC", "WR"],
+        [4, "Drake Maye", "NE", "QB"],
+        [5, "TreVeyon Henderson", "NE", "RB"],
+        [6, "Carnell Tate", "TEN", "WR"],
+        [7, "Michael Pittman Jr.", "PIT", "WR"],
+        [8, "Courtland Sutton", "DEN", "WR"],
+        [9, "Aaron Jones Sr.", "MIN", "RB"],
+        [10, "Isaiah Likely", "NYG", "TE"],
+        [11, "Tyjae Spears", "TEN", "RB"],
+        [12, "Dylan Sampson", "CLE", "RB"],
+        [13, "Brenton Strange", "JAC", "TE"],
+        [14, "Evan McPherson", "CIN", "K"],
+        [15, "Green Bay Packers", "GB", "DST"]
+      ]
+    },
+    {
+      "draft_slot": 13,
+      "team_name": "Monster of the Midway",
+      "picks": [
+        [1, "Justin Jefferson", "MIN", "WR"],
+        [2, "Derrick Henry", "BAL", "RB"],
+        [3, "Garrett Wilson", "NYJ", "WR"],
+        [4, "Travis Etienne Jr.", "NO", "RB"],
+        [5, "Caleb Williams", "CHI", "QB"],
+        [6, "Brian Thomas Jr.", "JAC", "WR"],
+        [7, "Travis Kelce", "KC", "TE"],
+        [8, "Jordan Mason", "MIN", "RB"],
+        [9, "Jalen Coker", "CAR", "WR"],
+        [10, "Keaton Mitchell", "LAC", "RB"],
+        [11, "Tank Bigsby", "PHI", "RB"],
+        [12, "Denzel Boston", "CLE", "WR"],
+        [13, "Dontayvion Wicks", "PHI", "WR"],
+        [14, "Los Angeles Chargers", "LAC", "DST"],
+        [15, "Harrison Butker", "KC", "K"]
+      ]
+    },
+    {
+      "draft_slot": 14,
+      "team_name": "Morgan's Team!",
+      "picks": [
+        [1, "Chase Brown", "CIN", "RB"],
+        [2, "Omarion Hampton", "LAC", "RB"],
+        [3, "Emeka Egbuka", "TB", "WR"],
+        [4, "Ladd McConkey", "LAC", "WR"],
+        [5, "George Kittle", "SF", "TE"],
+        [6, "Marvin Harrison Jr.", "ARI", "WR"],
+        [7, "Jaxson Dart", "NYG", "QB"],
+        [8, "Jacory Croskey-Merritt", "WAS", "RB"],
+        [9, "Dallas Goedert", "PHI", "TE"],
+        [10, "Kyler Murray", "MIN", "QB"],
+        [11, "Jonah Coleman", "DEN", "RB"],
+        [12, "Tre Tucker", "LV", "WR"],
+        [13, "Jalen McMillan", "TB", "WR"],
+        [14, "Pittsburgh Steelers", "PIT", "DST"],
+        [15, "Charlie Smyth", "NO", "K"]
+      ]
+    }
+  ]
+}
