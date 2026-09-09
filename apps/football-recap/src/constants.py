@@ -112,10 +112,47 @@ MEDIUM_CONSISTENCY_RANGE = 20.0  # Point spread for "medium consistency"
 # ============================================================================
 # NFL Season Configuration
 # ============================================================================
-# 2025 NFL Season
-NFL_SEASON_START_DATE = datetime(2025, 9, 5)  # First game of 2025 season
+# 2026 NFL Season
+NFL_SEASON_YEAR = 2026
+NFL_SEASON_START_DATE = datetime(2026, 9, 3)  # First game of 2026 season
 NFL_REGULAR_SEASON_WEEKS = 18
 NFL_PLAYOFF_START_WEEK = 15  # Fantasy playoffs typically start week 15
+
+# ============================================================================
+# Yahoo Fantasy Configuration
+# ============================================================================
+# The league lives on Yahoo (not ESPN) as of the 2026 season. Yahoo resolves
+# "nfl.l.<id>" to the current season's game key, so we do not pin a game key.
+YAHOO_GAME_CODE = "nfl"
+YAHOO_LEAGUE_ID = "1324751"
+YAHOO_LEAGUE_KEY = f"{YAHOO_GAME_CODE}.l.{YAHOO_LEAGUE_ID}"
+YAHOO_API_BASE = "https://fantasysports.yahooapis.com/fantasy/v2"
+YAHOO_TOKEN_URL = "https://api.login.yahoo.com/oauth2/get_token"
+
+# Cloud secret / local file holding the OAuth2 credential blob. The blob is the
+# same shape yahoo_oauth_manual.YahooOAuth2 writes: consumer_key,
+# consumer_secret, access_token, refresh_token, token_type.
+YAHOO_OAUTH_ENV_VAR = "YAHOO_OAUTH_JSON"
+YAHOO_OAUTH_FILE_CANDIDATES = (
+    "apps/football-recap/config/oauth2.json",
+    "apps/baseball-engine/config/oauth2.json",
+    "config/oauth2.json",
+)
+
+# Number of managers the league is locked at for 2026.
+LEAGUE_SIZE_2026 = 14
+
+# Fallback roster used only when Yahoo returns no teams (preseason, or the API
+# is unreachable). Intentionally EMPTY: we have never successfully fetched the
+# 2026 league, so there is no verified manager list to hardcode. Populating this
+# with guesses would put fabricated owners on the League HQ canvas.
+#
+# To populate it, either let a successful prepare_recap_context.py run cache
+# output/week-N-weekdata.json, or drop a JSON file at
+# apps/football-recap/config/preseason_2026.json shaped like:
+#   {"managers": [{"manager": "...", "team_name": "...", "draft_slot": 1}, ...]}
+PRESEASON_MANAGERS_2026: list = []
+PRESEASON_CONFIG_FILE = "apps/football-recap/config/preseason_2026.json"
 
 # ============================================================================
 # Waiver Activity
@@ -137,14 +174,28 @@ MAX_VALID_SCORE = 250.0  # Sanity check for impossible scores
 # ============================================================================
 
 
+def has_season_started() -> bool:
+    """True once the season's first game has kicked off.
+
+    get_current_nfl_week() returns 1 both before kickoff and during week 1, so
+    callers that need to distinguish "preseason" from "week 1 is in the books"
+    must check this separately.
+    """
+    return datetime.now() >= NFL_SEASON_START_DATE
+
+
 def get_current_nfl_week() -> int:
     """
     Auto-detect current NFL week based on date
 
+    Returns 1 before kickoff as well as during week 1 -- use has_season_started()
+    to tell those apart. Run on a Tuesday this returns the week that just
+    finished, which is the week to recap.
+
     Returns:
         Current week number (1-18)
     """
-    if datetime.now() < NFL_SEASON_START_DATE:
+    if not has_season_started():
         return 1
 
     weeks_since_start = (datetime.now() - NFL_SEASON_START_DATE).days // 7
