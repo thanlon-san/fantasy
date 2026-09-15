@@ -1,0 +1,21 @@
+{
+  "_note": "Maps this league's Yahoo team_key (e.g. '470.l.1324751.t.1') to the manager's Slack user ID, so recaps and the League HQ canvas can use real @mentions instead of guessing at plain-text names. Keyed by the FULL team_key, not the bare team_id -- team_id alone is just 1..14 and would collide with any other 14-team league or synthetic test fixture using the same numbering. Sourced from League HQ canvas F0BRWD4TTK5's existing per-team mention list on 2026-09-15 (that canvas was built by hand from the Yahoo draft, before this pipeline existed), cross-referenced against Yahoo's team_key for each team_name via a live fetch. The '470' game-code prefix is specific to the 2026 NFL season -- if Yahoo assigns a different game code next season, this file needs regenerating (team_id assignments may also change if the league re-drafts).",
+  "season": 2026,
+  "league_key": "470.l.1324751",
+  "teams": {
+    "470.l.1324751.t.1": { "owner": "Tyler", "team_name": "Purdy Boys", "slack_user_id": "U03FE7P8EEP" },
+    "470.l.1324751.t.2": { "owner": "Elisa", "team_name": "Monster of the Midway", "slack_user_id": "U03L8KFL1RS" },
+    "470.l.1324751.t.3": { "owner": "Marissa", "team_name": "Scott's Tots", "slack_user_id": "U032LD8RMK8" },
+    "470.l.1324751.t.4": { "owner": "Adam", "team_name": "Hut Hut Eich", "slack_user_id": "U0405KM3X7C" },
+    "470.l.1324751.t.5": { "owner": "Gregory Stewart", "team_name": "The Blackberries", "slack_user_id": "U08SKVCGDQW" },
+    "470.l.1324751.t.6": { "owner": "Morgan", "team_name": "Morgan's Team!", "slack_user_id": "U03R72JAKFH" },
+    "470.l.1324751.t.7": { "owner": "Pete", "team_name": "High Quality TD Rate", "slack_user_id": "UPQ8CPJDR" },
+    "470.l.1324751.t.8": { "owner": "Joseph", "team_name": "Blitz Squad Joseph", "slack_user_id": "U07JPH677ED" },
+    "470.l.1324751.t.9": { "owner": "Luis", "team_name": "Game of Throws", "slack_user_id": "U0AV2EB5GUD" },
+    "470.l.1324751.t.10": { "owner": "tim", "team_name": "Stiff Arm tim", "slack_user_id": "U02C39SFXPD" },
+    "470.l.1324751.t.11": { "owner": "danielle", "team_name": "big d's fantasy", "slack_user_id": "U08SD0PJ3EU" },
+    "470.l.1324751.t.12": { "owner": "Jesse", "team_name": "Goal Line Stand Jesse", "slack_user_id": "U09KVP9JHQS" },
+    "470.l.1324751.t.13": { "owner": "Sachin", "team_name": "Penalty Flag Sachin", "slack_user_id": "U0761N3RYSW" },
+    "470.l.1324751.t.14": { "owner": "adam", "team_name": "Dasher Mafia", "slack_user_id": "U08QHPYDZ46" }
+  }
+}

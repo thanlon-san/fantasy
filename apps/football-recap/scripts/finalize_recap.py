@@ -22,6 +22,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.constants import OUTPUT_DIR, RECAP_HISTORY_FILE  # noqa: E402
 from src.power_rankings import save_history  # noqa: E402
+from src.season_awards import record_week as record_season_awards  # noqa: E402
 
 
 def _load_json(path: str, default):
@@ -91,6 +92,12 @@ def main() -> int:
                 print(f"Recorded power rankings for week {week}")
         except (KeyError, TypeError, ValueError) as exc:
             print(f"Could not record power rankings: {exc}", file=sys.stderr)
+
+        try:
+            record_season_awards(week, week_data)
+            print(f"Recorded season awards for week {week}")
+        except (KeyError, TypeError, ValueError) as exc:
+            print(f"Could not record season awards: {exc}", file=sys.stderr)
 
     print(f"Recorded week {week} into {RECAP_HISTORY_FILE} ({len(recap)} chars)")
     return 0
