@@ -15,6 +15,8 @@ import json
 import os
 from typing import Any, Dict, List, Optional
 
+from src.slack_mentions import message_mention
+
 POWER_RANKINGS_HISTORY_FILE = "power_rankings_history.json"
 
 # Weights by season phase. Early on, record is noise and scoring is signal.
@@ -181,8 +183,9 @@ def format_rankings_lines(rankings: List[Dict[str, Any]]) -> List[str]:
         record = f"{r['wins']}-{r['losses']}"
         if r.get("ties"):
             record += f"-{r['ties']}"
+        mention = message_mention(r["owner"], team_key=r.get("team_key"))
         lines.append(
-            f"{r['rank']}. **@{r['owner']}** ({record}, PF {r['pf']:.1f}) "
+            f"{r['rank']}. **{mention}** ({record}, PF {r['pf']:.1f}) "
             f"{r['movement_emoji']}"
         )
     return lines

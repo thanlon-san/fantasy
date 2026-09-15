@@ -28,6 +28,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.constants import OUTPUT_DIR  # noqa: E402
 from src.power_rankings import compute_power_rankings  # noqa: E402
+from src.season_awards import compute_leaders, load_history  # noqa: E402
+from src.slack_mentions import canvas_mention  # noqa: E402
 from src.yahoo_nfl_client import YahooError, YahooNFLClient  # noqa: E402
 
 CANVAS_FILENAME = "league-hq-canvas.md"
@@ -44,9 +46,13 @@ def load_cached_weekdata(week: int) -> Optional[Dict[str, Any]]:
         return None
 
 
+def _mention(team: Dict[str, Any]) -> str:
+    return canvas_mention(team.get("owner", "?"), team_key=team.get("team_key"))
+
+
 def _standings_table(teams: List[Dict[str, Any]]) -> List[str]:
     lines = [
-        "| # | Manager | Team | Record | PF | PA | Streak |",
+        "| # | Team | Owner | Record | PF | PA | Streak |",
         "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     for index, team in enumerate(teams, 1):
@@ -54,7 +60,7 @@ def _standings_table(teams: List[Dict[str, Any]]) -> List[str]:
         if team.get("ties"):
             record += f"-{team['ties']}"
         lines.append(
-            f"| {index} | {team.get('owner', '?')} | {team.get('team_name', '?')} "
+            f"| {index} | {team.get('team_name', '?')} | {_mention(team)} "
             f"| {record} | {team.get('points_for', 0):.1f} "
             f"| {team.get('points_against', 0):.1f} | {team.get('streak', '--')} |"
         )
@@ -62,19 +68,23 @@ def _standings_table(teams: List[Dict[str, Any]]) -> List[str]:
 
 
 def _rankings_table(rankings: List[Dict[str, Any]]) -> List[str]:
-    lines = ["| # | Manager | Record | PF | Move |", "| --- | --- | --- | --- | --- |"]
+    lines = [
+        "| # | Team | Owner | Record | PF | Move |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
     for r in rankings:
         record = f"{r['wins']}-{r['losses']}"
         if r.get("ties"):
             record += f"-{r['ties']}"
         lines.append(
-            f"| {r['rank']} | {r['owner']} | {record} | {r['pf']:.1f} "
-            f"| {r['movement']} |"
+            f"| {r['rank']} | {r.get('team_name', '?')} | {_mention(r)} "
+            f"| {record} | {r['pf']:.1f} | {r['movement']} |"
         )
     return lines
 
 
-def _season_awards(teams: List[Dict[str, Any]], week: int) -> List[str]:
+def _points_awards(teams: List[Dict[str, Any]], week: int) -> List[str]:
+    """Awards computable straight from standings -- no history needed."""
     if not teams:
         return []
     games = max(1, week)
@@ -85,15 +95,75 @@ def _season_awards(teams: List[Dict[str, Any]], week: int) -> List[str]:
         teams, key=lambda t: t.get("points_for", 0) - t.get("points_against", 0)
     )
     return [
-        f"- **Most Points For** — {most_points.get('owner')} "
+        f"* 📈 Most Points For: {_mention(most_points)} "
         f"({most_points.get('points_for', 0):.1f}, "
         f"{most_points.get('points_for', 0) / games:.1f}/wk)",
-        f"- **Fewest Points For** — {fewest_points.get('owner')} "
+        f"* 📉 Fewest Points For: {_mention(fewest_points)} "
         f"({fewest_points.get('points_for', 0):.1f})",
-        f"- **Most Points Against** — {most_against.get('owner')} "
+        f"* 🎯 Most Points Against: {_mention(most_against)} "
         f"({most_against.get('points_against', 0):.1f})",
-        f"- **Best Differential** — {best_diff.get('owner')} "
+        f"* 🥇 Best Differential: {_mention(best_diff)} "
         f"({best_diff.get('points_for', 0) - best_diff.get('points_against', 0):+.1f})",
+    ]
+
+
+def _trophy_line(
+    label: str,
+    emoji: str,
+    leader: Optional[Dict[str, Any]],
+    unit: str,
+    need_hint: str,
+) -> str:
+    """One 'trophy' row: the real leader if history has data, else a vacant
+
+    placeholder that says exactly what data is missing -- never a fabricated
+    winner.
+    """
+    if not leader:
+        return f"* {emoji} {label}: *vacant* — needs {need_hint}"
+    weeks = leader.get("weeks")
+    weeks_note = f", {weeks} wk avg" if weeks else ""
+    return (
+        f"* {emoji} {label}: {canvas_mention(leader['owner'], team_key=leader['team_key'])} "
+        f"— {leader['value']}{unit}{weeks_note}"
+    )
+
+
+def _trophy_awards() -> List[str]:
+    """Season-long trophies backed by ``season_awards_history.json``.
+
+    Read-only: recording a week's contribution to that history is
+    ``finalize_recap.py``'s job (via ``season_awards.record_week``), which
+    always runs before this canvas step in the pipeline. Rendering must never
+    also write, or calling this on a fixture (tests) or a re-fetch would
+    silently mutate the real season-long history.
+    """
+    leaders = compute_leaders(load_history())
+    return [
+        _trophy_line(
+            "The Bench Whisperer", "🪑", leaders["bench_whisperer"], " avg bench pts",
+            "roster/lineup data (fetched automatically once rosters are available)",
+        ),
+        _trophy_line(
+            "Iron Fist Award", "🧠", leaders["iron_fist"], " avg bench pts",
+            "roster/lineup data",
+        ),
+        _trophy_line(
+            "Human Highlight Reel", "🎬", leaders["human_highlight_reel"], " Bench Hero nod(s)",
+            "roster/lineup data",
+        ),
+        _trophy_line(
+            "Giant Slayer", "🎲", leaders["giant_slayer"], " upset win(s)",
+            "Yahoo projected-points data (should already be available)",
+        ),
+        _trophy_line(
+            "The Hammer", "🔨", leaders["the_hammer"], " Blowout-of-the-Week win(s)",
+            "at least one completed week",
+        ),
+        _trophy_line(
+            "Iron Stomach Award", "💪", leaders["iron_stomach"], " week(s) with the low score",
+            "at least one completed week",
+        ),
     ]
 
 
@@ -119,11 +189,11 @@ def build_canvas(week_data: Dict[str, Any], week: int) -> str:
     parts.append(f"\n## Week {week} Highlights")
     high, low = stats.get("highest_score"), stats.get("lowest_score")
     if high:
-        parts.append(
-            f"- **High score** — {high['owner']} ({high['points']:.1f})"
-        )
+        mention = canvas_mention(high["owner"], team_key=high.get("team_key"))
+        parts.append(f"- **High score** — {mention} ({high['points']:.1f})")
     if low:
-        parts.append(f"- **Low score** — {low['owner']} ({low['points']:.1f})")
+        mention = canvas_mention(low["owner"], team_key=low.get("team_key"))
+        parts.append(f"- **Low score** — {mention} ({low['points']:.1f})")
     if stats.get("closest_game"):
         game = stats["closest_game"]
         parts.append(
@@ -136,13 +206,20 @@ def build_canvas(week_data: Dict[str, Any], week: int) -> str:
             f"- **Biggest blowout** — {game['winner']} over {game['loser']} "
             f"({game['margin']:.1f})"
         )
+    if stats.get("biggest_upset"):
+        upset = stats["biggest_upset"]
+        mention = canvas_mention(upset["winner_owner"], team_key=upset.get("winner_team_key"))
+        parts.append(
+            f"- **Biggest upset** — {mention}'s {upset['winner']} "
+            f"(projected {upset['winner_projected']:.1f}) beat {upset['loser']} "
+            f"(projected {upset['loser_projected']:.1f})"
+        )
     if not any([high, low, stats.get("closest_game")]):
         parts.append("_No scoring data for this week._")
 
-    awards = _season_awards(teams, week)
-    if awards:
-        parts.append("\n## Season Awards (running)")
-        parts.extend(awards)
+    parts.append(f"\n## 🏆 Season Awards (through week {week})")
+    parts.extend(_points_awards(teams, week))
+    parts.extend(_trophy_awards())
 
     return "\n".join(parts) + "\n"
 
