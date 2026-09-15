@@ -15,6 +15,7 @@ from datetime import date, datetime
 from typing import Any, Dict, List, Optional
 
 from src.power_rankings import compute_power_rankings, format_rankings_lines
+from src.slack_mentions import message_mention
 
 RECAP_HISTORY_FILE = "recap_history.json"
 GIF_CONFIG_FILE = "apps/football-recap/config/gifs.json"
@@ -118,18 +119,34 @@ def build_superlatives(week_data: Dict[str, Any]) -> List[str]:
     matchups = week_data.get("matchups", {}).get("matchups", [])
     out: List[str] = []
 
+    rosters = week_data.get("rosters")
+    if rosters:
+        from src.bench_stats import pick_bench_hero, summarize_all_rosters
+
+        teams = week_data.get("standings", {}).get("standings", [])
+        team_lookup = {t["team_key"]: t for t in teams if t.get("team_key")}
+        hero = pick_bench_hero(summarize_all_rosters(rosters), team_lookup)
+        if hero:
+            out.append(
+                f"**Bench Hero of the Week** — "
+                f"{message_mention(hero['owner'], team_key=hero['team_key'])} left "
+                f"{hero['player_name']} ({hero['points']:.1f} pts) on the bench"
+            )
+
     high = stats.get("highest_score")
     if high:
         out.append(
-            f"**Highest Score** — @{high['owner']} ({high['team']}), "
-            f"{high['points']:.1f} points"
+            f"**Highest Score** — "
+            f"{message_mention(high['owner'], team_key=high.get('team_key'))} "
+            f"({high['team']}), {high['points']:.1f} points"
         )
 
     low = stats.get("lowest_score")
     if low:
         out.append(
-            f"**Lowest Score** — @{low['owner']} ({low['team']}), "
-            f"{low['points']:.1f} points"
+            f"**Lowest Score** — "
+            f"{message_mention(low['owner'], team_key=low.get('team_key'))} "
+            f"({low['team']}), {low['points']:.1f} points"
         )
 
     blowout = stats.get("biggest_blowout")
@@ -137,6 +154,15 @@ def build_superlatives(week_data: Dict[str, Any]) -> List[str]:
         out.append(
             f"**Biggest Blowout** — {blowout['winner']} over {blowout['loser']} "
             f"by {blowout['margin']:.1f}"
+        )
+
+    upset = stats.get("biggest_upset")
+    if upset:
+        out.append(
+            f"**Biggest Upset** — "
+            f"{message_mention(upset['winner_owner'], team_key=upset.get('winner_team_key'))}'s "
+            f"{upset['winner']} was projected for {upset['winner_projected']:.1f} vs. "
+            f"{upset['loser']}'s {upset['loser_projected']:.1f}, and won anyway"
         )
 
     closest = stats.get("closest_game")
@@ -159,8 +185,10 @@ def build_superlatives(week_data: Dict[str, Any]) -> List[str]:
                     side["score"] < average
                 ):
                     out.append(
-                        f"**Luckiest Win** — @{side['owner']} won with "
-                        f"{side['score']:.1f}, below the {average:.1f} league average"
+                        f"**Luckiest Win** — "
+                        f"{message_mention(side['owner'], team_key=side.get('team_key'))} "
+                        f"won with {side['score']:.1f}, below the {average:.1f} "
+                        "league average"
                     )
                     break
             else:
@@ -179,27 +207,33 @@ def pick_bit_of_the_week(week_data: Dict[str, Any]) -> Optional[str]:
         return None
     game = min(matchups, key=lambda m: m["margin"])
     home, away = game["home_team"], game["away_team"]
+    home_mention = message_mention(home["owner"], team_key=home.get("team_key"))
+    away_mention = message_mention(away["owner"], team_key=away.get("team_key"))
     return (
-        f"@{home['owner']}'s {home['team_name']} ({home['score']:.1f}) vs "
-        f"@{away['owner']}'s {away['team_name']} ({away['score']:.1f}) — "
+        f"{home_mention}'s {home['team_name']} ({home['score']:.1f}) vs "
+        f"{away_mention}'s {away['team_name']} ({away['score']:.1f}) — "
         f"decided by {game['margin']:.1f}"
     )
 
 
 def _matchup_line(matchup: Dict[str, Any]) -> str:
     home, away = matchup["home_team"], matchup["away_team"]
+    home_mention = message_mention(home["owner"], team_key=home.get("team_key"))
+    away_mention = message_mention(away["owner"], team_key=away.get("team_key"))
     if matchup.get("winner") == home["team_name"]:
         winner, loser = home, away
+        winner_mention, loser_mention = home_mention, away_mention
     elif matchup.get("winner") == away["team_name"]:
         winner, loser = away, home
+        winner_mention, loser_mention = away_mention, home_mention
     else:
         return (
-            f"- @{home['owner']}'s {home['team_name']} ({home['score']:.1f}) "
-            f"TIED @{away['owner']}'s {away['team_name']} ({away['score']:.1f})"
+            f"- {home_mention}'s {home['team_name']} ({home['score']:.1f}) "
+            f"TIED {away_mention}'s {away['team_name']} ({away['score']:.1f})"
         )
     return (
-        f"- @{winner['owner']}'s {winner['team_name']} ({winner['score']:.1f}) "
-        f"def. @{loser['owner']}'s {loser['team_name']} ({loser['score']:.1f}) "
+        f"- {winner_mention}'s {winner['team_name']} ({winner['score']:.1f}) "
+        f"def. {loser_mention}'s {loser['team_name']} ({loser['score']:.1f}) "
         f"— margin {matchup['margin']:.1f}"
     )
 
@@ -265,9 +299,11 @@ def build_context(week_data: Dict[str, Any], week: int) -> Dict[str, Any]:
     if next_matchups:
         for matchup in next_matchups:
             home, away = matchup["home_team"], matchup["away_team"]
+            home_mention = message_mention(home["owner"], team_key=home.get("team_key"))
+            away_mention = message_mention(away["owner"], team_key=away.get("team_key"))
             parts.append(
-                f"- @{home['owner']}'s {home['team_name']} vs "
-                f"@{away['owner']}'s {away['team_name']}"
+                f"- {home_mention}'s {home['team_name']} vs "
+                f"{away_mention}'s {away['team_name']}"
             )
     else:
         parts.append("- Next week's schedule is not available yet. Keep the preview general.")
