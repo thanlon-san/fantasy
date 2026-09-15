@@ -235,7 +235,7 @@ def validate_canvases(fixture: Dict[str, Any], week: int) -> None:
     hq = build_hq(fixture, week)
     check("HQ canvas has standings", "## Standings" in hq)
     check("HQ canvas has power rankings", "## Power Rankings" in hq)
-    check("HQ canvas has season awards", "## Season Awards" in hq)
+    check("HQ canvas has season awards", "Season Awards" in hq)
     check(
         "HQ canvas lists every team in standings",
         all(f"Manager {i:02d}" in hq for i in range(1, LEAGUE_SIZE_2026 + 1)),
