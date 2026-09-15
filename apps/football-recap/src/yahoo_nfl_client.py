@@ -304,7 +304,55 @@ class YahooNFLClient:
                 matchups.append(parsed)
         return matchups
 
-    def fetch_week_data(self, week: int) -> Dict[str, Any]:
+    def fetch_team_roster(self, team_key: str, week: int) -> List[Dict[str, Any]]:
+        """Fetch one team's Week N roster with per-player scoring and slot.
+
+        Returns a flat list of ``{name, selected_position, points, is_bench}``.
+        ``selected_position`` is the Yahoo roster slot for that week (e.g. "QB",
+        "WR", "BN", "IR"); bench/IR slots don't count toward the team's score.
+        """
+        content = self.get(
+            f"team/{team_key}/roster;week={week}/players/stats;type=week;week={week}"
+        )
+        team_node = flatten(content.get("team"))
+        roster = flatten(team_node.get("roster"))
+        players_node = roster.get("players")
+
+        players: List[Dict[str, Any]] = []
+        for raw_player in iter_collection(players_node):
+            node = flatten(raw_player)
+            player = flatten(node.get("player")) if "player" in node else node
+            name = flatten(player.get("name", {})).get("full", "Unknown")
+            position = flatten(player.get("selected_position", {})).get("position", "")
+            points = _num(flatten(player.get("player_points", {})).get("total"))
+            players.append(
+                {
+                    "name": name,
+                    "selected_position": position,
+                    "points": round(points, 2),
+                    "is_bench": position in ("BN", "IR", "IR+", "NA"),
+                }
+            )
+        return players
+
+    def fetch_all_rosters(
+        self, week: int, team_keys: List[str]
+    ) -> Dict[str, List[Dict[str, Any]]]:
+        """Fetch every team's roster for the week. Best-effort: a team whose
+
+        roster fetch fails is simply omitted rather than failing the whole
+        pipeline -- bench-based awards for that team just stay unavailable
+        this week instead of blocking the recap.
+        """
+        rosters: Dict[str, List[Dict[str, Any]]] = {}
+        for team_key in team_keys:
+            try:
+                rosters[team_key] = self.fetch_team_roster(team_key, week)
+            except YahooError:
+                continue
+        return rosters
+
+    def fetch_week_data(self, week: int, with_rosters: bool = True) -> Dict[str, Any]:
         """Fetch and normalize everything the recap context needs for a week."""
         league = self.fetch_league_meta()
         standings = self.fetch_standings()
@@ -317,6 +365,11 @@ class YahooNFLClient:
             next_matchups = []
 
         teams = [dict(row) for row in standings]
+
+        rosters: Dict[str, List[Dict[str, Any]]] = {}
+        if with_rosters:
+            team_keys = [t["team_key"] for t in teams if t.get("team_key")]
+            rosters = self.fetch_all_rosters(week, team_keys)
 
         return {
             "week": week,
@@ -333,6 +386,7 @@ class YahooNFLClient:
                 "total_matchups": len(next_matchups),
                 "matchups": next_matchups,
             },
+            "rosters": rosters,
             "week_stats": compute_week_stats(week, matchups),
             "source": "yahoo",
         }
@@ -462,6 +516,7 @@ def compute_week_stats(week: int, matchups: List[Dict[str, Any]]) -> Dict[str, A
         "biggest_blowout": None,
         "closest_game": None,
         "average_score": None,
+        "biggest_upset": None,
     }
     if not matchups:
         return stats
@@ -470,35 +525,43 @@ def compute_week_stats(week: int, matchups: List[Dict[str, Any]]) -> Dict[str, A
     for matchup in matchups:
         for key in ("home_team", "away_team"):
             side = matchup[key]
-            scored.append((side["team_name"], side["owner"], side["score"]))
+            scored.append(side)
 
     if scored:
-        high = max(scored, key=lambda s: s[2])
-        low = min(scored, key=lambda s: s[2])
+        high = max(scored, key=lambda s: s["score"])
+        low = min(scored, key=lambda s: s["score"])
         stats["highest_score"] = {
-            "team": high[0],
-            "owner": high[1],
-            "points": round(high[2], 2),
+            "team": high["team_name"],
+            "owner": high["owner"],
+            "team_key": high.get("team_key"),
+            "points": round(high["score"], 2),
         }
         stats["lowest_score"] = {
-            "team": low[0],
-            "owner": low[1],
-            "points": round(low[2], 2),
+            "team": low["team_name"],
+            "owner": low["owner"],
+            "team_key": low.get("team_key"),
+            "points": round(low["score"], 2),
         }
-        stats["average_score"] = round(sum(s[2] for s in scored) / len(scored), 2)
+        stats["average_score"] = round(
+            sum(s["score"] for s in scored) / len(scored), 2
+        )
 
     decided = [m for m in matchups if m["winner"]]
     if decided:
         blowout = max(decided, key=lambda m: m["margin"])
         closest = min(decided, key=lambda m: m["margin"])
-        loser = (
-            blowout["away_team"]
+        blowout_winner = (
+            blowout["home_team"]
             if blowout["winner"] == blowout["home_team"]["team_name"]
-            else blowout["home_team"]
+            else blowout["away_team"]
+        )
+        blowout_loser = (
+            blowout["away_team"] if blowout_winner is blowout["home_team"] else blowout["home_team"]
         )
         stats["biggest_blowout"] = {
             "winner": blowout["winner"],
-            "loser": loser["team_name"],
+            "winner_team_key": blowout_winner.get("team_key"),
+            "loser": blowout_loser["team_name"],
             "margin": blowout["margin"],
         }
         stats["closest_game"] = {
@@ -506,4 +569,31 @@ def compute_week_stats(week: int, matchups: List[Dict[str, Any]]) -> Dict[str, A
             "team2": closest["away_team"]["team_name"],
             "margin": closest["margin"],
         }
+
+        # An upset: the side Yahoo's pregame projection favored still lost.
+        # Ranked by how big the projection gap was, not the final margin --
+        # a team projected to lose by 8 and winning by 1 is a bigger upset
+        # than a projected pick'em that goes either way.
+        upsets = []
+        for matchup in decided:
+            home, away = matchup["home_team"], matchup["away_team"]
+            winner_side = home if matchup["winner"] == home["team_name"] else away
+            loser_side = away if winner_side is home else home
+            winner_proj = winner_side.get("projected") or 0.0
+            loser_proj = loser_side.get("projected") or 0.0
+            if winner_proj and loser_proj and winner_proj < loser_proj:
+                upsets.append(
+                    {
+                        "winner": winner_side["team_name"],
+                        "winner_owner": winner_side["owner"],
+                        "winner_team_key": winner_side.get("team_key"),
+                        "loser": loser_side["team_name"],
+                        "winner_projected": round(winner_proj, 2),
+                        "loser_projected": round(loser_proj, 2),
+                        "projection_gap": round(loser_proj - winner_proj, 2),
+                        "actual_margin": matchup["margin"],
+                    }
+                )
+        if upsets:
+            stats["biggest_upset"] = max(upsets, key=lambda u: u["projection_gap"])
     return stats
