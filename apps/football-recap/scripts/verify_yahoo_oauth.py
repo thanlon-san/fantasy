@@ -48,6 +48,13 @@ def _load_env() -> dict | None:
     return json.loads(raw)
 
 
+def _token_fingerprint(creds: dict) -> str:
+    import hashlib
+
+    token = creds.get("refresh_token") or ""
+    return f"len={len(token)} sha256={hashlib.sha256(token.encode()).hexdigest()[:12]}"
+
+
 def main() -> int:
     env_creds = None
     try:
@@ -55,6 +62,26 @@ def main() -> int:
     except json.JSONDecodeError:
         print(f"❌ {YAHOO_OAUTH_ENV_VAR} is not valid JSON")
         return 1
+
+    file_creds = None
+    file_path = None
+    for path in YAHOO_OAUTH_FILE_CANDIDATES:
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as handle:
+                file_creds = json.load(handle)
+            file_path = path
+            break
+
+    if env_creds and file_creds:
+        if env_creds.get("refresh_token") == file_creds.get("refresh_token"):
+            print("refresh_token: env and file match")
+        else:
+            print(
+                "refresh_token: env and file DIFFER — the cloud secret was not "
+                "updated to match oauth2.json (consumer keys may still match).\n"
+                f"  env:  {_token_fingerprint(env_creds)}\n"
+                f"  file: {_token_fingerprint(file_creds)} ({file_path})"
+            )
 
     if env_creds:
         ok, detail = _refresh_ok(env_creds)

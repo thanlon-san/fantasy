@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from typing import Any, Dict, Iterator, List, Optional
 
 import requests
@@ -131,25 +132,7 @@ def _int(value: Any, default: int = 0) -> int:
 # ---------------------------------------------------------------------------
 
 
-def load_credentials() -> Dict[str, str]:
-    """Load the OAuth blob from the env var, else from a local oauth2.json."""
-    raw = os.environ.get(YAHOO_OAUTH_ENV_VAR, "").strip()
-    source = YAHOO_OAUTH_ENV_VAR
-
-    if not raw:
-        for candidate in YAHOO_OAUTH_FILE_CANDIDATES:
-            if os.path.exists(candidate):
-                with open(candidate, "r", encoding="utf-8") as handle:
-                    raw = handle.read()
-                source = candidate
-                break
-
-    if not raw:
-        raise YahooCredentialsError(
-            f"No Yahoo credentials. Set the {YAHOO_OAUTH_ENV_VAR} secret or add "
-            f"one of: {', '.join(YAHOO_OAUTH_FILE_CANDIDATES)}"
-        )
-
+def _parse_credential_blob(raw: str, source: str) -> Dict[str, str]:
     try:
         creds = json.loads(raw)
     except json.JSONDecodeError as exc:
@@ -167,6 +150,82 @@ def load_credentials() -> Dict[str, str]:
             f"Yahoo credentials from {source} are missing: {', '.join(missing)}"
         )
     return creds
+
+
+def _refresh_token_works(creds: Dict[str, str]) -> bool:
+    """True when Yahoo accepts the stored refresh_token (no token values logged)."""
+    try:
+        response = requests.post(
+            YAHOO_TOKEN_URL,
+            data={
+                "client_id": creds["consumer_key"],
+                "client_secret": creds["consumer_secret"],
+                "refresh_token": creds["refresh_token"],
+                "grant_type": "refresh_token",
+                "redirect_uri": "oob",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+        return response.status_code == 200
+    except requests.RequestException:
+        return False
+
+
+def load_credentials() -> Dict[str, str]:
+    """Load Yahoo OAuth credentials from the env var and/or local oauth2.json files.
+
+    ``YAHOO_OAUTH_JSON`` wins when its refresh token is valid. If the cloud secret
+    is stale (common after re-auth on disk only), we fall back to the first local
+    oauth2.json whose refresh token Yahoo still accepts.
+    """
+    sources: list[tuple[str, str]] = []
+
+    env_raw = os.environ.get(YAHOO_OAUTH_ENV_VAR, "").strip()
+    if env_raw:
+        sources.append((YAHOO_OAUTH_ENV_VAR, env_raw))
+
+    for candidate in YAHOO_OAUTH_FILE_CANDIDATES:
+        if not os.path.exists(candidate):
+            continue
+        with open(candidate, "r", encoding="utf-8") as handle:
+            file_raw = handle.read().strip()
+        if not file_raw:
+            continue
+        if env_raw and file_raw == env_raw:
+            continue
+        sources.append((candidate, file_raw))
+
+    if not sources:
+        raise YahooCredentialsError(
+            f"No Yahoo credentials. Set the {YAHOO_OAUTH_ENV_VAR} secret or add "
+            f"one of: {', '.join(YAHOO_OAUTH_FILE_CANDIDATES)}"
+        )
+
+    stale_env = False
+    for source, raw in sources:
+        creds = _parse_credential_blob(raw, source)
+        if _refresh_token_works(creds):
+            if source != YAHOO_OAUTH_ENV_VAR and env_raw:
+                print(
+                    f"Warning: {YAHOO_OAUTH_ENV_VAR} has a stale refresh token; "
+                    f"using {source} instead. Re-copy apps/baseball-engine/"
+                    "config/oauth2.json into the Cursor secret (full JSON, "
+                    "including refresh_token), then start a new agent.",
+                    file=sys.stderr,
+                )
+            return creds
+        if source == YAHOO_OAUTH_ENV_VAR:
+            stale_env = True
+
+    if stale_env:
+        raise YahooAuthError(
+            f"{YAHOO_OAUTH_ENV_VAR} refresh token is invalid and no local "
+            "oauth2.json accepted a refresh. Re-authorize Yahoo, then paste the "
+            f"full oauth2.json into the {YAHOO_OAUTH_ENV_VAR} cloud secret."
+        )
+    raise YahooCredentialsError(
+        "No Yahoo credential source could refresh its token."
+    )
 
 
 class YahooNFLClient:
