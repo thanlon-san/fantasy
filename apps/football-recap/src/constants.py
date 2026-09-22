@@ -138,10 +138,14 @@ YAHOO_TOKEN_URL = "https://api.login.yahoo.com/oauth2/get_token"
 # same shape yahoo_oauth_manual.YahooOAuth2 writes: consumer_key,
 # consumer_secret, access_token, refresh_token, token_type.
 YAHOO_OAUTH_ENV_VAR = "YAHOO_OAUTH_JSON"
+# Paths tried when YAHOO_OAUTH_JSON is unset. Include cwd-relative paths for
+# scripts run from apps/football-recap (../baseball-engine/...) and repo-root-
+# relative paths for other entrypoints.
 YAHOO_OAUTH_FILE_CANDIDATES = (
+    "config/oauth2.json",
+    "../baseball-engine/config/oauth2.json",
     "apps/football-recap/config/oauth2.json",
     "apps/baseball-engine/config/oauth2.json",
-    "config/oauth2.json",
 )
 
 # Number of managers the league is locked at for 2026.
