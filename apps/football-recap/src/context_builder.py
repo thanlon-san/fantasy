@@ -6,10 +6,91 @@ Builds comprehensive context from weekly data for LLM recap generation
 from typing import Dict, List, Optional, Tuple
 from src.trend_tracker import TrendTracker
 from src.ownership_stats import OwnershipStats
-from src.constants import TEAM_OWNERS, NFL_PLAYOFF_START_WEEK
+from src.constants import (
+    NFL_PLAYOFF_START_WEEK,
+    format_slack_mention,
+    resolve_owner,
+)
 
 # Playoff configuration
 PLAYOFF_TEAMS = 6  # Number of teams that make playoffs
+
+
+def _owner_for(team_or_name, fallback_manager: str = "") -> str:
+    """
+    Display owner for a team, preferring live Yahoo week_data.
+
+    ``TEAM_OWNERS`` is only a curated override keyed by the current Yahoo
+    team_name. After a rename, week_data.owner / manager_nickname still
+    resolve so recaps do not go stale.
+    """
+    if isinstance(team_or_name, dict):
+        name = team_or_name.get("team_name", "")
+        live = (
+            team_or_name.get("owner")
+            or team_or_name.get("manager_nickname")
+            or fallback_manager
+        )
+        return resolve_owner(name, live)
+    return resolve_owner(team_or_name or "", fallback_manager)
+
+
+def _format_movement_display(movement_raw) -> str:
+    """Map stored movement (▲2 / +2 / ▼1 / -1 / —) to Slack emoji text."""
+    if not isinstance(movement_raw, str):
+        return "—"
+    token = movement_raw.strip()
+    if token in ("", "—", "–", "-", "0"):
+        return "—"
+    if token.startswith(("▲", "+")):
+        n = token[1:].strip()
+        return f":triangle_upmaster: {n}" if n else "—"
+    if token.startswith(("▼", "-")):
+        n = token[1:].strip()
+        return f":triangle_downred: {n}" if n else "—"
+    return "—"
+
+
+def _owner_from_week(week_data: Dict, team_name: str) -> str:
+    """Look up a live Yahoo team in week_data, then resolve_owner."""
+    for collection_key in ("teams", "standings"):
+        block = week_data.get(collection_key) or {}
+        rows = block.get("teams") or block.get("standings") or []
+        for row in rows:
+            if row.get("team_name") == team_name:
+                return _owner_for(row)
+    return resolve_owner(team_name or "")
+
+
+def _mention_for(team_or_name=None, fallback_manager: str = "", owner_name: str = "") -> str:
+    """Slack ping token for a manager (``<@U…>``), or display name if unknown."""
+    if isinstance(team_or_name, dict):
+        name = team_or_name.get("team_name", "")
+        live = (
+            team_or_name.get("owner")
+            or team_or_name.get("manager_nickname")
+            or fallback_manager
+        )
+        resolved = resolve_owner(name, live)
+        return format_slack_mention(team_name=name, owner_name=resolved)
+    if isinstance(team_or_name, str) and team_or_name:
+        return format_slack_mention(
+            team_name=team_or_name, fallback_manager=fallback_manager
+        )
+    return format_slack_mention(
+        team_name="", owner_name=owner_name, fallback_manager=fallback_manager
+    )
+
+
+def _mention_for_team(week_data: Dict, team_name: str) -> str:
+    """Slack mention for a team_name, using live week_data when available."""
+    for collection_key in ("teams", "standings"):
+        block = week_data.get(collection_key) or {}
+        rows = block.get("teams") or block.get("standings") or []
+        for row in rows:
+            if row.get("team_name") == team_name:
+                return _mention_for(row)
+    return _mention_for(team_name)
 
 
 class ContextBuilder:
@@ -52,7 +133,7 @@ class ContextBuilder:
             team_info = {
                 "seed": seed,
                 "team_name": team["team_name"],
-                "owner": TEAM_OWNERS.get(team["team_name"], "Unknown"),
+                "owner": _owner_for(team),
                 "record": f"{team['wins']}-{team['losses']}",
                 "points_for": team["points_for"],
             }
@@ -126,7 +207,7 @@ class ContextBuilder:
             context_parts.append("### 🎫 PLAYOFF BRACKET (Top 6 make it)")
             for team in playoff_ctx["playoff_teams"]:
                 context_parts.append(
-                    f"  {team['seed']}. @{team['owner']}'s {team['team_name']} ({team['record']}, {team['points_for']:.2f} PF) ✅ IN"
+                    f"  {team['seed']}. {_mention_for(team)}'s {team['team_name']} ({team['record']}, {team['points_for']:.2f} PF) ✅ IN"
                 )
 
             context_parts.append("\n### 💀 ELIMINATED (Season over)")
@@ -134,7 +215,7 @@ class ContextBuilder:
                 :4
             ]:  # Top 4 eliminated for drama
                 context_parts.append(
-                    f"  {team['seed']}. @{team['owner']}'s {team['team_name']} ({team['record']}, {team['points_for']:.2f} PF) ❌ OUT"
+                    f"  {team['seed']}. {_mention_for(team)}'s {team['team_name']} ({team['record']}, {team['points_for']:.2f} PF) ❌ OUT"
                 )
             context_parts.append("")
 
@@ -148,17 +229,17 @@ class ContextBuilder:
             if len(bracket) >= 6:
                 context_parts.append(f"\n**ROUND 1:**")
                 context_parts.append(
-                    f"  @{bracket[3]['owner']}'s {bracket[3]['team_name']} (3) vs @{bracket[6]['owner']}'s {bracket[6]['team_name']} (6)"
+                    f"  {_mention_for(bracket[3])}'s {bracket[3]['team_name']} (3) vs {_mention_for(bracket[6])}'s {bracket[6]['team_name']} (6)"
                 )
                 context_parts.append(
-                    f"  @{bracket[4]['owner']}'s {bracket[4]['team_name']} (4) vs @{bracket[5]['owner']}'s {bracket[5]['team_name']} (5)"
+                    f"  {_mention_for(bracket[4])}'s {bracket[4]['team_name']} (4) vs {_mention_for(bracket[5])}'s {bracket[5]['team_name']} (5)"
                 )
                 context_parts.append(f"\n**BYE WEEK:**")
                 context_parts.append(
-                    f"  @{bracket[1]['owner']}'s {bracket[1]['team_name']} (1) - Watching from the couch"
+                    f"  {_mention_for(bracket[1])}'s {bracket[1]['team_name']} (1) - Watching from the couch"
                 )
                 context_parts.append(
-                    f"  @{bracket[2]['owner']}'s {bracket[2]['team_name']} (2) - Also resting"
+                    f"  {_mention_for(bracket[2])}'s {bracket[2]['team_name']} (2) - Also resting"
                 )
             context_parts.append("")
 
@@ -228,7 +309,18 @@ class ContextBuilder:
             context_parts.append(
                 "- 🏆 Power Rankings (all teams, with movement) → 🏈 Preview → 🧘 Closing"
             )
+            context_parts.append(
+                "- Copy Power Rankings 1:1 — do not invent or reorder ranks"
+            )
             context_parts.append("")
+
+        context_parts.append("## Slack manager mentions")
+        context_parts.append(
+            "Copy the exact `<@USERID>` tokens below into the recap. "
+            "Never write plain `@Display Name` — that does not ping in Slack."
+        )
+        context_parts.append("")
+        self._add_slack_mentions_legend(context_parts, week_data)
 
         # Add playoff context if applicable
         standings = week_data.get("standings", {}).get("standings", [])
@@ -238,6 +330,10 @@ class ContextBuilder:
 
         # Week highlights (for Stat of the Week section)
         self._add_week_highlights(context_parts, week_data, playoff_ctx)
+
+        # Extended weekly superlatives + GIF of the week (engagement layer)
+        self._add_superlatives(context_parts, week_data)
+        self._add_gif_of_the_week(context_parts, week_data)
 
         # Matchups - organize by tier for V2
         all_matchups = week_data["matchups"]["matchups"]
@@ -356,10 +452,10 @@ class ContextBuilder:
                     "**PRIORITY: These matchups should dominate the League Pulse and Stat of the Week**"
                 )
                 context_parts.append(
-                    "\n**IMPORTANT: For each matchup, use the format: @[owner_name]'s [team_name]**"
+                    "\n**IMPORTANT: For each matchup, copy the `<@USERID>'s [team_name]` format from the headers below**"
                 )
                 context_parts.append(
-                    "Example: @Marissa Tomko's Scott's Tots (109.74) def. @Han Jang's Beacon (87.64)\n"
+                    "Example: <@U032LD8RMK8>'s Scott's Tots (109.74) def. <@UXXXXXXXX>'s Team (87.64)\n"
                 )
 
                 for idx, matchup in enumerate(sorted_championship, 1):
@@ -382,10 +478,10 @@ class ContextBuilder:
                 # Regular season
                 context_parts.append("## Matchups (Drama-ordered)")
                 context_parts.append(
-                    "\n**IMPORTANT: For each matchup, use the format: @[owner_name]'s [team_name]**"
+                    "\n**IMPORTANT: For each matchup, copy the `<@USERID>'s [team_name]` format from the headers below**"
                 )
                 context_parts.append(
-                    "Example: @Marissa Tomko's Scott's Tots (109.74) def. @Han Jang's Beacon (87.64)\n"
+                    "Example: <@U032LD8RMK8>'s Scott's Tots (109.74) def. <@UXXXXXXXX>'s Team (87.64)\n"
                 )
 
                 for idx, matchup in enumerate(sorted_championship, 1):
@@ -394,10 +490,10 @@ class ContextBuilder:
             # Original format - just list all matchups
             context_parts.append("## Matchups")
             context_parts.append(
-                "\n**IMPORTANT: For each matchup, use the format: @[owner_name]'s [team_name]**"
+                "\n**IMPORTANT: For each matchup, copy the `<@USERID>'s [team_name]` format from the headers below**"
             )
             context_parts.append(
-                "Example: @Marissa Tomko's Scott's Tots 109.74 def. @Han Jang's Beacon 87.64\n"
+                "Example: <@U032LD8RMK8>'s Scott's Tots 109.74 def. <@UXXXXXXXX>'s Team 87.64\n"
             )
 
             is_playoff = playoff_ctx["is_playoff_week"] if playoff_ctx else False
@@ -420,6 +516,130 @@ class ContextBuilder:
         self._add_next_week_preview(context_parts, week_data, week_num)
 
         return "\n".join(context_parts)
+
+    def _add_slack_mentions_legend(
+        self, context_parts: List[str], week_data: Dict
+    ) -> None:
+        """List team → Slack ping tokens for the recap writer."""
+        rows = week_data.get("standings", {}).get("standings", [])
+        if not rows:
+            rows = week_data.get("teams", {}).get("teams", [])
+        seen: set[str] = set()
+        for row in rows:
+            team_name = row.get("team_name") or ""
+            if not team_name or team_name in seen:
+                continue
+            seen.add(team_name)
+            mention = _mention_for(row)
+            owner = _owner_for(row)
+            context_parts.append(f"- {team_name}: {mention} ({owner})")
+        if not seen:
+            context_parts.append("(No team roster in week_data)")
+        context_parts.append("")
+
+    def _add_superlatives(self, context_parts: List[str], week_data: Dict):
+        """
+        Emit the "Weekly Superlatives" section — a compact awards list built
+        from computed data. The recap prompt already asks for a Stat of the
+        Week and Power Rankings; these superlatives give the LLM extra
+        specific hooks to riff on without inventing details.
+        """
+        superlatives = week_data.get("superlatives") or {}
+        if not superlatives:
+            return
+
+        context_parts.append("\n## 🏅 Weekly Superlatives (award hooks)")
+        context_parts.append(
+            "Use two or three of these directly as callouts (in a dedicated "
+            "\"Superlatives\" block or woven into matchup writeups). Don't "
+            "invent the winner — the data is here."
+        )
+        context_parts.append("")
+
+        def _line(kind: str, formatter):
+            entry = superlatives.get(kind)
+            if entry:
+                context_parts.append(formatter(entry))
+
+        _line(
+            "blowout_of_the_week",
+            lambda e: (
+                f"- **{e['label']}:** "
+                f"{format_slack_mention(team_name=e['team'], owner_name=e['owner'])}'s {e['team']} demolished "
+                f"{format_slack_mention(team_name=e['opponent'], owner_name=e['opponent_owner'])}'s {e['opponent']} "
+                f"by {e['margin']} points."
+            ),
+        )
+        _line(
+            "nailbiter_of_the_week",
+            lambda e: (
+                f"- **{e['label']}:** {e['team1']} vs {e['team2']} came down to "
+                f"{e['margin']} points."
+            ),
+        )
+        _line(
+            "shootout_of_the_week",
+            lambda e: (
+                f"- **{e['label']}:** {e['team1']} and {e['team2']} combined for "
+                f"{e['combined']} points."
+            ),
+        )
+        _line(
+            "cold_war_of_the_week",
+            lambda e: (
+                f"- **{e['label']}:** {e['team1']} vs {e['team2']} totalled just "
+                f"{e['combined']} points combined."
+            ),
+        )
+        _line(
+            "upset_of_the_week",
+            lambda e: (
+                f"- **{e['label']}:** "
+                f"{format_slack_mention(team_name=e['winner'], owner_name=e['winner_owner'])}'s {e['winner']} beat "
+                f"{format_slack_mention(team_name=e['loser'], owner_name=e['loser_owner'])}'s {e['loser']} "
+                f"despite being projected {e['projection_gap']} points lower."
+            ),
+        )
+        _line(
+            "coach_of_the_week",
+            lambda e: (
+                f"- **{e['label']}:** "
+                f"{format_slack_mention(team_name=e['team'], owner_name=e['owner'])}'s {e['team']} left only "
+                f"{e['management_gap']} pts on the bench (score: {e['score']})."
+            ),
+        )
+        _line(
+            "cooked_of_the_week",
+            lambda e: (
+                f"- **{e['label']}:** "
+                f"{format_slack_mention(team_name=e['team'], owner_name=e['owner'])}'s {e['team']} left "
+                f"{e['management_gap']} pts on the bench — score: {e['score']}. "
+                "Textbook lineup malpractice."
+            ),
+        )
+        _line(
+            "bench_hero_of_the_week",
+            lambda e: (
+                f"- **{e['label']}:** {e['player']} ({e['position']}) scored "
+                f"{e['points']} pts from the bench of "
+                f"{format_slack_mention(team_name=e['team'], owner_name=e['owner'])}'s {e['team']}."
+            ),
+        )
+        context_parts.append("")
+
+    def _add_gif_of_the_week(self, context_parts: List[str], week_data: Dict):
+        """Emit an inline instruction to include a curated Giphy embed."""
+        gif = week_data.get("gif_of_the_week")
+        if not gif:
+            return
+        context_parts.append("## 🎬 GIF of the Week (embed in the recap)")
+        context_parts.append(
+            "End the recap with this exact markdown line — Slack will render "
+            "the GIF inline (no captions, no extra text after it):"
+        )
+        context_parts.append("")
+        context_parts.append(f"![{gif['caption']}]({gif['url']})")
+        context_parts.append("")
 
     def _add_week_highlights(
         self, context_parts: List[str], week_data: Dict, playoff_ctx: Dict = None
@@ -446,9 +666,8 @@ class ContextBuilder:
             high = week_stats["highest_score"]
             team = high.get("team", "Unknown")
             score = high.get("points", 0)
-            owner = TEAM_OWNERS.get(team, "Unknown")
             context_parts.append(
-                f"**Week Winner:** @{owner}'s {team} scored {score} points"
+                f"**Week Winner:** {_mention_for_team(week_data, team)}'s {team} scored {score} points"
             )
 
         # Lowest score (roastable)
@@ -456,37 +675,35 @@ class ContextBuilder:
             low = week_stats["lowest_score"]
             team = low.get("team", "Unknown")
             score = low.get("points", 0)
-            owner = TEAM_OWNERS.get(team, "Unknown")
             context_parts.append(
-                f"**Dumpster Fire:** @{owner}'s {team} only managed {score} points 🗑️"
+                f"**Dumpster Fire:** {_mention_for_team(week_data, team)}'s {team} only managed {score} points 🗑️"
             )
 
         # Biggest blowout
         if week_stats.get("biggest_blowout"):
             blowout = week_stats["biggest_blowout"]
-            winner_owner = TEAM_OWNERS.get(blowout.get("winner", ""), "Unknown")
-            loser_owner = TEAM_OWNERS.get(blowout.get("loser", ""), "Unknown")
             context_parts.append(
-                f"**Biggest Blowout:** @{winner_owner}'s {blowout.get('winner')} destroyed "
-                f"@{loser_owner}'s {blowout.get('loser')} by {blowout.get('margin', 0)} points 💀"
+                f"**Biggest Blowout:** {_mention_for_team(week_data, blowout.get('winner', ''))}'s "
+                f"{blowout.get('winner')} destroyed "
+                f"{_mention_for_team(week_data, blowout.get('loser', ''))}'s {blowout.get('loser')} "
+                f"by {blowout.get('margin', 0)} points 💀"
             )
 
         # Closest game (nail-biter)
         if week_stats.get("closest_game"):
             close = week_stats["closest_game"]
-            owner1 = TEAM_OWNERS.get(close.get("team1", ""), "Unknown")
-            owner2 = TEAM_OWNERS.get(close.get("team2", ""), "Unknown")
             context_parts.append(
-                f"**Nail Biter:** @{owner1}'s {close.get('team1')} vs @{owner2}'s {close.get('team2')} "
-                f"decided by just {close.get('margin', 0)} points 😰"
+                f"**Nail Biter:** {_mention_for_team(week_data, close.get('team1', ''))}'s "
+                f"{close.get('team1')} vs {_mention_for_team(week_data, close.get('team2', ''))}'s "
+                f"{close.get('team2')} decided by just {close.get('margin', 0)} points 😰"
             )
 
         # Most bench points (lineup mismanagement)
         if week_stats.get("most_bench_points"):
             bench = week_stats["most_bench_points"]
-            owner = TEAM_OWNERS.get(bench.get("team", ""), "Unknown")
             context_parts.append(
-                f"**Bench MVP:** @{owner}'s {bench.get('team')} left {bench.get('points', 0)} points on the bench 🪑"
+                f"**Bench MVP:** {_mention_for_team(week_data, bench.get('team', ''))}'s "
+                f"{bench.get('team')} left {bench.get('points', 0)} points on the bench 🪑"
             )
 
         context_parts.append("")
@@ -498,9 +715,8 @@ class ContextBuilder:
         home = matchup["home_team"]
         away = matchup["away_team"]
 
-        # Use simple team name mapping
-        home_owner = TEAM_OWNERS.get(home["team_name"], "Unknown")
-        away_owner = TEAM_OWNERS.get(away["team_name"], "Unknown")
+        home_mention = _mention_for(home)
+        away_mention = _mention_for(away)
 
         # Calculate combined score for context
         combined_score = home["score"] + away["score"]
@@ -510,20 +726,26 @@ class ContextBuilder:
         margin = matchup.get("margin", abs(home["score"] - away["score"]))
 
         if winner == home["team_name"]:
-            winner_text = f"@{home_owner}'s {home['team_name']} ({home['score']}) def. @{away_owner}'s {away['team_name']} ({away['score']})"
+            winner_text = (
+                f"{home_mention}'s {home['team_name']} ({home['score']}) def. "
+                f"{away_mention}'s {away['team_name']} ({away['score']})"
+            )
             if is_playoff:
                 context_parts.append(f"\n### ✅ WINNER: {winner_text}")
                 context_parts.append(
-                    f"**Result: @{home_owner} ADVANCES, @{away_owner} ELIMINATED**"
+                    f"**Result: {home_mention} ADVANCES, {away_mention} ELIMINATED**"
                 )
             else:
                 context_parts.append(f"\n### {winner_text}")
         else:
-            winner_text = f"@{away_owner}'s {away['team_name']} ({away['score']}) def. @{home_owner}'s {home['team_name']} ({home['score']})"
+            winner_text = (
+                f"{away_mention}'s {away['team_name']} ({away['score']}) def. "
+                f"{home_mention}'s {home['team_name']} ({home['score']})"
+            )
             if is_playoff:
                 context_parts.append(f"\n### ✅ WINNER: {winner_text}")
                 context_parts.append(
-                    f"**Result: @{away_owner} ADVANCES, @{home_owner} ELIMINATED**"
+                    f"**Result: {away_mention} ADVANCES, {home_mention} ELIMINATED**"
                 )
             else:
                 context_parts.append(f"\n### {winner_text}")
@@ -545,8 +767,7 @@ class ContextBuilder:
 
     def _add_team_analytics(self, context_parts: List[str], team: Dict, label: str):
         """Add team-level analytics"""
-        owner = TEAM_OWNERS.get(team["team_name"], "Unknown")
-        context_parts.append(f"\n**@{owner}'s {team['team_name']} Analytics:**")
+        context_parts.append(f"\n**{_mention_for(team)}'s {team['team_name']} Analytics:**")
         context_parts.append(
             f"Score: {team['score']} (Projected: {sum(p['projected_points'] for p in team['starters']):.1f})"
         )
@@ -572,8 +793,7 @@ class ContextBuilder:
 
     def _add_starters(self, context_parts: List[str], team: Dict):
         """Add starter information with ownership and trend checks"""
-        owner = TEAM_OWNERS.get(team["team_name"], "Unknown")
-        context_parts.append(f"\n**@{owner}'s {team['team_name']} Starters:**")
+        context_parts.append(f"\n**{_mention_for(team)}'s {team['team_name']} Starters:**")
 
         for player in team["starters"]:
             if (
@@ -687,36 +907,32 @@ class ContextBuilder:
             # Tier 1: Top 4 teams
             context_parts.append("**Tier 1 - The Menaces (Top 4):**")
             for team in all_standings[:4]:
-                owner = TEAM_OWNERS.get(team["team_name"], "Unknown")
                 context_parts.append(
-                    f"  {team['rank']}. @{owner}'s {team['team_name']}: {team['wins']}-{team['losses']} "
+                    f"  {team['rank']}. {_mention_for(team)}'s {team['team_name']}: {team['wins']}-{team['losses']} "
                     f"({team['points_for']:.1f} PF)"
                 )
 
             # Tier 2: Teams 5-8
             context_parts.append("\n**Tier 2 - The Pretenders (5-8):**")
             for team in all_standings[4:8]:
-                owner = TEAM_OWNERS.get(team["team_name"], "Unknown")
                 context_parts.append(
-                    f"  {team['rank']}. @{owner}'s {team['team_name']}: {team['wins']}-{team['losses']} "
+                    f"  {team['rank']}. {_mention_for(team)}'s {team['team_name']}: {team['wins']}-{team['losses']} "
                     f"({team['points_for']:.1f} PF)"
                 )
 
             # Tier 3: Teams 9-12
             context_parts.append("\n**Tier 3 - The Bubble (9-12):**")
             for team in all_standings[8:12]:
-                owner = TEAM_OWNERS.get(team["team_name"], "Unknown")
                 context_parts.append(
-                    f"  {team['rank']}. @{owner}'s {team['team_name']}: {team['wins']}-{team['losses']} "
+                    f"  {team['rank']}. {_mention_for(team)}'s {team['team_name']}: {team['wins']}-{team['losses']} "
                     f"({team['points_for']:.1f} PF)"
                 )
 
             # Tier 4: Bottom teams (13-16)
             context_parts.append("\n**Tier 4 - The Lost Souls (13-16):**")
             for team in all_standings[12:]:
-                owner = TEAM_OWNERS.get(team["team_name"], "Unknown")
                 context_parts.append(
-                    f"  {team['rank']}. @{owner}'s {team['team_name']}: {team['wins']}-{team['losses']} "
+                    f"  {team['rank']}. {_mention_for(team)}'s {team['team_name']}: {team['wins']}-{team['losses']} "
                     f"({team['points_for']:.1f} PF)"
                 )
         else:
@@ -730,27 +946,24 @@ class ContextBuilder:
     def _add_team_metrics(
         self, context_parts: List[str], week_data: Dict, week_num: int
     ):
-        """Add team activity and efficiency metrics"""
+        """Add team activity and efficiency metrics (from week_data['teams'])."""
         context_parts.append("\n## Team Activity & Efficiency Metrics (for roasting)")
         try:
-            import requests
-
-            teams_response = requests.get(
-                f"{week_data.get('api_url', 'http://localhost:8000')}/api/teams"
-            )
-            teams_response.raise_for_status()
-            all_teams = teams_response.json()["teams"]
-
-            # Use the provided week_num instead of league's current_week
+            all_teams = week_data.get("teams", {}).get("teams", [])
             total_teams = len(all_teams)
+            if total_teams == 0:
+                context_parts.append("  (No team data available)")
+                return
 
             for team_data in all_teams:
-                wins = team_data["wins"]
-                points_for = team_data["points_for"]
-                acquisitions = team_data.get("acquisitions", 0)
-                drops = team_data.get("drops", 0)
-                trades = team_data.get("trades", 0)
-                faab_spent = team_data.get("faab_spent", 0)
+                wins = team_data.get("wins", 0)
+                points_for = team_data.get("points_for", 0)
+                # Yahoo doesn't expose acquisitions/drops/trades/faab on the
+                # league standings feed, so these come back as None.
+                acquisitions = team_data.get("acquisitions") or 0
+                drops = team_data.get("drops") or 0
+                trades = team_data.get("trades") or 0
+                faab_spent = team_data.get("faab_spent") or 0
                 streak_type = team_data.get("streak_type", "NONE")
                 streak_length = team_data.get("streak_length", 0)
                 standing = team_data.get("standing", 0)
@@ -758,29 +971,44 @@ class ContextBuilder:
                 context_parts.append(f"\n**{team_data['team_name']}:**")
                 context_parts.append(f"  - Standing: #{standing} of {total_teams}")
                 context_parts.append(f"  - Streak: {streak_type} {streak_length}")
-                context_parts.append(
-                    f"  - Waiver moves: {acquisitions} adds, {drops} drops"
-                )
-                if week_num > 0:
+                if acquisitions or drops:
                     context_parts.append(
-                        f"  - Churn rate: {drops / week_num:.1f} drops per week"
+                        f"  - Waiver moves: {acquisitions} adds, {drops} drops"
                     )
-                context_parts.append(f"  - FAAB spent: ${faab_spent}")
-                if wins > 0:
-                    context_parts.append(f"  - FAAB per win: ${faab_spent / wins:.1f}")
-                context_parts.append(f"  - Trades: {trades}")
+                    if week_num > 0:
+                        context_parts.append(
+                            f"  - Churn rate: {drops / week_num:.1f} drops per week"
+                        )
+                if faab_spent:
+                    context_parts.append(f"  - FAAB spent: ${faab_spent}")
+                    if wins > 0:
+                        context_parts.append(
+                            f"  - FAAB per win: ${faab_spent / wins:.1f}"
+                        )
+                if trades:
+                    context_parts.append(f"  - Trades: {trades}")
                 if acquisitions + drops > 0:
                     context_parts.append(
                         f"  - Points per roster move: {points_for / (acquisitions + drops):.1f}"
                     )
         except Exception as e:
-            context_parts.append(f"  (Could not fetch team metrics: {e})")
+            context_parts.append(f"  (Could not build team metrics: {e})")
 
     def _add_power_rankings(
         self, context_parts: List[str], week_data: Dict, week_num: int
     ):
-        """Fetch and add power rankings with movement and identity context."""
+        """Render pre-computed power rankings from week_data."""
         context_parts.append("\n## 🏆 Power Rankings (All Teams)")
+        context_parts.append(
+            "**CANONICAL RANKS — DO NOT REORDER OR INVENT.** "
+            "List every team in THIS exact order. Rank 1 is first. "
+            "Do not reshuffle by record, PF, heat, or vibes. "
+            "Do not invent ranks or drop teams."
+        )
+        context_parts.append(
+            "`heat` (surging / sliding / steady) is a one-liner hint for the "
+            "recap writer, not a second ranking."
+        )
         context_parts.append(
             "**FORMAT INSTRUCTIONS**: Use these Slack emojis for movement:"
         )
@@ -791,34 +1019,32 @@ class ContextBuilder:
             "- Down: `:triangle_downred:` followed by number (e.g., `:triangle_downred: 3`)"
         )
         context_parts.append("- No change: `—`")
+        context_parts.append(
+            "In the recap Power Rankings section, use the `<@USERID>` token from each "
+            "line (owner only in output — omit team names in the recap, but copy the mention)."
+        )
         context_parts.append("")
         try:
-            import requests
-
-            api_url = week_data.get("api_url", "http://localhost:8000")
-            resp = requests.get(f"{api_url}/api/power_rankings/{week_num}")
-            resp.raise_for_status()
-            rankings = resp.json().get("rankings", [])
+            rankings = week_data.get("power_rankings", {}).get("rankings", [])
+            if not rankings:
+                context_parts.append("  (No power rankings available)")
+                return
             for r in rankings:
                 movement_raw = r.get("movement", "—")
                 owner = r.get("owner", "Unknown")
                 team = r.get("team_name", "Team")
                 record = f"{r.get('wins', 0)}–{r.get('losses', 0)}"
                 pf = r.get("pf", 0)
-
-                # Format movement with Slack emojis
-                if movement_raw.startswith("+"):
-                    movement_display = f":triangle_upmaster: {movement_raw[1:]}"
-                elif movement_raw.startswith("-"):
-                    movement_display = f":triangle_downred: {movement_raw[1:]}"
-                else:
-                    movement_display = "—"
+                heat = r.get("heat") or "steady"
+                movement_display = _format_movement_display(movement_raw)
+                mention = format_slack_mention(team_name=team, owner_name=owner)
 
                 context_parts.append(
-                    f"{r['rank']}. @{owner}'s {team} ({record}, PF {pf}) [{movement_display}]"
+                    f"{r['rank']}. {mention} ({record}, PF {pf}) "
+                    f"[{movement_display}]  heat: {heat}  (team: {team})"
                 )
         except Exception as e:
-            context_parts.append(f"  (Could not fetch power rankings: {e})")
+            context_parts.append(f"  (Could not render power rankings: {e})")
 
     def _add_trends(self, context_parts: List[str], week_data: Dict, week_num: int):
         """Add multi-week trends"""
@@ -890,18 +1116,20 @@ class ContextBuilder:
             if len(bracket) >= 6:
                 context_parts.append("**ROUND 1 MATCHUPS:**")
                 context_parts.append(
-                    f"- #3 @{bracket[3]['owner']}'s {bracket[3]['team_name']} vs #6 @{bracket[6]['owner']}'s {bracket[6]['team_name']}"
+                    f"- #3 {_mention_for(bracket[3])}'s {bracket[3]['team_name']} vs "
+                    f"#6 {_mention_for(bracket[6])}'s {bracket[6]['team_name']}"
                 )
                 context_parts.append(
-                    f"- #4 @{bracket[4]['owner']}'s {bracket[4]['team_name']} vs #5 @{bracket[5]['owner']}'s {bracket[5]['team_name']}"
+                    f"- #4 {_mention_for(bracket[4])}'s {bracket[4]['team_name']} vs "
+                    f"#5 {_mention_for(bracket[5])}'s {bracket[5]['team_name']}"
                 )
                 context_parts.append("")
                 context_parts.append("**BYE WEEK (Top 2 seeds rest):**")
                 context_parts.append(
-                    f"- #1 @{bracket[1]['owner']}'s {bracket[1]['team_name']} - Earned the week off"
+                    f"- #1 {_mention_for(bracket[1])}'s {bracket[1]['team_name']} - Earned the week off"
                 )
                 context_parts.append(
-                    f"- #2 @{bracket[2]['owner']}'s {bracket[2]['team_name']} - Also watching from the couch"
+                    f"- #2 {_mention_for(bracket[2])}'s {bracket[2]['team_name']} - Also watching from the couch"
                 )
             context_parts.append("")
             return
@@ -928,12 +1156,9 @@ class ContextBuilder:
             )
 
         try:
-            import requests
-
-            api_url = week_data.get("api_url", "http://localhost:8000")
-            resp = requests.get(f"{api_url}/api/matchups/{next_week}")
-            resp.raise_for_status()
-            next_matchups = resp.json().get("matchups", [])
+            next_matchups = (
+                week_data.get("next_week_matchups", {}).get("matchups", [])
+            )
 
             if not next_matchups:
                 context_parts.append(f"(No Week {next_week} matchups available yet)")
@@ -944,15 +1169,13 @@ class ContextBuilder:
                 away = matchup.get("away_team", {})
                 home_name = home.get("team_name", "Unknown")
                 away_name = away.get("team_name", "Unknown")
-                home_owner = TEAM_OWNERS.get(home_name, "Unknown")
-                away_owner = TEAM_OWNERS.get(away_name, "Unknown")
-
                 # Get records from API response
                 home_record = home.get("record", "?-?")
                 away_record = away.get("record", "?-?")
 
                 context_parts.append(
-                    f"- @{home_owner}'s {home_name} ({home_record}) vs @{away_owner}'s {away_name} ({away_record})"
+                    f"- {_mention_for(home)}'s {home_name} ({home_record}) vs "
+                    f"{_mention_for(away)}'s {away_name} ({away_record})"
                 )
 
             context_parts.append("")

@@ -120,10 +120,16 @@ a third-string tight end. Stakeholder buy-in required."
 
 ## 🎯 TIER 2: REALLY FUNNY (Add Major Value)
 
-### 6. 📰 **News Headlines API** - NewsAPI
+### 6. 📰 **News Headlines API** - NewsAPI (⚠️ NOT RECOMMENDED)
 **URL:** https://newsapi.org/  
 **Free Tier:** 100 requests/day  
-**Why It's Funny:** Context makes roasts better
+**Paid Tier:** $449/month — too expensive for weekly recap use.
+
+**Recommendation:** DROP NewsAPI. Replace with a free alternative
+(Giphy/Tenor for visual comedy, Useless Facts for random punchlines,
+CoinGecko for tortured crypto metaphors — all covered below).
+The current `fetch_news_context()` in `recap_generator.py` fails silently
+when `NEWSAPI_API_KEY` isn't set, so leaving it off has no downside.
 
 **Example Roasts:**
 ```

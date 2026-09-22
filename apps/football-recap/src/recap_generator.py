@@ -6,7 +6,7 @@ Generates weekly roast-style recaps using the API and LLM
 
 import json
 import os
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
@@ -15,26 +15,36 @@ from src.trend_tracker import TrendTracker
 from src.ownership_stats import OwnershipStats
 from src.context_builder import ContextBuilder
 from src.llm_client import LLMClient
+from src.fetch_league_data import get_fetcher
+from src.yahoo_fetcher import YahooLeagueFetcher
+from src.safe_calendar import calendar_hook
+from src.constants import format_slack_mention
 
 # Load environment variables from .env file if it exists
 load_dotenv()
 
 # Configuration
-API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 OUTPUT_DIR = "output"
 RECAP_HISTORY_FILE = "recap_history.json"
 
 
 class RecapGenerator:
-    """Generates weekly fantasy football recaps with a roasting columnist persona"""
+    """Generates weekly fantasy football recaps in the house voice (The Commissioner's Ghost)."""
 
-    def __init__(self, api_url: str = API_BASE_URL):
-        self.api_url = api_url
+    def __init__(self, fetcher: Optional[YahooLeagueFetcher] = None):
+        # Lazy — real fetcher connects to Yahoo on first data pull.
+        self._fetcher = fetcher
         self.recap_history = self._load_history()
         self.trend_tracker = TrendTracker()
         self.ownership_stats = OwnershipStats()
         self.context_builder = ContextBuilder(self.trend_tracker, self.ownership_stats)
         self.llm_client = LLMClient()
+
+    @property
+    def fetcher(self) -> YahooLeagueFetcher:
+        if self._fetcher is None:
+            self._fetcher = get_fetcher()
+        return self._fetcher
 
     def _load_history(self) -> List[Dict]:
         """Load previous recap history for memory/callbacks"""
@@ -80,11 +90,8 @@ class RecapGenerator:
 
     def fetch_news_context(self, max_per_category: int = 5) -> Optional[Dict]:
         """
-        Fetch a small set of recent headlines for use as metaphors / callbacks.
-
-        Uses NewsAPI.org if NEWSAPI_API_KEY is configured. If not configured or
-        any error occurs, returns None and the recap will be generated without
-        news context.
+        Unused. Recaps do not ingest NewsAPI. Current events come from
+        the allowlist calendar (``src.safe_calendar``) or ``week_data`` only.
         """
         api_key = os.getenv("NEWSAPI_API_KEY")
         if not api_key:
@@ -128,44 +135,13 @@ class RecapGenerator:
         return context
 
     def fetch_week_data(self, week: int) -> Dict:
-        """Fetch all necessary data for the week from API"""
-        print(f"📊 Fetching data for Week {week}...")
-
-        data = {}
-
+        """Fetch all necessary data for the week directly from Yahoo."""
+        print(f"📊 Fetching data for Week {week} from Yahoo...")
         try:
-            # Get league info
-            resp = requests.get(f"{self.api_url}/api/league")
-            resp.raise_for_status()
-            data["league"] = resp.json()
-
-            # Get matchups
-            resp = requests.get(f"{self.api_url}/api/matchups/{week}")
-            resp.raise_for_status()
-            data["matchups"] = resp.json()
-
-            # Get week stats
-            resp = requests.get(f"{self.api_url}/api/stats/week/{week}")
-            resp.raise_for_status()
-            data["week_stats"] = resp.json()
-
-            # Get teams
-            resp = requests.get(f"{self.api_url}/api/teams")
-            resp.raise_for_status()
-            data["teams"] = resp.json()
-
-            # Get standings
-            resp = requests.get(f"{self.api_url}/api/standings")
-            resp.raise_for_status()
-            data["standings"] = resp.json()
-
-            # Store API URL for context builder
-            data["api_url"] = self.api_url
-
+            data = self.fetcher.fetch_all_for_week(week)
             print("✅ Data fetched successfully")
             return data
-
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             print(f"❌ Error fetching data: {e}")
             return {}
 
@@ -250,150 +226,217 @@ class RecapGenerator:
         
         return random.choice(available)
 
-    # Seasonal persona mappings (month, day_start, day_end) -> personas
-    SEASONAL_PERSONAS = {
-        # Thanksgiving week (Nov 20-30)
-        "thanksgiving": {
-            "dates": [(11, 20, 30)],
-            "personas": [
-                "Thanksgiving Host Ghost",
-                "Drunk Uncle at Thanksgiving",
-                "Food Critic Ghost",
-            ],
-        },
-        # Black Friday (Nov 25-30)
-        "black_friday": {
-            "dates": [(11, 25, 30)],
-            "personas": ["Black Friday Shopper Ghost"],
-        },
-        # Christmas/Holiday season (Dec 15-26)
-        "christmas": {
-            "dates": [(12, 15, 26)],
-            "personas": ["Holiday Mall Santa Ghost"],
-        },
-        # New Year's (Dec 27 - Jan 5)
-        "new_years": {
-            "dates": [(12, 27, 31), (1, 1, 5)],
-            "personas": ["New Year's Eve Host Ghost"],
-        },
-        # Valentine's (Feb 10-15)
-        "valentines": {
-            "dates": [(2, 10, 15)],
-            "personas": ["Valentine's Cupid Ghost"],
-        },
-        # March Madness (Mar 14 - Apr 8)
-        "march_madness": {
-            "dates": [(3, 14, 31), (4, 1, 8)],
-            "personas": ["March Madness Bracket Ghost"],
-        },
-        # Tax season (Apr 1-18)
-        "tax_season": {
-            "dates": [(4, 1, 18)],
-            "personas": ["Tax Season Auditor Ghost"],
-        },
-        # Fantasy playoffs (typically weeks 14-17, Dec)
-        "fantasy_playoffs": {
-            "dates": [(12, 1, 31)],
-            "personas": ["Playoff Elimination Ghost"],
-        },
-        # Summer/offseason (Jun-Aug)
-        "summer": {
-            "dates": [(6, 1, 30), (7, 1, 31), (8, 1, 31)],
-            "personas": ["Summer Intern Ghost"],
-        },
-        # Draft season (Aug 15 - Sep 10)
-        "draft_season": {
-            "dates": [(8, 15, 31), (9, 1, 10)],
-            "personas": ["Fantasy Draft Auctioneer"],
-        },
-    }
-
-    # Standard (non-seasonal) personas
-    STANDARD_PERSONAS = [
-        # Pop Culture (universally relatable)
-        "True-Crime Narrator Ghost",
-        "Reality TV Host Ghost",
-        "Nature Documentary Ghost",
-        "Film Noir Detective Ghost",
-        "Infomercial Pitchman Ghost",
-        "Local News Anchor Ghost",
-        # Sports
-        "Vegas Bookie Ghost",
-        "Beat Reporter Ghost",
-        "NFL Films Narrator Ghost",
-        # Everyday Characters (everyone knows these people)
-        "Therapist Ghost",
-        "Disappointed Dad Ghost",
-        "Yelp Reviewer Ghost",
-        "Passive-Aggressive Coworker",
-        "Food Critic Ghost",
-        "Frustrated Dasher Ghost",
-    ]
-
-    def get_seasonal_personas(self) -> List[str]:
+    def _pick_bit_of_the_week(self, week_data: Dict[str, Any]) -> Optional[str]:
         """
-        Get personas that match the current date/season.
-        Returns empty list if no seasonal match.
+        Data-picked lede mechanic. Same Ghost, different opening angle.
+
+        Prefers a nail-biter, then a blowout, then an upset. Skip if none fire.
         """
-        today = datetime.now()
-        month, day = today.month, today.day
-        
-        seasonal = []
-        for season_name, config in self.SEASONAL_PERSONAS.items():
-            for date_range in config["dates"]:
-                range_month, range_start, range_end = date_range
-                if month == range_month and range_start <= day <= range_end:
-                    seasonal.extend(config["personas"])
-        
-        return list(set(seasonal))  # Dedupe
+        superlatives = week_data.get("superlatives") or {}
+        nail = superlatives.get("nailbiter_of_the_week")
+        if nail:
+            return (
+                f"Lead League Pulse with the nail-biter: {nail['team1']} vs "
+                f"{nail['team2']} came down to {nail['margin']} points."
+            )
+        blowout = superlatives.get("blowout_of_the_week")
+        if blowout:
+            winner = format_slack_mention(
+                team_name=blowout.get("team", ""),
+                owner_name=blowout.get("owner") or "",
+            )
+            loser = format_slack_mention(
+                team_name=blowout.get("opponent", ""),
+                owner_name=blowout.get("opponent_owner") or "",
+            )
+            return (
+                f"Lead League Pulse with the blowout: {winner}'s {blowout['team']} "
+                f"over {loser}'s {blowout['opponent']} by {blowout['margin']} points."
+            )
+        upset = superlatives.get("upset_of_the_week")
+        if upset:
+            winner = format_slack_mention(
+                team_name=upset.get("winner", ""),
+                owner_name=upset.get("winner_owner", ""),
+            )
+            loser = format_slack_mention(
+                team_name=upset.get("loser", ""),
+                owner_name=upset.get("loser_owner", ""),
+            )
+            return (
+                f"Lead League Pulse with the upset: {winner}'s {upset['winner']} beat "
+                f"{loser}'s {upset['loser']} despite being projected "
+                f"{upset['projection_gap']} points lower."
+            )
+        return None
 
-    def get_next_persona_seed(self, prefer_seasonal: bool = True) -> str:
+    def prepare_recap_context(
+        self,
+        week: int,
+        *,
+        use_v2_format: bool = True,
+        use_v3_format: bool = True,
+        include_news: bool = False,
+    ) -> Optional[Dict[str, Any]]:
         """
-        Determine which persona to use for this week's recap.
-        
-        Args:
-            prefer_seasonal: If True (default), prefer seasonal personas when available.
-        
-        Returns:
-            Persona name string.
+        Fetch Yahoo data and build the full LLM context bundle — no API call.
+
+        Used by the Cursor Automation flow: Python shapes the data; the
+        automation agent writes the recap from :func:`save_prepared_context`
+        output plus ``docs/COLUMNIST_PROMPT_V3.md``.
+
+        Returns a dict with ``week``, ``week_data``, ``data_context``,
+        ``history_context``, ``closing_line``, ``calendar_hook``,
+        ``bit_of_the_week``, and ``user_prompt``.
         """
-        import random
-        
-        # Check if user explicitly set a persona via env var
-        env_persona = os.getenv("COLUMNIST_PERSONA_SEED")
-        if env_persona:
-            return env_persona
+        week_data = self.fetch_week_data(week)
+        if not week_data:
+            return None
 
-        # Get seasonal personas if applicable
-        seasonal_personas = self.get_seasonal_personas() if prefer_seasonal else []
-        
-        # Combine with standard personas (seasonal get priority in selection)
-        if seasonal_personas:
-            # 70% chance to pick seasonal, 30% standard
-            if random.random() < 0.7:
-                personas = seasonal_personas
-            else:
-                personas = self.STANDARD_PERSONAS
-        else:
-            personas = self.STANDARD_PERSONAS
+        data_context = self.context_builder.build_context(
+            week_data, week, use_v2_format=(use_v3_format or use_v2_format)
+        )
 
-        # Try to pick one different from last week
-        if self.recap_history:
-            last_recap = self.recap_history[-1].get("recap", "")
-            last_persona = None
-            all_personas = seasonal_personas + self.STANDARD_PERSONAS
-            for persona in all_personas:
-                if persona in last_recap or persona.replace(" Ghost", "") in last_recap:
-                    last_persona = persona
-                    break
+        # Current events: allowlist calendar only. NewsAPI is never injected.
+        _ = include_news  # kept for call-site compatibility; unused
 
-            # Pick a different one
-            available = [p for p in personas if p != last_persona]
-            if available:
-                return random.choice(available)
+        hook = calendar_hook(week=week)
+        if hook:
+            data_context = (
+                data_context
+                + "\n\n"
+                + "## CALENDAR_HOOK (optional — same Ghost, calendar-aware)\n\n"
+                + hook
+                + "\n\nUse this at most once (lede or a passing line). "
+                + "Do not invent other world events."
+            )
 
-        # Default: pick randomly from chosen pool
-        return random.choice(personas)
+        bit = self._pick_bit_of_the_week(week_data)
+        if bit:
+            data_context = (
+                data_context
+                + "\n\n"
+                + "## BIT_OF_THE_WEEK (lede mechanic — not a new narrator)\n\n"
+                + bit
+                + "\n\nSame Commissioner's Ghost. Different opening angle."
+            )
+
+        closing_line = self._get_unique_closing_line()
+        data_context = (
+            data_context
+            + "\n\n"
+            + f'## CLOSING LINE (Use this exact line)\n\n> "{closing_line}"'
+        )
+
+        history_context = self.get_previous_recaps_context()
+        user_prompt = LLMClient.generate_user_prompt(
+            week, data_context, history_context
+        )
+
+        return {
+            "week": week,
+            "week_data": week_data,
+            "data_context": data_context,
+            "history_context": history_context,
+            "closing_line": closing_line,
+            "calendar_hook": hook,
+            "bit_of_the_week": bit,
+            "user_prompt": user_prompt,
+        }
+
+    def save_prepared_context(self, bundle: Dict[str, Any]) -> str:
+        """
+        Persist a :func:`prepare_recap_context` bundle for the automation agent.
+
+        Writes:
+          - ``output/week-N-context.md`` — data + history + write instruction
+          - ``output/week-N-context.meta.json`` — closing line, calendar hook, etc.
+        """
+        week = int(bundle["week"])
+        if not os.path.exists(OUTPUT_DIR):
+            os.makedirs(OUTPUT_DIR)
+
+        context_path = os.path.join(OUTPUT_DIR, f"week-{week}-context.md")
+        with open(context_path, "w") as f:
+            f.write(f"# Week {week} Recap — Context Bundle\n\n")
+            f.write(
+                "The automation agent reads this file together with "
+                "`docs/COLUMNIST_PROMPT_V3.md` to write the recap.\n\n"
+            )
+            f.write("---\n\n")
+            f.write(bundle["user_prompt"])
+            f.write("\n")
+
+        meta_path = os.path.join(OUTPUT_DIR, f"week-{week}-context.meta.json")
+        league = bundle.get("week_data", {}).get("league", {})
+        meta = {
+            "week": week,
+            "house_voice": "The Commissioner's Ghost",
+            "closing_line": bundle.get("closing_line"),
+            "calendar_hook": bundle.get("calendar_hook"),
+            "bit_of_the_week": bundle.get("bit_of_the_week"),
+            "league_name": league.get("league_name"),
+            "prepared_at": datetime.now().isoformat(),
+            "context_file": context_path,
+        }
+        with open(meta_path, "w") as f:
+            json.dump(meta, f, indent=2)
+
+        # Persisted separately (not just in history) so `finalize_recap()` can
+        # attach the structured week_data to history even when called from a
+        # different process than the one that fetched it (the automation
+        # flow: prepare -> [agent writes recap] -> finalize are 3 steps).
+        weekdata_path = os.path.join(OUTPUT_DIR, f"week-{week}-weekdata.json")
+        with open(weekdata_path, "w") as f:
+            json.dump(bundle.get("week_data", {}), f, indent=2, default=str)
+
+        print(f"✅ Context saved to {context_path}")
+        print(f"✅ Metadata saved to {meta_path}")
+        return context_path
+
+    def finalize_recap(
+        self,
+        week: int,
+        recap: Optional[str] = None,
+        *,
+        source: str = "cursor-automation",
+        week_data: Optional[Dict[str, Any]] = None,
+    ) -> bool:
+        """
+        Record a finished recap in ``recap_history.json``, including the
+        structured ``week_data`` so season-long features (leaderboards,
+        Canvas) can aggregate across weeks without re-fetching Yahoo.
+
+        Call after the automation agent writes ``output/week-N-recap.md``.
+        If ``recap`` is omitted, reads from that file. If ``week_data`` is
+        omitted, loads it from ``output/week-N-weekdata.json`` (written by
+        :func:`save_prepared_context`) when present.
+        """
+        recap_path = os.path.join(OUTPUT_DIR, f"week-{week}-recap.md")
+        if recap is None:
+            if not os.path.exists(recap_path):
+                print(f"❌ Recap file not found: {recap_path}")
+                return False
+            with open(recap_path, "r") as f:
+                recap = f.read()
+
+        if not recap or not recap.strip():
+            print(f"❌ Recap file is empty: {recap_path}")
+            return False
+
+        if week_data is None:
+            weekdata_path = os.path.join(OUTPUT_DIR, f"week-{week}-weekdata.json")
+            if os.path.exists(weekdata_path):
+                with open(weekdata_path, "r") as f:
+                    week_data = json.load(f)
+
+        context: Dict[str, Any] = {"source": source, "format": "V3"}
+        if week_data:
+            context["data"] = week_data
+
+        self._save_history(week, recap, context)
+        print(f"✅ Recap history updated for week {week}")
+        return True
 
     def generate_recap(self, week: int, llm_client=None) -> Optional[str]:
         """
@@ -424,7 +467,6 @@ class RecapGenerator:
         model: str = "gpt-4",
         use_v2_format: bool = True,
         use_v3_format: bool = True,
-        persona: Optional[str] = None,
     ) -> Optional[str]:
         """
         Generate recap using OpenAI API
@@ -433,80 +475,34 @@ class RecapGenerator:
             week: Week number
             client: OpenAI client instance
             model: OpenAI model to use
-            use_v2_format: If True and use_v3_format is False, use V2 structured format
-            use_v3_format: If True, use V3 lean comedy-focused format (recommended)
-            persona: Optional persona to use (overrides auto-rotation)
+            use_v2_format: Kept for call-site compatibility; context always uses V3 structure
+            use_v3_format: Kept for call-site compatibility; always True in practice
         """
-        week_data = self.fetch_week_data(week)
-        if not week_data:
-            return None
-
-        data_context = self.context_builder.build_context(
-            week_data, week, use_v2_format=(use_v3_format or use_v2_format)
+        bundle = self.prepare_recap_context(
+            week,
+            use_v2_format=use_v2_format,
+            use_v3_format=use_v3_format,
         )
-
-        # Optionally enrich with recent news / pop culture context
-        news_context = self.fetch_news_context()
-        if news_context:
-            news_lines: List[str] = []
-            news_lines.append("## NEWS_CONTEXT (Recent headlines for metaphors only)")
-            news_lines.append(
-                f"As of {news_context.get('as_of')}, sourced from {news_context.get('source')}."
-            )
-            for category, titles in news_context.get("categories", {}).items():
-                if not titles:
-                    continue
-                label = category.capitalize()
-                news_lines.append(f"- {label}:")
-                for title in titles:
-                    news_lines.append(f"  - {title}")
-            data_context = data_context + "\n\n" + "\n".join(news_lines)
-
-        # Add persona seed to ensure variety week-to-week
-        # Use provided persona if specified, otherwise auto-rotate
-        persona_seed = persona if persona else self.get_next_persona_seed()
-        persona_lines = [
-            "## PERSONA_SEED (This week's columnist mode)",
-            f"Use this persona for the entire recap: **{persona_seed}**",
-            "",
-            "**CRITICAL PERSONA REQUIREMENTS:**",
-            "1. Use this persona's specific vocabulary 6+ times minimum.",
-            "2. Make the persona evident in: League Pulse (immediately), at least 3 matchup writeups, and Power Rankings.",
-            "3. DO NOT announce the persona in the text. Show it through language and style.",
-            "4. DO NOT break character or slip into generic sports writing.",
-            "5. Frame disasters through YOUR persona's lens: How would THIS specific persona describe this failure?",
-            "",
-            f"Remember: You are {persona_seed}. Commit fully to this mode's vocabulary and tone.",
-        ]
-        data_context = data_context + "\n\n" + "\n".join(persona_lines)
-
-        # Add closing line instruction to avoid repetition
-        closing_line = self._get_unique_closing_line()
-        data_context = data_context + "\n\n" + f"## CLOSING LINE (Use this exact line)\n\n> \"{closing_line}\""
-
-        history_context = self.get_previous_recaps_context()
+        if not bundle:
+            return None
 
         recap = self.llm_client.generate_with_openai(
             week,
-            data_context,
-            history_context,
+            bundle["data_context"],
+            bundle["history_context"],
             client,
             model,
-            use_v2=use_v2_format,
-            use_v3=use_v3_format,
-            persona_seed=None,  # Already injected into data_context
         )
 
         if recap:
-            # Save to history and output
-            if use_v3_format:
-                format_type = "V3"
-            elif use_v2_format:
-                format_type = "V2"
-            else:
-                format_type = "V1"
             self._save_history(
-                week, recap, {"model": model, "format": format_type, "data": week_data}
+                week,
+                recap,
+                {
+                    "model": model,
+                    "format": "V3",
+                    "data": bundle["week_data"],
+                },
             )
             self._save_recap_to_file(week, recap)
 
@@ -519,7 +515,6 @@ class RecapGenerator:
         model: str = "claude-sonnet-4-5-20250929",
         use_v2_format: bool = True,
         use_v3_format: bool = True,
-        persona: Optional[str] = None,
     ) -> Optional[str]:
         """
         Generate recap using Anthropic API
@@ -528,80 +523,34 @@ class RecapGenerator:
             week: Week number
             client: Anthropic client instance
             model: Anthropic model to use
-            use_v2_format: If True and use_v3_format is False, use V2 structured format
-            use_v3_format: If True, use V3 lean comedy-focused format (recommended)
-            persona: Optional persona to use (overrides auto-rotation)
+            use_v2_format: Kept for call-site compatibility; context always uses V3 structure
+            use_v3_format: Kept for call-site compatibility; always True in practice
         """
-        week_data = self.fetch_week_data(week)
-        if not week_data:
-            return None
-
-        data_context = self.context_builder.build_context(
-            week_data, week, use_v2_format=(use_v3_format or use_v2_format)
+        bundle = self.prepare_recap_context(
+            week,
+            use_v2_format=use_v2_format,
+            use_v3_format=use_v3_format,
         )
-
-        # Optionally enrich with recent news / pop culture context
-        news_context = self.fetch_news_context()
-        if news_context:
-            news_lines: List[str] = []
-            news_lines.append("## NEWS_CONTEXT (Recent headlines for metaphors only)")
-            news_lines.append(
-                f"As of {news_context.get('as_of')}, sourced from {news_context.get('source')}."
-            )
-            for category, titles in news_context.get("categories", {}).items():
-                if not titles:
-                    continue
-                label = category.capitalize()
-                news_lines.append(f"- {label}:")
-                for title in titles:
-                    news_lines.append(f"  - {title}")
-            data_context = data_context + "\n\n" + "\n".join(news_lines)
-
-        # Add persona seed to ensure variety week-to-week
-        # Use provided persona if specified, otherwise auto-rotate
-        persona_seed = persona if persona else self.get_next_persona_seed()
-        persona_lines = [
-            "## PERSONA_SEED (This week's columnist mode)",
-            f"Use this persona for the entire recap: **{persona_seed}**",
-            "",
-            "**CRITICAL PERSONA REQUIREMENTS:**",
-            "1. Use this persona's specific vocabulary 6+ times minimum.",
-            "2. Make the persona evident in: League Pulse (immediately), at least 3 matchup writeups, and Power Rankings.",
-            "3. DO NOT announce the persona in the text. Show it through language and style.",
-            "4. DO NOT break character or slip into generic sports writing.",
-            "5. Frame disasters through YOUR persona's lens: How would THIS specific persona describe this failure?",
-            "",
-            f"Remember: You are {persona_seed}. Commit fully to this mode's vocabulary and tone.",
-        ]
-        data_context = data_context + "\n\n" + "\n".join(persona_lines)
-
-        # Add closing line instruction to avoid repetition
-        closing_line = self._get_unique_closing_line()
-        data_context = data_context + "\n\n" + f"## CLOSING LINE (Use this exact line)\n\n> \"{closing_line}\""
-
-        history_context = self.get_previous_recaps_context()
+        if not bundle:
+            return None
 
         recap = self.llm_client.generate_with_anthropic(
             week,
-            data_context,
-            history_context,
+            bundle["data_context"],
+            bundle["history_context"],
             client,
             model,
-            use_v2=use_v2_format,
-            use_v3=use_v3_format,
-            persona_seed=None,  # Already injected into data_context
         )
 
         if recap:
-            # Save to history and output
-            if use_v3_format:
-                format_type = "V3"
-            elif use_v2_format:
-                format_type = "V2"
-            else:
-                format_type = "V1"
             self._save_history(
-                week, recap, {"model": model, "format": format_type, "data": week_data}
+                week,
+                recap,
+                {
+                    "model": model,
+                    "format": "V3",
+                    "data": bundle["week_data"],
+                },
             )
             self._save_recap_to_file(week, recap)
 
@@ -627,40 +576,29 @@ def main():
         description="Generate fantasy football weekly recaps"
     )
     parser.add_argument("week", type=int, help="Week number to generate recap for")
-    parser.add_argument("--api-url", default=API_BASE_URL, help="API base URL")
     parser.add_argument(
         "--context-only", action="store_true", help="Only generate context, no LLM call"
     )
 
     args = parser.parse_args()
 
-    generator = RecapGenerator(api_url=args.api_url)
+    generator = RecapGenerator()
 
     if args.context_only:
-        # Just generate and print context for manual use
-        week_data = generator.fetch_week_data(args.week)
-        if week_data:
-            context = generator.build_context(week_data, args.week)
-            print("\n" + "=" * 80)
-            print("CONTEXT FOR LLM")
-            print("=" * 80)
-            print(context)
-            print("\n" + "=" * 80)
-
-            # Also save to file
-            if not os.path.exists(OUTPUT_DIR):
-                os.makedirs(OUTPUT_DIR)
-            context_file = os.path.join(OUTPUT_DIR, f"week-{args.week}-context.txt")
-            with open(context_file, "w") as f:
-                try:
-                    system_prompt = LLMClient.load_columnist_prompt()
-                    f.write(system_prompt)
-                except Exception as e:
-                    f.write(f"# Could not load system prompt: {e}\n\n")
-                f.write("\n\n" + "=" * 80 + "\n\n")
-                f.write(context)
-            print(f"\n✅ Full prompt saved to {context_file}")
-            print("   Copy this to your LLM to generate the recap!")
+        bundle = generator.prepare_recap_context(args.week, include_news=False)
+        if not bundle:
+            print("❌ Failed to prepare context")
+            return
+        context_path = generator.save_prepared_context(bundle)
+        print("\n" + "=" * 80)
+        print("CONTEXT FOR LLM / CURSOR AGENT")
+        print("=" * 80)
+        print(bundle["user_prompt"][:2000])
+        if len(bundle["user_prompt"]) > 2000:
+            print(f"\n... ({len(bundle['user_prompt'])} chars total — see file)")
+        print("\n" + "=" * 80)
+        print(f"\n✅ Full context saved to {context_path}")
+        print("   Pair with docs/COLUMNIST_PROMPT_V3.md to write the recap.")
     else:
         print("⚠️  To generate recaps with an LLM, use one of these methods:")
         print("\n# Option 1: OpenAI")

@@ -13,10 +13,17 @@ Usage:
     python3 example_generate_recap.py
 """
 
+import os
+import sys
+from pathlib import Path
+
+_APP_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_APP_ROOT))
+sys.path.insert(0, str(_APP_ROOT.parent.parent / "packages"))
+
 from anthropic import Anthropic
 from src.recap_generator import RecapGenerator
 from dotenv import load_dotenv
-import os
 
 # Load environment variables from .env file
 load_dotenv()

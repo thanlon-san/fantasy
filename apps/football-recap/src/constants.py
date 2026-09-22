@@ -3,30 +3,275 @@ Configuration constants for fantasy football project
 Centralized constants to avoid magic numbers throughout the codebase
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # ============================================================================
 # Team Owner Mapping
 # ============================================================================
+# TEAM_OWNERS is a *display-name override only*. Live Yahoo team_name values
+# from week_data are the source of truth for recaps and League HQ. If someone
+# renames their team in Yahoo, the next prepare_recap_context.py / canvas
+# update picks up the new name automatically — no code change needed, except
+# optionally adding a TEAM_OWNERS alias here for a nicer owner display.
+#
+# resolve_owner() looks up this dict first, then the Yahoo manager nickname.
 TEAM_OWNERS = {
-    "Scott's Tots": "Marissa Tomko",
-    "Beacon": "Han Jang",
-    "Show in wallet off": "Achilleas Zilakos",
-    "Fly PCIO Fly": "Kristin Mendez",
-    "Hut, Hut, Eich": "Adam Eichorn",
-    "Laser Focused": "Tiffany Wong",
-    "New Vertical Threats": "Morgan Nelson",
-    "Monstrous Team": "maia.craver",
-    "Purdy Boys": "tyler.hanlon",
-    "Hot Chubb Time Machine": "kevin.agresto",
-    "High Qual Completion Deliv Rate": "pete.vanoot",
-    "Team Tang": "tim.tang",
-    "Team Wise": "Christopher Wise",
-    "We're More Than Delivery": "Joe Barry",
-    "Greg's Great Team": "greg.davis.cw",
+    # 2026 Yahoo league (1324751) — live mapping from League Members.
+    "Purdy Boys": "Tyler Hanlon",
     "Monster of the Midway": "Elisa Keny (Ambrose)",
-    "Maia's Monstrous Team": "maia.craver",  # Alternate name
+    "Scott's Tots": "Marissa Tomko",
+    "Hut Hut Eich": "Adam Eichorn",
+    "The Blackberries": "Gregory Stewart",
+    "Morgan's Team!": "Morgan Nelson",
+    "High Quality TD Rate": "Peter Van Oot",
+    "Blitz Squad Joseph": "Joe Barry",
+    "Game of Throws": "Luis Islas",
+    "Stiff Arm tim": "Tim Tang",
+    "big d's fantasy": "Danielle DiRaddo",
+    "Goal Line Stand Jesse": "Jesse Chou",
+    "Penalty Flag Sachin": "Sachin Phadkar",
+    "Dasher Mafia": "Adam Strutynski",
+    # 2025 ESPN (history only — not the live mapping):
+    # "Hut, Hut, Eich" -> Adam Eichorn
+    # "High Qual Completion Deliv Rate" -> Peter Van Oot
+    # "New Vertical Threats" -> Morgan Nelson
+    # "Team Tang" -> Tim Tang
+    # "We're More Than Delivery" -> Joe Barry
+    # "Beacon" -> Han Jang
+    # "Show in wallet off" -> Achilleas Zilakos
+    # "Fly PCIO Fly" -> Kristin Mendez
+    # "Laser Focused" -> Tiffany Wong
+    # "Monstrous Team" / "Maia's Monstrous Team" -> maia.craver
+    # "Hot Chubb Time Machine" -> kevin.agresto
+    # "Team Wise" -> Christopher Wise
+    # "Greg's Great Team" -> greg.davis.cw
 }
+
+# Fallback roster when week_data has no teams (preseason / Yahoo API down).
+# Weekly recap, context builder, and League HQ prefer live Yahoo team_name
+# from week_data once fetch_all_for_week() succeeds.
+PRESEASON_MANAGERS_2026 = [
+    {
+        "owner": "Tyler Hanlon",
+        "team": "Purdy Boys",
+        "last_team": "Purdy Boys",
+        "slack_id": "U03FE7P8EEP",
+        "status": "locked",
+    },
+    {
+        "owner": "Elisa Keny (Ambrose)",
+        "team": "Monster of the Midway",
+        "last_team": "Monster of the Midway",
+        "slack_id": "U03L8KFL1RS",
+        "status": "locked",
+    },
+    {
+        "owner": "Marissa Tomko",
+        "team": "Scott's Tots",
+        "last_team": "Scott's Tots",
+        "slack_id": "U032LD8RMK8",
+        "status": "locked",
+    },
+    {
+        "owner": "Adam Eichorn",
+        "team": "Hut Hut Eich",
+        "last_team": "Hut, Hut, Eich",
+        "slack_id": "U0405KM3X7C",
+        "status": "locked",
+    },
+    {
+        "owner": "Gregory Stewart",
+        "team": "The Blackberries",
+        "last_team": "",
+        "slack_id": "U08SKVCGDQW",
+        "status": "locked",
+    },
+    {
+        "owner": "Morgan Nelson",
+        "team": "Morgan's Team!",
+        "last_team": "New Vertical Threats",
+        "slack_id": "U03R72JAKFH",
+        "status": "locked",
+    },
+    {
+        "owner": "Peter Van Oot",
+        "team": "High Quality TD Rate",
+        "last_team": "High Qual Completion Deliv Rate",
+        "slack_id": "UPQ8CPJDR",
+        "status": "locked",
+    },
+    {
+        "owner": "Joe Barry",
+        "team": "Blitz Squad Joseph",
+        "last_team": "We're More Than Delivery",
+        "slack_id": "U07JPH677ED",
+        "status": "locked",
+    },
+    {
+        "owner": "Luis Islas",
+        "team": "Game of Throws",
+        "last_team": "Touchback Luis",
+        "slack_id": "U0AV2EB5GUD",
+        "status": "locked",
+    },
+    {
+        "owner": "Tim Tang",
+        "team": "Stiff Arm tim",
+        "last_team": "Team Tang",
+        "slack_id": "U02C39SFXPD",
+        "status": "locked",
+    },
+    {
+        "owner": "Danielle DiRaddo",
+        "team": "big d's fantasy",
+        "last_team": "",
+        "slack_id": "U08SD0PJ3EU",
+        "status": "locked",
+    },
+    {
+        "owner": "Jesse Chou",
+        "team": "Goal Line Stand Jesse",
+        "last_team": "",
+        "slack_id": "U09KVP9JHQS",
+        "status": "locked",
+    },
+    {
+        "owner": "Sachin Phadkar",
+        "team": "Penalty Flag Sachin",
+        "last_team": "",
+        "slack_id": "U0761N3RYSW",
+        "status": "locked",
+    },
+    {
+        "owner": "Adam Strutynski",
+        "team": "Dasher Mafia",
+        "last_team": "",
+        "slack_id": "U08QHPYDZ46",
+        "status": "locked",
+    },
+]
+
+# Randomized Yahoo draft order — Sep 8, 2026 (14-team snake, pick 1–14).
+DRAFT_ORDER_2026 = [
+    "Scott's Tots",
+    "Goal Line Stand Jesse",
+    "Stiff Arm tim",
+    "High Quality TD Rate",
+    "Purdy Boys",
+    "Penalty Flag Sachin",
+    "Blitz Squad Joseph",
+    "The Blackberries",
+    "big d's fantasy",
+    "Dasher Mafia",
+    "Hut Hut Eich",
+    "Game of Throws",
+    "Monster of the Midway",
+    "Morgan's Team!",
+]
+
+
+def _normalize_team_key(name: str) -> str:
+    """Normalize Yahoo team_name quirks (curly quotes, etc.) for lookup."""
+    if not name:
+        return ""
+    return name.replace("\u2019", "'").replace("\u2018", "'").strip()
+
+
+def _slack_id_by_team() -> dict[str, str]:
+    """Yahoo team_name (current or last season) → Slack user ID."""
+    out: dict[str, str] = {}
+    for mgr in PRESEASON_MANAGERS_2026:
+        sid = mgr.get("slack_id") or ""
+        if not sid:
+            continue
+        for key in (mgr.get("team"), mgr.get("last_team")):
+            if key:
+                out[_normalize_team_key(key)] = sid
+    return out
+
+
+def _slack_id_by_owner() -> dict[str, str]:
+    """Display owner name → Slack user ID."""
+    out: dict[str, str] = {}
+    for mgr in PRESEASON_MANAGERS_2026:
+        sid = mgr.get("slack_id") or ""
+        owner = mgr.get("owner") or ""
+        if sid and owner:
+            out[owner] = sid
+    return out
+
+
+_SLACK_ID_BY_TEAM = _slack_id_by_team()
+_SLACK_ID_BY_OWNER = _slack_id_by_owner()
+
+
+def resolve_slack_id(team_name: str = "", owner_name: str = "") -> str:
+    """
+    Resolve a Slack user ID for a manager.
+
+    Matches current Yahoo team_name, last_team alias, TEAM_OWNERS override,
+    or curated owner display name from PRESEASON_MANAGERS_2026.
+    """
+    if team_name:
+        norm = _normalize_team_key(team_name)
+        sid = _SLACK_ID_BY_TEAM.get(norm)
+        if sid:
+            return sid
+        if norm in TEAM_OWNERS:
+            sid = _SLACK_ID_BY_OWNER.get(TEAM_OWNERS[norm])
+            if sid:
+                return sid
+    if owner_name:
+        sid = _SLACK_ID_BY_OWNER.get(owner_name)
+        if sid:
+            return sid
+        # Yahoo manager nicknames are often first names only.
+        for mgr in PRESEASON_MANAGERS_2026:
+            full = mgr.get("owner") or ""
+            if not full:
+                continue
+            if full == owner_name or full.startswith(f"{owner_name} "):
+                return mgr.get("slack_id") or ""
+            if owner_name == full.split()[0]:
+                return mgr.get("slack_id") or ""
+    return ""
+
+
+def format_slack_mention(
+    team_name: str = "", owner_name: str = "", fallback_manager: str = ""
+) -> str:
+    """
+    Slack message mention for a manager.
+
+    Returns ``<@U…>`` when a slack_id is known; otherwise the display owner
+    name with no leading ``@`` (plain @Name does not ping in Slack).
+    """
+    resolved_owner = owner_name or resolve_owner(team_name, fallback_manager)
+    slack_id = resolve_slack_id(team_name=team_name, owner_name=resolved_owner)
+    if slack_id:
+        return f"<@{slack_id}>"
+    return resolved_owner
+
+
+def resolve_owner(team_name: str, fallback_manager: str = "") -> str:
+    """
+    Resolve a friendly owner name for a team.
+
+    TEAM_OWNERS is a display-name override keyed by the *current* Yahoo
+    team_name. A rename in Yahoo is picked up automatically from week_data;
+    add an alias here only if you want a nicer owner label than the
+    manager nickname.
+
+    Priority:
+      1. Explicit override in TEAM_OWNERS (curated display names).
+      2. Yahoo manager nickname from the API (usually a first name).
+      3. Literal "Unknown" as a last resort.
+    """
+    if team_name in TEAM_OWNERS:
+        return TEAM_OWNERS[team_name]
+    if fallback_manager:
+        return fallback_manager
+    return "Unknown"
 
 # ============================================================================
 # API Configuration
@@ -112,52 +357,11 @@ MEDIUM_CONSISTENCY_RANGE = 20.0  # Point spread for "medium consistency"
 # ============================================================================
 # NFL Season Configuration
 # ============================================================================
-# 2026 NFL Season.
-# Kickoff is Wed Sep 9 2026 (Seahawks/Patriots, 8:20pm ET) -- a Wednesday, not
-# the usual Thursday, because Labor Day fell late and Thursday is the Melbourne
-# game. Week 1 ends with Monday Night Football on Sep 14.
-NFL_SEASON_YEAR = 2026
-NFL_SEASON_START_DATE = datetime(2026, 9, 9)
-# Days from a week's first game to its last (Wed kickoff -> Mon night finish).
-NFL_WEEK_SPAN_DAYS = 5
+# 2026 NFL Season (kickoff Thu Sep 3, 2026 -> first full slate Sun Sep 6).
+# Fantasy Week 1 starts on the Thursday of kickoff week.
+NFL_SEASON_START_DATE = datetime(2026, 9, 3)
 NFL_REGULAR_SEASON_WEEKS = 18
 NFL_PLAYOFF_START_WEEK = 15  # Fantasy playoffs typically start week 15
-
-# ============================================================================
-# Yahoo Fantasy Configuration
-# ============================================================================
-# The league lives on Yahoo (not ESPN) as of the 2026 season. Yahoo resolves
-# "nfl.l.<id>" to the current season's game key, so we do not pin a game key.
-YAHOO_GAME_CODE = "nfl"
-YAHOO_LEAGUE_ID = "1324751"
-YAHOO_LEAGUE_KEY = f"{YAHOO_GAME_CODE}.l.{YAHOO_LEAGUE_ID}"
-YAHOO_API_BASE = "https://fantasysports.yahooapis.com/fantasy/v2"
-YAHOO_TOKEN_URL = "https://api.login.yahoo.com/oauth2/get_token"
-
-# Cloud secret / local file holding the OAuth2 credential blob. The blob is the
-# same shape yahoo_oauth_manual.YahooOAuth2 writes: consumer_key,
-# consumer_secret, access_token, refresh_token, token_type.
-YAHOO_OAUTH_ENV_VAR = "YAHOO_OAUTH_JSON"
-YAHOO_OAUTH_FILE_CANDIDATES = (
-    "apps/football-recap/config/oauth2.json",
-    "apps/baseball-engine/config/oauth2.json",
-    "config/oauth2.json",
-)
-
-# Number of managers the league is locked at for 2026.
-LEAGUE_SIZE_2026 = 14
-
-# Fallback roster used only when Yahoo returns no teams (preseason, or the API
-# is unreachable). Intentionally EMPTY: we have never successfully fetched the
-# 2026 league, so there is no verified manager list to hardcode. Populating this
-# with guesses would put fabricated owners on the League HQ canvas.
-#
-# To populate it, either let a successful prepare_recap_context.py run cache
-# output/week-N-weekdata.json, or drop a JSON file at
-# apps/football-recap/config/preseason_2026.json shaped like:
-#   {"managers": [{"manager": "...", "team_name": "...", "draft_slot": 1}, ...]}
-PRESEASON_MANAGERS_2026: list = []
-PRESEASON_CONFIG_FILE = "apps/football-recap/config/preseason_2026.json"
 
 # ============================================================================
 # Waiver Activity
@@ -179,28 +383,14 @@ MAX_VALID_SCORE = 250.0  # Sanity check for impossible scores
 # ============================================================================
 
 
-def has_season_started() -> bool:
-    """True once the season's first game has kicked off.
-
-    get_current_nfl_week() returns 1 both before kickoff and during week 1, so
-    callers that need to distinguish "preseason" from "week 1 is in the books"
-    must check this separately.
-    """
-    return datetime.now() >= NFL_SEASON_START_DATE
-
-
 def get_current_nfl_week() -> int:
     """
-    Auto-detect the week currently in progress.
-
-    Returns 1 before kickoff as well as during week 1 -- use has_season_started()
-    to tell those apart. To pick a week to RECAP, use get_completed_nfl_week()
-    instead: a week in progress has no final scores.
+    Auto-detect current NFL week based on date
 
     Returns:
         Current week number (1-18)
     """
-    if not has_season_started():
+    if datetime.now() < NFL_SEASON_START_DATE:
         return 1
 
     weeks_since_start = (datetime.now() - NFL_SEASON_START_DATE).days // 7
@@ -208,24 +398,6 @@ def get_current_nfl_week() -> int:
 
     # Cap at regular season weeks
     return min(max(1, current_week), NFL_REGULAR_SEASON_WEEKS)
-
-
-def get_completed_nfl_week(now: datetime = None) -> int:
-    """Return the most recent week whose games have all finished.
-
-    This is the week to recap. Returns 0 when no week is complete yet, which is
-    the signal that there is nothing to write about -- the Tuesday cron fires
-    before kickoff too.
-
-    A week runs Wednesday through Monday night, so week N is done once the day
-    after its Monday has arrived.
-    """
-    now = now or datetime.now()
-    last_game_of_week_one = NFL_SEASON_START_DATE + timedelta(days=NFL_WEEK_SPAN_DAYS)
-    days_past = (now - last_game_of_week_one).days
-    if days_past <= 0:
-        return 0
-    return min((days_past - 1) // 7 + 1, NFL_REGULAR_SEASON_WEEKS)
 
 
 def is_playoff_week(week: int) -> bool:

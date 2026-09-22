@@ -1,227 +1,92 @@
-# Quick Start Guide 🚀
+# Football Recap — Quickstart
 
-Get your Fantasy Football API running in 5 minutes!
+Get from zero to your first Yahoo-backed recap context in about 10 minutes.
 
-## Prerequisites
+## 1. Prerequisites
 
-- Python 3.9 or higher
-- ESPN Fantasy Football league
-- League ID (find it in your ESPN league URL)
+- Python 3.13 (repo uses `.venv` at the workspace root)
+- Yahoo OAuth token (`oauth2.json` or `YAHOO_OAUTH_JSON`)
+- Cursor Desktop with **Send to Slack** enabled on your automation
+- **Optional:** Anthropic API key — only for local full recap via
+  `scheduled_recap.py`, not for the production automation
 
-## Step 1: Install Dependencies
-
-**⚠️ Important: You must install Python dependencies first, or the server won't start!**
+## 2. Install (root workspace)
 
 ```bash
-cd /path/to/fantasy
-pip3 install --break-system-packages -r requirements.txt
-```
-
-**Note:** If you get an "externally-managed-environment" error, use the `--break-system-packages` flag as shown above. This is safe for development environments.
-
-Alternative if you have a virtual environment:
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+cd /Users/tyler.hanlon/Documents/GitHub/fantasy
+source .venv/bin/activate
 pip install -r requirements.txt
+pip install -r packages/shared/requirements.txt
 ```
 
-## Step 2: Create Configuration
+## 3. Configure Yahoo access
 
-Copy the example config:
+Football looks for a Yahoo OAuth token in this order:
+
+1. `apps/football-recap/config/oauth2.json`
+2. `apps/baseball-engine/config/oauth2.json` (shared)
+3. `YAHOO_OAUTH_JSON` env var
+
+**For the Cursor Automation:** add `YAHOO_OAUTH_JSON` in the
+[Cloud Agents dashboard](https://cursor.com/dashboard?tab=cloud-agents)
+(paste the full JSON body).
+
+After re-auth locally, refresh tokens and compare to your shell env:
 
 ```bash
-cp config.example.json config.json
+.venv/bin/python apps/football-recap/scripts/sync_yahoo_cloud_secret.py --copy
 ```
 
-## Step 3: Get Your ESPN Cookies
-
-**Only required for private leagues** (skip if your league is public)
-
-### On Chrome/Edge:
-
-1. Go to [ESPN Fantasy Football](https://fantasy.espn.com)
-2. Log in to your account
-3. Press **F12** to open Developer Tools
-4. Click **Application** tab (top menu)
-5. In left sidebar: **Cookies** → `https://fantasy.espn.com`
-6. Find and copy:
-   - `espn_s2` - Copy the entire Value (very long string)
-   - `SWID` - Copy the Value (includes `{` braces `}`)
-
-### On Firefox:
-
-1. Go to [ESPN Fantasy Football](https://fantasy.espn.com)
-2. Log in to your account
-3. Press **F12** to open Developer Tools
-4. Click **Storage** tab (top menu)
-5. In left sidebar: **Cookies** → `https://fantasy.espn.com`
-6. Find and copy the same cookies as above
-
-### On Safari:
-
-1. Enable Developer menu: Preferences → Advanced → Show Develop menu
-2. Go to [ESPN Fantasy Football](https://fantasy.espn.com)
-3. Log in
-4. Develop menu → Show Web Inspector
-5. Storage tab → Cookies → `fantasy.espn.com`
-6. Find and copy the same cookies
-
-## Step 4: Configure Your League
-
-Edit `config.json`:
-
-```json
-{
-  "league_id": YOUR_LEAGUE_ID_HERE,
-  "year": 2025,
-  "private_league": true,
-  "espn_s2": "PASTE_YOUR_ESPN_S2_HERE",
-  "swid": "{PASTE-YOUR-SWID-HERE}"
-}
-```
-
-**Find your League ID:**
-
-- It's in your ESPN league URL: `fantasy.espn.com/football/league?leagueId=XXXXXXXX`
-- The number after `leagueId=` is your league ID
-
-## Step 5: Start the API
+## 4. First smoke test (no network)
 
 ```bash
-npm run dev
+.venv/bin/python apps/football-recap/scripts/validate_pipeline.py
 ```
 
-You should see:
+Expected: all green checks.
 
-```
-🚀 Starting Fantasy Football API server...
-✅ Server started successfully (PID: XXXXX)
-   📖 API: http://localhost:8000
-   📝 Logs: /tmp/api_fantasy.log
-   🔍 Status: npm status
-   🛑 Stop: npm run stop
-```
-
-## Step 6 (Optional): Set Up AI Recap Generation
-
-If you want to generate AI-powered roast recaps:
+## 5. Prepare context (Yahoo pull)
 
 ```bash
-# Copy the environment template
-cp env.example .env
-
-# Edit .env and add your Anthropic API key
-# Get your key at: https://console.anthropic.com/
-# Add this line to .env:
-# ANTHROPIC_API_KEY=sk-ant-your-actual-key-here
+.venv/bin/python apps/football-recap/scripts/prepare_recap_context.py \
+  --week 1
 ```
 
-Then you can generate recaps:
+Writes `output/week-1-context.md` — this is what the automation agent
+reads before writing the recap.
+
+## 6. Wire up the Cursor Automation
+
+Open the Agents Window and configure per [`AUTOMATION_SPEC.md`](AUTOMATION_SPEC.md):
+
+- **Trigger:** Weekly Tuesday, 10 AM ET (`0 15 * * 2`)
+- **Model:** Claude Sonnet (recommended)
+- **Tools:** Send to Slack → `#cx-retention-fantasy-football`
+- **Prompt:** paste from AUTOMATION_SPEC.md
+
+## 7. Optional — local full recap (Anthropic API)
+
+Only if you want to generate without Cursor:
 
 ```bash
-python3 example_generate_recap.py
-```
+cp apps/football-recap/config/env.example .env
+# Set ANTHROPIC_API_KEY in .env
 
-## Step 6: Test It Out
-
-Open in your browser:
-
-- **Interactive API**: http://localhost:8000/docs
-- **Get league info**: http://localhost:8000/api/league
-- **See standings**: http://localhost:8000/api/standings
-
-Or use curl:
-
-```bash
-curl http://localhost:8000/api/league
+.venv/bin/python apps/football-recap/scripts/scheduled_recap.py \
+  --week 1 --dry-run
 ```
 
 ## Troubleshooting
 
-### "Failed to connect to ESPN API"
+- **`No Yahoo OAuth token found`** — configure one of the three paths in §3.
+- **`Yahoo OAuth token refresh failed`** — re-run OAuth in baseball-engine
+  and refresh the cloud secret.
+- **Empty / wrong owner display** — `TEAM_OWNERS` in `src/constants.py` is a display-name override only. Live Yahoo `team_name` comes from `week_data`; a rename in Yahoo is picked up on the next prepare/canvas run. Add a `TEAM_OWNERS` alias only if you want a nicer owner label than the Yahoo manager nickname.
+- **Automation can't fetch Yahoo** — confirm `YAHOO_OAUTH_JSON` is set in
+  Cloud Agents dashboard (`.env` is gitignored and won't exist in cloud).
 
-❌ **Problem:** Your cookies are missing or incorrect
+## Where to look next
 
-✅ **Solution:**
-
-1. Make sure `private_league: true` in config.json
-2. Re-copy your ESPN cookies (they might have expired)
-3. Make sure SWID includes the `{` braces `}`
-
-### "Address already in use"
-
-❌ **Problem:** Port 8000 is already in use
-
-✅ **Solution:**
-
-```bash
-# Stop the existing server
-npm run stop
-
-# Start again
-npm run dev
-```
-
-### "Module not found"
-
-❌ **Problem:** Dependencies not installed
-
-✅ **Solution:**
-
-```bash
-python3 -m pip install -r requirements.txt
-```
-
-### Can't start the server
-
-❌ **Problem:** Server won't start
-
-✅ **Solution:** Check server status and logs:
-
-```bash
-# Check if it's already running
-npm status
-
-# View logs to see what went wrong
-npm run logs:api
-```
-
-## Next Steps
-
-- 📖 Read the full [README.md](README.md)
-- 🔍 Explore the [API Documentation](API_README.md)
-- 🌐 Try the interactive docs at http://localhost:8000/docs
-- 📝 Generate markdown reports: `python3 fetch_league_data.py`
-
-## Common API Endpoints
-
-```bash
-# League information
-curl http://localhost:8000/api/league
-
-# Current standings
-curl http://localhost:8000/api/standings
-
-# All teams
-curl http://localhost:8000/api/teams
-
-# Current week matchups (week auto-detected!)
-curl http://localhost:8000/api/matchups/7
-
-# Week statistics
-curl http://localhost:8000/api/stats/week/7
-
-# Specific team details
-curl http://localhost:8000/api/teams/1
-```
-
-## Need Help?
-
-- Check [API_README.md](API_README.md) for detailed API documentation
-- View [README.md](README.md) for full project documentation
-- Open an issue on GitHub
-
----
-
-**Happy Fantasy Football tracking!** 🏈🔥
+- [`AUTOMATION_SPEC.md`](AUTOMATION_SPEC.md) — full automation prompt + model pick
+- [`COLUMNIST_PROMPT_V3.md`](COLUMNIST_PROMPT_V3.md) — voice and section requirements
+- [`SLACK_INTEGRATION.md`](SLACK_INTEGRATION.md) — Slack draft flow

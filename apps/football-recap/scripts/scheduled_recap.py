@@ -2,24 +2,14 @@
 """
 Scheduled Weekly Recap Generator and Slack Notifier
 
-This script is designed to be run automatically (via cron or scheduler)
-to generate and send weekly fantasy football recaps to Slack.
+**Production path:** Cursor Automation (see docs/AUTOMATION_SPEC.md) — the
+agent writes the recap; this script is not used on the weekly cron.
+
+**Local / manual path:** Generates the recap via Anthropic API when
+ANTHROPIC_API_KEY is set, optionally sends to Slack via webhook/bot token.
 
 Usage:
-    # Generate and send recap for current week
-    python scripts/scheduled_recap.py
-
-    # Generate and send recap for specific week
-    python scripts/scheduled_recap.py --week 6
-
-    # Dry run (generate but don't send to Slack)
-    python scripts/scheduled_recap.py --dry-run
-
-    # Send an existing recap without regenerating
-    python scripts/scheduled_recap.py --week 6 --send-only
-
-Cron Example (runs every Tuesday at 9 AM):
-    0 9 * * 2 cd /path/to/fantasy && /usr/bin/python3 scripts/scheduled_recap.py >> logs/scheduler.log 2>&1
+    python scripts/scheduled_recap.py --week 6 --dry-run
 """
 
 import sys
@@ -28,8 +18,12 @@ import argparse
 from datetime import datetime
 from dotenv import load_dotenv
 
-# Add parent directory to path to import src modules
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Path setup: expose both the app root (for `src.*`) and the workspace-level
+# packages/ dir (for `shared.*`).
+_APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_WORKSPACE = os.path.dirname(os.path.dirname(_APP_ROOT))
+sys.path.insert(0, _APP_ROOT)
+sys.path.insert(0, os.path.join(_WORKSPACE, "packages"))
 
 from anthropic import Anthropic
 from src.recap_generator import RecapGenerator

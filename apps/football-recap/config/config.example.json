@@ -1,16 +1,6 @@
 {
-  "league_id": 228124044,
-  "year": 2025,
-  "current_week": 7,
-  "private_league": true,
-  "espn_s2": "YOUR_ESPN_S2_COOKIE_HERE",
-  "swid": "{YOUR-SWID-HERE}",
-  "output_directory": "output",
-  "features": {
-    "generate_matchups": true,
-    "generate_standings": true,
-    "generate_summary": true,
-    "generate_recap": false,
-    "calculate_optimal_lineups": false
-  }
+  "league_id": 1324751,
+  "year": 2026,
+  "sport": "nfl",
+  "output_directory": "output"
 }

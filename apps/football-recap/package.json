@@ -1,17 +1,16 @@
 {
   "name": "@fantasy/football-recap",
-  "version": "1.0.0",
-  "description": "ESPN Fantasy Football Weekly Recap Generator with AI",
+  "version": "2.0.0",
+  "description": "Yahoo Fantasy Football weekly AI recap generator (Cursor Automation + Slack draft delivery)",
   "private": true,
   "scripts": {
-    "dev": "python3 scripts/server.py start",
-    "stop": "python3 scripts/server.py stop",
-    "restart": "python3 scripts/server.py restart",
-    "status": "python3 scripts/server.py status",
-    "logs": "tail -f logs/$(date +%Y%m%d).log",
-    "logs:api": "tail -f /tmp/api_fantasy.log"
+    "recap:prepare": "python3 scripts/prepare_recap_context.py --no-news",
+    "recap:finalize": "python3 scripts/finalize_recap.py",
+    "recap": "python3 scripts/scheduled_recap.py",
+    "recap:dry-run": "python3 scripts/scheduled_recap.py --dry-run",
+    "logs": "tail -f logs/$(date +%Y%m%d).log"
   },
-  "keywords": ["fantasy-football", "ai", "recap", "espn"],
+  "keywords": ["fantasy-football", "ai", "recap", "yahoo", "slack", "cursor-automation"],
   "author": "",
   "license": "MIT"
 }

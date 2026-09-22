@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-"""Render the League HQ canvas markdown for an in-season week.
+"""
+Build the "League HQ" Slack Canvas markdown from recap_history.json plus the
+latest week's fetched data.
 
-League HQ is the living reference doc: standings, power rankings, and season
-awards. The weekly recap is the story; this is the scoreboard.
-
-Writes ``output/league-hq-canvas.md`` (CWD-relative, like the rest of the
-pipeline). The caller then pushes that file to the existing Slack canvas.
+No LLM call. Writes output/league-hq-canvas.md. The automation agent (or you,
+manually) reads that file and calls slack_create_canvas (first time) or
+slack_update_canvas (every week after) targeting #cx-retention-fantasy-football.
 
 Usage:
-    # Reuse the weekdata prepare_recap_context.py already cached (no Yahoo hit)
-    python apps/football-recap/scripts/prepare_league_hq_canvas.py --week 1 --no-fetch
-
-    # Fetch live, falling back to cache if Yahoo is unavailable
-    python apps/football-recap/scripts/prepare_league_hq_canvas.py --week 1
+    .venv/bin/python apps/football-recap/scripts/prepare_league_hq_canvas.py --week 6
+    .venv/bin/python apps/football-recap/scripts/prepare_league_hq_canvas.py --week 6 --history recap_history.json
 """
 
 from __future__ import annotations
@@ -21,177 +18,90 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime
-from typing import Any, Dict, List, Optional
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_WORKSPACE = os.path.dirname(os.path.dirname(_APP_ROOT))
+sys.path.insert(0, _APP_ROOT)
+sys.path.insert(0, os.path.join(_WORKSPACE, "packages"))
 
-from src.constants import OUTPUT_DIR  # noqa: E402
-from src.power_rankings import compute_power_rankings  # noqa: E402
-from src.yahoo_nfl_client import YahooError, YahooNFLClient  # noqa: E402
+from src.canvas_builder import build_league_hq_canvas_markdown
+from src.constants import RECAP_HISTORY_FILE, validate_week_number
+from src.fetch_league_data import get_fetcher
+from src.season_leaderboard import compute_season_awards
 
-CANVAS_FILENAME = "league-hq-canvas.md"
+OUTPUT_DIR = "output"
 
 
-def load_cached_weekdata(week: int) -> Optional[Dict[str, Any]]:
-    path = os.path.join(OUTPUT_DIR, f"week-{week}-weekdata.json")
+def _load_history(path: str):
     if not os.path.exists(path):
-        return None
-    try:
-        with open(path, "r", encoding="utf-8") as handle:
-            return json.load(handle)
-    except (json.JSONDecodeError, OSError):
-        return None
-
-
-def _standings_table(teams: List[Dict[str, Any]]) -> List[str]:
-    lines = [
-        "| # | Manager | Team | Record | PF | PA | Streak |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
-    ]
-    for index, team in enumerate(teams, 1):
-        record = f"{team.get('wins', 0)}-{team.get('losses', 0)}"
-        if team.get("ties"):
-            record += f"-{team['ties']}"
-        lines.append(
-            f"| {index} | {team.get('owner', '?')} | {team.get('team_name', '?')} "
-            f"| {record} | {team.get('points_for', 0):.1f} "
-            f"| {team.get('points_against', 0):.1f} | {team.get('streak', '--')} |"
-        )
-    return lines
-
-
-def _rankings_table(rankings: List[Dict[str, Any]]) -> List[str]:
-    lines = ["| # | Manager | Record | PF | Move |", "| --- | --- | --- | --- | --- |"]
-    for r in rankings:
-        record = f"{r['wins']}-{r['losses']}"
-        if r.get("ties"):
-            record += f"-{r['ties']}"
-        lines.append(
-            f"| {r['rank']} | {r['owner']} | {record} | {r['pf']:.1f} "
-            f"| {r['movement']} |"
-        )
-    return lines
-
-
-def _season_awards(teams: List[Dict[str, Any]], week: int) -> List[str]:
-    if not teams:
         return []
-    games = max(1, week)
-    most_points = max(teams, key=lambda t: t.get("points_for", 0))
-    fewest_points = min(teams, key=lambda t: t.get("points_for", 0))
-    most_against = max(teams, key=lambda t: t.get("points_against", 0))
-    best_diff = max(
-        teams, key=lambda t: t.get("points_for", 0) - t.get("points_against", 0)
-    )
-    return [
-        f"- **Most Points For** — {most_points.get('owner')} "
-        f"({most_points.get('points_for', 0):.1f}, "
-        f"{most_points.get('points_for', 0) / games:.1f}/wk)",
-        f"- **Fewest Points For** — {fewest_points.get('owner')} "
-        f"({fewest_points.get('points_for', 0):.1f})",
-        f"- **Most Points Against** — {most_against.get('owner')} "
-        f"({most_against.get('points_against', 0):.1f})",
-        f"- **Best Differential** — {best_diff.get('owner')} "
-        f"({best_diff.get('points_for', 0) - best_diff.get('points_against', 0):+.1f})",
-    ]
+    with open(path, "r") as f:
+        return json.load(f)
 
 
-def build_canvas(week_data: Dict[str, Any], week: int) -> str:
-    league = week_data.get("league", {})
-    teams = week_data.get("standings", {}).get("standings", [])
-    rankings = compute_power_rankings(week_data, week)
-    stats = week_data.get("week_stats", {})
-
-    parts: List[str] = []
-    parts.append(f"# 🏈 {league.get('league_name', 'League HQ')}")
-    parts.append(
-        f"_Through Week {week} · updated "
-        f"{datetime.now().strftime('%b %d, %Y')}_"
-    )
-
-    parts.append("\n## Standings")
-    parts.extend(_standings_table(teams) if teams else ["_No standings available._"])
-
-    parts.append("\n## Power Rankings")
-    parts.extend(_rankings_table(rankings) if rankings else ["_Not enough data yet._"])
-
-    parts.append(f"\n## Week {week} Highlights")
-    high, low = stats.get("highest_score"), stats.get("lowest_score")
-    if high:
-        parts.append(
-            f"- **High score** — {high['owner']} ({high['points']:.1f})"
-        )
-    if low:
-        parts.append(f"- **Low score** — {low['owner']} ({low['points']:.1f})")
-    if stats.get("closest_game"):
-        game = stats["closest_game"]
-        parts.append(
-            f"- **Closest game** — {game['team1']} vs {game['team2']} "
-            f"({game['margin']:.1f})"
-        )
-    if stats.get("biggest_blowout"):
-        game = stats["biggest_blowout"]
-        parts.append(
-            f"- **Biggest blowout** — {game['winner']} over {game['loser']} "
-            f"({game['margin']:.1f})"
-        )
-    if not any([high, low, stats.get("closest_game")]):
-        parts.append("_No scoring data for this week._")
-
-    awards = _season_awards(teams, week)
-    if awards:
-        parts.append("\n## Season Awards (running)")
-        parts.extend(awards)
-
-    return "\n".join(parts) + "\n"
+def _load_weekdata_from_disk(week: int):
+    path = os.path.join(OUTPUT_DIR, f"week-{week}-weekdata.json")
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            return json.load(f)
+    return None
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--week", type=int, required=True, help="NFL week number")
+    parser = argparse.ArgumentParser(description="Build League HQ Canvas markdown")
+    parser.add_argument("--week", type=int, required=True, help="Latest completed week")
+    parser.add_argument(
+        "--history", type=str, default=RECAP_HISTORY_FILE, help="Path to recap_history.json"
+    )
     parser.add_argument(
         "--no-fetch",
         action="store_true",
-        help="Read output/week-<N>-weekdata.json instead of hitting Yahoo.",
-    )
-    parser.add_argument(
-        "--out",
-        default=os.path.join(OUTPUT_DIR, CANVAS_FILENAME),
-        help="Where to write the canvas markdown.",
+        help="Use cached output/week-N-weekdata.json instead of a live Yahoo fetch",
     )
     args = parser.parse_args()
-    week = args.week
 
-    week_data: Optional[Dict[str, Any]] = None
+    if not validate_week_number(args.week):
+        print(f"❌ Invalid week: {args.week}")
+        return 1
 
+    print("=" * 70)
+    print("🏈 Prepare League HQ Canvas")
+    print(f"📊 Through Week {args.week}")
+    print("=" * 70)
+
+    week_data = None
     if args.no_fetch:
-        week_data = load_cached_weekdata(week)
-        if week_data is None:
-            print(
-                f"--no-fetch was set but no cache exists at "
-                f"{OUTPUT_DIR}/week-{week}-weekdata.json",
-                file=sys.stderr,
-            )
+        week_data = _load_weekdata_from_disk(args.week)
+        if not week_data:
+            print(f"❌ No cached week_data for week {args.week}; run without --no-fetch")
             return 1
-        print(f"Using cached week {week} data")
     else:
         try:
-            week_data = YahooNFLClient().fetch_week_data(week)
-            print(f"Fetched week {week} from Yahoo")
-        except YahooError as exc:
-            print(f"Yahoo fetch failed ({exc.code}): {exc}", file=sys.stderr)
-            week_data = load_cached_weekdata(week)
-            if week_data is None:
-                print("No cached fallback available.", file=sys.stderr)
+            fetcher = get_fetcher()
+            week_data = fetcher.fetch_all_for_week(args.week)
+        except Exception as exc:
+            print(f"⚠️  Live fetch failed ({exc}); trying cached week_data")
+            week_data = _load_weekdata_from_disk(args.week)
+            if not week_data:
+                print("❌ No cached week_data available either")
                 return 1
-            print("Falling back to cached week data")
 
-    os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
-    with open(args.out, "w", encoding="utf-8") as handle:
-        handle.write(build_canvas(week_data, week))
+    history = _load_history(args.history)
+    season_awards = compute_season_awards(history)
 
-    print(f"Wrote {args.out}")
+    canvas_md = build_league_hq_canvas_markdown(week_data, season_awards, week=args.week)
+
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+    canvas_path = os.path.join(OUTPUT_DIR, "league-hq-canvas.md")
+    with open(canvas_path, "w") as f:
+        f.write(canvas_md)
+
+    print(f"✅ Canvas markdown saved to {canvas_path}")
+    print()
+    print("Next: the automation agent should call slack_update_canvas (or")
+    print("slack_create_canvas on the very first run) targeting")
+    print("#cx-retention-fantasy-football with this file's contents.")
     return 0
 
 

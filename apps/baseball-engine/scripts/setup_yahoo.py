@@ -15,11 +15,41 @@ workspace_root = app_root.parent.parent
 sys.path.insert(0, str(app_root))
 sys.path.insert(0, str(workspace_root / "packages"))
 
-from src.yahoo_client import YahooFantasyClient, print_leagues
-from src.importers import CSVImporter
+from shared.yahoo import YahooFantasyClient, YahooOAuth2
 from shared.logger import get_logger
 
 logger = get_logger(__name__)
+
+FANTASY_GAMES_URL = (
+    "https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games?format=json"
+)
+
+
+def print_leagues(leagues):
+    for i, league in enumerate(leagues, 1):
+        print(
+            f"  {i}. {league.get('name')} "
+            f"(key={league.get('league_key')}, season={league.get('season')})"
+        )
+
+
+def ensure_yahoo_session(oauth_file: Path) -> YahooFantasyClient:
+    """Refresh tokens (or run browser OAuth) and return an API client."""
+    oauth = YahooOAuth2.load_from_file(str(oauth_file))
+
+    if oauth.refresh_token and oauth.refresh_access_token():
+        oauth.save_to_file(str(oauth_file))
+        print("✅ Access token refreshed")
+    elif oauth.authorize():
+        oauth.save_to_file(str(oauth_file))
+        print("✅ Browser authorization complete")
+    else:
+        raise RuntimeError(
+            "Could not refresh or obtain Yahoo tokens. "
+            "Try: python scripts/test_yahoo_oauth.py"
+        )
+
+    return YahooFantasyClient(oauth)
 
 
 def setup_oauth():
@@ -111,65 +141,43 @@ def main():
     
     # Test authentication
     print("\n🔐 Testing authentication...")
-    client = YahooFantasyClient(str(oauth_file))
-    
-    if not client.authenticate():
-        print("\n❌ Authentication failed!")
-        print("   - Check your Consumer Key and Consumer Secret")
-        print("   - Make sure you authorized the app in your browser")
-        print("   - Try running this script again")
+    try:
+        client = ensure_yahoo_session(oauth_file)
+    except RuntimeError as exc:
+        print(f"\n❌ Authentication failed: {exc}")
         return 1
-    
+
+    probe = client.session.get(FANTASY_GAMES_URL)
+    if probe.status_code == 403:
+        print("\n❌ Yahoo Fantasy API returned 403 (application not authorized).")
+        print("   Your tokens refreshed, but the Yahoo developer app lacks Fantasy Sports access.")
+        print("   At https://developer.yahoo.com/apps/ enable Fantasy Sports (Read), then run:")
+        print("     python scripts/test_yahoo_oauth.py")
+        return 1
+    if probe.status_code != 200:
+        print(f"\n❌ Fantasy API probe failed: HTTP {probe.status_code}")
+        print(probe.text[:400])
+        return 1
+
+    print("✅ Fantasy API reachable")
+
     # Get leagues
     print("\n🔍 Fetching your Fantasy Baseball leagues...")
-    leagues = client.get_leagues(year=2026, sport="mlb")
-    
+    leagues = client.get_user_leagues(year=2026, sport="mlb")
+
     if not leagues:
         print("\n⚠️  No leagues found for 2026")
         print("   Try a different year:")
         year_input = input("   Enter year (e.g., 2025): ").strip()
         if year_input:
-            leagues = client.get_leagues(year=int(year_input), sport="mlb")
-    
+            leagues = client.get_user_leagues(year=int(year_input), sport="mlb")
+
     if leagues:
         print_leagues(leagues)
-        
-        # Ask which league to import
-        print("\nWhich league would you like to import?")
-        choice = input("Enter number (or press Enter to skip): ").strip()
-        
-        if choice.isdigit() and 1 <= int(choice) <= len(leagues):
-            selected_league = leagues[int(choice) - 1]
-            league_id = selected_league['league_id']
-            
-            print(f"\n📥 Fetching roster from: {selected_league['name']}")
-            
-            roster = client.fetch_roster_with_draft_info(
-                league_id=league_id,
-                team_name="My Team"
-            )
-            
-            if roster:
-                # Export to CSV for manual editing
-                csv_path = "data/my_roster_from_yahoo.csv"
-                CSVImporter.export_roster(roster, csv_path)
-                
-                print(f"\n✅ Roster exported to: {csv_path}")
-                print(f"   Players: {len(roster.players)}")
-                print("\n⚠️  IMPORTANT: Yahoo API doesn't provide draft history")
-                print("   You need to manually add draft information:")
-                print(f"   1. Open: {csv_path}")
-                print("   2. For each player, fill in:")
-                print("      - draft_round (what round you drafted them)")
-                print("      - draft_year (what year you drafted them)")
-                print("      - years_kept (how many times you've kept them)")
-                print("      - adp (optional: their current ADP for value analysis)")
-                print("   3. Save the file")
-                print("   4. Run: npm run analyze:csv")
-                
-                print("\n💡 Tip: Look up player ADPs at:")
-                print("   - https://www.fantasypros.com/mlb/adp/overall.php")
-                print("   - https://nfc.shgn.com/adp/baseball")
+        print(
+            "\n💡 To export a roster with draft history, run from baseball-engine:"
+        )
+        print("     npm run fetch:roster")
     
     print("\n" + "="*80)
     print("✨ Setup complete!")

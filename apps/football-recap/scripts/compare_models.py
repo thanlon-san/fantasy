@@ -4,7 +4,6 @@ A/B Test Script: Compare Claude Sonnet 4.5, Claude Sonnet 4, and GPT-4o
 
 Usage:
     python scripts/compare_models.py 12                              # Compare week 12 (all models)
-    python scripts/compare_models.py 12 --persona "Therapist Ghost"  # With specific persona
     python scripts/compare_models.py 12 --models sonnet-4.5 sonnet-4 # Only compare Claude models
 
 Requires ANTHROPIC_API_KEY and/or OPENAI_API_KEY in your .env file.
@@ -16,8 +15,11 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-# Add project root to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Path setup: expose the app root (for `src.*`) and the workspace `packages/`
+# dir (for `shared.*`).
+_APP_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_APP_ROOT))
+sys.path.insert(0, str(_APP_ROOT.parent.parent / "packages"))
 
 from dotenv import load_dotenv
 
@@ -56,8 +58,8 @@ MODELS = {
 }
 
 
-def compare_models(week: int, persona: str = None, model_list: list = None):
-    """Generate recaps with multiple models for comparison."""
+def compare_models(week: int, model_list: list = None):
+    """Generate recaps with multiple models for comparison (one house voice)."""
 
     from src.recap_generator import RecapGenerator
 
@@ -92,10 +94,9 @@ def compare_models(week: int, persona: str = None, model_list: list = None):
         return
 
     generator = RecapGenerator()
-    persona_label = persona if persona else "Random (auto-rotated)"
 
     print(f"\n🏈 Model Comparison: Week {week}")
-    print(f"📝 Persona: {persona_label}")
+    print("👻 Voice: The Commissioner's Ghost")
     print(
         f"🤖 Models: {', '.join(MODELS[m]['display_name'] for m in available_models)}"
     )
@@ -112,22 +113,6 @@ def compare_models(week: int, persona: str = None, model_list: list = None):
         week_data, week, use_v2_format=True
     )
     history_context = generator.get_previous_recaps_context()
-
-    # Add persona to context
-    if persona:
-        persona_block = f"""
-## PERSONA_SEED (This week's columnist mode)
-Use this persona for the entire recap: **{persona}**
-
-**CRITICAL PERSONA REQUIREMENTS:**
-1. Use this persona's specific vocabulary 6+ times minimum.
-2. Make the persona evident in: League Pulse (immediately), at least 3 matchup writeups, and Power Rankings.
-3. DO NOT announce the persona in the text. Show it through language and style.
-4. DO NOT break character or slip into generic sports writing.
-
-Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
-"""
-        data_context = data_context + "\n\n" + persona_block
 
     results = {}
 
@@ -151,9 +136,6 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
                     history_context=history_context,
                     client=client,
                     model=model_info["model_id"],
-                    use_v2=False,
-                    use_v3=True,
-                    persona_seed=None,  # Already in data_context
                 )
             else:  # openai
                 from openai import OpenAI
@@ -166,9 +148,6 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
                     history_context=history_context,
                     client=client,
                     model=model_info["model_id"],
-                    use_v2=False,
-                    use_v3=True,
-                    persona_seed=None,
                 )
 
             results[model_key] = recap
@@ -183,7 +162,6 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
     output_dir.mkdir(parents=True, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    persona_slug = persona.lower().replace(" ", "-") if persona else "random"
 
     print("\n📁 Saving outputs...")
     saved_files = []
@@ -191,7 +169,7 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
     for model_key, recap in results.items():
         if recap:
             model_info = MODELS[model_key]
-            filename = f"week-{week}-{model_key}-{persona_slug}-{timestamp}.md"
+            filename = f"week-{week}-{model_key}-ghost-{timestamp}.md"
             filepath = output_dir / filename
 
             with open(filepath, "w") as f:
@@ -199,7 +177,7 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
                 f.write(
                     f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
                 )
-                f.write(f"**Persona:** {persona_label}\n")
+                f.write("**Voice:** The Commissioner's Ghost\n")
                 f.write(f"**Model:** `{model_info['model_id']}`\n\n")
                 f.write("---\n\n")
                 f.write(recap)
@@ -212,60 +190,7 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
     print("📊 COMPARISON ANALYSIS")
     print("=" * 70)
 
-    # Persona vocabulary to check (expand based on persona)
-    persona_vocab = {
-        "Therapist Ghost": [
-            "unpack",
-            "pattern",
-            "projection",
-            "processing",
-            "coping",
-            "cry for help",
-            "trauma",
-        ],
-        "On-Call Engineer Ghost": [
-            "P0",
-            "incident",
-            "post-mortem",
-            "root cause",
-            "hotfix",
-            "escalat",
-            "pages",
-            "alert",
-        ],
-        "Product Manager Ghost": [
-            "backlog",
-            "user story",
-            "sprint",
-            "A/B test",
-            "MVP",
-            "acceptance",
-            "roadmap",
-        ],
-        "Frustrated Dasher Ghost": [
-            "address",
-            "tip",
-            "cold food",
-            "hand it to me",
-            "apartment",
-            "gate code",
-            "deliver",
-        ],
-        "Vegas Bookie Ghost": [
-            "cover",
-            "bad beat",
-            "closing line",
-            "sharp",
-            "public",
-            "parlay",
-            "line",
-        ],
-    }
-
-    # Get relevant vocab for this persona
-    check_terms = persona_vocab.get(
-        persona, ["churn", "retention", "funnel", "NPS", "CAC", "A/B"]
-    )
+    check_terms = ["churn", "retention", "funnel", "NPS", "CAC", "A/B"]
 
     for model_key, recap in results.items():
         if recap:
@@ -273,13 +198,10 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
             emoji = model_info["emoji"]
 
             word_count = len(recap.split())
-
-            # Count persona terms
-            persona_hits = sum(
+            jargon_hits = sum(
                 1 for term in check_terms if term.lower() in recap.lower()
             )
 
-            # Count unique roast structures
             has_narrator = "narrator:" in recap.lower()
             has_rhetorical = recap.count("?") > 3
             has_callback = "week" in recap.lower() and any(
@@ -288,7 +210,7 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
 
             print(f"\n{emoji} **{model_info['display_name']}**")
             print(f"   Words: {word_count}")
-            print(f"   Persona vocabulary hits: {persona_hits}/{len(check_terms)}")
+            print(f"   CRM jargon hits: {jargon_hits}/{len(check_terms)}")
             print(f"   Narrator device: {'✓' if has_narrator else '✗'}")
             print(f"   Rhetorical questions: {'✓' if has_rhetorical else '✗'}")
             print(f"   Week callbacks: {'✓' if has_callback else '✗'}")
@@ -303,7 +225,7 @@ Remember: You are {persona}. Commit fully to this mode's vocabulary and tone.
         print(f"   {filepath}")
 
     print("\n💡 Open these files side-by-side to compare:")
-    print("   - Which commits hardest to the persona?")
+    print("   - Which sounds most like The Commissioner's Ghost?")
     print("   - Which has the sharpest, funniest roasts?")
     print("   - Which feels most unique (not generic AI slop)?")
     print("\n🏆 Pick your winner!")
@@ -316,13 +238,6 @@ def main():
         description="Compare AI models for fantasy football recap generation"
     )
     parser.add_argument("week", type=int, help="Week number to generate")
-    parser.add_argument(
-        "--persona",
-        "-p",
-        type=str,
-        default=None,
-        help="Specific persona to use (e.g., 'Therapist Ghost', 'On-Call Engineer Ghost')",
-    )
     parser.add_argument(
         "--models",
         "-m",
@@ -338,7 +253,7 @@ def main():
         print("❌ Week must be between 1 and 18")
         return
 
-    compare_models(args.week, args.persona, args.models)
+    compare_models(args.week, args.models)
 
 
 if __name__ == "__main__":

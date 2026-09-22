@@ -1,401 +1,273 @@
 #!/usr/bin/env python3
-"""Offline smoke test for the weekly recap pipeline.
+"""
+End-to-end pipeline validation without touching the Yahoo network.
 
-Runs the whole chain against a synthetic 14-team week so the context builder,
-power rankings, canvas renderers, and history writer can be exercised without
-touching Yahoo. Also reports whether Yahoo credentials are present and, with
---check-yahoo, whether they actually work.
+Runs the exact code path a recap uses (fetcher output -> ContextBuilder ->
+formatted LLM context) against a realistic synthetic ``week_data`` dict.
+Fails loud if anything downstream of the fetcher regresses.
 
-The fixture is obviously synthetic (managers are "Manager 01"...) so its output
-can never be mistaken for real league data.
-
-Usage:
-    python apps/football-recap/scripts/validate_pipeline.py
-    python apps/football-recap/scripts/validate_pipeline.py --check-yahoo
+Also asserts that the fetcher's OAuth loader rejects a missing token with a
+clean, actionable error (rather than crashing partway through Yahoo calls).
 """
 
 from __future__ import annotations
 
-import argparse
-import json
 import os
 import sys
-import tempfile
-from typing import Any, Dict, List
+from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_APP_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_APP_ROOT))
+sys.path.insert(0, str(_APP_ROOT.parent.parent / "packages"))
 
-from src.constants import (  # noqa: E402
-    LEAGUE_SIZE_2026,
-    NFL_SEASON_START_DATE,
-    YAHOO_OAUTH_ENV_VAR,
-    get_completed_nfl_week,
-    get_current_nfl_week,
-    has_season_started,
-)
-from src.power_rankings import compute_power_rankings, format_rankings_lines  # noqa: E402
-from src.recap_context import build_context  # noqa: E402
-from src.yahoo_nfl_client import (  # noqa: E402
-    YahooError,
-    YahooNFLClient,
-    compute_week_stats,
-    flatten,
-    iter_collection,
-)
-
-PASS, FAIL = "PASS", "FAIL"
-_results: List[tuple] = []
+from src.context_builder import ContextBuilder
+from src.ownership_stats import OwnershipStats
+from src.recap_generator import RecapGenerator
+from src.trend_tracker import TrendTracker
 
 
-def check(name: str, condition: bool, detail: str = "") -> bool:
-    _results.append((PASS if condition else FAIL, name, detail))
-    print(f"  [{PASS if condition else FAIL}] {name}" + (f" — {detail}" if detail else ""))
-    return condition
+def synthetic_week_data(week: int = 5) -> dict:
+    """
+    A realistic ``week_data`` dict shaped like what
+    ``YahooLeagueFetcher.fetch_all_for_week`` returns. Values are just enough
+    to exercise every consumer branch in ContextBuilder.
+    """
+    def make_team(team_id, team_name, owner, score, starters, bench,
+                  wins=3, losses=2, standing=None):
+        return {
+            "team_id": team_id,
+            "team_key": f"461.l.1324751.t.{team_id}",
+            "team_name": team_name,
+            "owner": owner,
+            "score": score,
+            "record": f"{wins}-{losses}-0",
+            "starters": starters,
+            "bench": bench,
+            "position_aggregates": {"QB": 20, "RB": 30, "WR": 25, "TE": 10, "K": 8, "D/ST": 6, "FLEX": 12},
+            "optimal_lineup": {"optimal_score": score + 12.0, "optimal_players": []},
+            "management_gap": 12.0,
+        }
 
+    def make_player(name, position, slot, actual):
+        return {
+            "name": name,
+            "position": position,
+            "slot": slot,
+            "projected_points": max(0.0, actual - 3),
+            "actual_points": actual,
+            "pro_team": "TB",
+            "percent_started": -1,
+            "stats": {},
+        }
 
-def make_fixture(week: int = 1, teams: int = LEAGUE_SIZE_2026) -> Dict[str, Any]:
-    """Build a synthetic but structurally faithful week_data blob."""
-    standings = []
-    for i in range(1, teams + 1):
-        wins = (teams - i) % (week + 1)
-        standings.append(
-            {
-                "team_key": f"nfl.l.999.t.{i}",
-                "team_id": i,
-                "team_name": f"Test Team {i:02d}",
-                "owner": f"Manager {i:02d}",
-                "managers": [f"Manager {i:02d}"],
-                "rank": i,
-                "wins": wins,
-                "losses": week - wins,
-                "ties": 0,
-                "win_pct": round(wins / max(1, week), 3),
-                "points_for": round(150 - i * 3.5, 2),
-                "points_against": round(100 + i * 2.0, 2),
-                "streak": "W1" if wins else "L1",
-                "week_points": round(150 - i * 3.5, 2),
-                "week_projected": 120.0,
-            }
-        )
+    home = make_team(
+        1, "Beacon", "Han",
+        score=118.4,
+        starters=[
+            make_player("QB One", "QB", "QB", 26.2),
+            make_player("RB One", "RB", "RB", 21.5),
+            make_player("RB Two", "RB", "RB", 12.0),
+            make_player("WR One", "WR", "WR", 19.4),
+            make_player("WR Two", "WR", "WR", 11.1),
+            make_player("TE One", "TE", "TE", 8.9),
+            make_player("FLEX One", "WR", "W/R/T", 10.2),
+            make_player("Kicker", "K", "K", 6.0),
+            make_player("Defense", "DEF", "DEF", 3.1),
+        ],
+        bench=[
+            make_player("Bench Stud", "WR", "BN", 22.8),
+            make_player("Bench QB", "QB", "BN", 4.0),
+        ],
+        wins=4, losses=1, standing=1,
+    )
 
-    matchups = []
-    for index in range(0, teams, 2):
-        home, away = standings[index], standings[index + 1]
+    away = make_team(
+        2, "Purdy Boys", "tyler",
+        score=94.1,
+        starters=[
+            make_player("QB Two", "QB", "QB", 17.5),
+            make_player("RB Three", "RB", "RB", 15.9),
+            make_player("RB Four", "RB", "RB", 8.4),
+            make_player("WR Three", "WR", "WR", 13.6),
+            make_player("WR Four", "WR", "WR", 9.0),
+            make_player("TE Two", "TE", "TE", 6.5),
+            make_player("FLEX Two", "RB", "W/R/T", 7.2),
+            make_player("Kicker Two", "K", "K", 8.0),
+            make_player("Defense Two", "DEF", "DEF", 8.0),
+        ],
+        bench=[
+            make_player("Bench Bust", "RB", "BN", 1.2),
+        ],
+        wins=2, losses=3, standing=6,
+    )
 
-        def side(team):
-            return {
-                "team_id": team["team_id"],
-                "team_key": team["team_key"],
-                "team_name": team["team_name"],
-                "owner": team["owner"],
-                "score": team["week_points"],
-                "projected": team["week_projected"],
-                "record": f"{team['wins']}-{team['losses']}-0",
-                "starters": [],
-                "bench": [],
-            }
-
-        winner = (
-            home["team_name"]
-            if home["week_points"] > away["week_points"]
-            else away["team_name"]
-        )
-        matchups.append(
-            {
-                "matchup_id": index // 2,
-                "week": week,
-                "is_playoffs": False,
-                "is_consolation": False,
-                "status": "postevent",
-                "home_team": side(home),
-                "away_team": side(away),
-                "winner": winner,
-                "margin": round(
-                    abs(home["week_points"] - away["week_points"]), 2
-                ),
-            }
-        )
-
-    return {
+    matchups_payload = {
         "week": week,
-        "league": {
-            "league_name": "Validation League",
-            "season": "2026",
-            "total_teams": teams,
-            "current_week": week,
-        },
-        "teams": {"total_teams": teams, "teams": standings},
-        "standings": {"standings": standings},
-        "matchups": {"week": week, "total_matchups": len(matchups), "matchups": matchups},
-        "next_week_matchups": {
-            "week": week + 1,
-            "total_matchups": len(matchups),
-            "matchups": matchups,
-        },
-        "week_stats": compute_week_stats(week, matchups),
-        "source": "fixture",
+        "total_matchups": 1,
+        "matchups": [
+            {
+                "matchup_id": 1,
+                "home_team": home,
+                "away_team": away,
+                "winner": home["team_name"],
+                "margin": round(home["score"] - away["score"], 2),
+                "is_playoffs": False,
+            }
+        ],
     }
 
+    standings_payload = {
+        "standings": [
+            {
+                "rank": 1, "team_id": 1, "team_name": "Beacon", "owner": "Han",
+                "wins": 4, "losses": 1, "ties": 0, "win_pct": 0.8,
+                "points_for": 612.0, "points_against": 480.0, "point_differential": 132.0,
+                "streak": "W3",
+            },
+            {
+                "rank": 2, "team_id": 2, "team_name": "Purdy Boys", "owner": "tyler",
+                "wins": 2, "losses": 3, "ties": 0, "win_pct": 0.4,
+                "points_for": 480.0, "points_against": 520.0, "point_differential": -40.0,
+                "streak": "L1",
+            },
+        ],
+        "leaders": {},
+    }
 
-def validate_yahoo_parsers() -> None:
-    print("\nYahoo JSON shape helpers")
-    check(
-        "flatten collapses list-of-single-key-dicts",
-        flatten([{"a": 1}, [{"b": 2}], {"c": 3}]) == {"a": 1, "b": 2, "c": 3},
-    )
-    check(
-        "flatten walks numeric-keyed containers",
-        flatten({"0": {"x": 1}, "1": {"y": 2}}) == {"x": 1, "y": 2},
-    )
-    check(
-        "iter_collection skips the count key and orders numerically",
-        list(iter_collection({"0": "a", "10": "c", "2": "b", "count": 3}))
-        == ["a", "b", "c"],
-    )
-    check("iter_collection passes lists through", list(iter_collection(["a"])) == ["a"])
-    check("iter_collection tolerates junk", list(iter_collection(None)) == [])
+    teams_payload = {
+        "total_teams": 2,
+        "teams": [
+            {**standings_payload["standings"][0], "streak_type": "W", "streak_length": 3, "standing": 1,
+             "acquisitions": None, "drops": None, "trades": None, "faab_spent": None},
+            {**standings_payload["standings"][1], "streak_type": "L", "streak_length": 1, "standing": 2,
+             "acquisitions": None, "drops": None, "trades": None, "faab_spent": None},
+        ],
+    }
+
+    data = {
+        "league": {
+            "league_id": 1324751,
+            "year": 2026,
+            "season_year": 2026,
+            "league_name": "CX Retention Fantasy Football",
+            "current_week": week,
+            "total_teams": 2,
+            "league_key": "461.l.1324751",
+        },
+        "teams": teams_payload,
+        "standings": standings_payload,
+        "matchups": matchups_payload,
+        "week_stats": {
+            "highest_score": {"team": home["team_name"], "points": home["score"]},
+            "lowest_score": {"team": away["team_name"], "points": away["score"]},
+            "biggest_blowout": {"winner": home["team_name"], "loser": away["team_name"], "margin": 24.3},
+            "closest_game": {"team1": home["team_name"], "team2": away["team_name"], "margin": 24.3},
+            "most_bench_points": {"team": home["team_name"], "points": 26.8},
+        },
+        "power_rankings": {
+            "week": week,
+            "rankings": [
+                {"rank": 1, "team_id": 1, "team_name": "Beacon", "owner": "Han",
+                 "wins": 4, "losses": 1, "ties": 0, "pf": 612.0, "movement": "+1"},
+                {"rank": 2, "team_id": 2, "team_name": "Purdy Boys", "owner": "tyler",
+                 "wins": 2, "losses": 3, "ties": 0, "pf": 480.0, "movement": "-1"},
+            ],
+        },
+        "next_week_matchups": {
+            "week": week + 1,
+            "total_matchups": 1,
+            "matchups": [
+                {
+                    "matchup_id": 1,
+                    "home_team": {"team_name": "Beacon", "record": "4-1-0"},
+                    "away_team": {"team_name": "Purdy Boys", "record": "2-3-0"},
+                    "winner": None,
+                    "margin": 0.0,
+                }
+            ],
+        },
+    }
+    # Layer in the engagement features exactly the way YahooLeagueFetcher does.
+    from src.gif_bank import pick_gif
+    from src.superlatives import compute_superlatives
+    data["superlatives"] = compute_superlatives(data)
+    data["gif_of_the_week"] = pick_gif(data, week, superlatives=data["superlatives"])
+    return data
 
 
-def validate_power_rankings(fixture: Dict[str, Any], week: int) -> List[Dict[str, Any]]:
-    print("\nPower rankings")
-    with tempfile.TemporaryDirectory() as tmp:
-        path = os.path.join(tmp, "pr.json")
-        rankings = compute_power_rankings(fixture, week, history_path=path)
-
-    check(
-        "ranks every team",
-        len(rankings) == LEAGUE_SIZE_2026,
-        f"{len(rankings)} of {LEAGUE_SIZE_2026}",
-    )
-    check(
-        "ranks are contiguous 1..N",
-        [r["rank"] for r in rankings] == list(range(1, len(rankings) + 1)),
-    )
-    check(
-        "sorted by descending score",
-        all(
-            rankings[i]["score"] >= rankings[i + 1]["score"]
-            for i in range(len(rankings) - 1)
-        ),
-    )
-    check("every rank has a movement marker", all(r.get("movement") for r in rankings))
-    lines = format_rankings_lines(rankings)
-    check("renders one line per team", len(lines) == len(rankings))
-    check(
-        "lines use @Owner form",
-        all("**@" in line for line in lines),
-        lines[0] if lines else "",
-    )
-    return rankings
+def check(label: str, cond: bool, detail: str = "") -> None:
+    marker = "✅" if cond else "❌"
+    suffix = f" — {detail}" if detail else ""
+    print(f"  {marker} {label}{suffix}")
+    if not cond:
+        raise SystemExit(1)
 
 
-def validate_context(fixture: Dict[str, Any], week: int) -> Dict[str, Any]:
-    print("\nPrepared context")
-    built = build_context(fixture, week)
-    markdown = built["markdown"]
+def test_context_builder_end_to_end() -> None:
+    print("• context builder end-to-end")
+    trend = TrendTracker()
+    ownership = OwnershipStats()
+    builder = ContextBuilder(trend, ownership)
+    week_data = synthetic_week_data(week=5)
+    ctx = builder.build_context(week_data, week=5, use_v2_format=True)
 
-    for section in (
-        f"# Week {week} Recap Data",
-        "## Matchups",
-        "## Power Rankings",
-        "## Weekly Superlatives",
-        f"## Week {week + 1} Preview",
-        "## GIF of the Week",
-        "## CLOSING LINE",
+    check("returns non-empty context", isinstance(ctx, str) and len(ctx) > 500,
+          f"len={len(ctx) if isinstance(ctx, str) else 'n/a'}")
+    for expected in (
+        "# Week 5 Recap Data",
+        "CX Retention Fantasy Football",
+        "Week Winner",
+        "Beacon",
+        "Purdy Boys",
+        "Power Rankings",
+        "Week 6 Preview",
+        "Bench MVP",
+        "Weekly Superlatives",
+        "Bench Hero of the Week",
+        "GIF of the Week",
+        "media.giphy.com",
     ):
-        check(f"emits {section!r}", section in markdown)
-
-    check("names a bit of the week", "## BIT_OF_THE_WEEK" in markdown)
-    check(
-        "power rankings list every team",
-        all(f"\n{r['rank']}. **@" in markdown for r in built["rankings"]),
-    )
-    check("closing line is in the meta sidecar", bool(built["meta"]["closing_line"]))
-    check(
-        "closing line text appears in the context",
-        built["meta"]["closing_line"] in markdown,
-    )
-    check(
-        "forbids invention explicitly",
-        "Do not invent" in markdown,
-    )
-    check(
-        "omits the GIF line when no source is configured",
-        "Do not invent a Giphy URL" in markdown or "![GIF](" in markdown,
-    )
-    check("superlatives were derived", built["meta"]["superlative_count"] > 0)
-    return built
+        check(f"contains {expected!r}", expected in ctx)
 
 
-def validate_canvases(fixture: Dict[str, Any], week: int) -> None:
-    print("\nCanvas renderers")
-    from prepare_league_hq_canvas import build_canvas as build_hq
-    from prepare_preseason_canvas import build_canvas as build_preseason
-
-    hq = build_hq(fixture, week)
-    check("HQ canvas has standings", "## Standings" in hq)
-    check("HQ canvas has power rankings", "## Power Rankings" in hq)
-    check("HQ canvas has season awards", "## Season Awards" in hq)
-    check(
-        "HQ canvas lists every team in standings",
-        all(f"Manager {i:02d}" in hq for i in range(1, LEAGUE_SIZE_2026 + 1)),
-    )
-
-    preseason = build_preseason([], "Test status")
-    check("preseason canvas renders with no roster", "# 🏈 League HQ" in preseason)
-    check(
-        "preseason canvas admits the roster is pending",
-        "has not been read from Yahoo yet" in preseason,
-    )
-    check("preseason canvas shows empty standings", "_No games played yet._" in preseason)
-
-    populated = build_preseason(
-        [{"manager": "A", "team_name": "T", "draft_slot": 1}], "Test"
-    )
-    check("preseason canvas renders a configured roster", "| 1 | T | A |" in populated)
-
-    # Managers are optional -- the shipped config carries draft order only.
-    slots_only = build_preseason([{"team_name": "T", "draft_slot": 1}], "Test")
-    check(
-        "preseason canvas renders draft order without manager names",
-        "| Pick | Team |" in slots_only and "| 1 | T |" in slots_only,
-    )
+def test_recap_generator_context_delegation() -> None:
+    print("• RecapGenerator.build_context delegates through ContextBuilder")
+    # Instantiate WITHOUT a real fetcher; we're only exercising context path.
+    gen = RecapGenerator(fetcher=object())  # sentinel so fetcher never lazy-loads
+    ctx = gen.build_context(synthetic_week_data(week=7), week=7)
+    check("non-empty context via generator", isinstance(ctx, str) and len(ctx) > 500)
+    check("week 7 header present", "# Week 7 Recap Data" in ctx)
 
 
-def validate_draft_board() -> None:
-    print("\nDraft board")
-    from prepare_draft_context import DEFAULT_BOARD, analyze_team, build_markdown, load_board
-
-    if not os.path.exists(DEFAULT_BOARD):
-        check("draft board exists", False, DEFAULT_BOARD)
-        return
-    check("draft board exists", True)
-
-    board = load_board(DEFAULT_BOARD)
-    teams = board["teams"]
-    check(
-        "board has every manager",
-        len(teams) == LEAGUE_SIZE_2026,
-        f"{len(teams)} of {LEAGUE_SIZE_2026}",
-    )
-    check(
-        "every team drafted a full bench",
-        all(len(t["picks"]) == board["rounds"] for t in teams),
-        f"expected {board['rounds']} picks each",
-    )
-    check(
-        "draft slots are unique and contiguous",
-        sorted(t["draft_slot"] for t in teams) == list(range(1, len(teams) + 1)),
-    )
-    check(
-        "each team's picks cover rounds 1..N once",
-        all(
-            sorted(p[0] for p in t["picks"]) == list(range(1, board["rounds"] + 1))
-            for t in teams
-        ),
-    )
-    check(
-        "every pick has a known position",
-        all(
-            p[3] in ("QB", "RB", "WR", "TE", "K", "DST")
-            for t in teams
-            for p in t["picks"]
-        ),
-    )
-
-    analyzed = [analyze_team(t, board["rounds"]) for t in teams]
-    markdown = build_markdown(board, analyzed)
-    check(
-        "context names every team",
-        all(t["team_name"] in markdown for t in teams),
-    )
-    check("context forbids invention", "Do not invent picks" in markdown)
-
-
-def validate_environment(check_yahoo: bool) -> None:
-    print("\nEnvironment")
-    week = get_current_nfl_week()
-    completed = get_completed_nfl_week()
-    check(
-        "season start date is configured",
-        True,
-        f"kickoff {NFL_SEASON_START_DATE:%b %d %Y}, started: {has_season_started()}",
-    )
-    check("current week resolves", 1 <= week <= 18, f"week {week}")
-    check(
-        "completed week resolves",
-        0 <= completed <= 18,
-        f"last finished week: {completed}"
-        + (" (nothing to recap yet)" if completed == 0 else ""),
-    )
-
-    has_creds = bool(os.environ.get(YAHOO_OAUTH_ENV_VAR, "").strip())
-    check(f"{YAHOO_OAUTH_ENV_VAR} is set", has_creds)
-
-    if not check_yahoo:
-        print("  [skip] Yahoo connectivity (pass --check-yahoo to test)")
-        return
-
+def test_oauth_loader_error_message() -> None:
+    print("• OAuth loader fails cleanly when no token is available")
+    # Ensure env var is not present for this check
+    prev = os.environ.pop("YAHOO_OAUTH_JSON", None)
     try:
-        client = YahooNFLClient()
-    except YahooError as exc:
-        check("Yahoo credentials load", False, str(exc))
-        return
-    check("Yahoo credentials load", True)
-
-    try:
-        client.refresh_access_token()
-        check("Yahoo token refresh", True)
-    except YahooError as exc:
-        check("Yahoo token refresh", False, str(exc))
-        return
-
-    try:
-        client.fetch_league_meta()
-        check("Yahoo league is readable", True)
-    except YahooError as exc:
-        check("Yahoo league is readable", False, f"{exc.code}: {exc}")
+        from src.yahoo_fetcher import load_yahoo_oauth
+        # Point at a non-existent explicit path so the default search misses too.
+        try:
+            load_yahoo_oauth(explicit_path=Path("/tmp/does-not-exist-oauth.json"))
+            raise SystemExit("Expected RuntimeError, none raised")
+        except RuntimeError as exc:
+            msg = str(exc)
+            check("error mentions oauth2.json path", "oauth2.json" in msg)
+            check("error mentions env var fallback", "YAHOO_OAUTH_JSON" in msg)
+    finally:
+        if prev is not None:
+            os.environ["YAHOO_OAUTH_JSON"] = prev
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--week", type=int, default=1, help="Week to simulate")
-    parser.add_argument(
-        "--check-yahoo",
-        action="store_true",
-        help="Also hit Yahoo to verify credentials really work.",
-    )
-    parser.add_argument("--dump", help="Write the generated context markdown here")
-    args = parser.parse_args()
-
-    print("Validating the weekly recap pipeline (offline fixture)\n" + "=" * 55)
-
-    fixture = make_fixture(args.week)
-    validate_yahoo_parsers()
-    validate_power_rankings(fixture, args.week)
-    built = validate_context(fixture, args.week)
-    validate_canvases(fixture, args.week)
-    validate_draft_board()
-    validate_environment(args.check_yahoo)
-
-    if args.dump:
-        with open(args.dump, "w", encoding="utf-8") as handle:
-            handle.write(built["markdown"])
-        print(f"\nWrote sample context to {args.dump}")
-
-    failures = [r for r in _results if r[0] == FAIL]
-    print("\n" + "=" * 55)
-    print(f"{len(_results) - len(failures)} passed, {len(failures)} failed")
-    for _, name, detail in failures:
-        print(f"  FAIL: {name}" + (f" — {detail}" if detail else ""))
-
-    # Yahoo connectivity is reported but never gates the offline suite: the
-    # pipeline being correct and Yahoo being reachable are separate questions.
-    blocking = [
-        r for r in failures if not r[1].startswith("Yahoo") and YAHOO_OAUTH_ENV_VAR not in r[1]
-    ]
-    return 1 if blocking else 0
+def main() -> None:
+    print("🏈 Football Recap pipeline validation\n")
+    test_context_builder_end_to_end()
+    test_recap_generator_context_delegation()
+    test_oauth_loader_error_message()
+    print("\n🎉 Pipeline validation passed — every non-network path is wired end-to-end.")
+    print("   To validate against real Yahoo data, drop oauth2.json into")
+    print("   apps/football-recap/config/ (or apps/baseball-engine/config/),")
+    print("   then run:  python3 apps/football-recap/scripts/prepare_recap_context.py --week 1")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

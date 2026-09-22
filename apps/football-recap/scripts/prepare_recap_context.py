@@ -1,129 +1,81 @@
 #!/usr/bin/env python3
-"""Fetch a week from Yahoo and write the prepared recap context.
+"""
+Prepare recap context for the Cursor Automation flow.
 
-This is the Python half of the weekly pipeline: no LLM, no invention. It writes
-three CWD-relative files that the writing agent and the later steps read:
+Fetches Yahoo league data, builds the enriched prompt context (house voice,
+closing line, superlatives, GIF, calendar hook, bit of the week, trend
+history), and writes:
 
-    output/week-<N>-context.md        the prepared context to write from
-    output/week-<N>-context.meta.json metadata sidecar
-    output/week-<N>-weekdata.json     raw normalized week data (canvas cache)
+  output/week-N-context.md       — agent reads this + COLUMNIST_PROMPT_V3.md
+  output/week-N-context.meta.json
 
-Exits non-zero on any Yahoo failure and writes the reason to the meta sidecar,
-so the caller can post an honest status note instead of a fabricated recap.
+No LLM call. No Slack. The automation agent writes the recap.
 
 Usage:
-    python apps/football-recap/scripts/prepare_recap_context.py --week 1 --no-news
+    .venv/bin/python apps/football-recap/scripts/prepare_recap_context.py
+    .venv/bin/python apps/football-recap/scripts/prepare_recap_context.py --week 6
 """
 
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_WORKSPACE = os.path.dirname(os.path.dirname(_APP_ROOT))
+sys.path.insert(0, _APP_ROOT)
+sys.path.insert(0, os.path.join(_WORKSPACE, "packages"))
 
-from src.constants import (  # noqa: E402
-    NFL_SEASON_START_DATE,
-    OUTPUT_DIR,
-    get_completed_nfl_week,
-)
-from src.recap_context import build_context  # noqa: E402
-from src.yahoo_nfl_client import YahooError, YahooNFLClient  # noqa: E402
+from dotenv import load_dotenv
 
+from src.constants import get_current_nfl_week, validate_week_number
+from src.recap_generator import RecapGenerator
 
-def write_failure_meta(week: int, code: str, message: str) -> str:
-    """Record why the run stopped so the caller can explain it accurately."""
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    path = os.path.join(OUTPUT_DIR, f"week-{week}-context.meta.json")
-    with open(path, "w", encoding="utf-8") as handle:
-        json.dump(
-            {"week": week, "ok": False, "error_code": code, "error": message},
-            handle,
-            indent=2,
-        )
-    return path
+load_dotenv()
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--week", type=int, help="NFL week (auto-detects if omitted)")
+    parser = argparse.ArgumentParser(
+        description="Fetch Yahoo data and prepare recap context for Cursor Automation"
+    )
+    parser.add_argument(
+        "--week",
+        type=int,
+        help="NFL week (auto-detected from season calendar if omitted)",
+    )
     parser.add_argument(
         "--no-news",
         action="store_true",
-        help="Accepted for compatibility and unused -- news is never injected.",
+        help="Ignored. NewsAPI is never injected (calendar + week_data only).",
     )
     args = parser.parse_args()
 
-    completed = get_completed_nfl_week()
-
-    if args.week is None and completed == 0:
-        # The Tuesday cron fires before kickoff too. There is no finished week,
-        # so there is nothing to recap and nothing to guess at.
-        message = (
-            "No NFL week has finished yet. The 2026 season kicks off "
-            f"{NFL_SEASON_START_DATE.strftime('%b %d, %Y')} and Week 1 ends "
-            "the following Monday night."
-        )
-        print(message, file=sys.stderr)
-        write_failure_meta(1, "preseason", message)
+    week = args.week if args.week is not None else get_current_nfl_week()
+    if not validate_week_number(week):
+        print(f"❌ Invalid week: {week} (must be 1–18)")
         return 1
 
-    week = args.week or completed
-    if not 1 <= week <= 18:
-        print(f"Invalid week: {week}", file=sys.stderr)
-        return 2
+    print("=" * 70)
+    print("🏈 Prepare Recap Context (Cursor Automation)")
+    print(f"📊 Week {week}")
+    print("👻 Voice: The Commissioner's Ghost")
+    print("=" * 70)
+    print()
 
-    if args.week is not None and completed < args.week:
-        print(
-            f"Warning: week {args.week} is not finished yet "
-            f"(last completed week: {completed}). Scores may be partial.",
-            file=sys.stderr,
-        )
-
-    print(f"Preparing context for week {week}...")
-
-    try:
-        client = YahooNFLClient()
-        week_data = client.fetch_week_data(week)
-    except YahooError as exc:
-        print(f"Yahoo fetch failed ({exc.code}): {exc}", file=sys.stderr)
-        write_failure_meta(week, exc.code, str(exc))
+    generator = RecapGenerator()
+    bundle = generator.prepare_recap_context(week, include_news=False)
+    if not bundle:
+        print("❌ Failed to prepare context (Yahoo fetch or shaping error)")
         return 1
 
-    matchups = week_data.get("matchups", {}).get("matchups", [])
-    teams = week_data.get("standings", {}).get("standings", [])
-    if not matchups or not teams:
-        message = (
-            f"Yahoo returned no {'matchups' if not matchups else 'teams'} for "
-            f"week {week}. Nothing to recap."
-        )
-        print(message, file=sys.stderr)
-        write_failure_meta(week, "empty_week_data", message)
-        return 1
-
-    built = build_context(week_data, week)
-
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    context_path = os.path.join(OUTPUT_DIR, f"week-{week}-context.md")
-    meta_path = os.path.join(OUTPUT_DIR, f"week-{week}-context.meta.json")
-    data_path = os.path.join(OUTPUT_DIR, f"week-{week}-weekdata.json")
-
-    with open(context_path, "w", encoding="utf-8") as handle:
-        handle.write(built["markdown"])
-    with open(meta_path, "w", encoding="utf-8") as handle:
-        json.dump({**built["meta"], "ok": True}, handle, indent=2)
-    with open(data_path, "w", encoding="utf-8") as handle:
-        json.dump(week_data, handle, indent=2)
-
-    print(f"Wrote {context_path}")
-    print(f"Wrote {meta_path}")
-    print(f"Wrote {data_path}")
-    print(
-        f"{len(matchups)} matchups, {len(teams)} teams, "
-        f"{built['meta']['superlative_count']} superlatives"
-    )
+    context_path = generator.save_prepared_context(bundle)
+    print()
+    print("Next: the Cursor Automation agent should:")
+    print("  1. Read docs/COLUMNIST_PROMPT_V3.md (house voice + section requirements)")
+    print(f"  2. Read {context_path}")
+    print(f"  3. Write apps/football-recap/output/week-{week}-recap.md")
+    print("  4. Run finalize_recap.py and post a Slack draft")
     return 0
 
 
