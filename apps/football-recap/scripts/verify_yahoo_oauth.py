@@ -14,7 +14,12 @@ import requests
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.constants import YAHOO_OAUTH_ENV_VAR, YAHOO_OAUTH_FILE_CANDIDATES
+from src.constants import (
+    YAHOO_OAUTH_ENV_VAR,
+    YAHOO_OAUTH_FILE_CANDIDATES,
+    YAHOO_OAUTH_OVERRIDE_ENV_VAR,
+)
+from src.yahoo_nfl_client import load_credentials
 
 
 def _refresh_ok(creds: dict) -> tuple[bool, str]:
@@ -98,17 +103,30 @@ def main() -> int:
         ok, detail = _refresh_ok(creds)
         if ok:
             print(f"✅ {path} — refresh OK")
-            print(
-                f"\n→ Cloud agents use {YAHOO_OAUTH_ENV_VAR}, not this file. "
-                "Copy the entire file into Cursor → Cloud Agents → Secrets → "
-                f"{YAHOO_OAUTH_ENV_VAR}, save, then start a new agent run."
-            )
-            return 0
-        print(f"❌ {path} — refresh failed: {detail}")
+        else:
+            print(f"❌ {path} — refresh failed: {detail}")
 
     if not env_creds:
         print(f"No {YAHOO_OAUTH_ENV_VAR} and no oauth2.json found.")
-    return 1
+
+    override = os.environ.get(YAHOO_OAUTH_OVERRIDE_ENV_VAR, "").strip()
+    if override:
+        try:
+            oc = json.loads(override)
+            ok, detail = _refresh_ok(oc)
+            label = f"✅ {YAHOO_OAUTH_OVERRIDE_ENV_VAR}" if ok else f"❌ {YAHOO_OAUTH_OVERRIDE_ENV_VAR}"
+            print(f"{label} — {detail if not ok else 'refresh OK'}")
+        except json.JSONDecodeError:
+            print(f"❌ {YAHOO_OAUTH_OVERRIDE_ENV_VAR} is not valid JSON")
+
+    print("\nPipeline resolution (what prepare_recap_context.py will use):")
+    try:
+        load_credentials()
+        print("✅ load_credentials() found a working source (see warning above if any).")
+        return 0
+    except Exception as exc:
+        print(f"❌ load_credentials() failed: {exc}")
+        return 1
 
 
 if __name__ == "__main__":

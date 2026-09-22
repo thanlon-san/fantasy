@@ -27,6 +27,7 @@ from src.constants import (
     YAHOO_LEAGUE_KEY,
     YAHOO_OAUTH_ENV_VAR,
     YAHOO_OAUTH_FILE_CANDIDATES,
+    YAHOO_OAUTH_OVERRIDE_ENV_VAR,
     YAHOO_TOKEN_URL,
 )
 
@@ -172,59 +173,63 @@ def _refresh_token_works(creds: Dict[str, str]) -> bool:
 
 
 def load_credentials() -> Dict[str, str]:
-    """Load Yahoo OAuth credentials from the env var and/or local oauth2.json files.
+    """Pick the first credential source whose refresh token Yahoo still accepts.
 
-    ``YAHOO_OAUTH_JSON`` wins when its refresh token is valid. If the cloud secret
-    is stale (common after re-auth on disk only), we fall back to the first local
-    oauth2.json whose refresh token Yahoo still accepts.
+    Order (intentional):
+      1. ``YAHOO_OAUTH_JSON_OVERRIDE`` — fresh Runtime secret when the team env
+         keeps injecting a stale ``YAHOO_OAUTH_JSON``.
+      2. Local ``oauth2.json`` files — truth after re-auth on *this* machine.
+      3. ``YAHOO_OAUTH_JSON`` — team forward-filled secret (often stale).
     """
+    seen_raw: set[str] = set()
     sources: list[tuple[str, str]] = []
 
-    env_raw = os.environ.get(YAHOO_OAUTH_ENV_VAR, "").strip()
-    if env_raw:
-        sources.append((YAHOO_OAUTH_ENV_VAR, env_raw))
+    def add(source: str, raw: str) -> None:
+        raw = raw.strip()
+        if not raw or raw in seen_raw:
+            return
+        seen_raw.add(raw)
+        sources.append((source, raw))
+
+    override_raw = os.environ.get(YAHOO_OAUTH_OVERRIDE_ENV_VAR, "").strip()
+    if override_raw:
+        add(YAHOO_OAUTH_OVERRIDE_ENV_VAR, override_raw)
 
     for candidate in YAHOO_OAUTH_FILE_CANDIDATES:
         if not os.path.exists(candidate):
             continue
         with open(candidate, "r", encoding="utf-8") as handle:
-            file_raw = handle.read().strip()
-        if not file_raw:
-            continue
-        if env_raw and file_raw == env_raw:
-            continue
-        sources.append((candidate, file_raw))
+            add(candidate, handle.read())
+
+    env_raw = os.environ.get(YAHOO_OAUTH_ENV_VAR, "").strip()
+    if env_raw:
+        add(YAHOO_OAUTH_ENV_VAR, env_raw)
 
     if not sources:
         raise YahooCredentialsError(
-            f"No Yahoo credentials. Set the {YAHOO_OAUTH_ENV_VAR} secret or add "
-            f"one of: {', '.join(YAHOO_OAUTH_FILE_CANDIDATES)}"
+            f"No Yahoo credentials. Set {YAHOO_OAUTH_ENV_VAR} or "
+            f"{YAHOO_OAUTH_OVERRIDE_ENV_VAR}, or add one of: "
+            f"{', '.join(YAHOO_OAUTH_FILE_CANDIDATES)}"
         )
 
-    stale_env = False
+    env_in_sources = any(s[0] == YAHOO_OAUTH_ENV_VAR for s in sources)
     for source, raw in sources:
         creds = _parse_credential_blob(raw, source)
         if _refresh_token_works(creds):
-            if source != YAHOO_OAUTH_ENV_VAR and env_raw:
+            if source != YAHOO_OAUTH_ENV_VAR and env_in_sources:
                 print(
-                    f"Warning: {YAHOO_OAUTH_ENV_VAR} has a stale refresh token; "
-                    f"using {source} instead. Re-copy apps/baseball-engine/"
-                    "config/oauth2.json into the Cursor secret (full JSON, "
-                    "including refresh_token), then start a new agent.",
+                    f"Warning: {YAHOO_OAUTH_ENV_VAR} is stale; using {source}. "
+                    f"For a permanent fix, add Runtime secret "
+                    f"{YAHOO_OAUTH_OVERRIDE_ENV_VAR} from "
+                    "scripts/export_yahoo_oauth_for_cursor.py output, or update "
+                    "the Team environment secret and run a new environment setup.",
                     file=sys.stderr,
                 )
             return creds
-        if source == YAHOO_OAUTH_ENV_VAR:
-            stale_env = True
 
-    if stale_env:
-        raise YahooAuthError(
-            f"{YAHOO_OAUTH_ENV_VAR} refresh token is invalid and no local "
-            "oauth2.json accepted a refresh. Re-authorize Yahoo, then paste the "
-            f"full oauth2.json into the {YAHOO_OAUTH_ENV_VAR} cloud secret."
-        )
-    raise YahooCredentialsError(
-        "No Yahoo credential source could refresh its token."
+    raise YahooAuthError(
+        "No Yahoo credential source could refresh its token. Re-run OAuth, then "
+        f"set {YAHOO_OAUTH_OVERRIDE_ENV_VAR} or refresh oauth2.json on this VM."
     )
 
 

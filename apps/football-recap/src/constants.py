@@ -138,6 +138,10 @@ YAHOO_TOKEN_URL = "https://api.login.yahoo.com/oauth2/get_token"
 # same shape yahoo_oauth_manual.YahooOAuth2 writes: consumer_key,
 # consumer_secret, access_token, refresh_token, token_type.
 YAHOO_OAUTH_ENV_VAR = "YAHOO_OAUTH_JSON"
+# Optional override when the team environment keeps injecting a stale
+# YAHOO_OAUTH_JSON (RUNTIME_FORWARD_FILL / old build). Paste fresh tokens
+# into this *separate* Runtime secret instead of fighting the cached one.
+YAHOO_OAUTH_OVERRIDE_ENV_VAR = "YAHOO_OAUTH_JSON_OVERRIDE"
 # Paths tried when YAHOO_OAUTH_JSON is unset. Include cwd-relative paths for
 # scripts run from apps/football-recap (../baseball-engine/...) and repo-root-
 # relative paths for other entrypoints.
