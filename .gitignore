@@ -83,7 +83,10 @@ Thumbs.db
 logs/
 output/
 config.json
-recap_history.json
+# recap_history.json is intentionally tracked (not ignored): it's the
+# anti-repetition source for the football-recap closing-line rotation and
+# must survive fresh checkouts across cloud-agent runs, same as
+# power_rankings_history.json and season_awards_history.json.
 trend_history.json
 .cache/
 
