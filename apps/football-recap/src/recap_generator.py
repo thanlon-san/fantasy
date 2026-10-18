@@ -441,6 +441,12 @@ class RecapGenerator:
 
         self._save_history(week, recap, context)
         print(f"✅ Recap history updated for week {week}")
+
+        if week_data:
+            slack_path = save_slack_recap(
+                week, week_data, history=self.recap_history
+            )
+            print(f"✅ Slack digest refreshed from recap: {slack_path}")
         return True
 
     def generate_recap(self, week: int, llm_client=None) -> Optional[str]:

@@ -89,13 +89,14 @@ class SnarkVarietyTests(unittest.TestCase):
 
 class SlackRecapBuilderTests(unittest.TestCase):
 
-    def test_build_includes_tldr_rankings_gif(self):
+    def test_build_without_recap_uses_tldr_and_rankings_not_templates(self):
         week_data = _SYNTHETIC(week=5)
         md = build_slack_recap(5, week_data, history=[])
         self.assertIn("TL;DR", md)
         self.assertIn("Power rankings", md)
         self.assertNotIn("Power tiers", md)
-        self.assertIn("Matchup recaps", md)
+        self.assertNotIn("📋 Matchup recaps", md)
+        self.assertIn("week-5-recap.md", md)
         self.assertIn("https://media.giphy.com/", md)
         self.assertNotIn("![GIF]", md)
         self.assertNotIn("<@U", md)
@@ -110,13 +111,25 @@ class SlackRecapBuilderTests(unittest.TestCase):
         self.assertIn("Power tiers", md)
         self.assertNotIn("Power rankings", md)
 
-    def test_matchup_line_shows_winner_and_score(self):
+    def test_build_with_recap_file_includes_ghost_matchups(self):
         week_data = _SYNTHETIC(week=5)
-        md = build_slack_recap(5, week_data, history=[])
-        self.assertIn("def", md)
-        self.assertIn("118.4", md)
-        self.assertIn("margin", md)
-        self.assertIn("led", md)
+        recap_path = Path(__file__).resolve().parent.parent / "output" / "week-2-recap.md"
+        if not recap_path.is_file():
+            self.skipTest("week-2-recap.md not present")
+        ghost = recap_path.read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as tmp:
+            fake_recap = Path(tmp) / "week-5-recap.md"
+            fake_recap.write_text(ghost, encoding="utf-8")
+            md = build_slack_recap(
+                5,
+                week_data,
+                history=[],
+                full_recap_path=str(fake_recap),
+            )
+        self.assertIn("League Pulse", md)
+        self.assertIn("157.78", md)
+        self.assertNotIn("📋 Matchup recaps", md)
+        self.assertNotIn("Power rankings", md)
 
     def test_roastable_swap_line_absent_for_chalk_bust(self):
         week_data = _SYNTHETIC(week=5)
@@ -162,9 +175,16 @@ class SlackRecapBuilderTests(unittest.TestCase):
 
     def test_full_recap_link_when_file_exists(self):
         week_data = _SYNTHETIC(week=4)
+        minimal_recap = (
+            "**:heart-8bit: League Pulse**\nPulse.\n\n"
+            "**:confused-math-lady: Stat of the Week**\nStat.\n\n"
+            "**:right-facing_fist: Matchups :left-facing_fist:**\n"
+            "**Team A (100) def. Team B (90)**\nBurn line.\n\n"
+            "**:power-up: Power Rankings**\n1. foo\n"
+        )
         with tempfile.TemporaryDirectory() as tmp:
             recap = Path(tmp) / "week-4-recap.md"
-            recap.write_text("# long recap\n", encoding="utf-8")
+            recap.write_text(minimal_recap, encoding="utf-8")
             md = build_slack_recap(
                 4,
                 week_data,
@@ -172,6 +192,8 @@ class SlackRecapBuilderTests(unittest.TestCase):
                 full_recap_path=str(recap),
             )
             self.assertIn("week-4-recap.md", md)
+            self.assertIn("Full recap", md)
+            self.assertIn("Burn line", md)
 
 
 if __name__ == "__main__":

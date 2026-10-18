@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from src.constants import SIGNIFICANT_MANAGEMENT_GAP, format_slack_digest_label
 from src.gif_bank import pick_gif
 from src.ownership_stats import compute_start_sit_swaps, is_management_gap_roastable
+from src.recap_slack_excerpt import load_recap_excerpt_from_file
 from src.season_leaderboard import SLACK_SEASON_TROPHY_KEY, compute_season_awards
 from src.superlatives import compute_superlatives
 
@@ -27,6 +28,11 @@ SLACK_DIGEST_TARGET_LINES = 45
 SLACK_DIGEST_FOOTER_NOTE = (
     "_Tip: GIF URL is at the top so Slack unfurls it there, not at the bottom. "
     "Paste as plain text (not rich-text) so `*bold*` renders._"
+)
+SLACK_MISSING_RECAP_NOTE = (
+    "_Matchup recaps need the Ghost — write `output/week-{week}-recap.md` "
+    "(Cursor automation + COLUMNIST_PROMPT_V3), then re-run "
+    "`prepare_slack_recap.py --week {week}`._"
 )
 
 
@@ -702,28 +708,34 @@ def build_slack_recap(
         )
     )
     lines.append("")
-    lines.extend(
-        _matchup_recap_lines(
-            week_data,
-            superlatives,
-            scores_unfinalized=scores_unfinalized,
-        )
-    )
-    lines.append("")
-
-    rankings = (week_data.get("power_rankings") or {}).get("rankings") or []
-    if use_power_tiers:
-        lines.extend(_format_tier_block(rankings, week_data))
-    else:
-        lines.extend(_format_power_rankings_block(rankings))
 
     recap_path = full_recap_path or os.path.join(OUTPUT_DIR, f"week-{week}-recap.md")
-    if recap_path and os.path.isfile(recap_path):
+    ghost_excerpt, recap_exists = load_recap_excerpt_from_file(recap_path)
+    used_ghost_excerpt = bool(ghost_excerpt)
+
+    if ghost_excerpt:
+        lines.append(ghost_excerpt)
         lines.append("")
         lines.append(
-            f"📖 *Full recap:* attach `{os.path.basename(recap_path)}` "
-            f"or paste from `{recap_path}`"
+            "📖 *Full recap:* same file — preview, power rankings, and week ahead "
+            f"in `{os.path.basename(recap_path)}`."
         )
+    elif recap_exists:
+        lines.append(
+            "_Could not parse matchup sections from the recap file — "
+            "check V3 section headers, then regenerate._"
+        )
+        lines.append("")
+    else:
+        lines.append(SLACK_MISSING_RECAP_NOTE.format(week=week))
+        lines.append("")
+
+    rankings = (week_data.get("power_rankings") or {}).get("rankings") or []
+    if not used_ghost_excerpt:
+        if use_power_tiers:
+            lines.extend(_format_tier_block(rankings, week_data))
+        else:
+            lines.extend(_format_power_rankings_block(rankings))
 
     lines.append("")
     lines.append(SLACK_DIGEST_FOOTER_NOTE)

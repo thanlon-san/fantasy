@@ -43,11 +43,15 @@ composer** (draft flow above):
   syntax (`![GIF](url)`) does not reliably preview in Slack.
 - Paste as **plain text** when possible so `*bold*` renders; rich-text paste
   may strip formatting.
-- **Power rankings** default to the canonical numbered list from `week_data`
-  (rank, team, record, PF, movement). Pass `--tiers` to
-  `prepare_slack_recap.py` for the optional S–F tier layout.
-- **Matchup recaps** include scores, margin, and short winner/loser blurbs
-  (MVP starter, roastable bench swaps when applicable).
+- **Matchup recaps** come from the LLM-written `output/week-N-recap.md`
+  (League Pulse, Stat of the Week, and Matchups sections). Run the Cursor
+  automation recap step first, then `prepare_slack_recap.py` or
+  `finalize_recap.py` to refresh `week-N-slack.md`. Without a recap file,
+  the digest is GIF + TL;DR + a note to generate the recap — not template
+  burns.
+- **Power rankings** append from `week_data` only when no recap excerpt is
+  available (numbered list). Pass `--tiers` for the optional S–F tier layout.
+  When the Ghost recap is present, rankings stay in the full recap file.
 
 ## Manual / fallback path (raw HTTP)
 

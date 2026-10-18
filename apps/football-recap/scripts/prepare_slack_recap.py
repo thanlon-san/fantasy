@@ -2,7 +2,8 @@
 """
 Build the compact Slack weekly digest from cached or live week_data.
 
-Writes ``output/week-N-slack.md`` (no LLM).
+Writes ``output/week-N-slack.md`` (no LLM). When ``output/week-N-recap.md``
+exists, matchup burns are excerpted from that Ghost recap.
 
 Usage:
     .venv/bin/python apps/football-recap/scripts/prepare_slack_recap.py --week 6
