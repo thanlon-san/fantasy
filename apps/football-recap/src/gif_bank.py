@@ -14,7 +14,11 @@ doesn't repeat too often.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+import hashlib
+from typing import Any, Dict, List, Optional, Set
+
+# Giphy serves this generic "content unavailable" GIF for removed IDs (HTTP 200).
+GIPHY_UNAVAILABLE_MD5 = "42c4349b611a739a8317f17ae74b7587"
 
 from src.constants import SIGNIFICANT_MANAGEMENT_GAP
 from src.ownership_stats import (
@@ -38,19 +42,19 @@ BLOWOUT_GIFS: List[tuple[str, str]] = [
 
 NAILBITER_GIFS: List[tuple[str, str]] = [
     ("https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", "Nail biter"),
-    ("https://media.giphy.com/media/l2SqfBaXHTd7WRLHi/giphy.gif", "Down to the wire"),
+    ("https://media.giphy.com/media/zHeaBw7Pq5fSpDqupR/giphy.gif", "Down to the wire"),
     ("https://media.giphy.com/media/xT9IgIc0lryrxvqVGM/giphy.gif", "Heart in throat"),
-    ("https://media.giphy.com/media/l0IybX9WFdw0IEsZ2/giphy.gif", "Sweating profusely"),
+    ("https://media.giphy.com/media/SDBVg6GZM5pV30lrkT/giphy.gif", "Sweating profusely"),
 ]
 
 SHOOTOUT_GIFS: List[tuple[str, str]] = [
-    ("https://media.giphy.com/media/xUOwGhVYQqQD4KEnvi/giphy.gif", "Points party"),
-    ("https://media.giphy.com/media/l0HlIfxGDwzOSKh5C/giphy.gif", "Scoreboard on fire"),
-    ("https://media.giphy.com/media/xT5LMESsx1kUe8Xy24/giphy.gif", "Everybody eats"),
+    ("https://media.giphy.com/media/owkh9SvpI7QOmlK1Nr/giphy.gif", "Points party"),
+    ("https://media.giphy.com/media/Jtc1E7L1qIPf42ndCC/giphy.gif", "Scoreboard on fire"),
+    ("https://media.giphy.com/media/ZDVkuFEZ1sMLZuJFIz/giphy.gif", "Everybody eats"),
 ]
 
 COLD_WAR_GIFS: List[tuple[str, str]] = [
-    ("https://media.giphy.com/media/3o6MbudsUuzD3haQta/giphy.gif", "Watching paint dry"),
+    ("https://media.giphy.com/media/T01Gb4G6rYfpFVsY8e/giphy.gif", "Watching paint dry"),
     ("https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", "Where did the offense go"),
     ("https://media.giphy.com/media/3o7btNhMBytxAM6YBa/giphy.gif", "Just brutal to watch"),
 ]
@@ -62,7 +66,7 @@ UPSET_GIFS: List[tuple[str, str]] = [
 ]
 
 MANAGEMENT_DISASTER_GIFS: List[tuple[str, str]] = [
-    ("https://media.giphy.com/media/xT0GqfbTZTiI3IOx1u/giphy.gif", "Coach yourself gently"),
+    ("https://media.giphy.com/media/l0HlBJTAWPlIXCZu8/giphy.gif", "Coach yourself gently"),
     ("https://media.giphy.com/media/xT5LMB2WiOdjpB7K4o/giphy.gif", "That was a choice"),
     ("https://media.giphy.com/media/26FLdmIp6wJr91JAI/giphy.gif", "Left the points on the bench"),
 ]
@@ -70,19 +74,19 @@ MANAGEMENT_DISASTER_GIFS: List[tuple[str, str]] = [
 ROASTABLE_GIFS: List[tuple[str, str]] = [
     ("https://media.giphy.com/media/26FLdmIp6wJr91JAI/giphy.gif", "The league saw that start %"),
     ("https://media.giphy.com/media/xT5LMB2WiOdjpB7K4o/giphy.gif", "Bold strategy, Cotton"),
-    ("https://media.giphy.com/media/xT0GqfbTZTiI3IOx1u/giphy.gif", "Everyone else started him"),
+    ("https://media.giphy.com/media/J6Vhh4HWrTAxWjw2co/giphy.gif", "Everyone else started him"),
 ]
 
 CONSENSUS_SIT_GIFS: List[tuple[str, str]] = [
     ("https://media.giphy.com/media/3o7btNhMBytxAM6YBa/giphy.gif", "Respect the consensus sit"),
     ("https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", "The bench was right, actually"),
-    ("https://media.giphy.com/media/3o6MbudsUuzD3haQta/giphy.gif", "No roast — just a quiet mistake"),
+    ("https://media.giphy.com/media/IcGouxvXpWdmhjCs1O/giphy.gif", "No roast — just a quiet mistake"),
 ]
 
 DEFAULT_GIFS: List[tuple[str, str]] = [
     ("https://media.giphy.com/media/l0HlNaQ6gWfllcjDO/giphy.gif", "Just another week of football"),
-    ("https://media.giphy.com/media/xTiTnEKzXOOFrsCFHi/giphy.gif", "Same time next Sunday"),
-    ("https://media.giphy.com/media/3o7TKz9bX9v7z2gzy0/giphy.gif", "Fantasy football is a lifestyle"),
+    ("https://media.giphy.com/media/jTSqr4Ix9WKwLScrSS/giphy.gif", "Same time next Sunday"),
+    ("https://media.giphy.com/media/l4FGF2IPvmJBQ0UKs/giphy.gif", "Fantasy football is a lifestyle"),
 ]
 
 _TIER_POOLS: Dict[str, List[tuple[str, str]]] = {
@@ -190,6 +194,23 @@ def pick_gif(
     if tier in ("upset", "blowout"):
         tags.append("matchup")
     return {"url": url, "caption": caption, "tier": tier, "tags": tags}
+
+
+def unique_gif_urls() -> Set[str]:
+    """Every distinct CDN URL in the bank."""
+    urls: Set[str] = set()
+    for pool in _TIER_POOLS.values():
+        for url, _caption in pool:
+            urls.add(url)
+    return urls
+
+
+def is_giphy_placeholder(content: bytes) -> bool:
+    """True when bytes are Giphy's removed-content placeholder image."""
+    if not content:
+        return True
+    digest = hashlib.md5(content).hexdigest()
+    return digest == GIPHY_UNAVAILABLE_MD5
 
 
 def all_gifs() -> Dict[str, List[Dict[str, str]]]:

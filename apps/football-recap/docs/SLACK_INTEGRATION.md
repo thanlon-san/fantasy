@@ -27,6 +27,12 @@ You can flip to auto-send later once the house voice is calibrated
 Optional: connect Slack MCP in **Cursor → Settings → MCP → Slack** if you
 prefer MCP-based draft tools over the built-in Send to Slack action.
 
+## Slack digest GIFs
+
+The compact digest (`output/week-N-slack.md`) puts each week's GIF as a **bare
+`https://media.giphy.com/...` URL on its own line** so Slack unfurls it inline.
+Markdown image syntax (`![GIF](url)`) does not reliably preview in Slack.
+
 ## Manual / fallback path (raw HTTP)
 
 If you want to post a recap manually from a shell without going through

@@ -10,11 +10,13 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from src.constants import format_slack_mention
 from src.gif_bank import pick_gif
+from src.ownership_stats import compute_start_sit_swaps
 from src.season_leaderboard import SLACK_SEASON_TROPHY_KEY, compute_season_awards
 from src.superlatives import compute_superlatives
 
@@ -40,6 +42,45 @@ def _team_week_snapshot(
         if team.get("team_name") == team_name:
             return team
     return {}
+
+
+def week_scores_unfinalized(week: int, week_data: Dict[str, Any]) -> bool:
+    """
+    True when Yahoo has not finalized this week's matchup scores yet.
+
+    Uses ``league.current_week`` when present, else treats all-zero scores as
+    not ready for matchup superlatives / TL;DR highlights.
+    """
+    league = week_data.get("league") or {}
+    yahoo_week = league.get("current_week")
+    teams = _all_matchup_teams(week_data)
+    scores = [float(t.get("score") or 0) for t in teams]
+    all_zero = bool(scores) and all(s == 0.0 for s in scores)
+
+    if yahoo_week is not None:
+        try:
+            cw = int(yahoo_week)
+        except (TypeError, ValueError):
+            cw = None
+        if cw is not None:
+            if week > cw:
+                return True
+            if week == cw and all_zero:
+                return True
+            if week < cw:
+                return False
+
+    return all_zero
+
+
+def unfinalized_week_banner(week: int, week_data: Dict[str, Any]) -> str:
+    league = week_data.get("league") or {}
+    yahoo_week = league.get("current_week")
+    yw = f" (Yahoo current_week={yahoo_week})" if yahoo_week is not None else ""
+    return (
+        f"⚠️ *Week {week} not finalized on Yahoo yet{yw}* — "
+        "matchup scores may be 0. Regenerate without `--week` once games finish."
+    )
 
 
 def _all_matchup_teams(week_data: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -249,6 +290,86 @@ def _headline_superlative(
     return None
 
 
+def _season_trophy_leader_changed(
+    history: Sequence[Dict[str, Any]],
+    week: int,
+) -> Optional[str]:
+    """Return a TL;DR bullet when the Slack season trophy holder changed this week."""
+    through_week = [
+        e
+        for e in history
+        if isinstance(e.get("week"), int) and int(e["week"]) <= week
+    ]
+    before_week = [
+        e for e in through_week if isinstance(e.get("week"), int) and int(e["week"]) < week
+    ]
+    if not before_week or not through_week:
+        return None
+    before = compute_season_awards(before_week)
+    after = compute_season_awards(through_week)
+    prev = (before.get("awards") or {}).get(SLACK_SEASON_TROPHY_KEY)
+    curr = (after.get("awards") or {}).get(SLACK_SEASON_TROPHY_KEY)
+    if not prev or not curr or prev.get("team") == curr.get("team"):
+        return None
+    mention = format_slack_mention(
+        team_name=curr.get("team", ""),
+        owner_name=curr.get("owner") or "",
+    )
+    return f"🪑 *Bench Whisperer* crown: {mention} (was {prev.get('team')})."
+
+
+def _biggest_power_mover_line(week_data: Dict[str, Any]) -> Optional[str]:
+    rankings = (week_data.get("power_rankings") or {}).get("rankings") or []
+    best_delta = 0
+    best_row: Optional[Dict[str, Any]] = None
+    for row in rankings:
+        movement = str(row.get("movement") or "—")
+        match = re.fullmatch(r"([▲▼])(\d+)", movement.strip())
+        if not match:
+            continue
+        steps = int(match.group(2))
+        signed = steps if match.group(1) == "▲" else -steps
+        if abs(signed) > abs(best_delta):
+            best_delta = signed
+            best_row = row
+    if not best_row or best_delta == 0:
+        return None
+    mention = format_slack_mention(
+        team_name=best_row.get("team_name", ""),
+        owner_name=best_row.get("owner") or "",
+    )
+    arrow = "▲" if best_delta > 0 else "▼"
+    return f"⚡ Biggest power move: {mention} ({arrow}{abs(best_delta)})."
+
+
+def _roastable_swap_line(week_data: Dict[str, Any]) -> Optional[str]:
+    best_margin = 0.0
+    best_team = ""
+    best_swap: Optional[Dict[str, Any]] = None
+    for team in _all_matchup_teams(week_data):
+        for swap in compute_start_sit_swaps(team):
+            if not swap.get("roastable"):
+                continue
+            margin = float(swap["benched_points"]) - float(swap["started_points"])
+            if margin > best_margin:
+                best_margin = margin
+                best_team = team.get("team_name") or ""
+                best_swap = swap
+    if not best_swap or best_margin <= 0:
+        return None
+    owner = ""
+    for team in _all_matchup_teams(week_data):
+        if team.get("team_name") == best_team:
+            owner = team.get("owner") or ""
+            break
+    mention = format_slack_mention(team_name=best_team, owner_name=owner)
+    return (
+        f"🔥 Roastable swap: {mention} benched *{best_swap['benched_name']}* "
+        f"({best_swap['benched_points']:.1f}) over "
+        f"*{best_swap['started_name']}* ({best_swap['started_points']:.1f})."
+    )
+
+
 def _season_trophy_line(
     history: Sequence[Dict[str, Any]],
 ) -> Optional[str]:
@@ -265,24 +386,55 @@ def _season_trophy_line(
     return f"🏆 *Season · {award.get('label', 'Trophy')}:* {mention} — {stat}"
 
 
-def _tldr_line(
+def _tldr_block(
     week: int,
     week_data: Dict[str, Any],
     superlatives: Dict[str, Dict[str, Any]],
     gif: Dict[str, str],
-) -> str:
+    *,
+    history: Sequence[Dict[str, Any]],
+    scores_unfinalized: bool,
+) -> List[str]:
+    lines: List[str] = [f"*TL;DR · Week {week}*"]
     stats = week_data.get("week_stats") or {}
     high = stats.get("highest_score") or {}
-    parts: List[str] = [f"*TL;DR · Week {week}*"]
-    if high.get("team"):
-        pts = high.get("points")
+    pts = high.get("points")
+    has_real_scores = (
+        isinstance(pts, (int, float)) and float(pts) > 0 and not scores_unfinalized
+    )
+    if high.get("team") and has_real_scores:
         pts_fmt = f"{pts:.1f}" if isinstance(pts, (int, float)) else str(pts)
-        parts.append(f"Top score: *{high.get('team')}* ({pts_fmt}).")
-    headline = _headline_superlative(superlatives)
-    if headline:
-        parts.append(f"*{headline[0]}:* {headline[1]}.")
-    parts.append(f"GIF vibe: _{gif.get('caption', '')}_")
-    return " ".join(parts)
+        lines.append(f"• Top score: *{high.get('team')}* ({pts_fmt}).")
+    elif scores_unfinalized:
+        lines.append("• Matchups still in progress — scores not in yet.")
+
+    extras: List[str] = []
+    if not scores_unfinalized:
+        swap_line = _roastable_swap_line(week_data)
+        if swap_line:
+            extras.append(swap_line)
+        trophy_change = _season_trophy_leader_changed(history, week)
+        if trophy_change:
+            extras.append(f"• {trophy_change}")
+        mover = _biggest_power_mover_line(week_data)
+        if mover:
+            extras.append(f"• {mover}")
+        headline = _headline_superlative(superlatives)
+        if headline and len(extras) < 3:
+            extras.append(f"• *{headline[0]}:* {headline[1]}.")
+    for bullet in extras[:3]:
+        if not bullet.startswith("•"):
+            lines.append(f"• {bullet}")
+        else:
+            lines.append(bullet)
+
+    lines.append(f"• GIF vibe: _{gif.get('caption', '')}_")
+    return lines
+
+
+def _format_gif_for_slack(gif: Dict[str, str]) -> str:
+    """Bare URL on its own line so Slack unfurls the GIF (not markdown image syntax)."""
+    return gif.get("url", "")
 
 
 def _format_tier_block(
@@ -335,19 +487,32 @@ def build_slack_recap(
 
     league = week_data.get("league") or {}
     league_name = league.get("league_name") or "Fantasy Football"
+    scores_unfinalized = week_scores_unfinalized(week, week_data)
 
     lines: List[str] = [
         f"🏈 *Week {week} · {league_name}*",
     ]
+
+    if scores_unfinalized:
+        lines.append(unfinalized_week_banner(week, week_data))
 
     trophy = _season_trophy_line(history)
     if trophy:
         lines.append(trophy)
 
     lines.append("")
-    lines.append(_tldr_line(week, week_data, superlatives, gif))
+    lines.extend(
+        _tldr_block(
+            week,
+            week_data,
+            superlatives,
+            gif,
+            history=history,
+            scores_unfinalized=scores_unfinalized,
+        )
+    )
     lines.append("")
-    lines.append(f"![GIF]({gif['url']})")
+    lines.append(_format_gif_for_slack(gif))
     lines.append("")
 
     rankings = (week_data.get("power_rankings") or {}).get("rankings") or []

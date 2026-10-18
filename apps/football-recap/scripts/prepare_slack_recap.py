@@ -7,6 +7,10 @@ Writes ``output/week-N-slack.md`` (no LLM).
 Usage:
     .venv/bin/python apps/football-recap/scripts/prepare_slack_recap.py --week 6
     .venv/bin/python apps/football-recap/scripts/prepare_slack_recap.py --week 6 --no-fetch
+    .venv/bin/python apps/football-recap/scripts/prepare_slack_recap.py  # default week from Yahoo
+
+Omit ``--week`` to follow Yahoo ``current_week`` (see ``default_recap_week``).
+Use ``--force`` to write slack output when matchup scores are still 0 / unfinalized.
 """
 
 from __future__ import annotations
@@ -27,7 +31,7 @@ from dotenv import load_dotenv
 
 from src.constants import default_recap_week, validate_week_number
 from src.recap_generator import OUTPUT_DIR, RecapGenerator
-from src.slack_recap_builder import save_slack_recap
+from src.slack_recap_builder import save_slack_recap, week_scores_unfinalized
 
 load_dotenv()
 
@@ -73,6 +77,11 @@ def main() -> int:
         action="store_true",
         help="Read output/week-N-weekdata.json only (no Yahoo)",
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Write slack file even when Yahoo has not finalized matchup scores",
+    )
     args = parser.parse_args()
 
     generator = RecapGenerator()
@@ -105,6 +114,14 @@ def main() -> int:
         os.makedirs(OUTPUT_DIR, exist_ok=True)
         with open(weekdata_path, "w", encoding="utf-8") as handle:
             json.dump(week_data, handle, indent=2, default=str)
+
+    if week_scores_unfinalized(week, week_data) and not args.force:
+        print(
+            f"⚠️ Week {week} scores look unfinalized on Yahoo "
+            f"(current_week={(week_data.get('league') or {}).get('current_week')}). "
+            "Refusing to write slack file — omit `--week` for the live week, or pass `--force`."
+        )
+        return 1
 
     path = save_slack_recap(week, week_data, history=generator.recap_history)
     print(f"✅ Slack digest: {path}")

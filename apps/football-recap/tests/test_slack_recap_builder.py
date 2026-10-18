@@ -13,6 +13,7 @@ from src.slack_recap_builder import (
     save_slack_recap,
     snark_line_for_team,
     tier_for_rank,
+    week_scores_unfinalized,
 )
 
 
@@ -91,8 +92,20 @@ class SlackRecapBuilderTests(unittest.TestCase):
         md = build_slack_recap(5, week_data, history=[])
         self.assertIn("TL;DR", md)
         self.assertIn("Power tiers", md)
-        self.assertIn("![GIF](https://media.giphy.com/", md)
-        self.assertLessEqual(md.count("\n"), 40)
+        self.assertIn("https://media.giphy.com/", md)
+        self.assertNotIn("![GIF]", md)
+        self.assertLessEqual(md.count("\n"), 45)
+
+    def test_unfinalized_week_shows_banner_and_skips_zero_superlative(self):
+        week_data = _SYNTHETIC(week=7)
+        week_data["league"]["current_week"] = 7
+        for team in week_data["matchups"]["matchups"][0].values():
+            if isinstance(team, dict) and "score" in team:
+                team["score"] = 0.0
+        md = build_slack_recap(7, week_data, history=[])
+        self.assertIn("not finalized on Yahoo", md)
+        self.assertIn("Matchups still in progress", md)
+        self.assertTrue(week_scores_unfinalized(7, week_data))
 
     def test_save_writes_slack_file(self):
         week_data = _SYNTHETIC(week=3)

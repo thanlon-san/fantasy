@@ -8,7 +8,9 @@ deterministically inside a tier.
 
 from __future__ import annotations
 
+import os
 import unittest
+import urllib.request
 
 from tests import _bootstrap  # noqa: F401
 
@@ -151,6 +153,23 @@ class GifBankTests(unittest.TestCase):
         pick_a = gif_bank.pick_gif({}, week=0, superlatives={})
         pick_b = gif_bank.pick_gif({}, week=pool_size, superlatives={})
         self.assertEqual(pick_a["url"], pick_b["url"])
+
+
+@unittest.skipUnless(
+    os.environ.get("VALIDATE_GIF_URLS"),
+    "Set VALIDATE_GIF_URLS=1 to HTTP-check the GIF bank",
+)
+class GifBankUrlValidationTests(unittest.TestCase):
+
+    def test_no_placeholder_gifs_in_bank(self):
+        for url in sorted(gif_bank.unique_gif_urls()):
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                body = resp.read()
+            self.assertFalse(
+                gif_bank.is_giphy_placeholder(body),
+                msg=f"Giphy placeholder served for {url}",
+            )
 
 
 if __name__ == "__main__":
