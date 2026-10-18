@@ -1,7 +1,7 @@
 """
 Compact Slack-native weekly digest from ``week_data``.
 
-Produces scannable markdown (emoji headers, ``<@U…>`` mentions, inline GIF)
+Produces scannable markdown (bold team names, GIF URL at top for unfurl)
 for draft/paste into Slack — separate from the long Commissioner's Ghost recap.
 """
 
@@ -14,7 +14,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
-from src.constants import format_slack_mention
+from src.constants import format_slack_digest_label
 from src.gif_bank import pick_gif
 from src.ownership_stats import compute_start_sit_swaps
 from src.season_leaderboard import SLACK_SEASON_TROPHY_KEY, compute_season_awards
@@ -23,6 +23,11 @@ from src.superlatives import compute_superlatives
 TIER_LABELS = ("S", "A", "B", "C", "D", "F")
 RECAP_HISTORY_FILE = "recap_history.json"
 OUTPUT_DIR = "output"
+SLACK_DIGEST_TARGET_LINES = 45
+SLACK_DIGEST_FOOTER_NOTE = (
+    "_Tip: GIF URL is at the top so Slack unfurls it there, not at the bottom. "
+    "Paste as plain text (not rich-text) so `*bold*` renders._"
+)
 
 
 def tier_for_rank(rank: int, total: int) -> str:
@@ -311,11 +316,11 @@ def _season_trophy_leader_changed(
     curr = (after.get("awards") or {}).get(SLACK_SEASON_TROPHY_KEY)
     if not prev or not curr or prev.get("team") == curr.get("team"):
         return None
-    mention = format_slack_mention(
+    label = format_slack_digest_label(
         team_name=curr.get("team", ""),
         owner_name=curr.get("owner") or "",
     )
-    return f"🪑 *Bench Whisperer* crown: {mention} (was {prev.get('team')})."
+    return f"🪑 *Bench Whisperer* crown: {label} (was {prev.get('team')})."
 
 
 def _biggest_power_mover_line(week_data: Dict[str, Any]) -> Optional[str]:
@@ -334,12 +339,12 @@ def _biggest_power_mover_line(week_data: Dict[str, Any]) -> Optional[str]:
             best_row = row
     if not best_row or best_delta == 0:
         return None
-    mention = format_slack_mention(
+    label = format_slack_digest_label(
         team_name=best_row.get("team_name", ""),
         owner_name=best_row.get("owner") or "",
     )
     arrow = "▲" if best_delta > 0 else "▼"
-    return f"⚡ Biggest power move: {mention} ({arrow}{abs(best_delta)})."
+    return f"⚡ Biggest power move: {label} ({arrow}{abs(best_delta)})."
 
 
 def _roastable_swap_line(week_data: Dict[str, Any]) -> Optional[str]:
@@ -362,9 +367,9 @@ def _roastable_swap_line(week_data: Dict[str, Any]) -> Optional[str]:
         if team.get("team_name") == best_team:
             owner = team.get("owner") or ""
             break
-    mention = format_slack_mention(team_name=best_team, owner_name=owner)
+    label = format_slack_digest_label(team_name=best_team, owner_name=owner)
     return (
-        f"🔥 Roastable swap: {mention} benched *{best_swap['benched_name']}* "
+        f"🔥 Roastable swap: {label} benched *{best_swap['benched_name']}* "
         f"({best_swap['benched_points']:.1f}) over "
         f"*{best_swap['started_name']}* ({best_swap['started_points']:.1f})."
     )
@@ -377,20 +382,19 @@ def _season_trophy_line(
     award = (payload.get("awards") or {}).get(SLACK_SEASON_TROPHY_KEY)
     if not award:
         return None
-    mention = format_slack_mention(
+    label = format_slack_digest_label(
         team_name=award.get("team", ""),
         owner_name=award.get("owner") or "",
     )
     pts = award.get("total_points_left")
     stat = f"{pts:.1f} pts left on benches" if pts is not None else award.get("description", "")
-    return f"🏆 *Season · {award.get('label', 'Trophy')}:* {mention} — {stat}"
+    return f"🏆 *Season · {award.get('label', 'Trophy')}:* {label} — {stat}"
 
 
 def _tldr_block(
     week: int,
     week_data: Dict[str, Any],
     superlatives: Dict[str, Dict[str, Any]],
-    gif: Dict[str, str],
     *,
     history: Sequence[Dict[str, Any]],
     scores_unfinalized: bool,
@@ -428,7 +432,6 @@ def _tldr_block(
         else:
             lines.append(bullet)
 
-    lines.append(f"• GIF vibe: _{gif.get('caption', '')}_")
     return lines
 
 
@@ -437,12 +440,86 @@ def _format_gif_for_slack(gif: Dict[str, str]) -> str:
     return gif.get("url", "")
 
 
+def _dramatic_matchup_tags(
+    superlatives: Dict[str, Dict[str, Any]],
+) -> Dict[Tuple[str, str], str]:
+    """Map sorted team-name pair → short tag for blowout / nail-biter."""
+    tags: Dict[Tuple[str, str], str] = {}
+
+    def _pair(a: str, b: str) -> Tuple[str, str]:
+        return tuple(sorted((a or "", b or "")))
+
+    blowout = superlatives.get("blowout_of_the_week") or {}
+    if blowout.get("team") and blowout.get("opponent"):
+        tags[_pair(blowout["team"], blowout["opponent"])] = (
+            f"💥 blowout ({blowout.get('margin')} pts)"
+        )
+    nail = superlatives.get("nailbiter_of_the_week") or {}
+    t1, t2 = nail.get("team1"), nail.get("team2")
+    if t1 and t2:
+        tags[_pair(t1, t2)] = f"🔪 nail-biter ({nail.get('margin')} pts)"
+    return tags
+
+
+def _matchup_recap_lines(
+    week_data: Dict[str, Any],
+    superlatives: Dict[str, Dict[str, Any]],
+    *,
+    scores_unfinalized: bool,
+) -> List[str]:
+    if scores_unfinalized:
+        return []
+    matchups = week_data.get("matchups", {}).get("matchups", []) or []
+    if not matchups:
+        return []
+
+    dramatic = _dramatic_matchup_tags(superlatives)
+    lines = ["*📋 Matchups*"]
+    for matchup in matchups:
+        home = matchup.get("home_team") or {}
+        away = matchup.get("away_team") or {}
+        home_score = float(home.get("score") or 0)
+        away_score = float(away.get("score") or 0)
+        if home_score == away_score:
+            continue
+        if home_score > away_score:
+            winner, loser = home, away
+            w_score, l_score = home_score, away_score
+        else:
+            winner, loser = away, home
+            w_score, l_score = away_score, home_score
+        w_label = format_slack_digest_label(
+            team_name=winner.get("team_name", ""),
+            owner_name=winner.get("owner") or "",
+        )
+        l_label = format_slack_digest_label(
+            team_name=loser.get("team_name", ""),
+            owner_name=loser.get("owner") or "",
+        )
+        tag = dramatic.get(
+            tuple(
+                sorted(
+                    (
+                        winner.get("team_name") or "",
+                        loser.get("team_name") or "",
+                    )
+                )
+            ),
+            "",
+        )
+        line = f"{w_label} ({w_score:.1f}) def {l_label} ({l_score:.1f})"
+        if tag:
+            line = f"{line} — {tag}"
+        lines.append(line)
+    return lines
+
+
 def _format_tier_block(
     rankings: List[Dict[str, Any]],
     week_data: Dict[str, Any],
 ) -> List[str]:
     if not rankings:
-        return ["*Power tiers* — (no rankings this week)"]
+        return ["*⚡ Power tiers* — (no rankings this week)"]
 
     by_tier: Dict[str, List[Dict[str, Any]]] = {t: [] for t in TIER_LABELS}
     total = len(rankings)
@@ -450,20 +527,21 @@ def _format_tier_block(
         tier = tier_for_rank(int(row.get("rank") or total), total)
         by_tier[tier].append(row)
 
-    lines = ["*⚡ Power tiers* _(S → F, one line each)_"]
+    lines = ["*⚡ Power tiers* _(S → F · team · record · one-liner)_"]
     for tier in TIER_LABELS:
         rows = by_tier[tier]
         if not rows:
             continue
-        lines.append(f"*{tier}-tier*")
+        entries: List[str] = []
         for row in rows:
-            mention = format_slack_mention(
+            label = format_slack_digest_label(
                 team_name=row.get("team_name", ""),
                 owner_name=row.get("owner") or "",
             )
             record = f"{row.get('wins', 0)}–{row.get('losses', 0)}"
             snark = snark_line_for_team(row, week_data, tier=tier)
-            lines.append(f"• {mention} ({record}, PF {row.get('pf', 0)}) — {snark}")
+            entries.append(f"{label} ({record}, PF {row.get('pf', 0)}) — {snark}")
+        lines.append(f"*{tier}* · " + " · ".join(entries))
     return lines
 
 
@@ -489,9 +567,14 @@ def build_slack_recap(
     league_name = league.get("league_name") or "Fantasy Football"
     scores_unfinalized = week_scores_unfinalized(week, week_data)
 
+    gif_url = _format_gif_for_slack(gif)
     lines: List[str] = [
         f"🏈 *Week {week} · {league_name}*",
     ]
+    if gif_url:
+        lines.append(gif_url)
+        if gif.get("caption"):
+            lines.append(f"_GIF: {gif.get('caption')}_")
 
     if scores_unfinalized:
         lines.append(unfinalized_week_banner(week, week_data))
@@ -506,13 +589,18 @@ def build_slack_recap(
             week,
             week_data,
             superlatives,
-            gif,
             history=history,
             scores_unfinalized=scores_unfinalized,
         )
     )
     lines.append("")
-    lines.append(_format_gif_for_slack(gif))
+    lines.extend(
+        _matchup_recap_lines(
+            week_data,
+            superlatives,
+            scores_unfinalized=scores_unfinalized,
+        )
+    )
     lines.append("")
 
     rankings = (week_data.get("power_rankings") or {}).get("rankings") or []
@@ -522,14 +610,26 @@ def build_slack_recap(
     if recap_path and os.path.isfile(recap_path):
         lines.append("")
         lines.append(
-            f"📖 *Full Commissioner's Ghost recap:* attach `{os.path.basename(recap_path)}` "
+            f"📖 *Full recap:* attach `{os.path.basename(recap_path)}` "
             f"or paste from `{recap_path}`"
         )
 
+    lines.append("")
+    lines.append(SLACK_DIGEST_FOOTER_NOTE)
+
     body = "\n".join(lines).strip() + "\n"
-    if body.count("\n") > 45:
-        # Soft guard — callers can trim; tests assert reasonable default size.
-        pass
+    while body.count("\n") > SLACK_DIGEST_TARGET_LINES and len(rankings) > 6:
+        # Drop lowest-priority tier lines first if a large league blows the budget.
+        trimmed = False
+        for tier in reversed(TIER_LABELS):
+            prefix = f"*{tier}* · "
+            new_lines = [ln for ln in body.splitlines() if not ln.startswith(prefix)]
+            if len(new_lines) < body.count("\n"):
+                body = "\n".join(new_lines).strip() + "\n"
+                trimmed = True
+                break
+        if not trimmed:
+            break
     return body
 
 

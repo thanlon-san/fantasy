@@ -9,6 +9,8 @@ from pathlib import Path
 from tests import _bootstrap  # noqa: F401
 
 from src.slack_recap_builder import (
+    SLACK_DIGEST_TARGET_LINES,
+    _roastable_swap_line,
     build_slack_recap,
     save_slack_recap,
     snark_line_for_team,
@@ -92,9 +94,43 @@ class SlackRecapBuilderTests(unittest.TestCase):
         md = build_slack_recap(5, week_data, history=[])
         self.assertIn("TL;DR", md)
         self.assertIn("Power tiers", md)
+        self.assertIn("Matchups", md)
         self.assertIn("https://media.giphy.com/", md)
         self.assertNotIn("![GIF]", md)
-        self.assertLessEqual(md.count("\n"), 45)
+        self.assertNotIn("<@U", md)
+        gif_pos = md.index("https://media.giphy.com/")
+        tier_pos = md.index("Power tiers")
+        self.assertLess(gif_pos, tier_pos, "GIF should appear before tiers")
+        self.assertLessEqual(md.count("\n"), SLACK_DIGEST_TARGET_LINES + 5)
+
+    def test_matchup_line_shows_winner_and_score(self):
+        week_data = _SYNTHETIC(week=5)
+        md = build_slack_recap(5, week_data, history=[])
+        self.assertIn("def", md)
+        self.assertIn("118.4", md)
+
+    def test_roastable_swap_line_absent_for_chalk_bust(self):
+        week_data = _SYNTHETIC(week=5)
+        home = week_data["matchups"]["matchups"][0]["home_team"]
+        home["starters"] = [
+            {
+                "name": "Christian Watson",
+                "position": "WR",
+                "slot": "WR",
+                "actual_points": 0.0,
+                "percent_started": 94.9,
+            }
+        ]
+        home["bench"] = [
+            {
+                "name": "Keenan Allen",
+                "position": "WR",
+                "slot": "BN",
+                "actual_points": 16.2,
+                "percent_started": 24.9,
+            }
+        ]
+        self.assertIsNone(_roastable_swap_line(week_data))
 
     def test_unfinalized_week_shows_banner_and_skips_zero_superlative(self):
         week_data = _SYNTHETIC(week=7)

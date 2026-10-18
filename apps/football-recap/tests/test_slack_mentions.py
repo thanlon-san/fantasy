@@ -6,7 +6,11 @@ import unittest
 
 from tests import _bootstrap  # noqa: F401
 
-from src.constants import format_slack_mention, resolve_slack_id
+from src.constants import (
+    format_slack_digest_label,
+    format_slack_mention,
+    resolve_slack_id,
+)
 
 
 class SlackMentionTests(unittest.TestCase):
@@ -32,6 +36,18 @@ class SlackMentionTests(unittest.TestCase):
         self.assertEqual(
             format_slack_mention(team_name="Scott\u2019s Tots", owner_name="Marissa"),
             "<@U032LD8RMK8>",
+        )
+
+    def test_digest_label_uses_bold_team_not_mention_token(self):
+        self.assertEqual(
+            format_slack_digest_label(team_name="Purdy Boys", owner_name="Tyler Hanlon"),
+            "*Purdy Boys* (Tyler Hanlon)",
+        )
+
+    def test_digest_label_falls_back_to_owner_when_no_team(self):
+        self.assertEqual(
+            format_slack_digest_label(team_name="", owner_name="Jane Doe"),
+            "*Jane Doe*",
         )
 
 

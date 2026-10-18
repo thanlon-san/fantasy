@@ -27,11 +27,22 @@ You can flip to auto-send later once the house voice is calibrated
 Optional: connect Slack MCP in **Cursor → Settings → MCP → Slack** if you
 prefer MCP-based draft tools over the built-in Send to Slack action.
 
-## Slack digest GIFs
+## Slack digest format
 
-The compact digest (`output/week-N-slack.md`) puts each week's GIF as a **bare
-`https://media.giphy.com/...` URL on its own line** so Slack unfurls it inline.
-Markdown image syntax (`![GIF](url)`) does not reliably preview in Slack.
+The compact digest (`output/week-N-slack.md`) is tuned for **paste into the Slack
+composer** (draft flow above):
+
+- **Manager labels** use bold Yahoo team names (`*Purdy Boys* (Tyler Hanlon)`),
+  not `<@U…>` tokens — pasted rich text often leaves mention tokens literal.
+  Bot/API posts can still use `<@USER_ID>` from `format_slack_mention` in code
+  paths that send through the API.
+- **Bold** uses Slack mrkdwn (`*text*`), not `#` markdown headers.
+- **GIF** is a bare `https://media.giphy.com/...` URL **immediately under the
+  title** so Slack unfurls it there. Pasting a URL at the bottom of a long
+  message still unfurls at the bottom — keep the GIF up top. Markdown image
+  syntax (`![GIF](url)`) does not reliably preview in Slack.
+- Paste as **plain text** when possible so `*bold*` renders; rich-text paste
+  may strip formatting.
 
 ## Manual / fallback path (raw HTTP)
 

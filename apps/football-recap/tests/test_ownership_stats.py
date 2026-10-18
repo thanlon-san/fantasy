@@ -61,6 +61,17 @@ class OwnershipSwapTests(unittest.TestCase):
     def test_swap_not_roastable_for_low_consensus_boom(self):
         self.assertFalse(is_swap_roastable_by_consensus(3.0, 25.0))
 
+    def test_watson_chalk_bust_over_allen_bench_not_roastable(self):
+        """Started 95% Watson (0 pts); benched 25% Allen (16) — hindsight, not a sit mistake."""
+        self.assertFalse(is_swap_roastable_by_consensus(24.9, 94.9))
+        team = _team(
+            starters=[_player("Christian Watson", "WR", "WR", 0.0, 94.9)],
+            bench=[_player("Keenan Allen", "WR", "BN", 16.2, 24.9)],
+        )
+        swaps = compute_start_sit_swaps(team)
+        self.assertEqual(len(swaps), 1)
+        self.assertFalse(swaps[0]["roastable"])
+
     def test_compute_swaps_finds_position_match(self):
         team = _team(
             starters=[_player("WR Bad", "WR", "WR", 8.0, 12.0)],

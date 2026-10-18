@@ -11,6 +11,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 from shared.logger import get_logger
 from src.constants import (
     NFL_SEASON_START_DATE,
+    ROASTABLE_CONSENSUS_START_GAP,
     ROASTABLE_START_PERCENTAGE,
     SIGNIFICANT_MANAGEMENT_GAP,
 )
@@ -52,20 +53,22 @@ def is_swap_roastable_by_consensus(
     starter_percent_started: float,
 ) -> bool:
     """
-    Bench mistake is roast-worthy when consensus favored the benched player
-    (high start %) or clearly favored the starter over the bench option.
+    Bench mistake is roast-worthy when consensus clearly favored starting the
+    benched player over who was in the lineup.
+
+    Starting the chalk play who busted (higher start % than the bench) is not
+    roastable even if the bench outscored them after the fact.
     """
-    if not _valid_start_pct(bench_percent_started) and not _valid_start_pct(
-        starter_percent_started
-    ):
+    if not _valid_start_pct(bench_percent_started):
         return False
-    if _valid_start_pct(bench_percent_started) and bench_percent_started >= ROASTABLE_START_PERCENTAGE:
+    if not _valid_start_pct(starter_percent_started):
+        return bench_percent_started >= 70.0
+    if starter_percent_started >= bench_percent_started:
+        return False
+    gap = bench_percent_started - starter_percent_started
+    if gap >= ROASTABLE_CONSENSUS_START_GAP:
         return True
-    if (
-        _valid_start_pct(bench_percent_started)
-        and _valid_start_pct(starter_percent_started)
-        and bench_percent_started > starter_percent_started
-    ):
+    if bench_percent_started >= 50.0 and gap > 0:
         return True
     return False
 

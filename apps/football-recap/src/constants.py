@@ -253,6 +253,27 @@ def format_slack_mention(
     return resolved_owner
 
 
+def format_slack_digest_label(
+    team_name: str = "", owner_name: str = "", fallback_manager: str = ""
+) -> str:
+    """
+    Human-readable manager label for paste-in Slack digests.
+
+    ``<@U…>`` tokens often stay literal when pasted into the composer; use bold
+    Yahoo team names (and owner when known) instead. Bot/API posts can still use
+    :func:`format_slack_mention`.
+    """
+    resolved_owner = owner_name or resolve_owner(team_name, fallback_manager)
+    team = (team_name or "").strip()
+    if team and resolved_owner and resolved_owner != team:
+        return f"*{team}* ({resolved_owner})"
+    if team:
+        return f"*{team}*"
+    if resolved_owner:
+        return f"*{resolved_owner}*"
+    return "*Unknown*"
+
+
 def resolve_owner(team_name: str, fallback_manager: str = "") -> str:
     """
     Resolve a friendly owner name for a team.
@@ -295,6 +316,8 @@ SIGNIFICANT_PROJECTION_MISS = 20.0  # Major projection miss
 
 # Benching & Roster Decisions
 ROASTABLE_START_PERCENTAGE = 20  # ESPN start % to roast benching decisions
+# Bench must beat starter consensus by at least this much to count as a sit mistake.
+ROASTABLE_CONSENSUS_START_GAP = 10.0
 DEEP_SLEEPER_THRESHOLD = 10  # Players started in <10% of leagues
 SIGNIFICANT_BENCH_POINTS = 40.0  # Total bench points worth mentioning
 
