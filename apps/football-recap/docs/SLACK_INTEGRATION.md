@@ -34,6 +34,9 @@ composer** (draft flow above):
 
 - **Manager labels** use bold Yahoo team names (`*Purdy Boys* (Tyler Hanlon)`),
   not `<@U…>` tokens — pasted rich text often leaves mention tokens literal.
+  Ghost recap excerpts are post-processed with `resolve_slack_mentions_for_paste`
+  when building `week-N-slack.md` (default). Set `SLACK_PASTE_MODE=0` to keep
+  raw `<@USER_ID>` tokens (e.g. bot/API posts that need real pings).
   Bot/API posts can still use `<@USER_ID>` from `format_slack_mention` in code
   paths that send through the API.
 - **Bold** uses Slack mrkdwn (`*text*`), not `#` markdown headers.

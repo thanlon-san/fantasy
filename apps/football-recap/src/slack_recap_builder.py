@@ -14,7 +14,12 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
-from src.constants import SIGNIFICANT_MANAGEMENT_GAP, format_slack_digest_label
+from src.constants import (
+    SIGNIFICANT_MANAGEMENT_GAP,
+    format_slack_digest_label,
+    resolve_slack_mentions_for_paste,
+    slack_paste_mode_enabled,
+)
 from src.gif_bank import pick_gif
 from src.ownership_stats import compute_start_sit_swaps, is_management_gap_roastable
 from src.recap_slack_excerpt import load_recap_excerpt_from_file
@@ -665,12 +670,16 @@ def build_slack_recap(
     history: Optional[Sequence[Dict[str, Any]]] = None,
     full_recap_path: Optional[str] = None,
     use_power_tiers: bool = False,
+    slack_paste_mode: Optional[bool] = None,
 ) -> str:
     """
     Build Slack-friendly markdown for week ``week``.
 
     ``full_recap_path`` — if the long recap file exists, link text is included.
     """
+    if slack_paste_mode is None:
+        slack_paste_mode = slack_paste_mode_enabled()
+
     history = list(history) if history is not None else _load_history()
     superlatives = week_data.get("superlatives") or compute_superlatives(week_data)
     gif = week_data.get("gif_of_the_week") or pick_gif(
@@ -775,6 +784,8 @@ def build_slack_recap(
                 trimmed = True
         if not trimmed:
             break
+    if slack_paste_mode:
+        body = resolve_slack_mentions_for_paste(body)
     return body
 
 

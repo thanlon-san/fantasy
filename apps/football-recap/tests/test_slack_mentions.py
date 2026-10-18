@@ -10,6 +10,7 @@ from src.constants import (
     format_slack_digest_label,
     format_slack_mention,
     resolve_slack_id,
+    resolve_slack_mentions_for_paste,
 )
 
 
@@ -49,6 +50,28 @@ class SlackMentionTests(unittest.TestCase):
             format_slack_digest_label(team_name="", owner_name="Jane Doe"),
             "*Jane Doe*",
         )
+
+    def test_resolve_paste_mention_with_team_possessive(self):
+        raw = (
+            "<@U03FE7P8EEP>'s Purdy Boys (105.0) def. "
+            "<@U03L8KFL1RS>'s Monster of the Midway (60.58)"
+        )
+        out = resolve_slack_mentions_for_paste(raw)
+        self.assertIn("*Purdy Boys* (Tyler Hanlon)", out)
+        self.assertIn("*Monster of the Midway* (Elisa Keny (Ambrose))", out)
+        self.assertNotIn("<@U", out)
+
+    def test_resolve_paste_mention_prose_possessive(self):
+        raw = "Meanwhile, <@U07JPH677ED>'s entire roster produced 51.68."
+        out = resolve_slack_mentions_for_paste(raw)
+        self.assertIn("*Joe Barry*'s entire roster", out)
+        self.assertNotIn("<@U", out)
+
+    def test_resolve_paste_bare_mention(self):
+        raw = "Meanwhile, <@U0AV2EB5GUD> benched A.J. Brown."
+        out = resolve_slack_mentions_for_paste(raw)
+        self.assertIn("*Game of Throws* (Luis Islas)", out)
+        self.assertNotIn("<@U", out)
 
 
 if __name__ == "__main__":

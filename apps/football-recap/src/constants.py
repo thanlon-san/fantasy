@@ -3,6 +3,8 @@ Configuration constants for fantasy football project
 Centralized constants to avoid magic numbers throughout the codebase
 """
 
+import os
+import re
 from datetime import datetime
 
 # ============================================================================
@@ -203,6 +205,88 @@ def _slack_id_by_owner() -> dict[str, str]:
 
 _SLACK_ID_BY_TEAM = _slack_id_by_team()
 _SLACK_ID_BY_OWNER = _slack_id_by_owner()
+
+
+def _manager_by_slack_id() -> dict[str, dict]:
+    """Slack user ID → PRESEASON_MANAGERS_2026 row."""
+    out: dict[str, dict] = {}
+    for mgr in PRESEASON_MANAGERS_2026:
+        sid = mgr.get("slack_id") or ""
+        if sid:
+            out[sid] = mgr
+    return out
+
+
+_MANAGER_BY_SLACK_ID = _manager_by_slack_id()
+
+
+def slack_paste_mode_enabled() -> bool:
+    """
+    When true (default), file digests replace ``<@U…>`` with human-readable labels.
+
+    Bot/API posts that need real pings can set ``SLACK_PASTE_MODE=0``.
+    """
+    val = os.environ.get("SLACK_PASTE_MODE", "1").strip().lower()
+    return val not in ("0", "false", "no", "off")
+
+
+def resolve_slack_mentions_for_paste(text: str) -> str:
+    """
+    Replace Slack mention tokens with labels safe for composer paste.
+
+    ``<@id>'s Team Name`` → ``*Team Name* (Owner)``; other possessives use
+    ``*Owner*'s``; bare ``<@id>`` → digest label from league config.
+    """
+    if not text or "<@" not in text:
+        return text
+
+    by_id = _MANAGER_BY_SLACK_ID
+    out = text
+
+    team_rows: list[tuple[str, str]] = []
+    for sid, mgr in by_id.items():
+        team = (mgr.get("team") or "").strip()
+        if team:
+            team_rows.append((team, sid))
+    team_rows.sort(key=lambda row: len(row[0]), reverse=True)
+
+    for team, sid in team_rows:
+        norm = _normalize_team_key(team)
+        escaped = re.escape(norm)
+        escaped = escaped.replace("'", r"['\u2019]")
+        pattern = rf"<@{re.escape(sid)}>'s\s+{escaped}(?=\s|[\(\.,;:!?\*]|$)"
+        label = format_slack_digest_label(
+            team_name=team,
+            owner_name=by_id[sid].get("owner") or "",
+        )
+        out = re.sub(pattern, label, out, flags=re.IGNORECASE)
+
+    def _possessive_owner(match: re.Match[str]) -> str:
+        sid = match.group(1)
+        mgr = by_id.get(sid)
+        if not mgr:
+            return match.group(0)
+        owner = (mgr.get("owner") or "").strip()
+        if owner:
+            return f"*{owner}*'s "
+        return match.group(0)
+
+    out = re.sub(r"<@([A-Z0-9]+)>'s\s+", _possessive_owner, out, flags=re.IGNORECASE)
+
+    def _bare_mention(match: re.Match[str]) -> str:
+        sid = match.group(1)
+        mgr = by_id.get(sid)
+        if not mgr:
+            return match.group(0)
+        return format_slack_digest_label(
+            team_name=mgr.get("team") or "",
+            owner_name=mgr.get("owner") or "",
+        )
+
+    out = re.sub(r"<@([A-Z0-9]+)>", _bare_mention, out, flags=re.IGNORECASE)
+    # Ghost recap headers: outer ``*`` + label ``*Team*`` → stray ``**`` prefix.
+    out = re.sub(r"\*\*(?=\S)", "*", out)
+    return out
 
 
 def resolve_slack_id(team_name: str = "", owner_name: str = "") -> str:

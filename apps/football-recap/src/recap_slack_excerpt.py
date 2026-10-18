@@ -56,8 +56,8 @@ def _slackify_markdown_for_paste(text: str) -> str:
     """
     Light cleanup for Slack composer paste.
 
-    Recaps use ``**bold**``; Slack mrkdwn prefers ``*bold*``. Leave ``<@U…>``
-    mentions and emoji codes intact.
+    Recaps use ``**bold**``; Slack mrkdwn prefers ``*bold*``. Mention tokens
+    are left as ``<@U…>`` here; :func:`build_slack_recap` resolves them for paste.
     """
     lines: List[str] = []
     for line in text.splitlines():

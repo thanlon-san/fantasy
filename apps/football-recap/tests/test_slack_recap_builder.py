@@ -130,6 +130,8 @@ class SlackRecapBuilderTests(unittest.TestCase):
         self.assertIn("157.78", md)
         self.assertNotIn("📋 Matchup recaps", md)
         self.assertNotIn("Power rankings", md)
+        self.assertNotIn("<@U", md)
+        self.assertIn("Purdy Boys", md)
 
     def test_roastable_swap_line_absent_for_chalk_bust(self):
         week_data = _SYNTHETIC(week=5)
