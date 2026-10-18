@@ -89,25 +89,34 @@ class SnarkVarietyTests(unittest.TestCase):
 
 class SlackRecapBuilderTests(unittest.TestCase):
 
-    def test_build_includes_tldr_tiers_gif(self):
+    def test_build_includes_tldr_rankings_gif(self):
         week_data = _SYNTHETIC(week=5)
         md = build_slack_recap(5, week_data, history=[])
         self.assertIn("TL;DR", md)
-        self.assertIn("Power tiers", md)
-        self.assertIn("Matchups", md)
+        self.assertIn("Power rankings", md)
+        self.assertNotIn("Power tiers", md)
+        self.assertIn("Matchup recaps", md)
         self.assertIn("https://media.giphy.com/", md)
         self.assertNotIn("![GIF]", md)
         self.assertNotIn("<@U", md)
         gif_pos = md.index("https://media.giphy.com/")
-        tier_pos = md.index("Power tiers")
-        self.assertLess(gif_pos, tier_pos, "GIF should appear before tiers")
-        self.assertLessEqual(md.count("\n"), SLACK_DIGEST_TARGET_LINES + 5)
+        rank_pos = md.index("Power rankings")
+        self.assertLess(gif_pos, rank_pos, "GIF should appear before rankings")
+        self.assertLessEqual(md.count("\n"), SLACK_DIGEST_TARGET_LINES + 15)
+
+    def test_tiers_opt_in(self):
+        week_data = _SYNTHETIC(week=5)
+        md = build_slack_recap(5, week_data, history=[], use_power_tiers=True)
+        self.assertIn("Power tiers", md)
+        self.assertNotIn("Power rankings", md)
 
     def test_matchup_line_shows_winner_and_score(self):
         week_data = _SYNTHETIC(week=5)
         md = build_slack_recap(5, week_data, history=[])
         self.assertIn("def", md)
         self.assertIn("118.4", md)
+        self.assertIn("margin", md)
+        self.assertIn("led", md)
 
     def test_roastable_swap_line_absent_for_chalk_bust(self):
         week_data = _SYNTHETIC(week=5)

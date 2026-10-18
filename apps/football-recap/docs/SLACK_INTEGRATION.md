@@ -43,6 +43,11 @@ composer** (draft flow above):
   syntax (`![GIF](url)`) does not reliably preview in Slack.
 - Paste as **plain text** when possible so `*bold*` renders; rich-text paste
   may strip formatting.
+- **Power rankings** default to the canonical numbered list from `week_data`
+  (rank, team, record, PF, movement). Pass `--tiers` to
+  `prepare_slack_recap.py` for the optional S–F tier layout.
+- **Matchup recaps** include scores, margin, and short winner/loser blurbs
+  (MVP starter, roastable bench swaps when applicable).
 
 ## Manual / fallback path (raw HTTP)
 

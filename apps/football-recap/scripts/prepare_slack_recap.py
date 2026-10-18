@@ -11,6 +11,7 @@ Usage:
 
 Omit ``--week`` to follow Yahoo ``current_week`` (see ``default_recap_week``).
 Use ``--force`` to write slack output when matchup scores are still 0 / unfinalized.
+Use ``--tiers`` for S–F power tiers instead of the default numbered power rankings.
 """
 
 from __future__ import annotations
@@ -82,6 +83,11 @@ def main() -> int:
         action="store_true",
         help="Write slack file even when Yahoo has not finalized matchup scores",
     )
+    parser.add_argument(
+        "--tiers",
+        action="store_true",
+        help="Use S–F power tiers instead of numbered power rankings",
+    )
     args = parser.parse_args()
 
     generator = RecapGenerator()
@@ -123,7 +129,12 @@ def main() -> int:
         )
         return 1
 
-    path = save_slack_recap(week, week_data, history=generator.recap_history)
+    path = save_slack_recap(
+        week,
+        week_data,
+        history=generator.recap_history,
+        use_power_tiers=args.tiers,
+    )
     print(f"✅ Slack digest: {path}")
     return 0
 

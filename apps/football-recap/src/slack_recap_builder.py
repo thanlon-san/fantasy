@@ -14,9 +14,9 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
-from src.constants import format_slack_digest_label
+from src.constants import SIGNIFICANT_MANAGEMENT_GAP, format_slack_digest_label
 from src.gif_bank import pick_gif
-from src.ownership_stats import compute_start_sit_swaps
+from src.ownership_stats import compute_start_sit_swaps, is_management_gap_roastable
 from src.season_leaderboard import SLACK_SEASON_TROPHY_KEY, compute_season_awards
 from src.superlatives import compute_superlatives
 
@@ -458,7 +458,73 @@ def _dramatic_matchup_tags(
     t1, t2 = nail.get("team1"), nail.get("team2")
     if t1 and t2:
         tags[_pair(t1, t2)] = f"🔪 nail-biter ({nail.get('margin')} pts)"
+    upset = superlatives.get("upset_of_the_week") or {}
+    if upset.get("winner") and upset.get("loser"):
+        tags[_pair(upset["winner"], upset["loser"])] = (
+            f"🎯 upset (proj gap {upset.get('projection_gap')})"
+        )
+    shootout = superlatives.get("shootout_of_the_week") or {}
+    s1, s2 = shootout.get("team1"), shootout.get("team2")
+    if s1 and s2:
+        tags[_pair(s1, s2)] = f"🔥 shootout ({shootout.get('combined')} combined)"
     return tags
+
+
+def _best_starter(team: Dict[str, Any]) -> Optional[Tuple[str, float]]:
+    starters = team.get("starters") or []
+    if not starters:
+        return None
+    best = max(
+        starters,
+        key=lambda p: float(p.get("actual_points") or p.get("points") or 0),
+    )
+    pts = float(best.get("actual_points") or best.get("points") or 0)
+    name = best.get("name") or "?"
+    if pts <= 0:
+        return None
+    return name, pts
+
+
+def _roastable_swap_blurb(team: Dict[str, Any]) -> Optional[str]:
+    best_margin = 0.0
+    best_swap: Optional[Dict[str, Any]] = None
+    for swap in compute_start_sit_swaps(team):
+        if not swap.get("roastable"):
+            continue
+        margin = float(swap["benched_points"]) - float(swap["started_points"])
+        if margin > best_margin:
+            best_margin = margin
+            best_swap = swap
+    if not best_swap:
+        return None
+    return (
+        f"benched *{best_swap['benched_name']}* ({best_swap['benched_points']:.1f}) "
+        f"over *{best_swap['started_name']}* ({best_swap['started_points']:.1f})"
+    )
+
+
+def _team_matchup_blurb(team: Dict[str, Any], *, role: str) -> Optional[str]:
+    """One short clause for winner/loser in a matchup recap."""
+    label = format_slack_digest_label(
+        team_name=team.get("team_name", ""),
+        owner_name=team.get("owner") or "",
+    )
+    parts: List[str] = []
+    mvp = _best_starter(team)
+    if mvp:
+        parts.append(f"*{mvp[0]}* {mvp[1]:.1f} led")
+    swap = _roastable_swap_blurb(team)
+    if swap:
+        parts.append(swap)
+    else:
+        gap = float(team.get("management_gap") or 0)
+        if gap >= SIGNIFICANT_MANAGEMENT_GAP and is_management_gap_roastable(team):
+            parts.append(f"left {gap:.0f} on the bench")
+        elif gap >= SIGNIFICANT_MANAGEMENT_GAP:
+            parts.append(f"{gap:.0f} bench gap (consensus sit)")
+    if not parts:
+        return None
+    return f"_{role}_ ({label}): " + "; ".join(parts) + "."
 
 
 def _matchup_recap_lines(
@@ -466,6 +532,7 @@ def _matchup_recap_lines(
     superlatives: Dict[str, Dict[str, Any]],
     *,
     scores_unfinalized: bool,
+    include_detail: bool = True,
 ) -> List[str]:
     if scores_unfinalized:
         return []
@@ -474,7 +541,7 @@ def _matchup_recap_lines(
         return []
 
     dramatic = _dramatic_matchup_tags(superlatives)
-    lines = ["*📋 Matchups*"]
+    lines = ["*📋 Matchup recaps*"]
     for matchup in matchups:
         home = matchup.get("home_team") or {}
         away = matchup.get("away_team") or {}
@@ -496,6 +563,8 @@ def _matchup_recap_lines(
             team_name=loser.get("team_name", ""),
             owner_name=loser.get("owner") or "",
         )
+        margin = float(matchup.get("margin") or abs(w_score - l_score))
+        combined = home_score + away_score
         tag = dramatic.get(
             tuple(
                 sorted(
@@ -507,10 +576,48 @@ def _matchup_recap_lines(
             ),
             "",
         )
-        line = f"{w_label} ({w_score:.1f}) def {l_label} ({l_score:.1f})"
+        line = (
+            f"{w_label} ({w_score:.1f}) def {l_label} ({l_score:.1f}) "
+            f"— margin {margin:.1f}, {combined:.1f} combined"
+        )
         if tag:
-            line = f"{line} — {tag}"
+            line = f"{line} · {tag}"
         lines.append(line)
+        if include_detail:
+            for role, team in (("Winner", winner), ("Loser", loser)):
+                blurb = _team_matchup_blurb(team, role=role)
+                if blurb:
+                    lines.append(f"  {blurb}")
+    return lines
+
+
+def _power_rank_movement_note(row: Dict[str, Any]) -> str:
+    movement = str(row.get("movement") or "—").strip()
+    if movement and movement not in ("—", "-"):
+        return movement
+    heat = (row.get("heat") or "steady").lower()
+    if heat != "steady":
+        return heat
+    return "—"
+
+
+def _format_power_rankings_block(
+    rankings: List[Dict[str, Any]],
+) -> List[str]:
+    if not rankings:
+        return ["*🏆 Power rankings* — (no rankings this week)"]
+
+    lines = ["*🏆 Power rankings* _(canonical order · record · PF · movement)_"]
+    for row in rankings:
+        label = format_slack_digest_label(
+            team_name=row.get("team_name", ""),
+            owner_name=row.get("owner") or "",
+        )
+        record = f"{row.get('wins', 0)}–{row.get('losses', 0)}"
+        pf = row.get("pf", 0)
+        note = _power_rank_movement_note(row)
+        rank = row.get("rank", "?")
+        lines.append(f"{rank}. {label} — {record}, PF {pf} · {note}")
     return lines
 
 
@@ -551,6 +658,7 @@ def build_slack_recap(
     *,
     history: Optional[Sequence[Dict[str, Any]]] = None,
     full_recap_path: Optional[str] = None,
+    use_power_tiers: bool = False,
 ) -> str:
     """
     Build Slack-friendly markdown for week ``week``.
@@ -604,7 +712,10 @@ def build_slack_recap(
     lines.append("")
 
     rankings = (week_data.get("power_rankings") or {}).get("rankings") or []
-    lines.extend(_format_tier_block(rankings, week_data))
+    if use_power_tiers:
+        lines.extend(_format_tier_block(rankings, week_data))
+    else:
+        lines.extend(_format_power_rankings_block(rankings))
 
     recap_path = full_recap_path or os.path.join(OUTPUT_DIR, f"week-{week}-recap.md")
     if recap_path and os.path.isfile(recap_path):
@@ -618,16 +729,38 @@ def build_slack_recap(
     lines.append(SLACK_DIGEST_FOOTER_NOTE)
 
     body = "\n".join(lines).strip() + "\n"
-    while body.count("\n") > SLACK_DIGEST_TARGET_LINES and len(rankings) > 6:
-        # Drop lowest-priority tier lines first if a large league blows the budget.
+    while body.count("\n") > SLACK_DIGEST_TARGET_LINES:
         trimmed = False
-        for tier in reversed(TIER_LABELS):
-            prefix = f"*{tier}* · "
-            new_lines = [ln for ln in body.splitlines() if not ln.startswith(prefix)]
-            if len(new_lines) < body.count("\n"):
-                body = "\n".join(new_lines).strip() + "\n"
+        if use_power_tiers and len(rankings) > 6:
+            for tier in reversed(TIER_LABELS):
+                prefix = f"*{tier}* · "
+                new_lines = [ln for ln in body.splitlines() if not ln.startswith(prefix)]
+                if len(new_lines) < body.count("\n"):
+                    body = "\n".join(new_lines).strip() + "\n"
+                    trimmed = True
+                    break
+        if not trimmed:
+            detail_lines = [
+                ln for ln in body.splitlines() if ln.startswith("  _")
+            ]
+            if detail_lines:
+                drop = detail_lines[-1]
+                body = "\n".join(
+                    ln for ln in body.splitlines() if ln != drop
+                ).strip() + "\n"
                 trimmed = True
-                break
+        if not trimmed and not use_power_tiers and len(rankings) > 8:
+            rank_lines = [
+                ln
+                for ln in body.splitlines()
+                if ln[:1].isdigit() and ". " in ln[:4]
+            ]
+            if rank_lines:
+                drop = rank_lines[-1]
+                body = "\n".join(
+                    ln for ln in body.splitlines() if ln != drop
+                ).strip() + "\n"
+                trimmed = True
         if not trimmed:
             break
     return body
@@ -639,6 +772,7 @@ def save_slack_recap(
     *,
     output_dir: str = OUTPUT_DIR,
     history: Optional[Sequence[Dict[str, Any]]] = None,
+    use_power_tiers: bool = False,
 ) -> str:
     """Write ``output/week-N-slack.md`` and return the path."""
     out = Path(output_dir)
@@ -649,6 +783,7 @@ def save_slack_recap(
         week_data,
         history=history,
         full_recap_path=recap_path if os.path.isfile(recap_path) else None,
+        use_power_tiers=use_power_tiers,
     )
     path = out / f"week-{week}-slack.md"
     path.write_text(markdown, encoding="utf-8")
