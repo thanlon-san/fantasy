@@ -7,6 +7,7 @@ for draft/paste into Slack — separate from the long Commissioner's Ghost recap
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -51,6 +52,16 @@ def _all_matchup_teams(week_data: Dict[str, Any]) -> List[Dict[str, Any]]:
     return out
 
 
+def _pick_snark(team_name: str, bucket: str, options: Sequence[str]) -> str:
+    """Deterministic line per team so reruns match but peers in a tier differ."""
+    if not options:
+        return ""
+    if len(options) == 1:
+        return options[0]
+    digest = hashlib.md5(f"{team_name}:{bucket}".encode()).hexdigest()
+    return options[int(digest, 16) % len(options)]
+
+
 def snark_line_for_team(
     row: Dict[str, Any],
     week_data: Dict[str, Any],
@@ -66,26 +77,114 @@ def snark_line_for_team(
     score = float(snap.get("score") or 0)
 
     if tier == "S":
-        if movement.startswith("▲"):
-            return "Top dog and still climbing — annoying."
-        return "The rest of the league is cosplaying contenders."
+        if movement.startswith("▲") or movement.startswith("+") or "▲" in movement:
+            return _pick_snark(
+                team_name,
+                "S-climb",
+                (
+                    "Top dog and still climbing — annoying.",
+                    "No. 1 and rising — the group chat hates you.",
+                    "Crown getting heavier; keep whining anyway.",
+                ),
+            )
+        return _pick_snark(
+            team_name,
+            "S-hold",
+            (
+                "The rest of the league is cosplaying contenders.",
+                "S-tier rent is due; everyone else is subletting hope.",
+                "Built different — or at least scored different.",
+            ),
+        )
     if tier == "F":
         if gap >= 20:
-            return "Last place with a full bench of regrets."
-        return "Mathematically still in it, spiritually not."
+            return _pick_snark(
+                team_name,
+                "F-gap",
+                (
+                    "Last place with a full bench of regrets.",
+                    "Cellar dweller with a stocked bench — tragic.",
+                    "Bottom of the ranks, top of the 'what if' list.",
+                ),
+            )
+        return _pick_snark(
+            team_name,
+            "F-base",
+            (
+                "Mathematically still in it, spiritually not.",
+                "Playoff math exists; vibes do not.",
+                "The tank is subtle but the record isn't.",
+            ),
+        )
     if heat == "surging":
-        return "Three-week heater — don't get comfortable."
+        return _pick_snark(
+            team_name,
+            "surging",
+            (
+                "Three-week heater — don't get comfortable.",
+                "On a run — schedule hasn't noticed yet.",
+                "Trending up; humility optional.",
+            ),
+        )
     if heat == "sliding":
-        return "Cooling off like a waiver wire after Tuesday."
-    if movement.startswith("▼"):
-        return "Dropped a tier in the power ranks — ouch."
-    if movement.startswith("▲"):
-        return "Up in the ranks on vibes and points."
+        return _pick_snark(
+            team_name,
+            "sliding",
+            (
+                "Cooling off like a waiver wire after Tuesday.",
+                "Momentum left the chat.",
+                "Peaked early; the bye can't come soon enough.",
+            ),
+        )
+    if movement.startswith("▼") or movement.startswith("-") or "▼" in movement:
+        return _pick_snark(
+            team_name,
+            "drop",
+            (
+                "Dropped a tier in the power ranks — ouch.",
+                "Took the elevator down — skipped the lobby.",
+                "Rank slide — blame the flex, always the flex.",
+            ),
+        )
+    if movement.startswith("▲") or movement.startswith("+") or "▲" in movement:
+        return _pick_snark(
+            team_name,
+            "rise",
+            (
+                "Up in the ranks on vibes and points.",
+                "Climbing — one more win and it's a personality.",
+                "Moved up; don't mention last month's lineup.",
+            ),
+        )
     if gap >= 15:
-        return f"Left {gap:.0f} on the bench and lived to tell nobody."
+        return _pick_snark(
+            team_name,
+            f"gap-{int(gap)}",
+            (
+                f"Left {gap:.0f} on the bench and lived to tell nobody.",
+                f"{gap:.0f} rotting on the pine — chef's kiss.",
+                f"Bench held {gap:.0f}; starters held a funeral.",
+            ),
+        )
     if score > 0 and score < 80:
-        return f"Scored {score:.0f} — the matchup was not impressed."
-    return "Steady Eddie — no headline, no mercy."
+        return _pick_snark(
+            team_name,
+            f"low-{int(score)}",
+            (
+                f"Scored {score:.0f} — the matchup was not impressed.",
+                f"{score:.0f} points — tough crowd, tougher schedule.",
+                f"Put up {score:.0f}; opponent sent a thank-you note.",
+            ),
+        )
+    return _pick_snark(
+        team_name,
+        "steady",
+        (
+            "Steady Eddie — no headline, no mercy.",
+            "Middle of the pack — dangerously average.",
+            "No drama, no glory — perfect fantasy purgatory.",
+        ),
+    )
 
 
 def _load_history(path: str = RECAP_HISTORY_FILE) -> List[Dict[str, Any]]:

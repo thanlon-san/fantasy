@@ -400,6 +400,27 @@ def get_current_nfl_week() -> int:
     return min(max(1, current_week), NFL_REGULAR_SEASON_WEEKS)
 
 
+def default_recap_week(
+    explicit_week: int | None = None,
+    *,
+    yahoo_current_week: int | None = None,
+) -> int:
+    """
+    Resolve the week for recap / Slack prep when ``--week`` is omitted.
+
+    Yahoo's ``current_week`` can lag the calendar early in the week; prefer it
+    when available (live ``league_info`` or cached ``week_data``), then fall
+    back to :func:`get_current_nfl_week`.
+    """
+    if explicit_week is not None:
+        return explicit_week
+    if yahoo_current_week is not None:
+        cw = int(yahoo_current_week)
+        if validate_week_number(cw):
+            return cw
+    return get_current_nfl_week()
+
+
 def is_playoff_week(week: int) -> bool:
     """Check if a given week is in fantasy playoffs"""
     return week >= NFL_PLAYOFF_START_WEEK

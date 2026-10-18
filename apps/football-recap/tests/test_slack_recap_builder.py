@@ -11,6 +11,7 @@ from tests import _bootstrap  # noqa: F401
 from src.slack_recap_builder import (
     build_slack_recap,
     save_slack_recap,
+    snark_line_for_team,
     tier_for_rank,
 )
 
@@ -37,6 +38,50 @@ class TierMappingTests(unittest.TestCase):
 
     def test_rank_one_is_s(self):
         self.assertEqual(tier_for_rank(1, 14), "S")
+
+
+class SnarkVarietyTests(unittest.TestCase):
+
+    def test_s_tier_teams_get_distinct_snark(self):
+        week_data = _SYNTHETIC(week=6)
+        rankings = [
+            {
+                "rank": 1,
+                "team_name": "Alpha FC",
+                "owner": "a",
+                "wins": 5,
+                "losses": 1,
+                "pf": 700,
+                "movement": "▲1",
+                "heat": "steady",
+            },
+            {
+                "rank": 2,
+                "team_name": "Beta United",
+                "owner": "b",
+                "wins": 5,
+                "losses": 1,
+                "pf": 680,
+                "movement": "▲2",
+                "heat": "steady",
+            },
+            {
+                "rank": 3,
+                "team_name": "Gamma City",
+                "owner": "c",
+                "wins": 4,
+                "losses": 2,
+                "pf": 650,
+                "movement": "—",
+                "heat": "steady",
+            },
+        ]
+        lines = [
+            snark_line_for_team(row, week_data, tier="S")
+            for row in rankings
+        ]
+        self.assertGreater(len(set(lines)), 1, msg=lines)
+        self.assertFalse(all(line == lines[0] for line in lines))
 
 
 class SlackRecapBuilderTests(unittest.TestCase):
