@@ -13,6 +13,7 @@ import unittest
 from tests import _bootstrap  # noqa: F401  (side-effect: sys.path)
 
 from src import superlatives as sup
+from src.constants import MANAGEMENT_DISASTER_GAP
 
 
 def _team(
@@ -102,13 +103,74 @@ class SuperlativesTests(unittest.TestCase):
         awards = sup.compute_superlatives(_week_data(_matchup(home, away)))
         self.assertNotIn("coach_of_the_week", awards)
 
-    def test_cooked_picks_biggest_management_gap(self):
-        home = _team("A", score=90.0, management_gap=30.0, owner="anna")
-        away = _team("B", score=100.0, management_gap=27.0, owner="ben")
+    def test_cooked_picks_biggest_management_gap_with_roastable_swap(self):
+        roastable_bench = [
+            {
+                "name": "Stud",
+                "position": "WR",
+                "slot": "BN",
+                "actual_points": 28.0,
+                "percent_started": 80.0,
+            }
+        ]
+        home_starters = [
+            {
+                "name": "Bust",
+                "position": "WR",
+                "slot": "WR",
+                "actual_points": 6.0,
+                "percent_started": 15.0,
+                "projected_points": 10.0,
+            }
+        ]
+        home = {
+            "team_name": "A",
+            "owner": "anna",
+            "score": 90.0,
+            "management_gap": MANAGEMENT_DISASTER_GAP + 2.0,
+            "starters": home_starters,
+            "bench": roastable_bench,
+        }
+        away = _team("B", score=100.0, management_gap=MANAGEMENT_DISASTER_GAP + 1.0)
         awards = sup.compute_superlatives(_week_data(_matchup(home, away)))
         self.assertIn("cooked_of_the_week", awards)
         self.assertEqual(awards["cooked_of_the_week"]["team"], "A")
-        self.assertEqual(awards["cooked_of_the_week"]["management_gap"], 30.0)
+        self.assertEqual(
+            awards["cooked_of_the_week"]["management_gap"],
+            MANAGEMENT_DISASTER_GAP + 2.0,
+        )
+
+    def test_cooked_does_not_fire_for_consensus_sit_bench_boom(self):
+        home = {
+            "team_name": "A",
+            "owner": "anna",
+            "score": 90.0,
+            "management_gap": MANAGEMENT_DISASTER_GAP + 5.0,
+            "starters": [
+                {
+                    "name": "Bust",
+                    "position": "WR",
+                    "slot": "WR",
+                    "actual_points": 6.0,
+                    "percent_started": 15.0,
+                    "projected_points": 10.0,
+                }
+            ],
+            "bench": [
+                {
+                    "name": "Sleeper",
+                    "position": "WR",
+                    "slot": "BN",
+                    "actual_points": 28.0,
+                    "percent_started": 2.0,
+                }
+            ],
+        }
+        away = _team("B", score=100.0)
+        self.assertNotIn(
+            "cooked_of_the_week",
+            sup.compute_superlatives(_week_data(_matchup(home, away))),
+        )
 
     def test_bench_hero_reports_top_bench_scorer(self):
         bench = [

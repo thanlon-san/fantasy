@@ -5,9 +5,16 @@ Builds comprehensive context from weekly data for LLM recap generation
 
 from typing import Dict, List, Optional, Tuple
 from src.trend_tracker import TrendTracker
-from src.ownership_stats import OwnershipStats
+from src.ownership_stats import (
+    OwnershipStats,
+    compute_start_sit_swaps,
+    is_management_gap_roastable,
+)
 from src.constants import (
+    DEEP_SLEEPER_THRESHOLD,
     NFL_PLAYOFF_START_WEEK,
+    ROASTABLE_START_PERCENTAGE,
+    SIGNIFICANT_MANAGEMENT_GAP,
     format_slack_mention,
     resolve_owner,
 )
@@ -755,11 +762,13 @@ class ContextBuilder:
 
         # Home team analytics
         self._add_team_analytics(context_parts, home, "home")
+        self._add_start_sit_swaps(context_parts, home)
         self._add_starters(context_parts, home)
         self._add_bench_stars(context_parts, home)
 
         # Away team analytics
         self._add_team_analytics(context_parts, away, "away")
+        self._add_start_sit_swaps(context_parts, away)
         self._add_starters(context_parts, away)
         self._add_bench_stars(context_parts, away)
 
@@ -786,10 +795,39 @@ class ContextBuilder:
                 f"Optimal score: {team['optimal_lineup']['optimal_score']} "
                 f"(Management gap: {team['management_gap']} pts)"
             )
-            if team["management_gap"] > 20:
-                context_parts.append(
-                    f"  🚨 Left {team['management_gap']} points on table - ROASTABLE"
-                )
+            if team["management_gap"] > SIGNIFICANT_MANAGEMENT_GAP:
+                if is_management_gap_roastable(team):
+                    context_parts.append(
+                        f"  🚨 Left {team['management_gap']} points on table - ROASTABLE"
+                    )
+                else:
+                    context_parts.append(
+                        f"  Left {team['management_gap']} points on table - "
+                        "consensus sit (bench booms were mostly low start %; skip bench roasts)"
+                    )
+
+    def _format_start_pct(self, value: float) -> str:
+        if value is None or value < 0:
+            return "N/A"
+        return f"{value:.1f}%"
+
+    def _add_start_sit_swaps(self, context_parts: List[str], team: Dict):
+        swaps = compute_start_sit_swaps(team)
+        if not swaps:
+            return
+        context_parts.append(
+            f"\n**{_mention_for(team)}'s {team['team_name']} Start/Sit swaps:**"
+        )
+        for swap in swaps:
+            label = "ROASTABLE" if swap.get("roastable") else "consensus sit"
+            context_parts.append(
+                "  SWAP: benched "
+                f"{swap['benched_name']} ({swap['benched_points']:.1f} pts, "
+                f"{self._format_start_pct(swap['benched_percent_started'])} started) "
+                f"vs started {swap['started_name']} ({swap['started_points']:.1f} pts, "
+                f"{self._format_start_pct(swap['started_percent_started'])} started, "
+                f"slot {swap['started_slot']}) — {label}"
+            )
 
     def _add_starters(self, context_parts: List[str], team: Dict):
         """Add starter information with ownership and trend checks"""
@@ -820,8 +858,11 @@ class ContextBuilder:
 
                 # Check for ownership roast on starters (STRICT - only <3% ownership who bust)
                 start_pct = player.get("percent_started", 0)
-                # Skip if invalid data (negative values from ESPN API)
-                if start_pct >= 0 and start_pct < 3 and player["actual_points"] < 5:
+                if (
+                    start_pct >= 0
+                    and start_pct < DEEP_SLEEPER_THRESHOLD
+                    and player["actual_points"] < 5
+                ):
                     try:
                         ownership_roast = self.ownership_stats.generate_ownership_roast(
                             player["name"],
@@ -847,14 +888,16 @@ class ContextBuilder:
             for player in bench_stars:
                 # Include start % to avoid roasting deep sleepers
                 start_pct = player.get("percent_started", 0)
-                roastable = "ROASTABLE" if start_pct > 20 else "deep sleeper"
-
-                # Format ownership percentage (skip if invalid)
-                start_pct_str = f"{start_pct}%" if start_pct >= 0 else "N/A"
+                roastable = (
+                    "ROASTABLE"
+                    if start_pct >= ROASTABLE_START_PERCENTAGE
+                    else "deep sleeper / consensus sit"
+                )
+                start_pct_str = self._format_start_pct(start_pct)
 
                 bench_line = (
                     f"  - BENCHED: {player['name']}: {player['actual_points']:.1f} pts "
-                    f"(started {start_pct_str} on ESPN - {roastable})"
+                    f"(started {start_pct_str} consensus - {roastable})"
                 )
 
                 # Check for recent form (STRICT - only hot streaks benched)
@@ -1074,9 +1117,14 @@ class ContextBuilder:
                     "\n**Management Disasters (consistently leaving points):**"
                 )
                 for team in notable_trends["management_disasters"]:
+                    gap_line = (
+                        f"{team['average_gap']:.1f} avg management gap"
+                    )
+                    if team["average_gap"] > SIGNIFICANT_MANAGEMENT_GAP:
+                        gap_line += " - ROASTABLE (verify SWAP lines for consensus)"
                     context_parts.append(
                         f"  - {team['team']}: {team['consecutive_fails']} straight weeks with "
-                        f"{team['average_gap']:.1f} avg management gap - ROASTABLE"
+                        f"{gap_line}"
                     )
 
             # Add specific team trends for matchup participants

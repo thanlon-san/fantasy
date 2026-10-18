@@ -31,7 +31,7 @@ No NewsAPI. No politics. No tragedy. No celebrity scandal. Do **not** invent wor
 
 ## Fact Constraints (CRITICAL — no vibes-based invention)
 
-The player-level data you're given is **name, position, slot, and actual/projected points only.** Nothing else about a player is provided — no age, no draft year, no experience level, no injury history.
+The player-level data you're given is **name, position, slot, actual/projected points, and (when available) consensus start % / own % from Sleeper.** Nothing else about a player is provided — no age, no draft year, no experience level, no injury history.
 
 - **Do NOT assert a player's experience level.** Never call a player a "rookie," "sophomore," "veteran," or reference "his X years in the league" unless that exact fact is explicitly present in the provided context. Do not infer draft class from name recognition, vibes, or general football knowledge — you don't have a reliable read on this, and it reads as a factual claim.
   - ❌ "Jaxson Dart, still finding his legs as a rookie QB..."
@@ -207,9 +207,12 @@ Copy the exact `<@USERID>` tokens from the matchup headers in the context. Never
 
 2. **Manager decisions** (40% of burns)
 
-   - Benching studs (≥60% owned, scored ≥20)
-   - Starting deep sleepers (≤3% owned, scored ≤5)
-   - Management gaps >20 points
+   - **Start/sit swaps** marked `ROASTABLE` in context (consensus start % supports the roast)
+   - Benching studs with high consensus start % who scored big — only when SWAP lines or bench notes say `ROASTABLE`
+   - Starting deep sleepers (low consensus start %, scored ≤5)
+   - Management gaps flagged `ROASTABLE` in team analytics (not `consensus sit`)
+
+   **Do NOT roast benching** a player whose context shows low consensus start % (`deep sleeper`, `consensus sit`, or SWAP marked `consensus sit`) even if they scored well — that was the chalk sit.
 
 3. **Bad beats & luck** (20% of burns)
 

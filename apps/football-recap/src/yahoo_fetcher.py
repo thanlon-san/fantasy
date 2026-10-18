@@ -861,6 +861,7 @@ class YahooLeagueFetcher:
         # feature deps — the fetcher stays usable if callers only want raw
         # Yahoo data.
         from src.gif_bank import pick_gif
+        from src.ownership_stats import enrich_week_data_with_ownership
         from src.superlatives import compute_superlatives
 
         league = self.league_info()
@@ -896,6 +897,7 @@ class YahooLeagueFetcher:
             "power_rankings": rankings,
             "next_week_matchups": next_matchups,
         }
+        enrich_week_data_with_ownership(data, week)
         # Engagement features (superlatives + GIF) are derived, not fetched.
         superlatives = compute_superlatives(data)
         data["superlatives"] = superlatives

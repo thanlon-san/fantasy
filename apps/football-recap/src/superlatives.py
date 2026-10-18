@@ -16,6 +16,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterable, List, Optional
 
+from src.constants import EXCELLENT_MANAGEMENT_GAP, MANAGEMENT_DISASTER_GAP
+from src.ownership_stats import is_management_gap_roastable
+
 
 # ---------------------------------------------------------------------------
 # Thresholds — tuned to keep the awards feed sparse and punchy.
@@ -25,8 +28,7 @@ NAILBITER_MARGIN = 5.0          # < points = a genuine nail-biter
 BLOWOUT_MARGIN = 30.0            # >= points = blowout
 SHOOTOUT_COMBINED = 250.0        # combined score threshold
 LOW_SCORING_COMBINED = 170.0     # combined score threshold for "cold war"
-COACH_OF_WEEK_GAP = 3.0          # <= management gap for perfect(ish) lineup
-COOKED_GAP = 25.0                # >= management gap for "cooked"
+COACH_OF_WEEK_GAP = EXCELLENT_MANAGEMENT_GAP  # <= management gap for perfect(ish) lineup
 BENCH_HERO_POINTS = 20.0         # bench player who out-scored their slot
 UPSET_PROJECTION_DIFF = 15.0     # winner started with projection this far behind
 
@@ -133,7 +135,10 @@ def compute_superlatives(week_data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]
         }
 
     cooked = [
-        t for t in all_teams if t.get("management_gap", 0) >= COOKED_GAP
+        t
+        for t in all_teams
+        if t.get("management_gap", 0) >= MANAGEMENT_DISASTER_GAP
+        and is_management_gap_roastable(t)
     ]
     if cooked:
         worst = max(cooked, key=lambda t: t.get("management_gap", 0))
