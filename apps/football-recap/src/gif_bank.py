@@ -14,8 +14,14 @@ doesn't repeat too often.
 
 from __future__ import annotations
 
-import random
 from typing import Any, Dict, List, Optional
+
+from src.constants import SIGNIFICANT_MANAGEMENT_GAP
+from src.ownership_stats import (
+    compute_start_sit_swaps,
+    is_management_gap_roastable,
+    team_has_roastable_bench_mistake,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -61,11 +67,92 @@ MANAGEMENT_DISASTER_GIFS: List[tuple[str, str]] = [
     ("https://media.giphy.com/media/26FLdmIp6wJr91JAI/giphy.gif", "Left the points on the bench"),
 ]
 
+ROASTABLE_GIFS: List[tuple[str, str]] = [
+    ("https://media.giphy.com/media/26FLdmIp6wJr91JAI/giphy.gif", "The league saw that start %"),
+    ("https://media.giphy.com/media/xT5LMB2WiOdjpB7K4o/giphy.gif", "Bold strategy, Cotton"),
+    ("https://media.giphy.com/media/xT0GqfbTZTiI3IOx1u/giphy.gif", "Everyone else started him"),
+]
+
+CONSENSUS_SIT_GIFS: List[tuple[str, str]] = [
+    ("https://media.giphy.com/media/3o7btNhMBytxAM6YBa/giphy.gif", "Respect the consensus sit"),
+    ("https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", "The bench was right, actually"),
+    ("https://media.giphy.com/media/3o6MbudsUuzD3haQta/giphy.gif", "No roast — just a quiet mistake"),
+]
+
 DEFAULT_GIFS: List[tuple[str, str]] = [
     ("https://media.giphy.com/media/l0HlNaQ6gWfllcjDO/giphy.gif", "Just another week of football"),
     ("https://media.giphy.com/media/xTiTnEKzXOOFrsCFHi/giphy.gif", "Same time next Sunday"),
     ("https://media.giphy.com/media/3o7TKz9bX9v7z2gzy0/giphy.gif", "Fantasy football is a lifestyle"),
 ]
+
+_TIER_POOLS: Dict[str, List[tuple[str, str]]] = {
+    "upset": UPSET_GIFS,
+    "blowout": BLOWOUT_GIFS,
+    "roastable": ROASTABLE_GIFS,
+    "consensus_sit": CONSENSUS_SIT_GIFS,
+    "nailbiter": NAILBITER_GIFS,
+    "shootout": SHOOTOUT_GIFS,
+    "cold_war": COLD_WAR_GIFS,
+    "management": MANAGEMENT_DISASTER_GIFS,
+    "default": DEFAULT_GIFS,
+}
+
+
+def _iter_matchup_teams(week_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    teams: List[Dict[str, Any]] = []
+    for m in week_data.get("matchups", {}).get("matchups", []) or []:
+        for side in ("home_team", "away_team"):
+            t = m.get(side)
+            if t:
+                teams.append(t)
+    return teams
+
+
+def management_gif_tag(week_data: Dict[str, Any]) -> Optional[str]:
+    """
+    ``roastable`` when consensus start % backs a bench mistake;
+    ``consensus_sit`` when the gap is real but not roast-worthy.
+    """
+    consensus_sit_gap = False
+    for team in _iter_matchup_teams(week_data):
+        if team_has_roastable_bench_mistake(team) or is_management_gap_roastable(team):
+            return "roastable"
+        for swap in compute_start_sit_swaps(team):
+            if swap.get("roastable"):
+                return "roastable"
+        gap = float(team.get("management_gap") or 0)
+        if gap >= SIGNIFICANT_MANAGEMENT_GAP and not is_management_gap_roastable(team):
+            consensus_sit_gap = True
+    if consensus_sit_gap:
+        return "consensus_sit"
+    return None
+
+
+def select_gif_tier(
+    week_data: Dict[str, Any],
+    superlatives: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> str:
+    """Choose the GIF vibe tier from superlatives + bench-management tags."""
+    superlatives = superlatives or {}
+    if "upset_of_the_week" in superlatives:
+        return "upset"
+    if "blowout_of_the_week" in superlatives:
+        return "blowout"
+    mgmt = management_gif_tag(week_data)
+    if mgmt:
+        return mgmt
+    cooked = superlatives.get("cooked_of_the_week") or {}
+    if cooked.get("roastable"):
+        return "roastable"
+    if "cooked_of_the_week" in superlatives:
+        return "management"
+    if "nailbiter_of_the_week" in superlatives:
+        return "nailbiter"
+    if "shootout_of_the_week" in superlatives:
+        return "shootout"
+    if "cold_war_of_the_week" in superlatives:
+        return "cold_war"
+    return "default"
 
 
 def pick_gif(
@@ -85,34 +172,24 @@ def pick_gif(
       6. Management disaster (someone left >= 25 pts on the bench)
       7. Fallback: DEFAULT_GIFS
 
-    ``superlatives`` (from :mod:`src.superlatives`) is preferred when given
-    — same rules, no re-computation. Absent that, this function falls back
-    to inspecting the matchups payload directly.
+    ``superlatives`` (from :mod:`src.superlatives`) is preferred when given.
+    Bench tags (:func:`management_gif_tag`) route roastable vs consensus-sit
+    GIFs before generic matchup vibes.
     """
-    pool: List[tuple[str, str]]
-    tier: str
-
     superlatives = superlatives or {}
-    if "upset_of_the_week" in superlatives:
-        pool, tier = UPSET_GIFS, "upset"
-    elif "blowout_of_the_week" in superlatives:
-        pool, tier = BLOWOUT_GIFS, "blowout"
-    elif "nailbiter_of_the_week" in superlatives:
-        pool, tier = NAILBITER_GIFS, "nailbiter"
-    elif "shootout_of_the_week" in superlatives:
-        pool, tier = SHOOTOUT_GIFS, "shootout"
-    elif "cold_war_of_the_week" in superlatives:
-        pool, tier = COLD_WAR_GIFS, "cold_war"
-    elif "cooked_of_the_week" in superlatives:
-        pool, tier = MANAGEMENT_DISASTER_GIFS, "management"
-    else:
-        pool, tier = DEFAULT_GIFS, "default"
+    tier = select_gif_tier(week_data, superlatives)
+    pool = _TIER_POOLS[tier]
 
     # Deterministic pick within tier: rotate by week so consecutive weeks in
     # the same tier get different GIFs, without any global mutable state.
     idx = week % len(pool)
     url, caption = pool[idx]
-    return {"url": url, "caption": caption, "tier": tier}
+    tags = [tier]
+    if tier in ("roastable", "consensus_sit", "management"):
+        tags.append("lineup")
+    if tier in ("upset", "blowout"):
+        tags.append("matchup")
+    return {"url": url, "caption": caption, "tier": tier, "tags": tags}
 
 
 def all_gifs() -> Dict[str, List[Dict[str, str]]]:
@@ -124,5 +201,7 @@ def all_gifs() -> Dict[str, List[Dict[str, str]]]:
         "cold_war": [{"url": u, "caption": c} for u, c in COLD_WAR_GIFS],
         "upset": [{"url": u, "caption": c} for u, c in UPSET_GIFS],
         "management": [{"url": u, "caption": c} for u, c in MANAGEMENT_DISASTER_GIFS],
+        "roastable": [{"url": u, "caption": c} for u, c in ROASTABLE_GIFS],
+        "consensus_sit": [{"url": u, "caption": c} for u, c in CONSENSUS_SIT_GIFS],
         "default": [{"url": u, "caption": c} for u, c in DEFAULT_GIFS],
     }

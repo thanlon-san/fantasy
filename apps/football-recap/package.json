@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "recap:prepare": "python3 scripts/prepare_recap_context.py --no-news",
+    "recap:slack": "python3 scripts/prepare_slack_recap.py",
     "recap:finalize": "python3 scripts/finalize_recap.py",
     "recap": "python3 scripts/scheduled_recap.py",
     "recap:dry-run": "python3 scripts/scheduled_recap.py --dry-run",

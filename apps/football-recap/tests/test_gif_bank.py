@@ -49,9 +49,86 @@ class GifBankTests(unittest.TestCase):
         # ``all_gifs`` (which some future debug scripts may rely on).
         expected = {
             "blowout", "nailbiter", "shootout", "cold_war",
-            "upset", "management", "default",
+            "upset", "management", "roastable", "consensus_sit", "default",
         }
         self.assertEqual(set(gif_bank.all_gifs().keys()), expected)
+
+    def test_roastable_tag_routes_before_nailbiter(self):
+        wd = {
+            "matchups": {
+                "matchups": [
+                    {
+                        "home_team": {
+                            "team_name": "A",
+                            "management_gap": 30,
+                            "starters": [
+                                {
+                                    "name": "S",
+                                    "position": "RB",
+                                    "slot": "RB",
+                                    "actual_points": 5,
+                                    "percent_started": 5,
+                                }
+                            ],
+                            "bench": [
+                                {
+                                    "name": "B",
+                                    "position": "RB",
+                                    "slot": "BN",
+                                    "actual_points": 25,
+                                    "percent_started": 85,
+                                }
+                            ],
+                        },
+                        "away_team": {"team_name": "B", "management_gap": 0, "starters": [], "bench": []},
+                    }
+                ]
+            }
+        }
+        sups = {"nailbiter_of_the_week": {"label": "n"}}
+        self.assertEqual(
+            gif_bank.select_gif_tier(wd, sups),
+            "roastable",
+        )
+        pick = gif_bank.pick_gif(wd, week=2, superlatives=sups)
+        self.assertEqual(pick["tier"], "roastable")
+        self.assertIn("lineup", pick["tags"])
+
+    def test_consensus_sit_when_gap_not_roastable(self):
+        wd = {
+            "matchups": {
+                "matchups": [
+                    {
+                        "home_team": {
+                            "team_name": "A",
+                            "management_gap": 25,
+                            "starters": [
+                                {
+                                    "name": "S",
+                                    "position": "RB",
+                                    "slot": "RB",
+                                    "actual_points": 18,
+                                    "percent_started": 40,
+                                }
+                            ],
+                            "bench": [
+                                {
+                                    "name": "B",
+                                    "position": "WR",
+                                    "slot": "BN",
+                                    "actual_points": 4,
+                                    "percent_started": 5,
+                                }
+                            ],
+                        },
+                        "away_team": {"team_name": "B", "management_gap": 0, "starters": [], "bench": []},
+                    }
+                ]
+            }
+        }
+        self.assertEqual(gif_bank.management_gif_tag(wd), "consensus_sit")
+        pick = gif_bank.pick_gif(wd, week=1, superlatives={})
+        self.assertEqual(pick["tier"], "consensus_sit")
 
     def test_rotation_within_tier_is_deterministic(self):
         # Same tier + adjacent weeks → different index in the pool.

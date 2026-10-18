@@ -18,6 +18,9 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
+# Single recurring trophy surfaced in the weekly Slack digest (updated each week).
+SLACK_SEASON_TROPHY_KEY = "bench_whisperer"
+
 
 def _week_data_entries(history: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Extract (week, week_data) pairs from recap_history.json entries."""

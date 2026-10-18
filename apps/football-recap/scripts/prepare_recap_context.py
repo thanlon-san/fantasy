@@ -75,7 +75,8 @@ def main() -> int:
     print("  1. Read docs/COLUMNIST_PROMPT_V3.md (house voice + section requirements)")
     print(f"  2. Read {context_path}")
     print(f"  3. Write apps/football-recap/output/week-{week}-recap.md")
-    print("  4. Run finalize_recap.py and post a Slack draft")
+    print(f"  4. Post output/week-{week}-slack.md as the short Slack digest (or regenerate via prepare_slack_recap.py)")
+    print("  5. Run finalize_recap.py and post the full recap as a Slack draft")
     return 0
 
 

@@ -19,6 +19,7 @@ from src.fetch_league_data import get_fetcher
 from src.yahoo_fetcher import YahooLeagueFetcher
 from src.safe_calendar import calendar_hook
 from src.constants import format_slack_mention
+from src.slack_recap_builder import save_slack_recap
 
 # Load environment variables from .env file if it exists
 load_dotenv()
@@ -390,8 +391,12 @@ class RecapGenerator:
         with open(weekdata_path, "w") as f:
             json.dump(bundle.get("week_data", {}), f, indent=2, default=str)
 
+        slack_path = save_slack_recap(
+            week, bundle.get("week_data", {}), history=self.recap_history
+        )
         print(f"✅ Context saved to {context_path}")
         print(f"✅ Metadata saved to {meta_path}")
+        print(f"✅ Slack digest saved to {slack_path}")
         return context_path
 
     def finalize_recap(

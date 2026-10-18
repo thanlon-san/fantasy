@@ -148,6 +148,7 @@ def compute_superlatives(week_data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]
             "owner": worst.get("owner", ""),
             "management_gap": round(worst.get("management_gap", 0), 2),
             "score": worst.get("score", 0),
+            "roastable": True,
         }
 
     # ---- Bench hero -------------------------------------------------------
