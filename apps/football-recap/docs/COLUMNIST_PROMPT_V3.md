@@ -160,7 +160,10 @@ ONE specific, verifiable stat with numbers. Not a vague conditional.
 :power-up: *Power Rankings*
 ⚠️ MANDATORY: List EVERY team in the prepared context, in that exact order. One punchy line each.
 Do NOT abbreviate to "highlights" or "top 5". Do NOT reorder or invent ranks.
-Format: `1. *@Owner* (Record, PF) [movement] — [one-liner]` (NO team names, just @Owner)
+Format: `1. @Owner (Record, PF) [movement] — [one-liner]` (NO team names, just @Owner, and
+**do NOT bold or italicize the @Owner mention** — leave it bare. The mention already
+renders as a tagged/highlighted pill in Slack, so wrapping it in `*`/`_` adds nothing
+and Tyler has had to strip it by hand most weeks anyway.)
 
 **MOVEMENT EMOJIS (REQUIRED):**
 - Up: `:triangle_upmaster:` + number (e.g., `:triangle_upmaster: 2` for moved up 2 spots)
@@ -280,10 +283,15 @@ This league works in CRM/marketing. Use their language against them **4-6 times 
 
 ## Power Rankings
 
-Format: `[Rank]. *@[Owner]* ([W]-[L], PF [XXX]) [movement emoji]/— — [5-9 word identity]`
+Format: `[Rank]. @Owner ([W]-[L], PF [XXX]) [movement emoji]/— — [5-9 word identity]`
 (movement emoji is `:triangle_upmaster: N` / `:triangle_downred: N` / `—`, not ↑/↓ arrows — see the MOVEMENT EMOJIS block above)
 
 **Use @Owner only—NO team names.** Keeps it clean and scannable.
+
+**Leave the @Owner mention bare — no bold, no italic.** It's already a
+tagged mention, so markdown decoration around it is redundant; this used
+to say `*@Owner*` and Tyler had to strip the asterisks by hand most
+weeks before sending.
 
 One sentence of context. Prioritize:
 
