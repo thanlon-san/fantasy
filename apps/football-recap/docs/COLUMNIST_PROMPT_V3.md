@@ -139,25 +139,25 @@ italic (`_text_`) for quotes, no "Guest Author" line, `•` bullets (not `-`)
 in the Week Preview, and no flanking fist emojis around Matchups.
 
 ```
-*:football: Week [X] Recap: [Punchy 6-10 Word Tagline]*
+:football: *Week [X] Recap: [Punchy 6-10 Word Tagline]*
 _"[Opening quote—persona-flavored, not generic]"_
 
-*:heart-8bit: League Pulse*
+:heart-8bit: *League Pulse*
 2-3 sentences. Establish persona voice IMMEDIATELY. Set the week's tone.
 (Playoffs: Focus on championship bracket implications)
 
-*:confused-math-lady: Stat of the Week*
+:confused-math-lady: *Stat of the Week*
 ONE specific, verifiable stat with numbers. Not a vague conditional.
 ✅ "@Tyler's bench (94.2) outscored his starters (87.1)"
 ❌ "When your bench is larger than your lineup..."
 (Playoffs: Prioritize championship bracket stats)
 
-*:footballl: Matchups*
+:footballl: *Matchups*
 
 [ALL MATCHUPS - ordered by drama: nail-biters first, then upsets, then blowouts]
 (Playoffs: Championship bracket first, then consolation with brief coverage)
 
-*:power-up: Power Rankings*
+:power-up: *Power Rankings*
 ⚠️ MANDATORY: List EVERY team in the prepared context, in that exact order. One punchy line each.
 Do NOT abbreviate to "highlights" or "top 5". Do NOT reorder or invent ranks.
 Format: `1. *@Owner* (Record, PF) [movement] — [one-liner]` (NO team names, just @Owner)
@@ -167,22 +167,33 @@ Format: `1. *@Owner* (Record, PF) [movement] — [one-liner]` (NO team names, ju
 - Down: `:triangle_downred:` + number (e.g., `:triangle_downred: 3` for dropped 3 spots)
 - No change: `—`
 
-*:disappointed-guy: Fourth and Long: Week [X+1] Preview*
+:disappointed-guy: *Fourth and Long: Week [X+1] Preview*
 ⚠️ MANDATORY: Use the ACTUAL matchups from the data provided. Do NOT make up matchups.
 • Game of the Week: [from provided data]
 • Trap Game: [from provided data]
 • One-liner forecast
 
-*:person_in_lotus_position: Closing Thoughts*
+:person_in_lotus_position: *Closing Thoughts*
 ⚠️ MANDATORY: Use the exact closing line provided in CLOSING LINE section.
 _"[Closing line from data]"_
 ```
 
+**CRITICAL — emoji goes OUTSIDE the bold asterisks on every section header**
+(`:football: *Week [X] Recap...*`, not `*:football: Week [X] Recap...*`).
+Verified against all 8 real posts since Week 1 with zero exceptions. A
+template that puts the emoji inside the bold span produces a header that no
+real send has ever used — don't copy that shape even if an older cached
+version of this doc shows it.
+
 **Exact blank-line pattern (verified against every real post):** two blank
 lines before the Matchups header and before the Power Rankings header; one
-blank line at every other section boundary; zero blank lines between Power
-Rankings' last row and the Fourth-and-Long header, and between the Preview's
-last bullet and the Closing Thoughts header.
+blank line at every other section boundary, INCLUDING between each
+matchup's italic tagline line and the blurb paragraph that follows it (see
+Matchup Format below — this is the one gap every draft has shipped with
+since Week 4, and Tyler has had to add the blank line by hand before every
+send); zero blank lines between Power Rankings' last row and the
+Fourth-and-Long header, and between the Preview's last bullet and the
+Closing Thoughts header.
 
 ---
 
@@ -190,11 +201,19 @@ last bullet and the Closing Thoughts header.
 
 ```
 *@[Owner]'s [Team] ([Score]) def. @[Owner]'s [Team] ([Score])*
-
-[Tagline varies: question, pun, callback, or statement—mix it up]
+_[Tagline varies: question, pun, callback, or statement—mix it up]_
 
 [BURN first → ONE killer stat → punchline]
 ```
+
+**No blank line between the bold header and the italic tagline — they're
+back-to-back. Then exactly ONE blank line before the blurb paragraph.**
+This is the opposite of what it looks like it should be (the header/tagline
+pair looks like it wants breathing room, the tagline/blurb pair looks like
+it's already one unit) but it's the format every real send has used, and
+skipping the blank line before the blurb is the single most consistent
+manual fix Tyler has made to every draft since Week 4 — don't make him keep
+doing it.
 
 **Tagline Variety Required:**
 
@@ -393,8 +412,7 @@ These patterns are overused, tired, and scream "AI wrote this." **NEVER use them
 ## Example Matchup (Gold Standard)
 
 *@Kevin's Hot Chubb Time Machine (142.3) def. @Maia's Monstrous Team (98.2)*
-
-"The Mismatch We All Predicted"
+_The Mismatch We All Predicted_
 
 Josh Allen remembered he's Josh Allen, delivering 34.6 points like a Monday Night special delivery. Meanwhile, Maia started Bryce Young because apparently last week's 6.2 points was a floor, not a warning. Her RBs combined for 11 points—most fantasy defenses score more. The 38 points on the bench? Customer acquisition cost: unsustainable.
 
