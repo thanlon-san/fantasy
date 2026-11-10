@@ -4,6 +4,8 @@ Update recap_history.json after the automation agent writes a recap.
 
 Usage:
     .venv/bin/python apps/football-recap/scripts/finalize_recap.py --week 6
+
+Use ``--force`` when matchup scores are still 0 / unfinalized on Yahoo.
 """
 
 from __future__ import annotations
@@ -26,6 +28,11 @@ def main() -> int:
         description="Record a finished recap in recap_history.json"
     )
     parser.add_argument("--week", type=int, required=True, help="NFL week number")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Finalize even when Yahoo matchup scores are still 0 / unfinalized",
+    )
     args = parser.parse_args()
 
     if not validate_week_number(args.week):
@@ -33,7 +40,7 @@ def main() -> int:
         return 1
 
     generator = RecapGenerator()
-    if generator.finalize_recap(args.week):
+    if generator.finalize_recap(args.week, force=args.force):
         return 0
     return 1
 

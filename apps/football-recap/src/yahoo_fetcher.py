@@ -87,6 +87,62 @@ def load_yahoo_oauth(explicit_path: Optional[Path] = None) -> YahooOAuth2:
 
 
 # ---------------------------------------------------------------------------
+# Week data readiness (shared by slack digest, finalize, scheduled recap)
+# ---------------------------------------------------------------------------
+
+
+def all_matchup_teams(week_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Flatten home/away teams from ``week_data["matchups"]``."""
+    out: List[Dict[str, Any]] = []
+    for m in week_data.get("matchups", {}).get("matchups", []) or []:
+        for side in ("home_team", "away_team"):
+            t = m.get(side)
+            if t:
+                out.append(t)
+    return out
+
+
+def week_scores_unfinalized(week: int, week_data: Dict[str, Any]) -> bool:
+    """
+    True when Yahoo has not finalized this week's matchup scores yet.
+
+    Uses ``league.current_week`` when present, else treats all-zero scores as
+    not ready for matchup superlatives / recap finalization.
+    """
+    league = week_data.get("league") or {}
+    yahoo_week = league.get("current_week")
+    teams = all_matchup_teams(week_data)
+    scores = [float(t.get("score") or 0) for t in teams]
+    all_zero = bool(scores) and all(s == 0.0 for s in scores)
+
+    if yahoo_week is not None:
+        try:
+            cw = int(yahoo_week)
+        except (TypeError, ValueError):
+            cw = None
+        if cw is not None:
+            if week > cw:
+                return True
+            if week == cw and all_zero:
+                return True
+            if week < cw:
+                return False
+
+    return all_zero
+
+
+def format_unfinalized_week_error(
+    week: int, week_data: Dict[str, Any], *, refusing: str
+) -> str:
+    """User-facing message when refusing to run on unfinalized Yahoo scores."""
+    cw = (week_data.get("league") or {}).get("current_week")
+    return (
+        f"⚠️ Week {week} scores look unfinalized on Yahoo (current_week={cw}). "
+        f"Refusing to {refusing} — omit `--week` for the live week, or pass `--force`."
+    )
+
+
+# ---------------------------------------------------------------------------
 # Small helpers for parsing Yahoo's array-of-property-dicts responses
 # ---------------------------------------------------------------------------
 

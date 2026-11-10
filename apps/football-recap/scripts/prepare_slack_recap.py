@@ -33,7 +33,8 @@ from dotenv import load_dotenv
 
 from src.constants import default_recap_week, validate_week_number
 from src.recap_generator import OUTPUT_DIR, RecapGenerator
-from src.slack_recap_builder import save_slack_recap, week_scores_unfinalized
+from src.slack_recap_builder import save_slack_recap
+from src.yahoo_fetcher import format_unfinalized_week_error, week_scores_unfinalized
 
 load_dotenv()
 
@@ -124,9 +125,7 @@ def main() -> int:
 
     if week_scores_unfinalized(week, week_data) and not args.force:
         print(
-            f"⚠️ Week {week} scores look unfinalized on Yahoo "
-            f"(current_week={(week_data.get('league') or {}).get('current_week')}). "
-            "Refusing to write slack file — omit `--week` for the live week, or pass `--force`."
+            format_unfinalized_week_error(week, week_data, refusing="write slack file")
         )
         return 1
 

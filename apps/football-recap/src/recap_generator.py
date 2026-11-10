@@ -16,7 +16,11 @@ from src.ownership_stats import OwnershipStats
 from src.context_builder import ContextBuilder
 from src.llm_client import LLMClient
 from src.fetch_league_data import get_fetcher
-from src.yahoo_fetcher import YahooLeagueFetcher
+from src.yahoo_fetcher import (
+    YahooLeagueFetcher,
+    format_unfinalized_week_error,
+    week_scores_unfinalized,
+)
 from src.safe_calendar import calendar_hook
 from src.constants import format_slack_mention
 from src.slack_recap_builder import save_slack_recap
@@ -406,6 +410,7 @@ class RecapGenerator:
         *,
         source: str = "cursor-automation",
         week_data: Optional[Dict[str, Any]] = None,
+        force: bool = False,
     ) -> bool:
         """
         Record a finished recap in ``recap_history.json``, including the
@@ -434,6 +439,20 @@ class RecapGenerator:
             if os.path.exists(weekdata_path):
                 with open(weekdata_path, "r") as f:
                     week_data = json.load(f)
+
+        if (
+            week_data
+            and week_scores_unfinalized(week, week_data)
+            and not force
+        ):
+            print(
+                format_unfinalized_week_error(
+                    week,
+                    week_data,
+                    refusing="update recap history or refresh slack digest",
+                )
+            )
+            return False
 
         context: Dict[str, Any] = {"source": source, "format": "V3"}
         if week_data:

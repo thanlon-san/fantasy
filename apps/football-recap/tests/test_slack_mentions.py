@@ -73,6 +73,14 @@ class SlackMentionTests(unittest.TestCase):
         self.assertIn("*Game of Throws* (Luis Islas)", out)
         self.assertNotIn("<@U", out)
 
+    def test_resolve_paste_strips_stray_score_bold_asterisk(self):
+        raw = "*Purdy Boys* (Tyler Hanlon) (105.0)* def. *Other Team* (Jane) (0.0)*"
+        out = resolve_slack_mentions_for_paste(raw)
+        self.assertIn("(105.0) def.", out)
+        self.assertIn("(0.0)", out)
+        self.assertNotRegex(out, r"\(0\.0\)\*")
+        self.assertNotRegex(out, r"\(105\.0\)\*")
+
 
 if __name__ == "__main__":
     unittest.main()

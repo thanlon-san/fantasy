@@ -23,6 +23,8 @@ from src.constants import (
 from src.gif_bank import pick_gif
 from src.ownership_stats import compute_start_sit_swaps, is_management_gap_roastable
 from src.recap_slack_excerpt import load_recap_excerpt_from_file
+from src.yahoo_fetcher import all_matchup_teams as _all_matchup_teams
+from src.yahoo_fetcher import week_scores_unfinalized
 from src.season_leaderboard import SLACK_SEASON_TROPHY_KEY, compute_season_awards
 from src.superlatives import compute_superlatives
 
@@ -60,35 +62,6 @@ def _team_week_snapshot(
     return {}
 
 
-def week_scores_unfinalized(week: int, week_data: Dict[str, Any]) -> bool:
-    """
-    True when Yahoo has not finalized this week's matchup scores yet.
-
-    Uses ``league.current_week`` when present, else treats all-zero scores as
-    not ready for matchup superlatives / TL;DR highlights.
-    """
-    league = week_data.get("league") or {}
-    yahoo_week = league.get("current_week")
-    teams = _all_matchup_teams(week_data)
-    scores = [float(t.get("score") or 0) for t in teams]
-    all_zero = bool(scores) and all(s == 0.0 for s in scores)
-
-    if yahoo_week is not None:
-        try:
-            cw = int(yahoo_week)
-        except (TypeError, ValueError):
-            cw = None
-        if cw is not None:
-            if week > cw:
-                return True
-            if week == cw and all_zero:
-                return True
-            if week < cw:
-                return False
-
-    return all_zero
-
-
 def unfinalized_week_banner(week: int, week_data: Dict[str, Any]) -> str:
     league = week_data.get("league") or {}
     yahoo_week = league.get("current_week")
@@ -97,16 +70,6 @@ def unfinalized_week_banner(week: int, week_data: Dict[str, Any]) -> str:
         f"⚠️ *Week {week} not finalized on Yahoo yet{yw}* — "
         "matchup scores may be 0. Regenerate without `--week` once games finish."
     )
-
-
-def _all_matchup_teams(week_data: Dict[str, Any]) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
-    for m in week_data.get("matchups", {}).get("matchups", []) or []:
-        for side in ("home_team", "away_team"):
-            t = m.get(side)
-            if t:
-                out.append(t)
-    return out
 
 
 def _pick_snark(team_name: str, bucket: str, options: Sequence[str]) -> str:

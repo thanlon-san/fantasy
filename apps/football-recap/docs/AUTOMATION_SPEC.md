@@ -78,7 +78,8 @@ Working directory: use the same cwd for steps 1–6. From monorepo root: cd apps
 
 5. Post a Slack draft (do NOT auto-send):
 - Channel: C05QV3E5J22
-- Text: bold header "🏈 Week $WEEK Recap — Draft (review before send)", blank line, then the full recap markdown from output/week-$WEEK-recap.md
+- Text: bold header "🏈 Week $WEEK Recap — Draft (review before send)", blank line, then the **compact Slack digest** from output/week-$WEEK-slack.md (plain-text paste into the composer — `*bold*` team names, GIF URL near the top). Do **not** paste output/week-$WEEK-recap.md (full Ghost markdown) into the league channel.
+- If week-$WEEK-slack.md is missing, run ../../.venv/bin/python scripts/prepare_slack_recap.py --week $WEEK --no-fetch (after a successful prepare/finalize with real scores).
 Use Send to Slack in draft mode so Tyler can review and click Send manually. Never auto-send. Never post to any other channel.
 
 6. Update the existing League HQ Canvas (do not create a new one):

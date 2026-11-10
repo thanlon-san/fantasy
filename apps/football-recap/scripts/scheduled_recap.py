@@ -10,10 +10,13 @@ ANTHROPIC_API_KEY is set, optionally sends to Slack via webhook/bot token.
 
 Usage:
     python scripts/scheduled_recap.py --week 6 --dry-run
+
+Use ``--force`` to generate when Yahoo matchup scores are still 0 / unfinalized.
 """
 
 import sys
 import os
+import json
 import argparse
 from datetime import datetime
 from dotenv import load_dotenv
@@ -26,7 +29,8 @@ sys.path.insert(0, _APP_ROOT)
 sys.path.insert(0, os.path.join(_WORKSPACE, "packages"))
 
 from anthropic import Anthropic
-from src.recap_generator import RecapGenerator
+from src.recap_generator import OUTPUT_DIR, RecapGenerator
+from src.yahoo_fetcher import format_unfinalized_week_error, week_scores_unfinalized
 from shared.slack_notifier import SlackNotifier
 
 # Load environment variables
@@ -57,8 +61,19 @@ def get_current_nfl_week() -> int:
     return min(max(week, 1), 18)
 
 
+def _load_week_data(week: int, generator: RecapGenerator):
+    weekdata_path = os.path.join(OUTPUT_DIR, f"week-{week}-weekdata.json")
+    if os.path.exists(weekdata_path):
+        with open(weekdata_path, "r", encoding="utf-8") as handle:
+            return json.load(handle)
+    return generator.fetch_week_data(week)
+
+
 def generate_and_send_recap(
-    week: int, dry_run: bool = False, send_only: bool = False
+    week: int,
+    dry_run: bool = False,
+    send_only: bool = False,
+    force: bool = False,
 ) -> bool:
     """
     Generate a recap and send it to Slack
@@ -81,8 +96,17 @@ def generate_and_send_recap(
     recap_file = f"output/week-{week}-recap.md"
     recap_content = None
 
+    generator = RecapGenerator()
+
     # Generate recap if needed
     if not send_only:
+        week_data = _load_week_data(week, generator)
+        if week_data and week_scores_unfinalized(week, week_data) and not force:
+            print(
+                format_unfinalized_week_error(week, week_data, refusing="generate recap")
+            )
+            return False
+
         print("🤖 Generating recap with Claude Sonnet 4.5...")
 
         # Check for API key
@@ -93,9 +117,8 @@ def generate_and_send_recap(
             return False
 
         try:
-            # Initialize generator and client
+            # Initialize client
             client = Anthropic(api_key=api_key)
-            generator = RecapGenerator()
 
             # Generate recap
             recap_content = generator.generate_recap_with_anthropic(
@@ -200,6 +223,11 @@ Cron Setup:
         action="store_true",
         help="Send existing recap without regenerating",
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Generate even when Yahoo matchup scores are still 0 / unfinalized",
+    )
 
     args = parser.parse_args()
 
@@ -219,7 +247,9 @@ Cron Setup:
         sys.exit(1)
 
     # Generate and send
-    success = generate_and_send_recap(week, args.dry_run, args.send_only)
+    success = generate_and_send_recap(
+        week, args.dry_run, args.send_only, force=args.force
+    )
 
     # Exit with appropriate code
     sys.exit(0 if success else 1)

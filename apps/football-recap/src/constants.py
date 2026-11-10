@@ -230,6 +230,13 @@ def slack_paste_mode_enabled() -> bool:
     return val not in ("0", "false", "no", "off")
 
 
+def _cleanup_slack_paste_artifacts(text: str) -> str:
+    """Normalize mrkdwn leftovers after mention / bold conversion."""
+    out = re.sub(r"\*\*(?=\S)", "*", text)
+    out = re.sub(r"\((\d+\.?\d*)\)\*(?=\s|$)", r"(\1)", out, flags=re.MULTILINE)
+    return out
+
+
 def resolve_slack_mentions_for_paste(text: str) -> str:
     """
     Replace Slack mention tokens with labels safe for composer paste.
@@ -237,8 +244,10 @@ def resolve_slack_mentions_for_paste(text: str) -> str:
     ``<@id>'s Team Name`` → ``*Team Name* (Owner)``; other possessives use
     ``*Owner*'s``; bare ``<@id>`` → digest label from league config.
     """
-    if not text or "<@" not in text:
+    if not text:
         return text
+    if "<@" not in text:
+        return _cleanup_slack_paste_artifacts(text)
 
     by_id = _MANAGER_BY_SLACK_ID
     out = text
@@ -284,9 +293,7 @@ def resolve_slack_mentions_for_paste(text: str) -> str:
         )
 
     out = re.sub(r"<@([A-Z0-9]+)>", _bare_mention, out, flags=re.IGNORECASE)
-    # Ghost recap headers: outer ``*`` + label ``*Team*`` → stray ``**`` prefix.
-    out = re.sub(r"\*\*(?=\S)", "*", out)
-    return out
+    return _cleanup_slack_paste_artifacts(out)
 
 
 def resolve_slack_id(team_name: str = "", owner_name: str = "") -> str:
