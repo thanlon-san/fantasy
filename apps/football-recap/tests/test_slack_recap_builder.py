@@ -156,6 +156,21 @@ class SlackRecapBuilderTests(unittest.TestCase):
         ]
         self.assertIsNone(_roastable_swap_line(week_data))
 
+    def test_postevent_status_not_unfinalized_even_if_zeros(self):
+        week_data = {
+            "league": {"current_week": 10},
+            "matchups": {
+                "matchups": [
+                    {
+                        "status": "postevent",
+                        "home_team": {"score": 0.0},
+                        "away_team": {"score": 0.0},
+                    }
+                ]
+            },
+        }
+        self.assertFalse(week_scores_unfinalized(10, week_data))
+
     def test_unfinalized_week_shows_banner_and_skips_zero_superlative(self):
         week_data = _SYNTHETIC(week=7)
         week_data["league"]["current_week"] = 7

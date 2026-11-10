@@ -18,9 +18,33 @@ from src.yahoo_fetcher import (
     _numbered_children,
     _optimal_lineup,
     _position_aggregates,
+    _resolve_team_week_score,
     _split_team_payload,
+    _starter_points_total,
+    _yahoo_points_total,
     YahooLeagueFetcher,
 )
+
+
+class YahooPointsTotalTests(unittest.TestCase):
+
+    def test_reads_string_total(self):
+        self.assertEqual(_yahoo_points_total({"total": "100.62"}), 100.62)
+
+    def test_non_dict_is_zero(self):
+        self.assertEqual(_yahoo_points_total(None), 0.0)
+
+
+class ResolveTeamWeekScoreTests(unittest.TestCase):
+
+    def test_prefers_roster_sum_when_scoreboard_zero(self):
+        starters = [{"actual_points": 12.2}, {"actual_points": 9.4}]
+        self.assertEqual(_resolve_team_week_score(0.0, starters), 21.6)
+        self.assertEqual(_starter_points_total(starters), 21.6)
+
+    def test_keeps_scoreboard_when_higher(self):
+        starters = [{"actual_points": 12.0}]
+        self.assertEqual(_resolve_team_week_score(100.62, starters), 100.62)
 
 
 class SplitTeamPayloadTests(unittest.TestCase):

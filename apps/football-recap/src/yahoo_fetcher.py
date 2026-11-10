@@ -109,6 +109,11 @@ def week_scores_unfinalized(week: int, week_data: Dict[str, Any]) -> bool:
     Uses ``league.current_week`` when present, else treats all-zero scores as
     not ready for matchup superlatives / recap finalization.
     """
+    matchups = week_data.get("matchups", {}).get("matchups", []) or []
+    statuses = [str(m.get("status") or "") for m in matchups if m.get("status")]
+    if statuses and all(s == "postevent" for s in statuses):
+        return False
+
     league = week_data.get("league") or {}
     yahoo_week = league.get("current_week")
     teams = all_matchup_teams(week_data)
@@ -160,6 +165,31 @@ def _flatten_props(props: Any) -> Dict[str, Any]:
             for k, v in entry.items():
                 out[k] = v
     return out
+
+
+def _yahoo_points_total(points: Any) -> float:
+    """Read Yahoo ``{"total": "12.4", ...}`` point payloads safely."""
+    if not isinstance(points, dict):
+        return 0.0
+    try:
+        return float(points.get("total", 0) or 0)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _starter_points_total(starters: List[Dict[str, Any]]) -> float:
+    return round(sum(float(p.get("actual_points") or 0) for p in starters), 2)
+
+
+def _resolve_team_week_score(
+    scoreboard_score: float, starters: List[Dict[str, Any]]
+) -> float:
+    """
+    Yahoo often leaves ``team_points.total`` at 0 during ``midevent`` while
+    per-player ``player_points`` on the roster feed are already populated.
+    """
+    roster_score = _starter_points_total(starters)
+    return round(max(scoreboard_score, roster_score), 2)
 
 
 def _split_team_payload(team_payload: Any) -> Tuple[Dict[str, Any], Dict[str, Any]]:
@@ -671,6 +701,7 @@ class YahooLeagueFetcher:
             "winner": winner_name,
             "margin": round(abs(home["score"] - away["score"]), 2),
             "is_playoffs": str(raw.get("is_playoffs", "0")) == "1",
+            "status": raw.get("status", "") or "",
         }
 
     def _parse_matchup_team(
@@ -686,14 +717,14 @@ class YahooLeagueFetcher:
         team_meta = teams_by_key.get(team_key, {})
         owner = team_meta.get("owner") or resolve_owner(team_name)
 
-        team_points = stats_wrapper.get("team_points", {}) or {}
-        try:
-            score = float(team_points.get("total", 0))
-        except (TypeError, ValueError):
-            score = 0.0
+        scoreboard_score = _yahoo_points_total(stats_wrapper.get("team_points"))
+        projected_score = _yahoo_points_total(
+            stats_wrapper.get("team_projected_points")
+        )
 
         # Roster for this week (starters + bench)
         starters, bench = self._fetch_week_roster(team_key, week)
+        score = _resolve_team_week_score(scoreboard_score, starters)
 
         # Derived analytics
         aggregates = _position_aggregates(starters)
@@ -711,7 +742,8 @@ class YahooLeagueFetcher:
             "team_key": team_key,
             "team_name": team_name,
             "owner": owner,
-            "score": round(score, 2),
+            "score": score,
+            "projected_score": projected_score,
             "record": record,
             "starters": starters,
             "bench": bench,
@@ -771,6 +803,7 @@ class YahooLeagueFetcher:
         props: Dict[str, Any] = {}
         selected_position: Dict[str, Any] = {}
         player_points: Dict[str, Any] = {}
+        player_projected: Dict[str, Any] = {}
         # ``raw`` is an array of ~4-5 blocks: [propdicts, {selected_position:...},
         # {player_points:...}, ...]
         for block in raw:
@@ -785,6 +818,8 @@ class YahooLeagueFetcher:
                         selected_position = sp
                 if "player_points" in block:
                     player_points = block["player_points"] or {}
+                if "player_projected_points" in block:
+                    player_projected = block["player_projected_points"] or {}
 
         name_field = props.get("name", {})
         name = ""
@@ -797,17 +832,14 @@ class YahooLeagueFetcher:
         pro_team = props.get("editorial_team_abbr", "FA")
         slot = selected_position.get("position", "BN")
 
-        try:
-            actual = float(player_points.get("total", 0))
-        except (TypeError, ValueError):
-            actual = 0.0
+        actual = _yahoo_points_total(player_points)
+        projected = _yahoo_points_total(player_projected)
 
-        # Yahoo doesn't return projections on the same payload; leave 0.
         return {
             "name": name,
             "position": position,
             "slot": slot,
-            "projected_points": 0.0,
+            "projected_points": round(projected, 2),
             "actual_points": round(actual, 2),
             "pro_team": pro_team,
             # ESPN-only signal; -1 tells context_builder "unavailable, skip roasts".
