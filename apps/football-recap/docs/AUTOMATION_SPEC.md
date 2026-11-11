@@ -62,6 +62,19 @@ Working directory: use the same cwd for steps 1–6. From monorepo root: cd apps
 ../../.venv/bin/python scripts/prepare_recap_context.py --week $WEEK --no-news
 (cwd: apps/football-recap). Writes output/week-$WEEK-context.md, output/week-$WEEK-context.meta.json, output/week-$WEEK-weekdata.json. --no-news is accepted and unused (NewsAPI is never injected). If the script exits non-zero due to OAuth / token / API auth (403, invalid_grant, etc.): do NOT draft to C05QV3E5J22 — players must never see auth or technical errors; stop. If failure is preseason / no games yet (not auth): friendly "season hasn't started" draft to C05QV3E5J22 is OK; then preseason Canvas path in step 6 and stop. Never invent scores or matchups.
 
+2.5. Pull channel banter (agent step — no script; this needs live Slack
+read access the Python pipeline doesn't have). `slack_read_channel` on
+`C05QV3E5J22`, `oldest` = the timestamp of the most recent prior
+`:football: *Week` recap message (search recent channel history for it).
+Also `slack_read_thread` on that prior recap's own message_ts to pick up
+any reactions/replies it got. This covers everything posted in the
+channel since the last recap went out. Skim it for genuine trash talk,
+reaction GIFs, or callbacks worth using — see COLUMNIST_PROMPT_V3.md's
+"Channel Banter" section for the usage rules (0–2 uses, never forced,
+accurate attribution only, nothing about the automation/pipeline itself).
+Finding nothing usable is a normal, expected outcome — do not strain for
+a banter callback that isn't there.
+
 3. Read the context file and COLUMNIST_PROMPT_V3.md. Write the full recap to output/week-$WEEK-recap.md (same cwd as finalize_recap.py). Requirements:
 - Include every V3 section in order.
 - Voice is The Commissioner's Ghost every week. No costume / PERSONA_SEED.
@@ -70,6 +83,7 @@ Working directory: use the same cwd for steps 1–6. From monorepo root: cd apps
 - If BIT_OF_THE_WEEK is present, open League Pulse on that game.
 - Include the GIF of the Week markdown line from the context (Slack renders Giphy URLs inline).
 - Weave in 2–3 Weekly Superlatives from the context as callouts.
+- If step 2.5 turned up a genuinely funny, real, accurately-attributed banter moment, weave in 0–2 references where organically relevant (not a separate section). Otherwise skip it — this is optional spice, not a requirement.
 - Power Rankings must list ALL teams in THIS exact order from the prepared context. Copy 1:1. Do not reorder or invent ranks.
 - Do not invent world events, news, politics, or celebrity scandal.
 
@@ -96,6 +110,7 @@ Preseason / Yahoo 403 / no week_data: ../../.venv/bin/python scripts/prepare_pre
 - Do not fabricate scores, owners, or matchups — only use prepared context.
 - Power rankings: copy the prepared list 1:1. Do not reorder.
 - Reaction-triggered roasts are deferred — do not implement or run them.
+- Channel banter is optional spice, not a data source: quote/paraphrase real messages accurately, attribute correctly, 0–2 per recap, never anything about the automation or technical issues, skip entirely if nothing genuinely funny came up this week.
 ```
 
 ---
