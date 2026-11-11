@@ -83,9 +83,12 @@ Thumbs.db
 logs/
 output/
 config.json
-recap_history.json
-trend_history.json
 .cache/
+
+# football-recap: recap_history.json and trend_history.json are the
+# pipeline's only cross-run state (anti-repetition, power-ranking
+# movement, season awards, multi-week trends). Keep them tracked so a
+# fresh cloud-agent checkout doesn't lose season history every week.
 
 # Accuracy tracking data (runtime generated)
 apps/baseball-engine/data/accuracy/
