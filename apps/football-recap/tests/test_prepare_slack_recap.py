@@ -28,6 +28,9 @@ class PrepareSlackRecapWeekTests(unittest.TestCase):
         mod = _load_prepare_slack_recap_module()
         fetcher = MagicMock()
         fetcher.league_info.return_value = {"current_week": 6}
+        fetcher.week_matchups.return_value = {
+            "matchups": [{"status": "postevent", "home_team": {"score": 90.0}, "away_team": {"score": 80.0}}]
+        }
 
         with tempfile.TemporaryDirectory() as tmp:
             with patch.object(mod, "OUTPUT_DIR", tmp):
@@ -48,15 +51,16 @@ class PrepareSlackRecapWeekTests(unittest.TestCase):
 
     def test_no_fetch_uses_yahoo_from_cache(self):
         mod = _load_prepare_slack_recap_module()
-        week_data = {
-            "league": {"league_name": "Test", "current_week": 6},
+        base = {
+            "league": {"league_name": "Test", "current_week": 7},
             "matchups": {"matchups": []},
             "power_rankings": {"rankings": []},
             "week_stats": {},
         }
+        upcoming = dict(base, matchups={"matchups": [{"status": "preevent", "home_team": {"score": 0}, "away_team": {"score": 0}}]})
         with tempfile.TemporaryDirectory() as tmp:
-            cache = Path(tmp) / "week-6-weekdata.json"
-            cache.write_text(json.dumps(week_data), encoding="utf-8")
+            (Path(tmp) / "week-6-weekdata.json").write_text(json.dumps(base), encoding="utf-8")
+            (Path(tmp) / "week-7-weekdata.json").write_text(json.dumps(upcoming), encoding="utf-8")
             with patch.object(mod, "OUTPUT_DIR", tmp):
                 with patch.object(mod, "RecapGenerator") as gen_cls:
                     gen = gen_cls.return_value
@@ -64,6 +68,29 @@ class PrepareSlackRecapWeekTests(unittest.TestCase):
                     with patch.object(sys, "argv", ["prepare_slack_recap.py", "--no-fetch"]):
                         rc = mod.main()
         self.assertEqual(rc, 0)
+
+    def test_default_week_steps_back_when_current_week_preevent(self):
+        mod = _load_prepare_slack_recap_module()
+        fetcher = MagicMock()
+        fetcher.league_info.return_value = {"current_week": 10}
+        fetcher.week_matchups.return_value = {
+            "matchups": [{"status": "preevent", "home_team": {"score": 0}, "away_team": {"score": 0}}]
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.object(mod, "OUTPUT_DIR", tmp):
+                with patch.object(mod, "RecapGenerator") as gen_cls:
+                    gen = gen_cls.return_value
+                    gen.fetcher = fetcher
+                    gen.recap_history = []
+                    gen.fetch_week_data.return_value = {
+                        "league": {"league_name": "Test", "current_week": 10},
+                        "matchups": {"matchups": []},
+                        "power_rankings": {"rankings": []},
+                        "week_stats": {},
+                    }
+                    with patch.object(sys, "argv", ["prepare_slack_recap.py"]):
+                        mod.main()
+        gen.fetch_week_data.assert_called_once_with(9)
 
 
 if __name__ == "__main__":

@@ -136,6 +136,31 @@ def week_scores_unfinalized(week: int, week_data: Dict[str, Any]) -> bool:
     return all_zero
 
 
+def week_data_is_final(week_data: Dict[str, Any]) -> bool:
+    """True when every matchup is postevent or scores are non-zero actuals."""
+    teams = all_matchup_teams(week_data)
+    if not teams:
+        return False
+    matchups = week_data.get("matchups", {}).get("matchups", []) or []
+    statuses = [str(m.get("status") or "") for m in matchups if m.get("status")]
+    if statuses:
+        return all(s == "postevent" for s in statuses)
+    return any(float(t.get("score") or 0) != 0.0 for t in teams)
+
+
+def latest_final_week(fetcher: Any) -> int:
+    """Latest completed week using live Yahoo data (current_week or current_week-1)."""
+    from src.constants import default_recap_week
+
+    cw = int(fetcher.league_info()["current_week"])
+    try:
+        payload = fetcher.week_matchups(cw)
+        final = week_data_is_final({"matchups": payload})
+    except Exception:
+        final = False
+    return default_recap_week(None, yahoo_current_week=cw, current_week_final=final)
+
+
 def format_unfinalized_week_error(
     week: int, week_data: Dict[str, Any], *, refusing: str
 ) -> str:

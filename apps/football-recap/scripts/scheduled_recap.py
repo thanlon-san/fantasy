@@ -30,7 +30,11 @@ sys.path.insert(0, os.path.join(_WORKSPACE, "packages"))
 
 from anthropic import Anthropic
 from src.recap_generator import OUTPUT_DIR, RecapGenerator
-from src.yahoo_fetcher import format_unfinalized_week_error, week_scores_unfinalized
+from src.yahoo_fetcher import (
+    format_unfinalized_week_error,
+    latest_final_week,
+    week_scores_unfinalized,
+)
 from shared.slack_notifier import SlackNotifier
 
 # Load environment variables
@@ -235,8 +239,8 @@ Cron Setup:
     if args.week:
         week = args.week
     else:
-        week = get_current_nfl_week()
-        print(f"ℹ️  Auto-detected week: {week}")
+        week = latest_final_week(RecapGenerator().fetcher)
+        print(f"ℹ️  Auto-detected latest completed week: {week}")
         print("   (Use --week to specify manually)")
         print()
 

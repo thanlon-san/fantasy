@@ -10,7 +10,7 @@ Usage:
     .venv/bin/python apps/football-recap/scripts/prepare_slack_recap.py --week 6 --no-fetch
     .venv/bin/python apps/football-recap/scripts/prepare_slack_recap.py  # default week from Yahoo
 
-Omit ``--week`` to follow Yahoo ``current_week`` (see ``default_recap_week``).
+Omit ``--week`` for the latest completed week (see ``default_recap_week``).
 Use ``--force`` to write slack output when matchup scores are still 0 / unfinalized.
 Use ``--tiers`` for S–F power tiers instead of the default numbered power rankings.
 """
@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.join(_WORKSPACE, "packages"))
 from dotenv import load_dotenv
 
 from src.constants import default_recap_week, validate_week_number
+from src.yahoo_fetcher import week_data_is_final
 from src.recap_generator import OUTPUT_DIR, RecapGenerator
 from src.slack_recap_builder import save_slack_recap
 from src.yahoo_fetcher import format_unfinalized_week_error, week_scores_unfinalized
@@ -74,7 +75,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Build output/week-N-slack.md from week_data"
     )
-    parser.add_argument("--week", type=int, help="NFL week (default: current)")
+    parser.add_argument("--week", type=int, help="NFL week (default: latest completed week)")
     parser.add_argument(
         "--no-fetch",
         action="store_true",
@@ -94,16 +95,26 @@ def main() -> int:
 
     generator = RecapGenerator()
     yahoo_current_week: int | None = None
+    current_week_final: bool | None = None
     if args.week is None:
         if args.no_fetch:
             yahoo_current_week = _yahoo_current_week_from_cache()
+            if yahoo_current_week is not None:
+                cached = _load_weekdata(yahoo_current_week)
+                current_week_final = bool(cached) and week_data_is_final(cached)
         else:
             try:
                 yahoo_current_week = int(generator.fetcher.league_info()["current_week"])
-            except (KeyError, TypeError, ValueError):
-                yahoo_current_week = None
+                payload = generator.fetcher.week_matchups(yahoo_current_week)
+                current_week_final = week_data_is_final({"matchups": payload})
+            except Exception:
+                current_week_final = False
 
-    week = default_recap_week(args.week, yahoo_current_week=yahoo_current_week)
+    week = default_recap_week(
+        args.week,
+        yahoo_current_week=yahoo_current_week,
+        current_week_final=current_week_final,
+    )
     if not validate_week_number(week):
         print(f"❌ Invalid week: {week}")
         return 1

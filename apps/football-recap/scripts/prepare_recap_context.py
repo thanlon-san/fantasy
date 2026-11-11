@@ -29,7 +29,8 @@ sys.path.insert(0, os.path.join(_WORKSPACE, "packages"))
 
 from dotenv import load_dotenv
 
-from src.constants import get_current_nfl_week, validate_week_number
+from src.constants import validate_week_number
+from src.yahoo_fetcher import latest_final_week
 from src.recap_generator import RecapGenerator
 
 load_dotenv()
@@ -42,7 +43,7 @@ def main() -> int:
     parser.add_argument(
         "--week",
         type=int,
-        help="NFL week (auto-detected from season calendar if omitted)",
+        help="NFL week (default: latest completed week)",
     )
     parser.add_argument(
         "--no-news",
@@ -51,7 +52,12 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    week = args.week if args.week is not None else get_current_nfl_week()
+    generator = RecapGenerator()
+    if args.week is not None:
+        week = args.week
+    else:
+        week = latest_final_week(generator.fetcher)
+        print(f"ℹ️  Auto-detected latest completed week: {week}")
     if not validate_week_number(week):
         print(f"❌ Invalid week: {week} (must be 1–18)")
         return 1
@@ -63,7 +69,6 @@ def main() -> int:
     print("=" * 70)
     print()
 
-    generator = RecapGenerator()
     bundle = generator.prepare_recap_context(week, include_news=False)
     if not bundle:
         print("❌ Failed to prepare context (Yahoo fetch or shaping error)")

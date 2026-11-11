@@ -52,9 +52,9 @@ Follow every requirement in apps/football-recap/docs/COLUMNIST_PROMPT_V3.md. Tha
 Working directory: use the same cwd for steps 1–6. From monorepo root: cd apps/football-recap. Run scripts as ../../.venv/bin/python scripts/<name>.py (venv at repo root). All output/ paths below are apps/football-recap/output/ — do not mix with repo-root output/.
 
 1. Determine WEEK:
-- Default (from apps/football-recap cwd): ../../.venv/bin/python -c "from src.constants import get_current_nfl_week; print(get_current_nfl_week())"
+- Default = latest COMPLETED week (not Yahoo current_week / calendar week, which is the upcoming week mid-week). prepare_recap_context.py, scheduled_recap.py and prepare_slack_recap.py resolve this when --week is omitted: current_week if all its matchups are postevent / non-zero, else current_week-1 (min 1). Logic: default_recap_week() + latest_final_week() in src/.
 - If this prompt specifies a week (e.g. "week 6"), use that instead.
-- Kickoff is 2026-09-03 (NFL_SEASON_START_DATE). get_current_nfl_week() is calendar-based; Yahoo current_week may lag by one early in the week. Tuesday cron (after MNF) usually matches the week you want. For manual runs, pass --week explicitly if scores look wrong.
+- Kickoff is 2026-09-03 (NFL_SEASON_START_DATE). Wednesday after MNF, the recap week is the week just played (e.g. Nov 11 -> week 9 while Yahoo current_week is 10). Pass --week explicitly to override.
 - After prepare (step 2), if week_data has all-zero scores but you expected real box scores, retry once with --week ($WEEK - 1), minimum 1.
 - If today is before 2026-09-03, OR Yahoo returns 403 / league not found / no games played: do NOT write a fake recap. Draft a friendly "season hasn't started / Yahoo hasn't opened the league yet" note to C05QV3E5J22, update League HQ via prepare_preseason_canvas.py (step 6 preseason path), and stop.
 

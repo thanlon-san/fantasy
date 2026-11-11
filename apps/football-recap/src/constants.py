@@ -518,21 +518,29 @@ def default_recap_week(
     explicit_week: int | None = None,
     *,
     yahoo_current_week: int | None = None,
+    current_week_final: bool | None = None,
 ) -> int:
     """
     Resolve the week for recap / Slack prep when ``--week`` is omitted.
 
-    Yahoo's ``current_week`` can lag the calendar early in the week; prefer it
-    when available (live ``league_info`` or cached ``week_data``), then fall
-    back to :func:`get_current_nfl_week`.
+    A recap covers the most recently *completed* week. Yahoo's (or the
+    calendar's) current week is usually the week about to be played, so unless
+    that week is already final (every matchup ``postevent`` / non-zero actuals)
+    we step back one week. ``current_week_final=None`` (unknown) is treated as
+    not final.
     """
     if explicit_week is not None:
         return explicit_week
+    cw: int | None = None
     if yahoo_current_week is not None:
-        cw = int(yahoo_current_week)
-        if validate_week_number(cw):
-            return cw
-    return get_current_nfl_week()
+        candidate = int(yahoo_current_week)
+        if validate_week_number(candidate):
+            cw = candidate
+    if cw is None:
+        cw = get_current_nfl_week()
+    if current_week_final:
+        return cw
+    return max(MIN_VALID_WEEK, cw - 1)
 
 
 def is_playoff_week(week: int) -> bool:
