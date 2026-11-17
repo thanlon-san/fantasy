@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 _APP_ROOT = Path(__file__).resolve().parent.parent
@@ -24,6 +25,16 @@ from src.context_builder import ContextBuilder
 from src.ownership_stats import OwnershipStats
 from src.recap_generator import RecapGenerator
 from src.trend_tracker import TrendTracker
+
+# CRITICAL: every TrendTracker below must point at a throwaway file, never
+# TrendTracker()'s default (the real trend_history.json). Synthetic fixture
+# data (the "Beacon" team, etc.) has leaked into the real, committed
+# trend_history.json before by letting a test use the default path — see the
+# automation's memory notes (2026-11-17) for the repeat incident. Always
+# pass an explicit history_file= here.
+_VALIDATOR_TREND_FILE = os.path.join(
+    tempfile.gettempdir(), "validate_pipeline_trend_history.json"
+)
 
 
 def synthetic_week_data(week: int = 5) -> dict:
@@ -205,7 +216,7 @@ def check(label: str, cond: bool, detail: str = "") -> None:
 
 def test_context_builder_end_to_end() -> None:
     print("• context builder end-to-end")
-    trend = TrendTracker()
+    trend = TrendTracker(history_file=_VALIDATOR_TREND_FILE)
     ownership = OwnershipStats()
     builder = ContextBuilder(trend, ownership)
     week_data = synthetic_week_data(week=5)
@@ -234,6 +245,8 @@ def test_recap_generator_context_delegation() -> None:
     print("• RecapGenerator.build_context delegates through ContextBuilder")
     # Instantiate WITHOUT a real fetcher; we're only exercising context path.
     gen = RecapGenerator(fetcher=object())  # sentinel so fetcher never lazy-loads
+    gen.trend_tracker = TrendTracker(history_file=_VALIDATOR_TREND_FILE)
+    gen.context_builder = ContextBuilder(gen.trend_tracker, gen.ownership_stats)
     ctx = gen.build_context(synthetic_week_data(week=7), week=7)
     check("non-empty context via generator", isinstance(ctx, str) and len(ctx) > 500)
     check("week 7 header present", "# Week 7 Recap Data" in ctx)
