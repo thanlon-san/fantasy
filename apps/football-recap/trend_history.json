@@ -48,6 +48,21 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      },
+      "7": {
+        "score": 94.1,
+        "position_aggregates": {
+          "QB": 20,
+          "RB": 30,
+          "WR": 25,
+          "TE": 10,
+          "K": 8,
+          "D/ST": 6,
+          "FLEX": 12
+        },
+        "optimal_score": 106.1,
+        "management_gap": 12.0,
+        "bench_points": 1.2
       }
     },
     "Morgan's Team!": {
@@ -3375,7 +3390,151 @@
         "projected_points": 0.0,
         "stats": {}
       }
+    },
+    "QB One": {
+      "7": {
+        "position": "QB",
+        "actual_points": 26.2,
+        "projected_points": 23.2,
+        "stats": {}
+      }
+    },
+    "RB One": {
+      "7": {
+        "position": "RB",
+        "actual_points": 21.5,
+        "projected_points": 18.5,
+        "stats": {}
+      }
+    },
+    "RB Two": {
+      "7": {
+        "position": "RB",
+        "actual_points": 12.0,
+        "projected_points": 9.0,
+        "stats": {}
+      }
+    },
+    "WR One": {
+      "7": {
+        "position": "WR",
+        "actual_points": 19.4,
+        "projected_points": 16.4,
+        "stats": {}
+      }
+    },
+    "WR Two": {
+      "7": {
+        "position": "WR",
+        "actual_points": 11.1,
+        "projected_points": 8.1,
+        "stats": {}
+      }
+    },
+    "TE One": {
+      "7": {
+        "position": "TE",
+        "actual_points": 8.9,
+        "projected_points": 5.9,
+        "stats": {}
+      }
+    },
+    "FLEX One": {
+      "7": {
+        "position": "WR",
+        "actual_points": 10.2,
+        "projected_points": 7.199999999999999,
+        "stats": {}
+      }
+    },
+    "Kicker": {
+      "7": {
+        "position": "K",
+        "actual_points": 6.0,
+        "projected_points": 3.0,
+        "stats": {}
+      }
+    },
+    "Defense": {
+      "7": {
+        "position": "DEF",
+        "actual_points": 3.1,
+        "projected_points": 0.10000000000000009,
+        "stats": {}
+      }
+    },
+    "QB Two": {
+      "7": {
+        "position": "QB",
+        "actual_points": 17.5,
+        "projected_points": 14.5,
+        "stats": {}
+      }
+    },
+    "RB Three": {
+      "7": {
+        "position": "RB",
+        "actual_points": 15.9,
+        "projected_points": 12.9,
+        "stats": {}
+      }
+    },
+    "RB Four": {
+      "7": {
+        "position": "RB",
+        "actual_points": 8.4,
+        "projected_points": 5.4,
+        "stats": {}
+      }
+    },
+    "WR Three": {
+      "7": {
+        "position": "WR",
+        "actual_points": 13.6,
+        "projected_points": 10.6,
+        "stats": {}
+      }
+    },
+    "WR Four": {
+      "7": {
+        "position": "WR",
+        "actual_points": 9.0,
+        "projected_points": 6.0,
+        "stats": {}
+      }
+    },
+    "TE Two": {
+      "7": {
+        "position": "TE",
+        "actual_points": 6.5,
+        "projected_points": 3.5,
+        "stats": {}
+      }
+    },
+    "FLEX Two": {
+      "7": {
+        "position": "RB",
+        "actual_points": 7.2,
+        "projected_points": 4.2,
+        "stats": {}
+      }
+    },
+    "Kicker Two": {
+      "7": {
+        "position": "K",
+        "actual_points": 8.0,
+        "projected_points": 5.0,
+        "stats": {}
+      }
+    },
+    "Defense Two": {
+      "7": {
+        "position": "DEF",
+        "actual_points": 8.0,
+        "projected_points": 5.0,
+        "stats": {}
+      }
     }
   },
-  "last_updated": "2026-11-17T16:04:22.424096"
+  "last_updated": "2026-11-17T18:25:01.115096"
 }
