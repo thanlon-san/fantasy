@@ -2,20 +2,20 @@
   "teams": {
     "Purdy Boys": {
       "10": {
-        "score": 0.0,
+        "score": 132.46,
         "position_aggregates": {
-          "QB": 0.0,
-          "RB": 0.0,
-          "WR": 0.0,
-          "TE": 0.0,
-          "K": 0.0,
-          "DEF": 0.0,
-          "D/ST": 0.0,
+          "QB": 20.76,
+          "RB": 67.7,
+          "WR": 26.3,
+          "TE": 8.7,
+          "K": 5.0,
+          "DEF": 4.0,
+          "D/ST": 4.0,
           "FLEX": 0.0
         },
-        "optimal_score": 0.0,
-        "management_gap": 0.0,
-        "bench_points": 0.0
+        "optimal_score": 160.96,
+        "management_gap": 28.5,
+        "bench_points": 78.75999999999999
       },
       "9": {
         "score": 100.62,
@@ -32,10 +32,8 @@
         "optimal_score": 105.32,
         "management_gap": 4.7,
         "bench_points": 40.7
-      }
-    },
-    "Morgan's Team!": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -50,6 +48,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Morgan's Team!": {
+      "10": {
+        "score": 94.9,
+        "position_aggregates": {
+          "QB": 15.6,
+          "RB": 52.0,
+          "WR": 1.9,
+          "TE": 13.4,
+          "K": 8.0,
+          "DEF": 4.0,
+          "D/ST": 4.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 94.9,
+        "management_gap": 0.0,
+        "bench_points": -3.0
       },
       "9": {
         "score": 89.1,
@@ -66,10 +82,8 @@
         "optimal_score": 99.1,
         "management_gap": 10.0,
         "bench_points": 27.4
-      }
-    },
-    "Monster of the Midway": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -84,6 +98,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Monster of the Midway": {
+      "10": {
+        "score": 105.24,
+        "position_aggregates": {
+          "QB": 21.44,
+          "RB": 34.5,
+          "WR": 32.3,
+          "TE": 5.0,
+          "K": 0.0,
+          "DEF": 12.0,
+          "D/ST": 12.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 120.84,
+        "management_gap": 15.6,
+        "bench_points": 28.400000000000002
       },
       "9": {
         "score": 82.44,
@@ -100,10 +132,8 @@
         "optimal_score": 118.46,
         "management_gap": 36.02,
         "bench_points": 58.36
-      }
-    },
-    "Stiff Arm tim": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -118,6 +148,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Stiff Arm tim": {
+      "10": {
+        "score": 73.3,
+        "position_aggregates": {
+          "QB": 8.1,
+          "RB": 11.2,
+          "WR": 45.5,
+          "TE": 1.5,
+          "K": 5.0,
+          "DEF": 2.0,
+          "D/ST": 2.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 101.9,
+        "management_gap": 28.6,
+        "bench_points": 30.1
       },
       "9": {
         "score": 91.82,
@@ -134,10 +182,8 @@
         "optimal_score": 109.74,
         "management_gap": 17.92,
         "bench_points": 47.14
-      }
-    },
-    "Scott\u2019s Tots": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -152,6 +198,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Scott\u2019s Tots": {
+      "10": {
+        "score": 146.56,
+        "position_aggregates": {
+          "QB": 33.16,
+          "RB": 51.9,
+          "WR": 28.1,
+          "TE": 2.4,
+          "K": 19.0,
+          "DEF": 12.0,
+          "D/ST": 12.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 147.16,
+        "management_gap": 0.6,
+        "bench_points": 17.22
       },
       "9": {
         "score": 123.34,
@@ -168,10 +232,8 @@
         "optimal_score": 139.54,
         "management_gap": 16.2,
         "bench_points": 36.0
-      }
-    },
-    "Game of Throws": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -186,6 +248,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Game of Throws": {
+      "10": {
+        "score": 82.42,
+        "position_aggregates": {
+          "QB": 3.02,
+          "RB": 13.9,
+          "WR": 17.9,
+          "TE": 36.6,
+          "K": 8.0,
+          "DEF": 3.0,
+          "D/ST": 3.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 97.42,
+        "management_gap": 15.0,
+        "bench_points": 24.099999999999998
       },
       "9": {
         "score": 134.06,
@@ -202,10 +282,8 @@
         "optimal_score": 138.96,
         "management_gap": 4.9,
         "bench_points": 18.8
-      }
-    },
-    "Hut Hut Eich": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -220,6 +298,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Hut Hut Eich": {
+      "10": {
+        "score": 103.82,
+        "position_aggregates": {
+          "QB": 15.62,
+          "RB": 6.1,
+          "WR": 43.0,
+          "TE": 16.1,
+          "K": 7.0,
+          "DEF": 16.0,
+          "D/ST": 16.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 103.82,
+        "management_gap": 0.0,
+        "bench_points": 7.0
       },
       "9": {
         "score": 105.52,
@@ -236,10 +332,8 @@
         "optimal_score": 118.02,
         "management_gap": 12.5,
         "bench_points": 32.4
-      }
-    },
-    "Penalty Flag Sachin": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -254,6 +348,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Penalty Flag Sachin": {
+      "10": {
+        "score": 107.64,
+        "position_aggregates": {
+          "QB": 23.34,
+          "RB": 43.2,
+          "WR": 27.2,
+          "TE": 1.9,
+          "K": 8.0,
+          "DEF": 4.0,
+          "D/ST": 4.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 164.34,
+        "management_gap": 56.7,
+        "bench_points": 72.4
       },
       "9": {
         "score": 95.56,
@@ -270,10 +382,8 @@
         "optimal_score": 110.16,
         "management_gap": 14.6,
         "bench_points": 42.7
-      }
-    },
-    "The Blackberries": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -288,6 +398,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "The Blackberries": {
+      "10": {
+        "score": 133.42,
+        "position_aggregates": {
+          "QB": 35.42,
+          "RB": 17.1,
+          "WR": 59.1,
+          "TE": 3.8,
+          "K": 12.0,
+          "DEF": 6.0,
+          "D/ST": 6.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 133.42,
+        "management_gap": 0.0,
+        "bench_points": 25.18
       },
       "9": {
         "score": 95.8,
@@ -304,10 +432,8 @@
         "optimal_score": 104.4,
         "management_gap": 8.6,
         "bench_points": 38.14
-      }
-    },
-    "High Quality TD Rate": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -322,6 +448,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "High Quality TD Rate": {
+      "10": {
+        "score": 97.12,
+        "position_aggregates": {
+          "QB": 35.42,
+          "RB": 14.6,
+          "WR": 22.3,
+          "TE": 7.8,
+          "K": 11.0,
+          "DEF": 6.0,
+          "D/ST": 6.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 108.22,
+        "management_gap": 11.1,
+        "bench_points": 26.599999999999998
       },
       "9": {
         "score": 175.18,
@@ -338,10 +482,8 @@
         "optimal_score": 181.28,
         "management_gap": 6.1,
         "bench_points": 44.16
-      }
-    },
-    "Blitz Squad Joseph": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -356,6 +498,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Blitz Squad Joseph": {
+      "10": {
+        "score": 154.5,
+        "position_aggregates": {
+          "QB": 12.8,
+          "RB": 73.5,
+          "WR": 51.6,
+          "TE": 2.6,
+          "K": 12.0,
+          "DEF": 2.0,
+          "D/ST": 2.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 167.1,
+        "management_gap": 12.6,
+        "bench_points": 19.1
       },
       "9": {
         "score": 100.68,
@@ -372,10 +532,8 @@
         "optimal_score": 102.68,
         "management_gap": 2.0,
         "bench_points": 21.1
-      }
-    },
-    "Goal Line Stand Jesse": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -390,6 +548,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Goal Line Stand Jesse": {
+      "10": {
+        "score": 121.18,
+        "position_aggregates": {
+          "QB": 27.78,
+          "RB": 48.6,
+          "WR": 26.8,
+          "TE": 7.0,
+          "K": 0.0,
+          "DEF": 11.0,
+          "D/ST": 11.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 126.88,
+        "management_gap": 5.7,
+        "bench_points": 44.5
       },
       "9": {
         "score": 96.68,
@@ -406,10 +582,8 @@
         "optimal_score": 147.08,
         "management_gap": 50.4,
         "bench_points": 79.28
-      }
-    },
-    "big d's fantasy": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -424,6 +598,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "big d's fantasy": {
+      "10": {
+        "score": 135.56,
+        "position_aggregates": {
+          "QB": 31.66,
+          "RB": 47.5,
+          "WR": 26.5,
+          "TE": 2.9,
+          "K": 7.0,
+          "DEF": 20.0,
+          "D/ST": 20.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 135.56,
+        "management_gap": 0.0,
+        "bench_points": 1.6
       },
       "9": {
         "score": 95.78,
@@ -440,10 +632,8 @@
         "optimal_score": 109.58,
         "management_gap": 13.8,
         "bench_points": 32.7
-      }
-    },
-    "Dasher Mafia": {
-      "10": {
+      },
+      "11": {
         "score": 0.0,
         "position_aggregates": {
           "QB": 0.0,
@@ -458,6 +648,24 @@
         "optimal_score": 0.0,
         "management_gap": 0.0,
         "bench_points": 0.0
+      }
+    },
+    "Dasher Mafia": {
+      "10": {
+        "score": 69.08,
+        "position_aggregates": {
+          "QB": 10.98,
+          "RB": 26.0,
+          "WR": 13.9,
+          "TE": 4.2,
+          "K": 3.0,
+          "DEF": 11.0,
+          "D/ST": 11.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 80.52,
+        "management_gap": 11.44,
+        "bench_points": 23.42
       },
       "9": {
         "score": 92.4,
@@ -474,6 +682,22 @@
         "optimal_score": 111.8,
         "management_gap": 19.4,
         "bench_points": 47.2
+      },
+      "11": {
+        "score": 0.0,
+        "position_aggregates": {
+          "QB": 0.0,
+          "RB": 0.0,
+          "WR": 0.0,
+          "TE": 0.0,
+          "K": 0.0,
+          "DEF": 0.0,
+          "D/ST": 0.0,
+          "FLEX": 0.0
+        },
+        "optimal_score": 0.0,
+        "management_gap": 0.0,
+        "bench_points": 0.0
       }
     }
   },
@@ -481,7 +705,7 @@
     "Matthew Stafford": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 20.76,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -490,12 +714,18 @@
         "actual_points": 12.22,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Jonathan Taylor": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 12.3,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -504,12 +734,18 @@
         "actual_points": 9.4,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Bhayshul Tuten": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 20.3,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -518,12 +754,18 @@
         "actual_points": 8.9,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Stefon Diggs": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 20.3,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -532,12 +774,18 @@
         "actual_points": 8.1,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Chris Olave": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 6.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -546,18 +794,30 @@
         "actual_points": 16.8,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Trey McBride": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 8.7,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "TE",
         "actual_points": 12.4,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -579,6 +839,12 @@
     "Chris Boswell": {
       "10": {
         "position": "K",
+        "actual_points": 5.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "K",
         "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
@@ -586,6 +852,12 @@
     },
     "Packers": {
       "10": {
+        "position": "DEF",
+        "actual_points": 4.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "DEF",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -595,7 +867,7 @@
     "Drew Lock": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 15.6,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -604,12 +876,18 @@
         "actual_points": 12.6,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Chase Brown": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 28.3,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -618,12 +896,18 @@
         "actual_points": 10.5,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Rachaad White": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 6.2,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -632,18 +916,30 @@
         "actual_points": 6.9,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Tre Tucker": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 1.9,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "WR",
         "actual_points": 9.5,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -660,18 +956,30 @@
         "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "George Kittle": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 13.4,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "TE",
         "actual_points": 9.8,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -693,7 +1001,7 @@
     "Spencer Shrader": {
       "10": {
         "position": "K",
-        "actual_points": 0.0,
+        "actual_points": 8.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -702,12 +1010,18 @@
         "actual_points": 16.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Saints": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 4.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -716,10 +1030,22 @@
         "actual_points": 5.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "C.J. Stroud": {
       "10": {
+        "position": "QB",
+        "actual_points": 21.44,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "QB",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -729,7 +1055,7 @@
     "Derrick Henry": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 19.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -738,12 +1064,18 @@
         "actual_points": 5.58,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Ollie Gordon II": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 15.5,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -752,16 +1084,28 @@
         "actual_points": 7.4,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Garrett Wilson": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 15.6,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "WR",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -771,7 +1115,7 @@
     "Justin Jefferson": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 16.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -780,12 +1124,18 @@
         "actual_points": 8.8,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Travis Kelce": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 5.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -794,12 +1144,18 @@
         "actual_points": 17.3,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Jalen Coker": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 0.3,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -808,12 +1164,18 @@
         "actual_points": 6.6,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Bills": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 12.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -822,10 +1184,22 @@
         "actual_points": 15.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Bryce Young": {
       "10": {
+        "position": "QB",
+        "actual_points": 8.1,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "QB",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -849,6 +1223,12 @@
     "Jaylen Warren": {
       "10": {
         "position": "RB",
+        "actual_points": 9.1,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "RB",
         "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
@@ -857,7 +1237,7 @@
     "Zay Flowers": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 11.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -866,18 +1246,30 @@
         "actual_points": 5.3,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Ja'Marr Chase": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 34.1,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "WR",
         "actual_points": 31.5,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -902,10 +1294,22 @@
         "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Jake Bates": {
       "10": {
+        "position": "K",
+        "actual_points": 5.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "K",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -929,7 +1333,7 @@
     "Joe Burrow": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 33.16,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -938,12 +1342,18 @@
         "actual_points": 29.54,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Javonte Williams": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 7.7,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -952,12 +1362,18 @@
         "actual_points": 22.4,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Jahmyr Gibbs": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 44.2,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -966,18 +1382,30 @@
         "actual_points": 13.4,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "KC Concepcion Jr.": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 11.7,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "WR",
         "actual_points": 18.8,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -999,13 +1427,19 @@
     "Tyler Warren": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 2.4,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "TE",
         "actual_points": 8.4,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -1055,13 +1489,19 @@
     "Drake Maye": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 3.02,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "QB",
         "actual_points": 21.26,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -1091,13 +1531,19 @@
     "Rashee Rice": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 13.2,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "WR",
         "actual_points": 9.9,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -1113,7 +1559,7 @@
     "Isaiah Likely": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 27.7,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1122,12 +1568,18 @@
         "actual_points": 16.3,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Tyler Allgeier": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 1.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1136,12 +1588,18 @@
         "actual_points": 6.6,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Evan McPherson": {
       "10": {
         "position": "K",
-        "actual_points": 0.0,
+        "actual_points": 8.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1150,12 +1608,18 @@
         "actual_points": 13.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Jaguars": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 3.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1164,12 +1628,18 @@
         "actual_points": 11.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Braelon Allen": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 5.6,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1178,10 +1648,22 @@
         "actual_points": 5.4,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Chris Rodriguez Jr.": {
       "10": {
+        "position": "RB",
+        "actual_points": 0.5,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "RB",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -1191,7 +1673,7 @@
     "CeeDee Lamb": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 20.2,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1200,12 +1682,18 @@
         "actual_points": 33.5,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Josh Downs": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 15.3,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1214,12 +1702,18 @@
         "actual_points": 5.4,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Harold Fannin Jr.": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 16.1,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1228,10 +1722,22 @@
         "actual_points": 12.2,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Khalil Shakir": {
       "10": {
+        "position": "WR",
+        "actual_points": 7.5,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "WR",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -1241,7 +1747,7 @@
     "Ka'imi Fairbairn": {
       "10": {
         "position": "K",
-        "actual_points": 0.0,
+        "actual_points": 7.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1250,12 +1756,18 @@
         "actual_points": 17.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Rams": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 16.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1264,12 +1776,18 @@
         "actual_points": 12.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Josh Allen": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 23.34,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1278,12 +1796,18 @@
         "actual_points": 13.86,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Rhamondre Stevenson": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 1.5,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1292,12 +1816,18 @@
         "actual_points": 14.8,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Chuba Hubbard": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 34.2,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1306,12 +1836,18 @@
         "actual_points": 13.6,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Amon-Ra St. Brown": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 25.8,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1320,12 +1856,18 @@
         "actual_points": 16.6,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "DeMario Douglas": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 1.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1334,12 +1876,18 @@
         "actual_points": 15.2,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Mike Gesicki": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 1.9,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1348,12 +1896,18 @@
         "actual_points": 3.1,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Woody Marks": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 7.5,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1362,12 +1916,18 @@
         "actual_points": 8.4,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Matt Gay": {
       "10": {
         "position": "K",
-        "actual_points": 0.0,
+        "actual_points": 8.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1376,12 +1936,18 @@
         "actual_points": 7.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Bengals": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 4.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1390,12 +1956,18 @@
         "actual_points": 3.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Dak Prescott": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 35.42,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1404,18 +1976,30 @@
         "actual_points": 19.5,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Kaelon Black": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 14.6,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "RB",
         "actual_points": 7.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -1426,12 +2010,18 @@
         "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Jaxon Smith-Njigba": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 31.1,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1445,7 +2035,7 @@
     "Jameson Williams": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 9.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1454,12 +2044,18 @@
         "actual_points": 5.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Brock Bowers": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 3.8,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1473,6 +2069,12 @@
     "Jordyn Tyson": {
       "10": {
         "position": "WR",
+        "actual_points": 19.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "WR",
         "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
@@ -1481,7 +2083,7 @@
     "Brandon Aubrey": {
       "10": {
         "position": "K",
-        "actual_points": 0.0,
+        "actual_points": 12.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1490,12 +2092,18 @@
         "actual_points": 10.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Texans": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 6.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1504,12 +2112,18 @@
         "actual_points": 12.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Patrick Mahomes": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 35.42,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1518,12 +2132,18 @@
         "actual_points": 16.48,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Kyren Williams": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 5.2,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1532,10 +2152,22 @@
         "actual_points": 9.1,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Zach Charbonnet": {
       "10": {
+        "position": "RB",
+        "actual_points": 9.4,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "RB",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -1545,7 +2177,7 @@
     "Christian Watson": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 6.7,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1554,10 +2186,22 @@
         "actual_points": 30.1,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Wan'Dale Robinson": {
       "10": {
+        "position": "WR",
+        "actual_points": 4.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "WR",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -1567,7 +2211,7 @@
     "Dalton Kincaid": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 7.8,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1576,18 +2220,30 @@
         "actual_points": 5.8,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Tee Higgins": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 11.6,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "WR",
         "actual_points": 20.2,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -1608,6 +2264,12 @@
     },
     "Raiders": {
       "10": {
+        "position": "DEF",
+        "actual_points": 6.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "DEF",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -1631,7 +2293,7 @@
     "Christian McCaffrey": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 46.3,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1640,10 +2302,22 @@
         "actual_points": 22.7,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Cam Skattebo": {
       "10": {
+        "position": "RB",
+        "actual_points": 27.2,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "RB",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -1653,7 +2327,7 @@
     "Tetairoa McMillan": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 6.5,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1662,12 +2336,18 @@
         "actual_points": 15.6,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Drake London": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 16.9,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1676,12 +2356,18 @@
         "actual_points": 11.8,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Sam LaPorta": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 2.6,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1690,12 +2376,18 @@
         "actual_points": 7.2,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Parker Washington": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 28.2,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1704,12 +2396,18 @@
         "actual_points": 14.1,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Will Reichard": {
       "10": {
         "position": "K",
-        "actual_points": 0.0,
+        "actual_points": 12.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1718,12 +2416,18 @@
         "actual_points": 9.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Patriots": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 2.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1732,12 +2436,18 @@
         "actual_points": -1.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Trevor Lawrence": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 27.78,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1746,12 +2456,18 @@
         "actual_points": 13.58,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Bijan Robinson": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 17.7,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1760,12 +2476,18 @@
         "actual_points": 26.7,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Breece Hall": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 14.8,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1774,12 +2496,18 @@
         "actual_points": 11.7,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Malik Nabers": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 7.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1788,12 +2516,18 @@
         "actual_points": 9.3,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "DJ Moore": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 19.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1802,12 +2536,18 @@
         "actual_points": 6.6,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Kyle Pitts Sr.": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 7.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1816,18 +2556,30 @@
         "actual_points": 5.3,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Quinshon Judkins": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 16.1,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "RB",
         "actual_points": 5.5,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -1844,12 +2596,18 @@
         "actual_points": 9.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Lions": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 11.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1858,12 +2616,18 @@
         "actual_points": 9.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Brock Purdy": {
       "10": {
         "position": "QB",
-        "actual_points": 0.0,
+        "actual_points": 31.66,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1872,12 +2636,18 @@
         "actual_points": 26.28,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "James Cook III": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 21.7,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1886,12 +2656,18 @@
         "actual_points": 16.7,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Bam Knight": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 1.9,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -1899,7 +2675,7 @@
     "Nico Collins": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 24.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1908,10 +2684,22 @@
         "actual_points": 15.5,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Keon Coleman": {
       "10": {
+        "position": "WR",
+        "actual_points": 2.1,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "WR",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -1930,10 +2718,22 @@
         "actual_points": 7.3,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Tony Pollard": {
       "10": {
+        "position": "RB",
+        "actual_points": 23.9,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
         "position": "RB",
         "actual_points": 0.0,
         "projected_points": 0.0,
@@ -1943,7 +2743,7 @@
     "Tyler Bass": {
       "10": {
         "position": "K",
-        "actual_points": 0.0,
+        "actual_points": 7.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1952,18 +2752,30 @@
         "actual_points": 13.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Vikings": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 20.0,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "DEF",
         "actual_points": 6.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -1985,7 +2797,7 @@
     "Ashton Jeanty": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 10.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -1994,12 +2806,18 @@
         "actual_points": 7.0,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Jadarian Price": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 11.4,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -2013,7 +2831,7 @@
     "Tutu Atwell": {
       "10": {
         "position": "WR",
-        "actual_points": 0.0,
+        "actual_points": 4.1,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -2021,7 +2839,7 @@
     "Hunter Henry": {
       "10": {
         "position": "TE",
-        "actual_points": 0.0,
+        "actual_points": 4.2,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -2029,7 +2847,7 @@
     "Kaleb Johnson": {
       "10": {
         "position": "RB",
-        "actual_points": 0.0,
+        "actual_points": 4.2,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -2037,7 +2855,7 @@
     "Jason Myers": {
       "10": {
         "position": "K",
-        "actual_points": 0.0,
+        "actual_points": 3.0,
         "projected_points": 0.0,
         "stats": {}
       },
@@ -2051,13 +2869,19 @@
     "Chiefs": {
       "10": {
         "position": "DEF",
-        "actual_points": 0.0,
+        "actual_points": 11.0,
         "projected_points": 0.0,
         "stats": {}
       },
       "9": {
         "position": "DEF",
         "actual_points": 11.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -2132,6 +2956,12 @@
         "actual_points": 20.7,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Michael Wilson": {
@@ -2148,6 +2978,12 @@
         "actual_points": 9.4,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "J.K. Dobbins": {
@@ -2156,12 +2992,24 @@
         "actual_points": 3.2,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Michael Mayer": {
       "9": {
         "position": "TE",
         "actual_points": 4.7,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -2180,12 +3028,24 @@
         "actual_points": 3.2,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Tucker Kraft": {
       "9": {
         "position": "TE",
         "actual_points": 1.9,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "TE",
+        "actual_points": 2.9,
         "projected_points": 0.0,
         "stats": {}
       }
@@ -2236,6 +3096,18 @@
         "actual_points": 4.2,
         "projected_points": 0.0,
         "stats": {}
+      },
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "TE",
+        "actual_points": 8.9,
+        "projected_points": 0.0,
+        "stats": {}
       }
     },
     "Justin Herbert": {
@@ -2269,7 +3141,241 @@
         "projected_points": 0.0,
         "stats": {}
       }
+    },
+    "Emmett Johnson": {
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "RB",
+        "actual_points": 35.1,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Jacoby Brissett": {
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "QB",
+        "actual_points": 12.8,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "DK Metcalf": {
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "WR",
+        "actual_points": 15.4,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Germie Bernard": {
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "WR",
+        "actual_points": 1.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Cam Little": {
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "K",
+        "actual_points": 19.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Colts": {
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "DEF",
+        "actual_points": 12.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Aaron Rodgers": {
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "QB",
+        "actual_points": 15.62,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Brandon McManus": {
+      "11": {
+        "position": "K",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "K",
+        "actual_points": 11.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Omarion Hampton": {
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "RB",
+        "actual_points": 17.5,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Tyler Shough": {
+      "11": {
+        "position": "QB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "QB",
+        "actual_points": 10.98,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Kyle Monangai": {
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Aaron Jones Sr.": {
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "RB",
+        "actual_points": 12.5,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "A.J. Brown": {
+      "11": {
+        "position": "WR",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "WR",
+        "actual_points": 4.7,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Audric Estime": {
+      "11": {
+        "position": "RB",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "RB",
+        "actual_points": 2.1,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Darnell Washington": {
+      "11": {
+        "position": "TE",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "TE",
+        "actual_points": 1.5,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Ravens": {
+      "11": {
+        "position": "DEF",
+        "actual_points": 0.0,
+        "projected_points": 0.0,
+        "stats": {}
+      },
+      "10": {
+        "position": "DEF",
+        "actual_points": 2.0,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Corey Kiner": {
+      "10": {
+        "position": "RB",
+        "actual_points": 2.5,
+        "projected_points": 0.0,
+        "stats": {}
+      }
+    },
+    "Mack Hollins": {
+      "10": {
+        "position": "WR",
+        "actual_points": 9.8,
+        "projected_points": 0.0,
+        "stats": {}
+      }
     }
   },
-  "last_updated": "2026-11-11T17:08:39.332528"
+  "last_updated": "2026-11-17T16:04:22.424096"
 }
