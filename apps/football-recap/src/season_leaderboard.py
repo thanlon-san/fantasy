@@ -43,6 +43,34 @@ def _all_matchup_teams(week_data: Dict[str, Any]) -> List[Dict[str, Any]]:
     return teams
 
 
+def _leaders_with_ties(
+    counts: Dict[str, int], owners: Dict[str, str]
+) -> Dict[str, Any]:
+    """
+    All teams tied for the max count, not just whichever ``max()`` hits first.
+
+    A plain ``max(counts, key=...)`` silently drops every other team at the
+    same count — this bites hard once a league has enough weeks for
+    count-based awards (Human Highlight Reel, Giant Slayer, The Hammer, Iron
+    Stomach) to pile up several teams at the same number. Returns a dict with
+    both the legacy single-winner shape (``team``/``owner``, first tied team
+    by name for stable ordering) and a ``tied_teams`` list of every team at
+    the max, so renderers can choose to disclose the full tie.
+    """
+    if not counts:
+        return {}
+    top_count = max(counts.values())
+    tied = sorted(name for name, c in counts.items() if c == top_count)
+    return {
+        "team": tied[0],
+        "owner": owners.get(tied[0], ""),
+        "count": top_count,
+        "tied_teams": [
+            {"team": name, "owner": owners.get(name, "")} for name in tied
+        ],
+    }
+
+
 def compute_season_awards(
     history: List[Dict[str, Any]],
     *,
@@ -126,33 +154,24 @@ def compute_season_awards(
             blowout_owner[bo["team"]] = bo.get("owner", "")
 
     if bench_hero_counts:
-        top = max(bench_hero_counts, key=lambda k: bench_hero_counts[k])
         awards["human_highlight_reel"] = {
             "label": "🎬 Human Highlight Reel",
             "description": "Most Bench Hero of the Week awards — the bench that keeps producing.",
-            "team": top,
-            "owner": bench_hero_owner.get(top, ""),
-            "count": bench_hero_counts[top],
+            **_leaders_with_ties(bench_hero_counts, bench_hero_owner),
         }
 
     if upset_counts:
-        top = max(upset_counts, key=lambda k: upset_counts[k])
         awards["giant_slayer"] = {
             "label": "🎲 Giant Slayer",
             "description": "Most Upset of the Week wins — nobody saw these coming.",
-            "team": top,
-            "owner": upset_owner.get(top, ""),
-            "count": upset_counts[top],
+            **_leaders_with_ties(upset_counts, upset_owner),
         }
 
     if blowout_counts:
-        top = max(blowout_counts, key=lambda k: blowout_counts[k])
         awards["hammer"] = {
             "label": "🔨 The Hammer",
             "description": "Most Blowout of the Week wins — shows no mercy.",
-            "team": top,
-            "owner": blowout_owner.get(top, ""),
-            "count": blowout_counts[top],
+            **_leaders_with_ties(blowout_counts, blowout_owner),
         }
 
     # ---- Closest call of the season ---------------------------------------
@@ -212,13 +231,10 @@ def compute_season_awards(
             last_place_counts[name] += 1
             last_place_owner[name] = lowest.get("owner", "")
     if last_place_counts:
-        top = max(last_place_counts, key=lambda k: last_place_counts[k])
         awards["iron_stomach"] = {
             "label": "💪 Iron Stomach Award",
             "description": "Most weeks with the low score — still showing up every Sunday.",
-            "team": top,
-            "owner": last_place_owner.get(top, ""),
-            "count": last_place_counts[top],
+            **_leaders_with_ties(last_place_counts, last_place_owner),
         }
 
     return {"weeks_played": len(entries), "awards": awards}

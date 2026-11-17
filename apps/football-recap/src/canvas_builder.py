@@ -181,11 +181,24 @@ def _format_season_awards(awards: Dict[str, Any]) -> str:
     for entry in awards.values():
         label = entry.get("label", "Award")
         desc = entry.get("description", "")
-        team = entry.get("team") or entry.get("winner") or entry.get("team1")
-        owner = entry.get("owner") or entry.get("winner_owner")
+        tied_teams = entry.get("tied_teams") or []
         detail_bits = []
-        if team:
-            detail_bits.append(f"**{team}**" + (f" ({owner})" if owner else ""))
+        if len(tied_teams) > 1:
+            # Real tie — disclose every team at the max, not just one. A
+            # plain max()/min() pick here would silently drop the others,
+            # which is wrong once a league has enough weeks for count-based
+            # awards (Human Highlight Reel, Giant Slayer, The Hammer, Iron
+            # Stomach) to collide on the same count.
+            names = ", ".join(
+                f"**{t['team']}**" + (f" ({t['owner']})" if t.get("owner") else "")
+                for t in tied_teams
+            )
+            detail_bits.append(f"{len(tied_teams)}-way tie: {names}")
+        else:
+            team = entry.get("team") or entry.get("winner") or entry.get("team1")
+            owner = entry.get("owner") or entry.get("winner_owner")
+            if team:
+                detail_bits.append(f"**{team}**" + (f" ({owner})" if owner else ""))
         for key in ("count", "total_points_left", "avg_points_left", "margin"):
             if key in entry:
                 detail_bits.append(f"{key.replace('_', ' ')}: {entry[key]}")
