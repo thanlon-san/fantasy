@@ -1,0 +1,63 @@
+football: *Week 2 Recap: The Bench Had a Better Week Than You*
+_"Your lineup is a decision. Your bench is a confession."_
+
+:heart-8bit: *League Pulse*
+Open on the closest thing this league had to drama: <@U07JPH677ED|Joseph Barry>'s Blitz Squad Joseph took down <@U02C39SFXPD|Tim Tang>'s Stiff Arm tim, 136.2 to 116.8, a 19.4-point gap that was somehow the nail-biter of the week. The next-closest game wasn't far behind at 19.7, and from there margins climbed straight up to 65.5, which tells you the league's current state: nobody's playing close games, they're just choosing who gets run over. The last gasp of September, and half this league is already gasping.
+
+:confused-math-lady: *Stat of the Week*
+<@UPQ8CPJDR|Peter Van Oot>'s High Quality TD Rate moved to 2-0 on 104.5 points, 6.1 below the league average, while Patrick Mahomes produced 29.0 points from the bench. A premium-tier subscription performing like the free trial, and the account still renewed.
+
+
+:footballl: *Matchups*
+
+*<@U07JPH677ED|Joseph Barry>'s Blitz Squad Joseph (136.2) def. <@U02C39SFXPD|Tim Tang>'s Stiff Arm tim (116.8)*
+_"The Closest Thing to Drama"_
+This was Week 2's tightest finish, and "tight" here means 19.4 points. Joseph posted his season high; tim's 116.8 was his best output yet too, and it still went in the loss column. Some weeks the schedule is just bad account management.
+
+*<@U03L8KFL1RS|Elisa Keny>'s Monster of the Midway (111.8) def. <@U03R72JAKFH|Morgan Nelson>'s Morgan's Team! (92.1)*
+_"Quietly Business as Usual"_
+Elisa stayed unbeaten without doing anything Week 1-level impressive, and 111.8 was plenty against Morgan's 92.1. Morgan's Team dropped its first game after opening 1-0 on a below-average total. Churn happens.
+
+*<@U08SKVCGDQW|Greg Stewart>'s The Blackberries (151.3) def. <@U0405KM3X7C|Adam Eichorn>'s Hut Hut Eich (127.3)*
+_"Both Sides Actually Showed Up"_
+Two teams cleared 125 and only one got a win for it. Adam's 127.3 was the highest score anyone posted in a loss this week. Gregory's 151.3 is the league's second-highest score, and it just bought him a seven-spot jump nobody saw coming.
+
+*<@UPQ8CPJDR|Peter Van Oot>'s High Quality TD Rate (104.5) def. <@U08QHPYDZ46|Adam Strutynski>'s Dasher Mafia (75.4)*
+_"A Win Filed Under Miscellaneous"_
+Pete's already covered above — a below-average win with a franchise quarterback rotting on the bench. Adam's 75.4 was the second-lowest score of the week; Dasher Mafia's roster needs a retention plan before Week 3.
+
+*<@U0761N3RYSW|Sachin Phadkar>'s Penalty Flag Sachin (133.9) def. <@U0AV2EB5GUD|Luis Islas>'s Game of Throws (92.1)*
+_"Sachin's Quietly Building a Case"_
+133.9 points, fourth-best in the league this week, and somehow still not the story anyone's telling. Luis's 92.1 wasn't even his worst outing this season, which says more about Game of Throws' floor than the box score can fix.
+
+*<@U08SD0PJ3EU|Danielle DiRaddo>'s big d's fantasy (103.6) def. <@U09KVP9JHQS|Jesse Chou>'s Goal Line Stand Jesse (52.8)*
+_"The Low Point, Literally"_
+Jesse's 52.8 is the lowest score anyone has posted all season, more than 20 points under the previous floor. Danielle didn't need to be good to win this one. A 50.8-point margin isn't a rivalry. It's a mismatch.
+
+*<@U03FE7P8EEP|Tyler Hanlon>'s Purdy Boys (157.8) def. <@U032LD8RMK8|Marissa Tomko>'s Scott's Tots (92.3)*
+_"The Gap Between First and Last"_
+Tyler's 157.8 is this week's high mark, and the 65.5-point margin over Marissa is the widest of the young season. Marissa is 0-2 with a point differential heading toward a performance review. Tyler read the onboarding deck twice.
+
+
+:power-up: *Power Rankings*
+1. *<@U03FE7P8EEP|Tyler Hanlon>* (2-0, PF 285.2) :triangle_upmaster: 4 — Two blowout wins, zero signs of slowing down
+2. *<@U0761N3RYSW|Sachin Phadkar>* (2-0, PF 269.7) :triangle_upmaster: 1 — Second in the standings, still nobody's headline
+3. *<@U03L8KFL1RS|Elisa Keny>* (2-0, PF 269.4) :triangle_downred: 2 — Unbeaten, but the Week 1 ceiling is fading
+4. *<@UPQ8CPJDR|Peter Van Oot>* (2-0, PF 246.0) :triangle_downred: 2 — 2-0 with a Mahomes-sized asterisk attached
+5. *<@U08SKVCGDQW|Greg Stewart>* (1-1, PF 248.7) :triangle_upmaster: 7 — Biggest riser in the league, quietly loaded
+6. *<@U0405KM3X7C|Adam Eichorn>* (1-1, PF 248.4) — — 127.3 points, a loss, and no answers
+7. *<@U07JPH677ED|Joseph Barry>* (1-1, PF 228.7) :triangle_upmaster: 6 — Season-best game, six-spot jump to match
+8. *<@U08SD0PJ3EU|Danielle DiRaddo>* (1-1, PF 205.2) :triangle_upmaster: 2 — Beat the league's new basement dweller
+9. *<@U03R72JAKFH|Morgan Nelson>* (1-1, PF 208.8) :triangle_downred: 2 — Week 1's floor game finally caught up
+10. *<@U032LD8RMK8|Marissa Tomko>* (0-2, PF 211.5) :triangle_downred: 2 — 0-2 and still searching for answers
+11. *<@U0AV2EB5GUD|Luis Islas>* (0-2, PF 211.1) :triangle_downred: 2 — 0-2 with the league's worst point differential
+12. *<@U02C39SFXPD|Tim Tang>* (0-2, PF 196.4) :triangle_upmaster: 2 — Still winless, at least it was competitive
+13. *<@U09KVP9JHQS|Jesse Chou>* (1-1, PF 184.9) :triangle_downred: 9 — Biggest fall in the league, for obvious reasons
+14. *<@U08QHPYDZ46|Adam Strutynski>* (0-2, PF 176.4) :triangle_downred: 3 — Lowest point total, most work to do
+:disappointed-guy: *Fourth and Long: Week 3 Preview*
+• Game of the Week: <@U03L8KFL1RS|Elisa Keny>'s Monster of the Midway vs <@U0761N3RYSW|Sachin Phadkar>'s Penalty Flag Sachin — two of the league's four unbeaten teams, and only one walks away still perfect.
+• Trap Game: <@U03FE7P8EEP|Tyler Hanlon>'s Purdy Boys vs <@U08SD0PJ3EU|Danielle DiRaddo>'s big d's fantasy — Tyler's the hottest team in the league, but danielle just proved she can find 50-plus points when the matchup calls for it.
+• One-liner forecast: Somebody currently riding high discovers gravity by Tuesday.
+:person_in_lotus_position: *Closing Thoughts*
+_"Somewhere, a waiver wire is calling. Answer it."_
+

@@ -1,0 +1,70 @@
+football: *Week 5 Recap: The Undefeated, the Upset, and 1.8 Points*
+_"Your lineup card, read anonymously, would still identify you."_
+
+:heart-8bit: *League Pulse*
+Fourteen teams, and only 1.8 points separated <@U09KVP9JHQS|Jesse Chou>'s Goal Line Stand Jesse from <@U03L8KFL1RS|Elisa Keny>'s Monster of the Midway — the kind of margin that makes every lineup decision retroactively unbearable. Jesse won it with two starters, Breece Hall and DJ Moore, combining for exactly zero points, which tells you how deep this league's been pushed five weeks in. Elsewhere, <@UPQ8CPJDR|Peter Van Oot>'s High Quality TD Rate moved to 5-0, a retention rate on winning the rest of the league can't touch, while seven teams, including both sides of that nail-biter, are packed at 3-2. It's officially peak October, when the standings start meaning something.
+
+:confused-math-lady: *Stat of the Week*
+<@U03L8KFL1RS|Elisa Keny>'s Monster of the Midway lost by 1.8 points while starting Travis Kelce at tight end for 0.0, with Pat Freiermuth sitting on her bench at 21.5. That's a 21.5-point gap, roughly twelve times the actual margin of defeat, in a slot she filled herself.
+
+
+:footballl: *Matchups*
+
+*<@U09KVP9JHQS|Jesse Chou>'s Goal Line Stand Jesse (108.8) def. <@U03L8KFL1RS|Elisa Keny>'s Monster of the Midway (107.0)*
+_Decided By Less Than a Field Goal_
+
+Jesse survived with Breece Hall and DJ Moore combining for zero and still had enough from Malik Nabers' 29.1 to escape. Elisa's issue wasn't bad luck — it was a benched Pat Freiermuth (21.5) losing his roster spot to a Travis Kelce who scored nothing, a swap that would've flipped this one on its own.
+
+*<@U0AV2EB5GUD|Luis Islas>'s Game of Throws (112.2) def. <@U03FE7P8EEP|Tyler Hanlon>'s Purdy Boys (103.9)*
+_Projections, Overruled_
+
+Yahoo had Tyler favored by 7.3 points. Luis won by 8.3 anyway, riding a 32.4-point Isaiah Likely game while benching Drake Maye's 39.5, this week's Bench Hero nomination, from the winning side. Tyler's second straight loss after opening 3-0 came with Blake Corum (16.2) outscoring both starting running backs from the bench.
+
+*<@U032LD8RMK8|Marissa Tomko>'s Scott's Tots (120.9) def. <@U0405KM3X7C|Adam Eichorn>'s Hut Hut Eich (113.1)*
+_Still Four Kickers Deep_
+
+Marissa's bench still carries three unused kickers behind Cam Little's actual 9 points, inventory nobody's forced her to liquidate yet. Jahmyr Gibbs' 37.7 did the real work. Adam answered with Mike Evans (26.3), but Khalil Shakir (11.0) and Greg Dulcich (9.7) sat the whole game behind a CeeDee Lamb (2.9) and Harold Fannin (1.4) who started instead — 20.7 points parked on the bench.
+
+*<@U07JPH677ED|Joseph Barry>'s Blitz Squad Joseph (124.0) def. <@U08QHPYDZ46|Adam Strutynski>'s Dasher Mafia (99.7)*
+_Parker Washington Had Notes_
+
+Joseph's flex gamble on Parker Washington paid out 30.4, more than McCaffrey's 17.3, while the receiver who torched the league for 45.2 in Week 4, Tetairoa McMillan, scored zero from the bench this time. adam got a real 28.94 from Jared Goff and 23 points from a kicker quietly outplaying most of the roster, and Saquon Barkley's zero from the bench did nothing to close the gap.
+
+*<@UPQ8CPJDR|Peter Van Oot>'s High Quality TD Rate (157.0) def. <@U0761N3RYSW|Sachin Phadkar>'s Penalty Flag Sachin (122.7)*
+_The Rich Get Richer, and Also Bored_
+
+Pete's unbeaten run hit 5-0 behind the week's highest score, and he still had Jayden Daniels (32.3) parked behind Aaron Rodgers on the bench, a luxury tax he can clearly afford. Sachin's Josh Allen threw for 31.5 and George Pickens added 28.0, a score that would've beaten three of this week's other six winners outright, just not the one standing across from it.
+
+*<@U08SKVCGDQW|Greg Stewart>'s The Blackberries (137.7) def. <@U08SD0PJ3EU|Danielle DiRaddo>'s big d's fantasy (97.5)*
+_The Floor, Again_
+
+danielle's 97.5 was the week's lowest score, nearly 20 points under the league average, despite correctly starting Brock Purdy over a 13-point Jalen Hurts on her own bench. Gregory's win leaned on no single superstar: Brock Bowers (23.0), Davante Adams (22.1), and Jaxon Smith-Njigba (22.8) all landed in the low twenties, the kind of balanced night that turns a blowout into a formality.
+
+*<@U02C39SFXPD|Tim Tang>'s Stiff Arm tim (139.0) def. <@U03R72JAKFH|Morgan Nelson>'s Morgan's Team! (98.5)*
+_The Blowout of the Week_
+
+Jaylen Warren's 36.8 anchored the week's biggest margin at 40.6, with tim's bench Packers defense outscoring his starting Broncos by six points, a rounding error on a night this lopsided. Morgan's fourth straight loss drops her to 1-4, saved from an uglier final margin only by Spencer Shrader's 21-point kicker game.
+
+
+:power-up: *Power Rankings*
+1. <@UPQ8CPJDR|Peter Van Oot> (5-0, PF 664.8) — — Still undefeated, with Jayden Daniels (32.3) still rotting on the bench
+2. <@U08SKVCGDQW|Greg Stewart> (3-2, PF 618.8) :triangle_upmaster: 5 — Five-spot jump off a 137.7 vintage week
+3. <@U07JPH677ED|Joseph Barry> (3-2, PF 625.3) :triangle_downred: 1 — Highest PF outside first place, buried by one loss
+4. <@U032LD8RMK8|Marissa Tomko> (3-2, PF 605.5) :triangle_upmaster: 1 — W3, kicker depth chart still unresolved
+5. <@U0761N3RYSW|Sachin Phadkar> (3-2, PF 605.7) :triangle_downred: 2 — L1, the week's 5th-highest score and still not enough
+6. <@U02C39SFXPD|Tim Tang> (2-3, PF 575.8) :triangle_upmaster: 4 — Second-biggest climb of the week, courtesy of the league's biggest margin
+7. <@U03FE7P8EEP|Tyler Hanlon> (3-2, PF 606.8) :triangle_downred: 3 — Second straight loss, first time looking mortal since Week 3
+8. <@U0405KM3X7C|Adam Eichorn> (2-3, PF 598.0) :triangle_downred: 2 — L2, with 20.7 points stranded on a crowded bench
+9. <@U03L8KFL1RS|Elisa Keny> (3-2, PF 542.6) — — The Kelce decision cost more than the standings show
+10. <@U0AV2EB5GUD|Luis Islas> (2-3, PF 543.1) :triangle_upmaster: 1 — Upset win and a Bench Hero nod, same afternoon
+11. <@U09KVP9JHQS|Jesse Chou> (3-2, PF 506.0) :triangle_upmaster: 1 — Won with two starters at zero. Don't ask how.
+12. <@U08SD0PJ3EU|Danielle DiRaddo> (1-4, PF 556.9) :triangle_downred: 4 — Week's lowest score, PF still ahead of three teams above her
+13. <@U03R72JAKFH|Morgan Nelson> (1-4, PF 504.7) — — L4, and the week's biggest margin landed right on her
+14. <@U08QHPYDZ46|Adam Strutynski> (1-4, PF 476.1) — — Jared Goff's 28.94 buried under another loss
+:disappointed-guy: *Fourth and Long: Week 6 Preview*
+• Game of the Week: <@U032LD8RMK8|Marissa Tomko>'s Scott's Tots vs <@U02C39SFXPD|Tim Tang>'s Stiff Arm tim — a three-game winner against the team that just rode a 40.6-point blowout up four spots, both finally finding their footing at the same time.
+• Trap Game: <@U07JPH677ED|Joseph Barry>'s Blitz Squad Joseph vs <@U0AV2EB5GUD|Luis Islas>'s Game of Throws — Joseph owns the league's second-highest point total, and Luis just proved his bench can carry a Bench Hero nomination and an upset in the same week.
+• One-liner forecast: Pete's bye from real competition continues against a Morgan's Team that's lost four straight and isn't finding its floor against the league's only unbeaten.
+:person_in_lotus_position: *Closing Thoughts*
+_"The trade deadline approaches. So does your reckoning."_
+

@@ -1,0 +1,62 @@
+football: *Week 3 Recap: Perfect Records Meet Their Bench*
+_"Three weeks in, and the league's tanking teams have already found their floor. Turns out it's lower than expected."_
+
+:heart-8bit: *League Pulse*
+<@U09KVP9JHQS|Jesse Chou>'s Goal Line Stand Jesse survived <@U08QHPYDZ46|Adam Strutynski>'s Dasher Mafia by 3.2 points in the tightest game of the week — the nicest thing that's happened to Dasher Mafia all season. Elsewhere, three teams sit at 3-0, three sit at 0-3, and the last gasp of September mostly meant everyone's roster looked as tired as their group chat. The gap between the league's contenders and its cellar is starting to look less like parity and more like a customer segmentation exercise nobody asked for.
+
+:confused-math-lady: *Stat of the Week*
+Vegas had <@U0761N3RYSW|Sachin Phadkar>'s Penalty Flag Sachin favored over <@U03L8KFL1RS|Elisa Keny>'s Monster of the Midway by 7.56 projected points. Monster of the Midway won by 10.52 anyway — an 18.08-point round trip from what the projections promised, powered by Garrett Wilson going off for 26.7 while Sachin left 21.0 points of Kalif Raymond sitting on his own bench.
+
+:footballl: *Matchups*
+
+*<@U09KVP9JHQS|Jesse Chou>'s Goal Line Stand Jesse (105.3) def. <@U08QHPYDZ46|Adam Strutynski>'s Dasher Mafia (102.1)*
+_So Close, Yet So 0-3_
+Bijan Robinson posted 35.3 by himself, which is the only reason this team is 2-1 instead of buried with everyone else. Dasher Mafia got a shockingly good Tyler Shough game (24.8) and still lost by 3.2, a bad beat dressed up as a coin flip. Three straight losses now, each one closer than the last, like the season is slow-walking them to the edge.
+
+*<@U03FE7P8EEP|Tyler Hanlon>'s Purdy Boys (128.0) def. <@U08SD0PJ3EU|Danielle DiRaddo>'s big d's fantasy (122.6)*
+_Undefeated, Unbothered_
+Chris Olave and benched Terry McLaurin somehow tied at 19.7 points apiece, which tells you Purdy Boys' depth chart is basically a coin with two winning sides. Brock Purdy threw for 31.3 on the other side, and it still wasn't enough. Retention strategy: retaining first place.
+
+*<@U0405KM3X7C|Adam Eichorn>'s Hut Hut Eich (110.3) def. <@U03R72JAKFH|Morgan Nelson>'s Morgan's Team! (104.2)*
+_The Kicker Outscored Three Starters_
+Spencer Shrader put up 17 points for Morgan's Team, either a great week for the kicker or a rough one for everybody drafted ahead of him. George Kittle's 26.2 wasn't enough cover. Hut Hut Eich won on the strength of a tight end (Harold Fannin Jr., 24.1) and a bench so deep that Malik Willis (11.0) and Greg Dulcich (10.5) both cleared double digits without playing a snap.
+
+*<@U03L8KFL1RS|Elisa Keny>'s Monster of the Midway (103.2) def. <@U0761N3RYSW|Sachin Phadkar>'s Penalty Flag Sachin (92.7)*
+_The Upset Nobody Projected_
+The betting favorite lost anyway, undone by a lineup that started Devaughn Vele (6.9) and the Bengals defense (3.0) over a 21-point Kalif Raymond game sitting one click away on the bench. Conversion funnel working perfectly — converting a favorite into a loser.
+
+*<@U032LD8RMK8|Marissa Tomko>'s Scott's Tots (143.9) def. <@U07JPH677ED|Joseph Barry>'s Blitz Squad Joseph (127.2)*
+_Jahmyr Gibbs Has Notes_
+Gibbs went for 41.4 points alone, the single-player line of the week, pushing Scott's Tots to the league's highest score by a wide margin. Blitz Squad Joseph, meanwhile, started Bo Nix (25.1) over a benched Sam Darnold (29.7), a self-inflicted Bench Hero nomination if there ever was one. A/B tested this lineup. Both variants still lost.
+
+*<@U08SKVCGDQW|Greg Stewart>'s The Blackberries (130.2) def. <@U02C39SFXPD|Tim Tang>'s Stiff Arm tim (111.1)*
+_Two Tight Ends, One Regret_
+Jaxon Smith-Njigba's 35.4 did the heavy lifting, and Brock Bowers put up 27.6 points on the bench behind a starting tight end who managed 12.2 — customer acquisition cost on a position nobody needed to double up on. Ja'Marr Chase's 24.8 kept Stiff Arm tim respectable in a loss that dropped them to 0-3.
+
+*<@UPQ8CPJDR|Peter Van Oot>'s High Quality TD Rate (124.2) def. <@U0AV2EB5GUD|Luis Islas>'s Game of Throws (85.1)*
+_The Blowout of the Week_
+39.2 points separated these two, the widest margin in the league this week, and High Quality TD Rate didn't even need its full bench: Wan'Dale Robinson (18.7) and Keenan Allen (18.3) never left the sideline. Game of Throws posted the league's lowest score and got actively negative production from a Packers defense that finished at -2.0. Churn rate: 100% of this roster's playoff hopes.
+
+
+:power-up: *Power Rankings*
+1. *<@U03FE7P8EEP|Tyler Hanlon>* (3-0, PF 413.2) — — Still perfect, still padding the league's biggest point total
+2. *<@UPQ8CPJDR|Peter Van Oot>* (3-0, PF 370.2) :triangle_upmaster: 2 — Undefeated with a bench that could start elsewhere
+3. *<@U08SKVCGDQW|Greg Stewart>* (2-1, PF 378.9) :triangle_upmaster: 2 — Out-scoring two of the three unbeaten teams
+4. *<@U03L8KFL1RS|Elisa Keny>* (3-0, PF 372.6) :triangle_downred: 1 — Perfect record, built partly on Vegas being wrong
+5. *<@U032LD8RMK8|Marissa Tomko>* (1-2, PF 355.4) :triangle_upmaster: 5 — 1-2 despite owning the week's biggest number
+6. *<@U0405KM3X7C|Adam Eichorn>* (2-1, PF 358.7) — — Quietly stacking wins nobody's mentioning yet
+7. *<@U0761N3RYSW|Sachin Phadkar>* (2-1, PF 362.3) :triangle_downred: 5 — L1, and the bench just outscored the tight end room
+8. *<@U07JPH677ED|Joseph Barry>* (1-2, PF 355.9) :triangle_downred: 1 — Started the wrong quarterback, lost anyway
+9. *<@U08SD0PJ3EU|Danielle DiRaddo>* (1-2, PF 327.8) :triangle_downred: 1 — A monster Brock Purdy game, buried in a loss
+10. *<@U09KVP9JHQS|Jesse Chou>* (2-1, PF 290.1) :triangle_upmaster: 3 — 2-1 with the league's second-lowest point total
+11. *<@U03R72JAKFH|Morgan Nelson>* (1-2, PF 313.0) :triangle_downred: 2 — L2, saved from worse by a 17-point kicker
+12. *<@U02C39SFXPD|Tim Tang>* (0-3, PF 307.6) — — 0-3, L3, but the losses keep shrinking every week
+13. *<@U0AV2EB5GUD|Luis Islas>* (0-3, PF 296.2) :triangle_downred: 2 — 0-3, L3, and posted this week's lowest score too
+14. *<@U08QHPYDZ46|Adam Strutynski>* (0-3, PF 278.5) — — 0-3, L3, and lost this week's closest game
+:disappointed-guy: *Fourth and Long: Week 4 Preview*
+• Game of the Week: <@U03L8KFL1RS|Elisa Keny>'s Monster of the Midway vs. <@UPQ8CPJDR|Peter Van Oot>'s High Quality TD Rate — two of the league's three unbeaten teams, and only one leaves 4-0.
+• Trap Game: <@U0AV2EB5GUD|Luis Islas>'s Game of Throws vs. <@U09KVP9JHQS|Jesse Chou>'s Goal Line Stand Jesse — the league's floor this week against a team that only shows up when Bijan Robinson does.
+• Elsewhere: <@U03FE7P8EEP|Tyler Hanlon>'s Purdy Boys host <@U08QHPYDZ46|Adam Strutynski>'s Dasher Mafia, <@U032LD8RMK8|Marissa Tomko>'s Scott's Tots try to solve <@U08SKVCGDQW|Greg Stewart>'s The Blackberries, and <@U07JPH677ED|Joseph Barry>'s Blitz Squad Joseph gets a shot at redemption against <@U08SD0PJ3EU|Danielle DiRaddo>'s big d's fantasy. Bench Sam Darnold again. See what happens.
+:person_in_lotus_position: *Closing Thoughts*
+_"See you next Sunday, when none of this will matter and all of it will."_
+
