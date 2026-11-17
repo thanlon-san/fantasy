@@ -286,6 +286,12 @@ class YahooLeagueFetcher:
         self._fantasy_api_forbidden: bool = False
         # Yahoo returns roster slots that map to positions
         self._flex_slots = {"W/R/T", "W/T", "W/R", "Q/W/R/T", "FLEX"}
+        # Lazily-loaded, read-only per-player actual-points history, used
+        # only to derive a trailing-average projection proxy (see
+        # _trailing_projection). Never written to — recording a week's real
+        # data into trend_history.json stays exclusively in
+        # ContextBuilder/TrendTracker.record_week(), unchanged by this.
+        self._player_actuals_cache: Optional[Dict[str, Dict[str, float]]] = None
 
     # ---- config wiring -----------------------------------------------------
 
@@ -749,6 +755,11 @@ class YahooLeagueFetcher:
 
         # Roster for this week (starters + bench)
         starters, bench = self._fetch_week_roster(team_key, week)
+        for player in starters + bench:
+            if player.get("projected_points") is None:
+                player["projected_points"] = self._trailing_projection(
+                    player.get("name", ""), week
+                )
         score = _resolve_team_week_score(scoreboard_score, starters)
 
         # Derived analytics
@@ -776,6 +787,65 @@ class YahooLeagueFetcher:
             "optimal_lineup": optimal,
             "management_gap": management_gap,
         }
+
+    # ---- per-player projection proxy ---------------------------------------
+    #
+    # Yahoo's public Fantasy Sports API does not expose per-player projected
+    # points via any endpoint reachable with a standard OAuth app. Confirmed
+    # directly: the roster/stats endpoint this pipeline uses
+    # (team/{key}/roster;week=N/players/stats;type=week;week=N) only ever
+    # returns "player_stats" and "player_points" blocks (actual results) —
+    # never "player_projected_points", for a past OR a future/unplayed week.
+    # Team-level team_projected_points (see _parse_matchup_team's
+    # projected_score) is the only projection Yahoo exposes, and only at the
+    # team/matchup level. (Yahoo's own website shows per-player projections,
+    # but only via an undocumented internal endpoint that requires a logged-
+    # in browser session, not an OAuth app key — not something to build on.)
+    #
+    # Rather than silently leave every player's projected_points at 0.0
+    # (which quietly disabled three separate features: the Giant Slayer
+    # season award, the "upset" drama-ordering tier in context_builder.py,
+    # and trend_tracker.py's consecutive-underperformance tracking — none of
+    # them crashed, they just could never fire), this computes a clearly-
+    # labeled trailing-average proxy from the player's own real recorded
+    # actual_points in prior weeks. Render it as "Proj (trailing avg)" in any
+    # recap-facing text — it is an estimate derived from this league's own
+    # history, not Yahoo's or Vegas's projection, and should never be
+    # presented as if it were.
+    def _player_actuals(self) -> Dict[str, Dict[str, float]]:
+        """Read-only {player_name: {week_str: actual_points}} from trend_history.json."""
+        if self._player_actuals_cache is None:
+            from src.trend_tracker import TrendTracker
+
+            players = TrendTracker().history.get("players", {}) or {}
+            self._player_actuals_cache = {
+                name: {
+                    wk: (wk_data or {}).get("actual_points", 0.0)
+                    for wk, wk_data in (hist or {}).items()
+                }
+                for name, hist in players.items()
+            }
+        return self._player_actuals_cache
+
+    def _trailing_projection(
+        self, player_name: str, week: int, max_weeks: int = 3
+    ) -> Optional[float]:
+        """
+        Average of ``player_name``'s real actual_points from up to the last
+        ``max_weeks`` weeks strictly before ``week``. Returns ``None`` when
+        there is no prior history at all (e.g. the player's first tracked
+        week) — that is a real "no estimate available" case, not a bug.
+        """
+        if not player_name:
+            return None
+        history = self._player_actuals().get(player_name) or {}
+        prior_weeks = sorted(
+            (int(w) for w in history.keys() if int(w) < week), reverse=True
+        )[:max_weeks]
+        if not prior_weeks:
+            return None
+        scores = [history[str(w)] for w in prior_weeks]
+        return round(sum(scores) / len(scores), 2)
 
     def _fetch_week_roster(
         self, team_key: str, week: int
@@ -828,7 +898,7 @@ class YahooLeagueFetcher:
         props: Dict[str, Any] = {}
         selected_position: Dict[str, Any] = {}
         player_points: Dict[str, Any] = {}
-        player_projected: Dict[str, Any] = {}
+        player_projected: Optional[Dict[str, Any]] = None
         # ``raw`` is an array of ~4-5 blocks: [propdicts, {selected_position:...},
         # {player_points:...}, ...]
         for block in raw:
@@ -844,6 +914,11 @@ class YahooLeagueFetcher:
                 if "player_points" in block:
                     player_points = block["player_points"] or {}
                 if "player_projected_points" in block:
+                    # Confirmed via direct probe: Yahoo never actually sends
+                    # this block through this endpoint. Kept as a real,
+                    # non-dead branch in case that ever changes — a real
+                    # Yahoo projection should win over the trailing-average
+                    # proxy applied in _parse_matchup_team.
                     player_projected = block["player_projected_points"] or {}
 
         name_field = props.get("name", {})
@@ -858,13 +933,19 @@ class YahooLeagueFetcher:
         slot = selected_position.get("position", "BN")
 
         actual = _yahoo_points_total(player_points)
-        projected = _yahoo_points_total(player_projected)
+        # None (not 0.0) when Yahoo genuinely didn't send a projection block —
+        # _parse_matchup_team fills this with a trailing-average proxy.
+        projected = (
+            round(_yahoo_points_total(player_projected), 2)
+            if player_projected is not None
+            else None
+        )
 
         return {
             "name": name,
             "position": position,
             "slot": slot,
-            "projected_points": round(projected, 2),
+            "projected_points": projected,
             "actual_points": round(actual, 2),
             "pro_team": pro_team,
             # ESPN-only signal; -1 tells context_builder "unavailable, skip roasts".

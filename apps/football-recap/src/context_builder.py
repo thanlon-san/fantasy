@@ -23,6 +23,24 @@ from src.constants import (
 PLAYOFF_TEAMS = 6  # Number of teams that make playoffs
 
 
+def _sum_projected(players: List[Dict]) -> Optional[float]:
+    """
+    Sum of ``projected_points`` across ``players``, or ``None`` if any
+    player has no projection available (trailing-average proxy with zero
+    prior history — see YahooLeagueFetcher._trailing_projection). A partial
+    sum that silently treats "no data" as "projected 0" is worse than no
+    comparison at all here, since it's exactly how this got silently broken
+    before.
+    """
+    total = 0.0
+    for p in players:
+        proj = p.get("projected_points")
+        if proj is None:
+            return None
+        total += proj
+    return round(total, 2)
+
+
 def _owner_for(team_or_name, fallback_manager: str = "") -> str:
     """
     Display owner for a team, preferring live Yahoo week_data.
@@ -410,19 +428,18 @@ class ContextBuilder:
                 away = m["away_team"]
                 margin = abs(home["score"] - away["score"])
                 combined = home["score"] + away["score"]
-                # Projections
-                home_proj = sum(
-                    p.get("projected_points", 0) for p in home.get("starters", [])
-                )
-                away_proj = sum(
-                    p.get("projected_points", 0) for p in away.get("starters", [])
-                )
+                # Projections (trailing-average proxy — see
+                # YahooLeagueFetcher._trailing_projection; None for a player
+                # with no prior-week history, e.g. a rookie or Week 1).
+                home_proj = _sum_projected(home.get("starters", []))
+                away_proj = _sum_projected(away.get("starters", []))
                 winner = m.get("winner")
                 upset_delta = 0
-                if winner == home["team_name"] and home_proj < away_proj:
-                    upset_delta = away_proj - home_proj
-                elif winner == away["team_name"] and away_proj < home_proj:
-                    upset_delta = home_proj - away_proj
+                if home_proj is not None and away_proj is not None:
+                    if winner == home["team_name"] and home_proj < away_proj:
+                        upset_delta = away_proj - home_proj
+                    elif winner == away["team_name"] and away_proj < home_proj:
+                        upset_delta = home_proj - away_proj
 
                 # In playoffs, championship games get priority tier (0-5), consolation gets 100+
                 tier_offset = 0 if is_championship else 100
@@ -777,8 +794,10 @@ class ContextBuilder:
     def _add_team_analytics(self, context_parts: List[str], team: Dict, label: str):
         """Add team-level analytics"""
         context_parts.append(f"\n**{_mention_for(team)}'s {team['team_name']} Analytics:**")
+        team_proj = _sum_projected(team["starters"])
+        proj_display = f"{team_proj:.1f} (trailing avg, not Yahoo's)" if team_proj is not None else "N/A"
         context_parts.append(
-            f"Score: {team['score']} (Projected: {sum(p['projected_points'] for p in team['starters']):.1f})"
+            f"Score: {team['score']} (Projected: {proj_display})"
         )
 
         # Position aggregates
@@ -834,14 +853,14 @@ class ContextBuilder:
         context_parts.append(f"\n**{_mention_for(team)}'s {team['team_name']} Starters:**")
 
         for player in team["starters"]:
-            if (
-                player["actual_points"] > 15
-                or abs(player["actual_points"] - player["projected_points"]) > 10
-            ):
+            proj = player.get("projected_points")
+            projection_miss = proj is not None and abs(player["actual_points"] - proj) > 10
+            if player["actual_points"] > 15 or projection_miss:
                 stats_str = self._format_player_stats(player)
+                proj_str = f"{proj:.1f}" if proj is not None else "N/A"
                 starter_line = (
                     f"  - {player['name']} ({player['position']}, {player['slot']}): "
-                    f"Proj {player['projected_points']:.1f}, Actual {player['actual_points']:.1f}{stats_str}"
+                    f"Proj {proj_str}, Actual {player['actual_points']:.1f}{stats_str}"
                 )
 
                 # Check for recent form (STRICT - only when funny)

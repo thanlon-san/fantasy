@@ -41,8 +41,23 @@ def _teams(matchup: Dict[str, Any]) -> List[Dict[str, Any]]:
     return [matchup["home_team"], matchup["away_team"]]
 
 
-def _projected_score(team: Dict[str, Any]) -> float:
-    return sum(p.get("projected_points", 0.0) for p in team.get("starters", []))
+def _projected_score(team: Dict[str, Any]) -> Optional[float]:
+    """
+    Sum of starters' ``projected_points`` (a trailing-average proxy — see
+    ``YahooLeagueFetcher._trailing_projection``, not a real Yahoo
+    projection), or ``None`` if any starter has no projection available
+    (e.g. no prior-week history yet). A partial sum that treats "no data"
+    as "projected 0" would make every such player look like a guaranteed
+    bust and silently fabricate upsets — return None instead so callers
+    skip the comparison outright.
+    """
+    total = 0.0
+    for p in team.get("starters", []):
+        proj = p.get("projected_points")
+        if proj is None:
+            return None
+        total += proj
+    return round(total, 2)
 
 
 def compute_superlatives(week_data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
@@ -177,7 +192,11 @@ def compute_superlatives(week_data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]
         loser = _pick_loser(m)
         winner_proj = _projected_score(winner)
         loser_proj = _projected_score(loser)
-        if loser_proj - winner_proj >= UPSET_PROJECTION_DIFF:
+        if (
+            winner_proj is not None
+            and loser_proj is not None
+            and loser_proj - winner_proj >= UPSET_PROJECTION_DIFF
+        ):
             # First qualifying upset wins the award; loop stops.
             awards["upset_of_the_week"] = {
                 "label": "🎲 Upset of the Week",

@@ -216,15 +216,22 @@ class TrendTracker:
             return {}
 
         scores = [player_history[str(w)]["actual_points"] for w in week_numbers]
-        projections = [player_history[str(w)]["projected_points"] for w in week_numbers]
-        misses = [scores[i] - projections[i] for i in range(len(scores))]
+        # projected_points is a trailing-average proxy and can be None for a
+        # week with no prior history (e.g. a player's first tracked week) —
+        # only average the miss over weeks that actually have one.
+        projections = [player_history[str(w)].get("projected_points") for w in week_numbers]
+        misses = [
+            scores[i] - projections[i]
+            for i in range(len(scores))
+            if projections[i] is not None
+        ]
 
         trends = {
             "recent_weeks": week_numbers,
             "scores": scores,
             "projections": projections,
             "average_score": round(sum(scores) / len(scores), 2),
-            "average_projection_miss": round(sum(misses) / len(misses), 2),
+            "average_projection_miss": round(sum(misses) / len(misses), 2) if misses else None,
             "consecutive_underperformances": self._count_consecutive_underperformances(
                 player_name, week_numbers
             ),
@@ -276,13 +283,20 @@ class TrendTracker:
     def _count_consecutive_underperformances(
         self, player_name: str, recent_weeks: List[int]
     ) -> int:
-        """Count consecutive weeks player underperformed projection"""
+        """Count consecutive weeks player underperformed projection.
+
+        projected_points can be None for a week with no prior history to
+        base the trailing-average proxy on — treat that week as "unknown",
+        same as a non-underperforming week, which ends the streak rather
+        than crashing or guessing.
+        """
         count = 0
         player_history = self.history["players"][player_name]
 
         for week in recent_weeks:
             week_data = player_history[str(week)]
-            if week_data["actual_points"] < week_data["projected_points"]:
+            projected = week_data.get("projected_points")
+            if projected is not None and week_data["actual_points"] < projected:
                 count += 1
             else:
                 break
